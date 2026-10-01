@@ -10,6 +10,7 @@ Everything needed for App Store Connect is in this folder:
 | [screenshots/iphone-6.5](screenshots/iphone-6.5) | iPhone screenshots, 1284 × 2778 (6.5″ display) |
 | [screenshots/iphone-6.9](screenshots/iphone-6.9) | iPhone screenshots, 1320 × 2868 (6.9″ display, if App Store Connect asks for that size) |
 | [screenshots/ipad-13](screenshots/ipad-13) | iPad screenshots, 2064 × 2752 (13″ display) |
+| [previews/iphone-6.5.mov](previews/iphone-6.5.mov), [previews/ipad-13.mov](previews/ipad-13.mov) | App previews (videos), 886 × 1920 and 1200 × 1600, H.264, 30 fps, about 24 s, no sound |
 | [check_metadata.py](check_metadata.py) | Checks the texts against App Store Connect's character limits |
 
 Public pages the App Store links to:
@@ -106,6 +107,7 @@ xcodebuild -exportArchive -archivePath build/Tileroam.xcarchive -exportOptionsPl
    - Drag the files from `screenshots/iphone-6.5` into "iPhone 6.5″ Display" and from `screenshots/ipad-13` into "iPad 13″ Display".
    - Recommended order: 01-tiles, 05-plan, 02-towns, 03-postcodes, 06-statistics, 04-routes, 00-intro. Apple uses the first three in search results.
    - App Store Connect scales them down for smaller devices.
+   - **App previews:** drag `previews/iphone-6.5.mov` into the iPhone 6.5″ slot and `previews/ipad-13.mov` into the iPad 13″ slot, above the screenshots. Choose a poster frame where the route is visible, at about 15 s.
 2. **Texts:** promotional text, description, keywords, support URL and marketing URL, from `metadata-en.md`.
 3. **Localization:** to add the Dutch texts, click the language menu (top right) → Dutch, and paste from `metadata-nl.md`. The screenshots can stay English.
 4. **Build:** select the uploaded build.
@@ -133,3 +135,12 @@ The screenshots come from the simulator with the bundled sample rides, using the
 - `-hasSeenIntro NO`
 
 Set the status bar to 9:41 with `xcrun simctl status_bar <device> override --time 9:41`, set the location to Utrecht, and capture with `xcrun simctl io <device> screenshot`.
+
+## Updating the app previews
+Build the Debug app for the simulator, then record both videos. Each takes about a minute:
+```bash
+Tools/record_app_preview.sh "iPhone 18 Pro Max" docs/appstore/previews/iphone-6.5.mov 886 1920 9
+Tools/record_app_preview.sh "iPad Pro 13-inch (M5)" docs/appstore/previews/ipad-13.mov 1200 1600 10
+```
+- **The tour:** the app plays it itself with `-PreviewTour YES` (see `runPreviewTour()` in ContentView). It goes Tiles → Towns → Postcodes → selecting and planning a route → Statistics.
+- **Recording and conversion:** the script records the simulator, cuts at the tour's start and end markers, and converts the video with `Tools/make_app_preview.swift`, which scales, crops and sets 30 fps.
