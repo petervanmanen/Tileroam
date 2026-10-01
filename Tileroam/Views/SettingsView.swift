@@ -239,7 +239,7 @@ extension SettingsView {
                         .symbolRenderingMode(.multicolor)
                 }
             } else {
-                Text("Add your Strava API Client ID and Client Secret to StravaSecrets.plist in the Xcode project, then rebuild.")
+                Text("Strava is not set up in this build: add StravaConfig.plist with the Client ID and token service URL, then rebuild.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

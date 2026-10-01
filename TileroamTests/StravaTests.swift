@@ -134,7 +134,7 @@ struct ImportFolderTests {
 
 struct StravaLoginTests {
     @Test func authorizeURLsCarryStateAndRedirect() throws {
-        let config = StravaConfig(clientID: "12345", tokenServiceURL: URL(string: "https://example.workers.dev/token"), clientSecret: nil)
+        let config = StravaConfig(clientID: "12345", tokenServiceURL: URL(string: "https://example.workers.dev/token")!)
         let app = try #require(URLComponents(url: config.appAuthorizeURL(state: "abc"), resolvingAgainstBaseURL: false))
         #expect(app.scheme == "strava" && app.host == "oauth" && app.path == "/mobile/authorize")
         let items = Dictionary(uniqueKeysWithValues: (app.queryItems ?? []).map { ($0.name, $0.value ?? "") })
@@ -147,7 +147,7 @@ struct StravaLoginTests {
     }
 
     @Test func callbackWithWrongStateIsRejected() async {
-        let config = StravaConfig(clientID: "12345", tokenServiceURL: URL(string: "https://example.invalid/token"), clientSecret: nil)
+        let config = StravaConfig(clientID: "12345", tokenServiceURL: URL(string: "https://example.invalid/token")!)
         let client = StravaClient(config: config)
         _ = await client.beginLogin()
         await #expect(throws: StravaError.self) {

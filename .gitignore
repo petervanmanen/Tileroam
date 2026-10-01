@@ -8,7 +8,7 @@ xcuserdata/
 # macOS
 .DS_Store
 
-# Secrets (copy StravaSecrets.example.plist)
+# Old local development secrets (no longer used; also excluded from builds)
 Tileroam/StravaSecrets.plist
 
 Tileroam/StravaConfig.plist

@@ -83,9 +83,7 @@ Inloggen gaat via de **Strava-app** (één tik op *Authorize*) of, zonder Strava
 3. Kopieer `StravaConfig.example.plist` naar `Tileroam/StravaConfig.plist` en vul `ClientID` en `TokenServiceURL` in (de Worker-URL eindigend op `/token`). Geen van beide is geheim; het bestand staat in `.gitignore` omdat het je eigen configuratie is.
 4. Bouw en start de app en tik op *Connect with Strava*.
 
-Tijdens ontwikkeling kun je de tokenservice overslaan: zet `ClientID` en `ClientSecret` in `Tileroam/StravaSecrets.plist` (zie `StravaSecrets.example.plist`). Dat bestand wordt alleen in Debug-builds gebruikt en zit niet in Release-builds.
-
-Strava zit in **ontwikkelbuilds**: de compilatievoorwaarde `STRAVA` staat aan voor de Debug-configuratie. Wil je Strava in een Release-build, voeg dan `STRAVA` toe aan *Active Compilation Conditions* voor Release (met de tokenservice ingesteld). Voor andere gebruikers moet Strava eerst de sporterlimiet van je applicatie verhogen (standaard één sporter).
+Het Client Secret staat alleen in de tokenservice, nooit in de app. Strava zit in Debug- en Release-builds via de compilatievoorwaarde `STRAVA`; haal die weg uit *Active Compilation Conditions* om zonder Strava te bouwen. Voor andere gebruikers moet Strava eerst de sporterlimiet van je applicatie verhogen (standaard één sporter).
 
 Strava staat ongeveer 100 verzoeken per 15 minuten en 1.000 per dag toe. De activiteitenlijst komt snel binnen met vereenvoudigde routes; gedetailleerde gps wordt daarna aangevuld en de synchronisatie gaat automatisch verder.
 

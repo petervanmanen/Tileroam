@@ -154,26 +154,12 @@ actor StravaClient {
         let athlete: Athlete?
     }
 
-    /// Exchanges a code or refresh token. Through the token service when configured, so the
-    /// Client Secret stays on the server; directly with the secret only in development builds.
+    /// Exchanges a code or refresh token through the token service, which adds the Client Secret.
     private func tokenRequest(_ params: [String: String]) async throws -> TokenResponse {
-        var request: URLRequest
-        if let service = config.tokenServiceURL {
-            request = URLRequest(url: service)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try JSONSerialization.data(withJSONObject: params)
-        } else if let secret = config.clientSecret {
-            request = URLRequest(url: URL(string: "https://www.strava.com/oauth/token")!)
-            request.httpMethod = "POST"
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            var form = URLComponents()
-            form.queryItems = (params.merging(["client_id": config.clientID, "client_secret": secret]) { a, _ in a })
-                .map { URLQueryItem(name: $0.key, value: $0.value) }
-            request.httpBody = form.percentEncodedQuery?.data(using: .utf8)
-        } else {
-            throw StravaError.notConnected
-        }
+        var request = URLRequest(url: config.tokenServiceURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: params)
         let (data, _) = try await send(request)
         return try decoder.decode(TokenResponse.self, from: data)
     }
@@ -260,7 +246,7 @@ actor StravaClient {
     /// Keeps the last failed request for diagnosis (no tokens or secrets).
     private static func logError(request: URLRequest, response: HTTPURLResponse, body: String) {
         var url = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)!
-        url.queryItems = url.queryItems?.filter { !["client_secret", "code", "refresh_token"].contains($0.name) }
+        url.queryItems = url.queryItems?.filter { !["code", "refresh_token"].contains($0.name) }
         let headers = response.allHeaderFields.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n")
         let text = "\(Date.now)\n\(request.httpMethod ?? "GET") \(url.string ?? "")\nstatus \(response.statusCode)\n\n\(headers)\n\n\(body)\n"
         try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)

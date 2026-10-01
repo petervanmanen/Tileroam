@@ -83,9 +83,7 @@ El inicio de sesión se hace con la **app de Strava** (un toque en *Authorize*) 
 3. Copia `StravaConfig.example.plist` a `Tileroam/StravaConfig.plist` y rellena `ClientID` y `TokenServiceURL` (la URL del Worker terminada en `/token`). Ninguno de los dos valores es secreto; el archivo está en `.gitignore` porque es tu propia configuración.
 4. Compila y ejecuta, y toca *Connect with Strava*.
 
-Durante el desarrollo puedes prescindir del servicio: pon `ClientID` y `ClientSecret` en `Tileroam/StravaSecrets.plist` (ver `StravaSecrets.example.plist`). Ese archivo solo se usa en compilaciones Debug y no se incluye en las Release.
-
-Strava se incluye en las **compilaciones de desarrollo**: la condición de compilación `STRAVA` está activada en Debug. Para incluir Strava en una compilación Release, añade `STRAVA` a *Active Compilation Conditions* de Release (con el servicio de tokens configurado). Para otros usuarios, Strava debe aumentar primero el límite de deportistas de tu aplicación (uno por defecto).
+El Client Secret solo se guarda en el servicio de tokens, nunca en la app. Strava forma parte de las compilaciones Debug y Release mediante la condición de compilación `STRAVA`; quítala de *Active Compilation Conditions* para compilar sin Strava. Para otros usuarios, Strava debe aumentar primero el límite de deportistas de tu aplicación (uno por defecto).
 
 Strava permite unas 100 solicitudes cada 15 minutos y 1.000 al día. La lista de actividades llega rápido con rutas simplificadas; el GPS detallado se completa después y la sincronización continúa automáticamente.
 

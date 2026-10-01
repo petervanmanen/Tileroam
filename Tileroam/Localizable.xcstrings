@@ -1417,34 +1417,6 @@
         }
       }
     },
-    "Add your Strava API Client ID and Client Secret to StravaSecrets.plist in the Xcode project, then rebuild.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zet je Strava API Client ID en Client Secret in StravaSecrets.plist in het Xcode-project en bouw opnieuw."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajoutez votre Client ID et Client Secret de l’API Strava dans StravaSecrets.plist du projet Xcode, puis recompilez."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Añade tu Client ID y Client Secret de la API de Strava a StravaSecrets.plist en el proyecto de Xcode y vuelve a compilar."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trage Client ID und Client Secret deiner Strava-API in StravaSecrets.plist im Xcode-Projekt ein und baue neu."
-          }
-        }
-      }
-    },
     "Add your activities": {
       "localizations": {
         "nl": {
@@ -5653,6 +5625,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Strava ist in dieser Version nicht verfügbar."
+          }
+        }
+      }
+    },
+    "Strava is not set up in this build: add StravaConfig.plist with the Client ID and token service URL, then rebuild.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strava is niet ingesteld in deze build: voeg StravaConfig.plist toe met het Client ID en de URL van de tokenservice en bouw opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strava n’est pas configuré dans ce build : ajoutez StravaConfig.plist avec le Client ID et l’URL du service de jetons, puis recompilez."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strava no está configurado en esta compilación: añade StravaConfig.plist con el Client ID y la URL del servicio de tokens y vuelve a compilar."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strava ist in diesem Build nicht eingerichtet: Füge StravaConfig.plist mit der Client ID und der URL des Token-Dienstes hinzu und baue neu."
           }
         }
       }

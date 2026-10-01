@@ -3,16 +3,12 @@ import Foundation
 /// Settings of the Strava API application.
 ///
 /// `StravaConfig.plist` (not in version control; see `StravaConfig.example.plist`) holds the
-/// Client ID, which is not secret, and the URL of the token service (`backend/strava-auth`),
-/// which keeps the Client Secret on the server. During development, a `ClientSecret` in
-/// `StravaSecrets.plist` is used instead when no token service is configured; that file is
-/// left out of Release builds.
+/// Client ID, which is not secret, and the URL of the token service (`backend/strava-auth`).
+/// The Client Secret lives only in that service, never in the app.
 struct StravaConfig: Sendable {
     let clientID: String
-    /// Token exchange through the Worker (preferred).
-    let tokenServiceURL: URL?
-    /// Direct token exchange with Strava (development builds only).
-    let clientSecret: String?
+    /// Exchanges login codes and refresh tokens (the Cloudflare Worker).
+    let tokenServiceURL: URL
 
     static let callbackScheme = "tileroam"
     static let redirectURI = "tileroam://localhost"
@@ -21,16 +17,9 @@ struct StravaConfig: Sendable {
     static let bundled: StravaConfig? = {
         guard FeatureFlags.strava else { return nil }
         let config = plist("StravaConfig")
-        let secrets = plist("StravaSecrets")
-        let id = string(config["ClientID"]) ?? string(secrets["ClientID"]) ?? ""
-        let service = string(config["TokenServiceURL"]).flatMap(URL.init(string:))
-        #if DEBUG
-        let secret = string(secrets["ClientSecret"])
-        #else
-        let secret: String? = nil
-        #endif
-        guard Int(id) != nil, service != nil || secret != nil else { return nil }
-        return StravaConfig(clientID: id, tokenServiceURL: service, clientSecret: service == nil ? secret : nil)
+        guard let id = string(config["ClientID"]), Int(id) != nil,
+              let service = string(config["TokenServiceURL"]).flatMap(URL.init(string:)) else { return nil }
+        return StravaConfig(clientID: id, tokenServiceURL: service)
     }()
 
     private static func plist(_ name: String) -> [String: Any] {
