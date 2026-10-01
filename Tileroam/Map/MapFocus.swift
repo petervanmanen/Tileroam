@@ -28,7 +28,12 @@ enum MapFocus {
 
     /// Visible map rect centered on `center` whose height is one zoom-10 tile.
     static func rect(center: GeoPoint, aspectRatio: Double) -> MKMapRect {
-        let height = MKMapSize.world.height / Double(1 << tileZoom)
+        var zoom = tileZoom
+        #if DEBUG
+        // Screenshots: -FocusZoom 9 shows a wider area.
+        let z = UserDefaults.standard.integer(forKey: "FocusZoom"); if z > 0 { zoom = z }
+        #endif
+        let height = MKMapSize.world.height / Double(1 << zoom)
         let width = height * max(aspectRatio, 0.1)
         let c = MKMapPoint(CLLocationCoordinate2D(latitude: center.lat, longitude: center.lon))
         return MKMapRect(x: c.x - width / 2, y: c.y - height / 2, width: width, height: height)

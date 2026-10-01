@@ -129,6 +129,12 @@ The script documents where each source file comes from. It reprojects to WGS84, 
 
 Route planning: © OpenStreetMap contributors (ODbL), routing by OSRM / FOSSGIS.
 
+## Documentation
+
+- [User guide](docs/MANUAL.md)
+- [Support and FAQ](SUPPORT.md)
+- [App Store submission kit](docs/appstore/README.md): metadata, screenshots, privacy answers, review notes
+
 ## Privacy
 
 Tileroam has no server and no analytics. Your activities, tiles and statistics stay on your device and in the iCloud folders you choose. Strava tokens are stored in the Keychain. The Strava login code and token refreshes pass through the token service (Cloudflare Worker), which stores and logs nothing. When you plan a route, the start point and stops are sent to the OSRM routing service of openstreetmap.de.
