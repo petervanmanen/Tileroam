@@ -11,35 +11,40 @@ enum RegionAssets {
     struct Availability: Sendable {
         /// Countries whose boundaries can be read.
         var available: Set<String> = []
-        /// Countries whose pack couldn't be downloaded (offline, or not published yet).
-        var failed: Set<String> = []
+        /// Countries whose pack couldn't be downloaded (offline, or not published yet), with the error.
+        var failed: [String: String] = [:]
     }
 
-    /// Downloads the packs of `countries` that aren't on the device yet.
+    /// Downloads the packs of `countries` that aren't on the device yet: one at a time, each
+    /// retried once.
     static func makeAvailable(_ countries: Set<String>) async -> Availability {
         #if DEBUG
         if localDirectory != nil { return Availability(available: countries) }
         #endif
         var result = Availability()
-        await withTaskGroup(of: (String, Bool).self) { group in
-            for country in countries {
-                group.addTask {
-                    let manager = AssetPackManager.shared
-                    do {
-                        let pack = try await manager.assetPack(withID: packID(country))
-                        if #available(iOS 26.4, *) {
-                            try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: false)
-                        } else {
-                            try await manager.ensureLocalAvailability(of: pack)
-                        }
-                        return (country, true)
-                    } catch {
-                        return (country, false)
+        let manager = AssetPackManager.shared
+        for country in countries.sorted() {
+            var lastError: (any Error)?
+            for attempt in 0..<2 {
+                if attempt > 0 { try? await Task.sleep(for: .seconds(2)) }
+                do {
+                    let pack = try await manager.assetPack(withID: packID(country))
+                    if #available(iOS 26.4, *) {
+                        try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: false)
+                    } else {
+                        try await manager.ensureLocalAvailability(of: pack)
                     }
+                    lastError = nil
+                    break
+                } catch {
+                    lastError = error
+                    if Task.isCancelled { return result }
                 }
             }
-            for await (country, ok) in group {
-                if ok { result.available.insert(country) } else { result.failed.insert(country) }
+            if let lastError {
+                result.failed[country] = lastError.localizedDescription
+            } else {
+                result.available.insert(country)
             }
         }
         return result

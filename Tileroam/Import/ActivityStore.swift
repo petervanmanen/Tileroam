@@ -40,7 +40,7 @@ final class ActivityStore {
     var hasImportFolders: Bool { !importFolders.isEmpty }
 
     /// First folder problem, for the card on the map.
-    var problem: String? { importFolders.compactMap(\.problem).first ?? regionsError }
+    var problem: String? { importFolders.compactMap(\.problem).first }
 
     func activityCount(inFolder id: String) -> Int {
         guard let folder = (FolderAccess.importFolders() + [.internalFolder, .iCloudDrive]).first(where: { $0.id == id }) else { return 0 }
@@ -99,6 +99,16 @@ final class ActivityStore {
 
     /// Set when the boundaries of some countries couldn't be downloaded; retried on the next refresh.
     private(set) var regionsError: String?
+    /// Apple's error for the first failed country, shown in small print for diagnosis.
+    private(set) var regionsErrorDetail: String?
+    /// Countries whose boundaries couldn't be downloaded.
+    private var regionsFailed = Set<String>()
+
+    /// Tries the failed downloads again (the "Try Again" button).
+    func retryRegions() {
+        guard !isLoadingRegions else { return }
+        loadRegions()
+    }
 
     private func loadRegions() {
         regionsTask?.cancel()
@@ -113,8 +123,11 @@ final class ActivityStore {
             }.value
             guard !Task.isCancelled else { return }
             regions = data
-            regionsError = availability.failed.isEmpty ? nil : String(localized:
-                "Couldn't download the municipalities and postcodes of \(availability.failed.compactMap { Country.named($0)?.name }.sorted().formatted(.list(type: .and))). They will load when you're online.")
+            regionsFailed = Set(availability.failed.keys)
+            let failedNames = availability.failed.keys.compactMap { Country.named($0)?.name }.sorted()
+            regionsError = failedNames.isEmpty ? nil : String(localized:
+                "Couldn't load the municipalities and postcodes of \(failedNames.formatted(.list(type: .and))). Tileroam tries again when you open it.")
+            regionsErrorDetail = availability.failed.sorted { $0.key < $1.key }.first.map { "\($0.key): \($0.value)" }
             isLoadingRegions = false
             version += 1
             backfillDerived()
@@ -164,10 +177,13 @@ final class ActivityStore {
 
     /// After the first count: keep only countries with visited municipalities (plus the phone's region).
     private func pruneUnvisitedCountries() {
-        guard pruneCountriesAfterCount, let regions, regions.countries.sorted() == enabledCountries.sorted() else { return }
+        // Wait until every country is loaded, except those whose download failed.
+        guard pruneCountriesAfterCount, let regions,
+              Set(regions.countries) == enabledCountries.subtracting(regionsFailed) else { return }
         pruneCountriesAfterCount = false
         let visited = Set(visitedMunicipalities.map { String($0.prefix { $0 != ":" }) })
-        let keep = enabledCountries.filter { visited.contains($0) }
+        // Failed countries stay: without their boundaries we can't tell whether they were visited.
+        let keep = enabledCountries.filter { visited.contains($0) || regionsFailed.contains($0) }
         guard !keep.isEmpty else { return } // no visits yet: keep the current choice
         guard keep != enabledCountries else { return }
         enabledCountries = keep

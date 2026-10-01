@@ -125,6 +125,7 @@ struct ContentView: View {
             .task { await store.refreshAll() }
             #if DEBUG
             .task { await plan.runDebugDemo(with: store) }
+            .task { await runPreviewTour() }
             #endif
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { Task { await store.refreshAll() } }
@@ -291,6 +292,24 @@ struct ContentView: View {
                 .padding(12)
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
             }
+            if let error = store.regionsError, !store.isLoadingRegions {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label(error, systemImage: "exclamationmark.triangle.fill")
+                        .font(.subheadline)
+                        .symbolRenderingMode(.multicolor)
+                    if let detail = store.regionsErrorDetail {
+                        Text(detail)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(3)
+                    }
+                    Button("Try Again") { store.retryRegions() }
+                        .buttonStyle(.borderedProminent)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+            }
             if store.isImporting, store.progress.total == 0 {
                 HStack(spacing: 8) {
                     ProgressView()
@@ -389,3 +408,30 @@ struct ContentView: View {
         .padding(32)
     }
 }
+
+#if DEBUG
+extension ContentView {
+    /// App Store preview video: -PreviewTour YES plays a fixed tour while the simulator records
+    /// (see Tools/record_app_preview.sh). Prints markers so the recording can be trimmed.
+    func runPreviewTour() async {
+        guard UserDefaults.standard.bool(forKey: "PreviewTour") else { return }
+        _ = await store.loadedRegions()
+        try? await Task.sleep(for: .seconds(3)) // map tiles finish loading
+        print("PREVIEW_TOUR_START \(Date.now.timeIntervalSince1970)")
+        try? await Task.sleep(for: .seconds(4))
+        mode = .gemeenten
+        try? await Task.sleep(for: .seconds(3.5))
+        mode = .postcodes
+        try? await Task.sleep(for: .seconds(3.5))
+        mode = .squares
+        plan.isPlanning = true
+        try? await Task.sleep(for: .seconds(1))
+        await plan.planDemoRoute(with: store, pace: .milliseconds(600))
+        try? await Task.sleep(for: .seconds(5))
+        plan.isPlanning = false
+        showStatistics = true
+        try? await Task.sleep(for: .seconds(5))
+        print("PREVIEW_TOUR_END \(Date.now.timeIntervalSince1970)")
+    }
+}
+#endif

@@ -125,6 +125,12 @@ final class PlanStore {
             return
         }
         guard UserDefaults.standard.bool(forKey: "PlanDemo") else { return }
+        await planDemoRoute(with: store)
+    }
+
+    /// Selects a few unvisited tiles, a municipality and a postcode near Utrecht and plans a route.
+    /// With a `pace`, the selection happens one item at a time (for the App Store preview video).
+    func planDemoRoute(with store: ActivityStore, pace: Duration? = nil) async {
         let regions = await store.loadedRegions()
         isPlanning = true
         let start = GeoPoint(lat: 52.0907, lon: 5.1214)
@@ -137,15 +143,24 @@ final class PlanStore {
                 if !store.tiles14.contains(k) { candidates.append((dx * dx + dy * dy, k)) }
             }
         }
-        for c in candidates.sorted(by: { $0.distance < $1.distance }).prefix(4) { toggle(.tile(.explorer, c.key)) }
+        for c in candidates.sorted(by: { $0.distance < $1.distance }).prefix(4) {
+            toggle(.tile(.explorer, c.key))
+            if let pace { try? await Task.sleep(for: pace) }
+        }
         func nearestUnvisited(_ set: AreaSet, _ visited: Set<String>) -> Area? {
             set.all.filter { !visited.contains($0.code) }.min {
                 Geo.distance(GeoPoint(lat: ($0.minLat + $0.maxLat) / 2, lon: ($0.minLon + $0.maxLon) / 2), start)
                     < Geo.distance(GeoPoint(lat: ($1.minLat + $1.maxLat) / 2, lon: ($1.minLon + $1.maxLon) / 2), start)
             }
         }
-        if let m = nearestUnvisited(regions.municipalities, store.visitedMunicipalities) { toggle(.municipality(m.code)) }
-        if let p = nearestUnvisited(regions.postcodes, store.visitedPostcodes) { toggle(.postcode(p.code)) }
+        if let m = nearestUnvisited(regions.municipalities, store.visitedMunicipalities) {
+            toggle(.municipality(m.code))
+            if let pace { try? await Task.sleep(for: pace) }
+        }
+        if let p = nearestUnvisited(regions.postcodes, store.visitedPostcodes) {
+            toggle(.postcode(p.code))
+            if let pace { try? await Task.sleep(for: pace) }
+        }
         isWorking = true
         defer { isWorking = false; status = nil }
         do {

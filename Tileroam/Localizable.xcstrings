@@ -2145,30 +2145,30 @@
         }
       }
     },
-    "Couldn't download the municipalities and postcodes of %@. They will load when you're online.": {
+    "Couldn't load the municipalities and postcodes of %@. Tileroam tries again when you open it.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "De gemeenten en postcodes van %@ konden niet worden gedownload. Ze worden geladen zodra je online bent."
+            "value": "De gemeenten en postcodes van %@ konden niet worden geladen. Tileroam probeert het opnieuw als je de app opent."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Impossible de télécharger les communes et codes postaux de %@. Ils se chargeront dès que vous serez en ligne."
+            "value": "Impossible de charger les communes et codes postaux de %@. Tileroam réessaie à la prochaine ouverture."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se pudieron descargar los municipios y códigos postales de %@. Se cargarán cuando tengas conexión."
+            "value": "No se pudieron cargar los municipios y códigos postales de %@. Tileroam lo intentará de nuevo al abrirla."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Gemeinden und Postleitzahlen von %@ konnten nicht geladen werden. Sie werden geladen, sobald du online bist."
+            "value": "Die Gemeinden und Postleitzahlen von %@ konnten nicht geladen werden. Tileroam versucht es beim nächsten Öffnen erneut."
           }
         }
       }
@@ -6157,6 +6157,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gesamt"
+          }
+        }
+      }
+    },
+    "Try Again": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probeer opnieuw"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reintentar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut versuchen"
           }
         }
       }
