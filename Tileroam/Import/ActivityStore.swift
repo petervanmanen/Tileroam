@@ -649,6 +649,7 @@ final class ActivityStore {
             tileStats17 = stats.1
             statsReady = true
             version += 1
+            await WidgetData.saveTiles(visited14, visited17)
         }
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
         eddingtonRunning = Eddington(activities: activities, sports: Eddington.runningSports)

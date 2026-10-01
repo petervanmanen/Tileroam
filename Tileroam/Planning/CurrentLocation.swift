@@ -55,7 +55,10 @@ final class CurrentLocation: NSObject, CLLocationManagerDelegate {
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last
         MainActor.assumeIsolated {
-            if let location { finish(.success(location)) }
+            if let location {
+                WidgetData.saveLocation(location.coordinate)
+                finish(.success(location))
+            }
         }
     }
 

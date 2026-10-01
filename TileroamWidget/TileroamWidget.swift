@@ -110,5 +110,6 @@ struct EddingtonWidget: Widget {
 struct TileroamWidgetBundle: WidgetBundle {
     var body: some Widget {
         EddingtonWidget()
+        TilesWidget()
     }
 }

@@ -129,6 +129,7 @@ struct ContentView: View {
                 if phase == .active { Task { await store.refreshAll() } }
             }
             .onChange(of: mode) { selectedArea = nil }
+            .onChange(of: tileZoom, initial: true) { _, zoom in WidgetData.saveTileZoom(zoom.rawValue) }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 if planning, mode == .activities { mode = .squares }

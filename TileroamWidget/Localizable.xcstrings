@@ -1,6 +1,34 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%lld / %lld": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
     "%lld more rides of %lld km": {
       "localizations": {
         "en": {
@@ -317,6 +345,34 @@
         }
       }
     },
+    "A map of the tiles around your current location: visited tiles in green.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Een kaart van de tegels rond je huidige locatie: bezochte tegels in groen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une carte des tuiles autour de votre position : les tuiles visitées en vert."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un mapa de las teselas alrededor de tu ubicación: las visitadas en verde."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Karte der Kacheln rund um deinen Standort: besuchte Kacheln in Grün."
+          }
+        }
+      }
+    },
     "Cycling": {
       "localizations": {
         "nl": {
@@ -401,6 +457,62 @@
         }
       }
     },
+    "Loading map…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaart laden…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement de la carte…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargando mapa…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karte wird geladen…"
+          }
+        }
+      }
+    },
+    "Open Tileroam to share your location": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Tileroam om je locatie te delen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrez Tileroam pour partager votre position"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Tileroam para compartir tu ubicación"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffne Tileroam, um deinen Standort zu teilen"
+          }
+        }
+      }
+    },
     "Running": {
       "localizations": {
         "nl": {
@@ -425,6 +537,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Laufen"
+          }
+        }
+      }
+    },
+    "Tiles Around You": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tegels om je heen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuiles autour de vous"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teselas a tu alrededor"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kacheln um dich herum"
           }
         }
       }

@@ -197,6 +197,10 @@ struct ActivityMapView: UIViewRepresentable {
             }
         }
 
+        func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+            if let location = userLocation.location { WidgetData.saveLocation(location.coordinate) }
+        }
+
         func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
             parent.isFollowingUser = mode != .none
         }
