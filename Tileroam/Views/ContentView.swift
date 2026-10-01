@@ -23,6 +23,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("mapMode") private var mode: MapMode = .squares
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
+    @AppStorage("mapStyle") private var mapStyle: MapStyle = .standard
     @State private var showPicker = false
     @State private var showSettings = false
     @State private var showStatistics = false
@@ -41,7 +42,7 @@ struct ContentView: View {
     private let sidePanelWidth: CGFloat = 380
 
     var body: some View {
-        ActivityMapView(mode: mode, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea,
+        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea,
                         locateRequest: locateRequest, isFollowingUser: $isFollowingUser, locationDenied: $locationDenied,
                         plan: plan, planVersion: plan.version, leadingInset: isWide ? sidePanelWidth + 32 : 0)
             .ignoresSafeArea()
@@ -56,7 +57,7 @@ struct ContentView: View {
             .safeAreaInset(edge: .top) { if !isWide { header } }
             .safeAreaInset(edge: .bottom) { if !isWide { footer } }
             .overlay(alignment: .topLeading) { if isWide { sidePanel } }
-            .overlay(alignment: .bottomTrailing) { if isWide { locationButton.padding(24) } }
+            .overlay(alignment: .bottomTrailing) { if isWide { mapControls.padding(24) } }
             .overlay {
                 if !store.hasImportFolders && store.activities.isEmpty { emptyState }
             }
@@ -208,6 +209,31 @@ struct ContentView: View {
         }
     }
 
+    /// Layer choice and location button at the bottom right of the map.
+    private var mapControls: some View {
+        VStack(spacing: 10) {
+            layersButton
+            locationButton
+        }
+    }
+
+    private var layersButton: some View {
+        Menu {
+            Picker("Map Style", selection: $mapStyle) {
+                ForEach(MapStyle.allCases) { style in
+                    Label(style.title, systemImage: style.symbol).tag(style)
+                }
+            }
+        } label: {
+            Image(systemName: "square.3.layers.3d")
+                .font(.title3)
+                .frame(width: 48, height: 48)
+                .background(.regularMaterial, in: Circle())
+                .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+        }
+        .accessibilityLabel("Map Style")
+    }
+
     private var locationButton: some View {
         Button {
             locateRequest += 1
@@ -223,7 +249,7 @@ struct ContentView: View {
 
     private var footer: some View {
         VStack(alignment: .trailing, spacing: 8) {
-            locationButton
+            mapControls
             footerCards
         }
         .frame(maxWidth: .infinity, alignment: .trailing)

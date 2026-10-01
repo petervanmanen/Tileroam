@@ -37,8 +37,41 @@ enum MapMode: String, CaseIterable, Identifiable {
     }
 }
 
+/// Base map shown under the overlays.
+enum MapStyle: String, CaseIterable, Identifiable {
+    case standard, satellite, hybrid
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .standard: String(localized: "Map")
+        case .satellite: String(localized: "Satellite")
+        case .hybrid: String(localized: "Hybrid")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .standard: "map"
+        case .satellite: "globe.europe.africa.fill"
+        case .hybrid: "map.fill"
+        }
+    }
+
+    /// Flat (no 3D terrain or buildings), so tiles and areas line up with the ground.
+    var configuration: MKMapConfiguration {
+        switch self {
+        case .standard: MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
+        case .satellite: MKImageryMapConfiguration(elevationStyle: .flat)
+        case .hybrid: MKHybridMapConfiguration(elevationStyle: .flat)
+        }
+    }
+}
+
 struct ActivityMapView: UIViewRepresentable {
     let mode: MapMode
+    var mapStyle: MapStyle = .standard
     /// Tile zoom level shown (both are always calculated).
     let tileZoom: TileZoom
     let store: ActivityStore
@@ -61,7 +94,8 @@ struct ActivityMapView: UIViewRepresentable {
         map.delegate = context.coordinator
         let status = CLLocationManager().authorizationStatus
         map.showsUserLocation = status == .authorizedWhenInUse || status == .authorizedAlways
-        map.preferredConfiguration = MKStandardMapConfiguration(emphasisStyle: .muted)
+        map.preferredConfiguration = mapStyle.configuration
+        map.isPitchEnabled = false // no tilt: tiles and areas stay flat on the map
         map.pointOfInterestFilter = .excludingAll
         map.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 52.2, longitude: 5.3),
                                         span: MKCoordinateSpan(latitudeDelta: 3.4, longitudeDelta: 3.4))
@@ -76,6 +110,7 @@ struct ActivityMapView: UIViewRepresentable {
             map.layoutMargins = UIEdgeInsets(top: 0, left: leadingInset, bottom: 0, right: 0)
         }
         context.coordinator.parent = self
+        context.coordinator.applyStyle(map)
         context.coordinator.update(map)
         context.coordinator.handleLocateRequest(map)
     }
@@ -91,6 +126,13 @@ struct ActivityMapView: UIViewRepresentable {
         private var appliedVersion = -1
         private var appliedPlanVersion = -1
         private var appliedTileZoom: TileZoom?
+        private var appliedStyle: MapStyle?
+
+        func applyStyle(_ map: MKMapView) {
+            guard appliedStyle != parent.mapStyle else { return }
+            appliedStyle = parent.mapStyle
+            map.preferredConfiguration = parent.mapStyle.configuration
+        }
         private var zoomedRouteID: UUID?
         private var hasFocused = false
         /// Focused on Apple Park for lack of data; refocus once data arrives.
