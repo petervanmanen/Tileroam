@@ -3,7 +3,7 @@
 
 Usage:
     python3 -m venv venv && venv/bin/pip install pyshp pyproj shapely
-    venv/bin/python Tools/build_regions.py <raw-download-dir> Tileroam/Resources/Regions
+    venv/bin/python Tools/build_regions.py <raw-download-dir> AssetPacks/Regions
 
 Output per layer: <CC>-<kind>.fmr, a raw-deflate compressed binary file:
     "FMR1", u32 area count, then per area:

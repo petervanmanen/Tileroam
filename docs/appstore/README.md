@@ -48,14 +48,37 @@ Public pages the App Store links to:
    python3 docs/appstore/check_metadata.py
    ```
 
-## 3. Archive and upload
+## 3. Asset packs (municipality and postcode boundaries)
+The boundaries aren't in the app. Each country is an Apple-hosted asset pack (`regions-NL`, `regions-FR`, …, 22 in total, about 30 MB together). The app downloads a pack on demand the first time the user has an activity in that country.
+
+1. Build the packs:
+   ```bash
+   Tools/build_asset_packs.sh
+   ```
+   This writes `AssetPacks/build/regions-<CC>.aar`.
+2. Upload them to App Store Connect. Use the **Transporter** app (sign in, then drag the `.aar` files in), or the App Store Connect API.
+   - Upload all 22 the first time.
+   - After that, only upload the packs whose boundaries changed.
+3. In App Store Connect, check that the packs appear under the app's Background Assets, and that they're submitted with the version.
+   - Without them, the Towns and Postcodes tabs stay empty, with a "couldn't download" message.
+   - TestFlight builds download them too, so test there first.
+
+**Testing locally before uploading:** Xcode's `ba-serve` serves the packs from your Mac:
+```bash
+xcrun ba-serve serve AssetPacks/build/*.aar --host <your-mac>.local
+```
+- It needs a TLS certificate for that host name. The certificate must be in your Mac's keychain and trusted on the test device.
+- On the device, point Developer settings → Background Assets (development overrides) to the server's URL.
+- In the simulator, the Debug-only launch argument `-RegionsDir <repo>/AssetPacks/Regions` skips downloading and reads the files directly.
+
+## 4. Archive and upload
 1. In Xcode, select the destination **Any iOS Device (arm64)**.
 2. **Product → Archive.**
 3. In the Organizer: **Distribute App → App Store Connect → Upload**, with automatic signing.
 4. Wait for the processing email (about 10–30 minutes). Export compliance is already answered in `Info.plist` (`ITSAppUsesNonExemptEncryption = NO`), so no question appears.
 5. Optional: test the build via **TestFlight** on your own iPhone and iPad first.
 
-## 4. Fill in the version page
+## 5. Fill in the version page
 1. **Screenshots:**
    - Drag the files from `screenshots/iphone-6.9` into "iPhone 6.9″ Display" and from `screenshots/ipad-13` into "iPad 13″ Display".
    - Recommended order: 01-tiles, 05-plan, 02-towns, 03-postcodes, 06-statistics, 04-routes, 00-intro. Apple uses the first three in search results.
@@ -71,7 +94,7 @@ Public pages the App Store links to:
 7. **Version release:** choose manual or automatic release after approval.
 8. Click **Add for Review → Submit**.
 
-## 5. If App Review comes back
+## 6. If App Review comes back
 Common questions for this kind of app, and where the answer is:
 - *"We couldn't find content":* point to "Try with Sample Rides" (see the review notes).
 - *Location use:* the permission text and the privacy policy explain the route-planning call to OpenStreetMap.
@@ -83,6 +106,7 @@ The screenshots come from the simulator with the bundled sample rides, using the
 - `-ShowStatistics YES`
 - `-PlanDemo YES`
 - `-FocusZoom 9`
+- `-RegionsDir <repo>/AssetPacks/Regions` (boundaries without downloading)
 - `-hasSeenIntro NO`
 
 Set the status bar to 9:41 with `xcrun simctl status_bar <device> override --time 9:41`, set the location to Utrecht, and capture with `xcrun simctl io <device> screenshot`.

@@ -67,7 +67,7 @@ Postcodes zijn alleen opgenomen waar de grenzen als open data beschikbaar zijn. 
 
 ## Aan de slag
 
-Vereisten: Xcode 27 of nieuwer, iOS/iPadOS 18 of nieuwer, een Apple ID om te ondertekenen (een gratis account werkt; apps verlopen dan na 7 dagen).
+Vereisten: Xcode 27 of nieuwer, iOS/iPadOS 26 of nieuwer, en een betaald Apple Developer-account om te ondertekenen (nodig voor iCloud en door Apple gehoste asset packs).
 
 1. Clone de repository en open `Tileroam.xcodeproj`.
 2. Kies bij de targets **Tileroam** en **TileroamWidget** je team onder *Signing & Capabilities*. Verander de bundle identifier (`nl.petervanmanen.Tileroam`) en de App Group (`group.nl.petervanmanen.Tileroam`) naar je eigen waarden.
@@ -92,7 +92,7 @@ Strava staat ongeveer 100 verzoeken per 15 minuten en 1.000 per dag toe. De acti
 - **FIT-bestanden** worden gelezen door een kleine ingebouwde decoder (`FIT/FITDecoder.swift`). Routes, tegels en bezochte gebieden worden bewaard in een cache, zodat bij de volgende start alleen nieuwe of gewijzigde bestanden worden gelezen.
 - **Tegels** gebruiken de standaard Web Mercator-tegelformule (`Geo/TileGrid.swift`). Max. vierkant en cluster worden alleen over de bezochte tegels berekend, zodat dat ook snel blijft voor zoom 17-tegels verspreid over Europa.
 - **Dubbelen**: activiteiten van hetzelfde soort die in de tijd overlappen worden samengevoegd (`Import/ActivityMerge.swift`); de kopie met de beste gps en de langste afstand blijft over.
-- **Gemeenten en postcodes** zitten in de app als compacte binaire bestanden (`Resources/Regions/*.fmr`, samen 33 MB) met een ruimtelijke index voor snelle opzoekingen.
+- **Gemeenten en postcodes** zijn compacte binaire bestanden (`AssetPacks/Regions/*.fmr`, samen 33 MB) met een ruimtelijke index voor snelle opzoekingen. Ze zitten niet in de app: elk land is een door Apple gehost asset pack (`regions-NL`, …) dat de app met Background Assets downloadt zodra je er een activiteit hebt. `Tools/build_asset_packs.sh` maakt de packs voor App Store Connect; in de simulator leest `-RegionsDir <repo>/AssetPacks/Regions` ze rechtstreeks.
 - **Routeplanning** gebruikt de publieke [OSRM](https://project-osrm.org)-fietsrouteplanner van [openstreetmap.de](https://routing.openstreetmap.de). Die bepaalt de beste volgorde; daarna kiest Tileroam binnen elk doel het punt dat de omweg het kleinst houdt.
 
 ## Grensdata
@@ -101,7 +101,7 @@ De grensbestanden worden gemaakt door `Tools/build_regions.py` uit de open datab
 
 ```bash
 python3 -m venv venv && venv/bin/pip install pyshp pyproj shapely
-venv/bin/python Tools/build_regions.py <download-map> Tileroam/Resources/Regions
+venv/bin/python Tools/build_regions.py <download-map> AssetPacks/Regions
 ```
 
 Het script beschrijft waar elk bronbestand vandaan komt. Het herprojecteert naar WGS84, voegt delen per code samen, vereenvoudigt de grenzen tot ~25 m (gemeenten) of ~20 m (postcodes) en schrijft het compacte formaat.
@@ -144,7 +144,7 @@ Tileroam/
   Planning/     routeplanning (OSRM), GPX, dekking
   Strava/       Strava-API-client, export naar .fit
   Views/        SwiftUI-schermen (kaart, instellingen, introductie, planpaneel)
-  Resources/Regions/   meegeleverde grenzen van gemeenten en postcodes
+  (AssetPacks/Regions/ grenzen van gemeenten en postcodes, als asset packs)
 TileroamWidget/   Eddington-widget
 TileroamTests/    unittests (Swift Testing)
 Tools/             script en bronnen voor de grensdata

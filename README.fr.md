@@ -67,7 +67,7 @@ Les codes postaux ne sont inclus que là où leurs limites sont publiées en don
 
 ## Pour commencer
 
-Prérequis : Xcode 27 ou plus récent, iOS/iPadOS 18 ou plus récent, un identifiant Apple pour signer (un compte gratuit fonctionne ; les apps expirent alors après 7 jours).
+Prérequis : Xcode 27 ou plus récent, iOS/iPadOS 26 ou plus récent, et un compte Apple Developer payant pour signer (nécessaire pour iCloud et les asset packs hébergés par Apple).
 
 1. Clonez le dépôt et ouvrez `Tileroam.xcodeproj`.
 2. Pour les cibles **Tileroam** et **TileroamWidget**, choisissez votre équipe sous *Signing & Capabilities*. Remplacez l’identifiant de bundle (`nl.petervanmanen.Tileroam`) et l’App Group (`group.nl.petervanmanen.Tileroam`) par les vôtres.
@@ -92,7 +92,7 @@ Strava autorise environ 100 requêtes par 15 minutes et 1 000 par jour. La liste
 - Les **fichiers FIT** sont lus par un petit décodeur intégré (`FIT/FITDecoder.swift`). Tracés, tuiles et zones visitées sont mis en cache ; au lancement suivant, seuls les fichiers nouveaux ou modifiés sont lus.
 - Les **tuiles** utilisent la formule standard des tuiles Web Mercator (`Geo/TileGrid.swift`). Le carré max et le cluster sont calculés uniquement sur les tuiles visitées, ce qui reste rapide même pour des tuiles zoom 17 réparties dans toute l’Europe.
 - **Doublons** : les activités du même type qui se chevauchent dans le temps sont fusionnées (`Import/ActivityMerge.swift`) ; la copie au meilleur GPS et à la plus longue distance est conservée.
-- Les **communes et codes postaux** sont intégrés sous forme de fichiers binaires compacts (`Resources/Regions/*.fmr`, 33 Mo au total) avec un index spatial pour des recherches rapides.
+- Les **communes et codes postaux** sont des fichiers binaires compacts (`AssetPacks/Regions/*.fmr`, 33 Mo au total) avec un index spatial pour des recherches rapides. Ils ne sont pas dans l’app : chaque pays est un asset pack hébergé par Apple (`regions-NL`, …) que l’app télécharge avec Background Assets dès que vous y avez une activité. `Tools/build_asset_packs.sh` les prépare pour App Store Connect ; dans le simulateur, `-RegionsDir <repo>/AssetPacks/Regions` les lit directement.
 - La **planification** utilise le calculateur d’itinéraires vélo public [OSRM](https://project-osrm.org) d’[openstreetmap.de](https://routing.openstreetmap.de). Il détermine le meilleur ordre de visite, puis Tileroam choisit, dans chaque cible, le point qui minimise le détour.
 
 ## Données des limites
@@ -101,7 +101,7 @@ Les fichiers de limites sont générés par `Tools/build_regions.py` à partir d
 
 ```bash
 python3 -m venv venv && venv/bin/pip install pyshp pyproj shapely
-venv/bin/python Tools/build_regions.py <dossier-de-téléchargement> Tileroam/Resources/Regions
+venv/bin/python Tools/build_regions.py <dossier-de-téléchargement> AssetPacks/Regions
 ```
 
 Le script indique l’origine de chaque fichier source. Il reprojette en WGS84, fusionne les parties par code, simplifie les limites à ~25 m (communes) ou ~20 m (codes postaux) et écrit le format compact.
@@ -144,7 +144,7 @@ Tileroam/
   Planning/     planification (OSRM), GPX, couverture
   Strava/       client API Strava, export en .fit
   Views/        écrans SwiftUI (carte, réglages, introduction, panneau de planification)
-  Resources/Regions/   limites des communes et codes postaux intégrées
+  (AssetPacks/Regions/ limites des communes et codes postaux, en asset packs)
 TileroamWidget/   widget Eddington
 TileroamTests/    tests unitaires (Swift Testing)
 Tools/             script et sources des données de limites

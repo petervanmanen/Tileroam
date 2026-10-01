@@ -57,15 +57,21 @@ struct GeoTests {
         #expect(Geo.simplify(dense, tolerance: 5).count == 2)
     }
 
-    static let regions = RegionData.load(countries: ["NL", "BE", "DE"])
+    /// The boundary files from the repository (in the app they come from asset packs).
+    static func read(_ country: String, _ kind: AreaKind) throws -> Data {
+        let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        return try Data(contentsOf: root.appending(path: "AssetPacks/Regions/\(country)-\(kind.rawValue).fmr"))
+    }
+
+    static let regions = RegionData.load(countries: ["NL", "BE", "DE"], read: read)
 
     @Test func regionFilesDecode() throws {
         for country in Country.all {
-            let municipalities = try RegionFile.load(country: country.code, kind: .municipalities)
+            let municipalities = try RegionFile.load(country: country.code, kind: .municipalities, read: Self.read)
             #expect(!municipalities.isEmpty, "\(country.code) municipalities")
             #expect(municipalities.allSatisfy { $0.country == country.code && !$0.polygons.isEmpty })
             if country.hasPostcodes {
-                #expect(try !RegionFile.load(country: country.code, kind: .postcodes).isEmpty, "\(country.code) postcodes")
+                #expect(try !RegionFile.load(country: country.code, kind: .postcodes, read: Self.read).isEmpty, "\(country.code) postcodes")
             }
         }
     }
@@ -89,7 +95,7 @@ struct GeoTests {
     }
 
     @Test func otherCountries() {
-        let r = RegionData.load(countries: ["FR", "ES", "GB", "IE", "CH", "AT", "LU"])
+        let r = RegionData.load(countries: ["FR", "ES", "GB", "IE", "CH", "AT", "LU"], read: Self.read)
         #expect(r.municipalities.area(at: GeoPoint(lat: 48.8584, lon: 2.2945))?.name == "Paris")
         #expect(r.municipalities.area(at: GeoPoint(lat: 40.4168, lon: -3.7038))?.name == "Madrid")
         #expect(r.municipalities.area(at: GeoPoint(lat: 53.3498, lon: -6.2603))?.country == "IE")
@@ -102,7 +108,7 @@ struct GeoTests {
     }
 
     @Test func westernAndNordicCountries() {
-        let r = RegionData.load(countries: ["PT", "IT", "DK", "NO", "SE", "FI", "IS", "LI", "MC", "AD", "SM", "VA"])
+        let r = RegionData.load(countries: ["PT", "IT", "DK", "NO", "SE", "FI", "IS", "LI", "MC", "AD", "SM", "VA"], read: Self.read)
         let m = r.municipalities
         #expect(m.area(at: GeoPoint(lat: 41.8902, lon: 12.4922))?.name == "Roma") // Colosseum
         #expect(m.area(at: GeoPoint(lat: 41.9029, lon: 12.4534))?.country == "VA") // St. Peter's

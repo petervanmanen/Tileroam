@@ -4,7 +4,7 @@ enum AreaKind: String, CaseIterable, Sendable {
     case municipalities, postcodes
 }
 
-/// Countries with bundled municipality (and postcode) boundaries.
+/// Countries with municipality (and postcode) boundaries.
 struct Country: Identifiable, Hashable, Sendable {
     let code: String
     /// Mainland bounding box, used to switch countries on automatically.
@@ -64,11 +64,10 @@ struct Country: Identifiable, Hashable, Sendable {
 enum RegionFile {
     enum DecodeError: Error { case missing, corrupt }
 
-    static func load(country: String, kind: AreaKind, bundle: Bundle = .main) throws -> [Area] {
-        guard let url = bundle.url(forResource: "\(country)-\(kind.rawValue)", withExtension: "fmr") else {
-            throw DecodeError.missing
-        }
-        return try decode(try Data(contentsOf: url))
+    /// Reads a country's file; by default from its downloaded asset pack (see `RegionAssets`).
+    static func load(country: String, kind: AreaKind,
+                     read: (String, AreaKind) throws -> Data = RegionAssets.data) throws -> [Area] {
+        try decode(try read(country, kind))
     }
 
     static func decode(_ compressed: Data) throws -> [Area] {
@@ -139,7 +138,7 @@ enum RegionFile {
     }
 }
 
-/// Municipalities and postcodes of the switched-on countries.
+/// Municipalities and postcodes of the visited countries.
 struct RegionData: Sendable {
     let countries: [String]
     let municipalities: AreaSet
@@ -149,14 +148,15 @@ struct RegionData: Sendable {
     /// whether their visited municipalities/postcodes need recomputing.
     var key: String { "v1:" + countries.joined(separator: ",") }
 
-    static func load(countries: Set<String>) -> RegionData {
+    static func load(countries: Set<String>,
+                     read: (String, AreaKind) throws -> Data = RegionAssets.data) -> RegionData {
         let codes = Country.all.map(\.code).filter(countries.contains)
         var municipalities = [Area]()
         var postcodes = [Area]()
         for code in codes {
-            municipalities += (try? RegionFile.load(country: code, kind: .municipalities)) ?? []
+            municipalities += (try? RegionFile.load(country: code, kind: .municipalities, read: read)) ?? []
             if Country.named(code)?.hasPostcodes == true {
-                postcodes += (try? RegionFile.load(country: code, kind: .postcodes)) ?? []
+                postcodes += (try? RegionFile.load(country: code, kind: .postcodes, read: read)) ?? []
             }
         }
         return RegionData(countries: codes, municipalities: AreaSet(areas: municipalities), postcodes: AreaSet(areas: postcodes))

@@ -67,7 +67,7 @@ Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröff
 
 ## Erste Schritte
 
-Voraussetzungen: Xcode 27 oder neuer, iOS/iPadOS 18 oder neuer, eine Apple-ID zum Signieren (ein kostenloses Konto genügt; Apps laufen dann nach 7 Tagen ab).
+Voraussetzungen: Xcode 27 oder neuer, iOS/iPadOS 26 oder neuer und ein kostenpflichtiges Apple-Developer-Konto zum Signieren (nötig für iCloud und von Apple gehostete Asset Packs).
 
 1. Klone das Repository und öffne `Tileroam.xcodeproj`.
 2. Wähle für die Targets **Tileroam** und **TileroamWidget** dein Team unter *Signing & Capabilities*. Ändere den Bundle Identifier (`nl.petervanmanen.Tileroam`) und die App Group (`group.nl.petervanmanen.Tileroam`) auf deine eigenen.
@@ -92,7 +92,7 @@ Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitä
 - **FIT-Dateien** werden von einem kleinen eingebauten Decoder gelesen (`FIT/FITDecoder.swift`). Strecken, Kacheln und besuchte Gebiete werden zwischengespeichert, sodass beim nächsten Start nur neue oder geänderte Dateien gelesen werden.
 - **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
 - **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
-- **Gemeinden und Postleitzahlen** sind als kompakte Binärdateien enthalten (`Resources/Regions/*.fmr`, insgesamt 33 MB), mit einem räumlichen Index für schnelle Abfragen.
+- **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 33 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
 - Die **Routenplanung** nutzt den öffentlichen [OSRM](https://project-osrm.org)-Fahrradrouter von [openstreetmap.de](https://routing.openstreetmap.de). Er bestimmt die beste Reihenfolge; danach wählt Tileroam in jedem Ziel den Punkt, der den Umweg am kleinsten hält.
 
 ## Grenzdaten
@@ -101,7 +101,7 @@ Die Grenzdateien werden von `Tools/build_regions.py` aus den offenen Datenquelle
 
 ```bash
 python3 -m venv venv && venv/bin/pip install pyshp pyproj shapely
-venv/bin/python Tools/build_regions.py <download-ordner> Tileroam/Resources/Regions
+venv/bin/python Tools/build_regions.py <download-ordner> AssetPacks/Regions
 ```
 
 Das Skript dokumentiert, woher jede Quelldatei stammt. Es projiziert nach WGS84 um, führt Teile pro Code zusammen, vereinfacht die Grenzen auf ~25 m (Gemeinden) bzw. ~20 m (Postleitzahlen) und schreibt das kompakte Format.
@@ -144,7 +144,7 @@ Tileroam/
   Planning/     Routenplanung (OSRM), GPX, Abdeckung
   Strava/       Strava-API-Client, Export als .fit
   Views/        SwiftUI-Bildschirme (Karte, Einstellungen, Einführung, Planungsleiste)
-  Resources/Regions/   mitgelieferte Grenzen von Gemeinden und Postleitzahlen
+  (AssetPacks/Regions/ Grenzen von Gemeinden und Postleitzahlen, als Asset Packs)
 TileroamWidget/   Eddington-Widget
 TileroamTests/    Unit-Tests (Swift Testing)
 Tools/             Skript und Quellen für die Grenzdaten

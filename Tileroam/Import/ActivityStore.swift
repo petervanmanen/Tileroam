@@ -40,7 +40,7 @@ final class ActivityStore {
     var hasImportFolders: Bool { !importFolders.isEmpty }
 
     /// First folder problem, for the card on the map.
-    var problem: String? { importFolders.compactMap(\.problem).first }
+    var problem: String? { importFolders.compactMap(\.problem).first ?? regionsError }
 
     func activityCount(inFolder id: String) -> Int {
         guard let folder = (FolderAccess.importFolders() + [.internalFolder, .iCloudDrive]).first(where: { $0.id == id }) else { return 0 }
@@ -81,10 +81,10 @@ final class ActivityStore {
     var municipalityAreas: AreaSet? { regions?.municipalities }
     var postcodeAreas: AreaSet? { regions?.postcodes }
 
-    /// Waits for the region boundaries.
+    /// Waits for the region boundaries (those that could be downloaded).
     func loadedRegions() async -> RegionData {
         while true {
-            if let regions, regions.countries == Country.all.map(\.code).filter(enabledCountries.contains) { return regions }
+            if let regions, !isLoadingRegions { return regions }
             try? await Task.sleep(for: .milliseconds(100))
         }
     }
@@ -97,14 +97,24 @@ final class ActivityStore {
         return areas.countByCountry().reduce(into: [:]) { $0[$1.key] = (visitedByCountry[$1.key] ?? 0, $1.value) }
     }
 
+    /// Set when the boundaries of some countries couldn't be downloaded; retried on the next refresh.
+    private(set) var regionsError: String?
+
     private func loadRegions() {
         regionsTask?.cancel()
         isLoadingRegions = true
         let countries = enabledCountries
         regionsTask = Task {
-            let data = await Task.detached(priority: .userInitiated) { RegionData.load(countries: countries) }.value
+            // Boundaries are Apple-hosted asset packs: download the missing countries first.
+            let availability = await RegionAssets.makeAvailable(countries)
+            guard !Task.isCancelled else { return }
+            let data = await Task.detached(priority: .userInitiated) {
+                RegionData.load(countries: availability.available)
+            }.value
             guard !Task.isCancelled else { return }
             regions = data
+            regionsError = availability.failed.isEmpty ? nil : String(localized:
+                "Couldn't download the municipalities and postcodes of \(availability.failed.compactMap { Country.named($0)?.name }.sorted().formatted(.list(type: .and))). They will load when you're online.")
             isLoadingRegions = false
             version += 1
             backfillDerived()
@@ -220,6 +230,7 @@ final class ActivityStore {
 
     /// Re-scans the folder and continues the Strava sync.
     func refreshAll() async {
+        if regionsError != nil, !isLoadingRegions { loadRegions() } // retry downloads
         await updateICloud() // so Strava saves to iCloud from the start
         syncStrava()
         await refresh()

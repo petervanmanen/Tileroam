@@ -2145,6 +2145,34 @@
         }
       }
     },
+    "Couldn't download the municipalities and postcodes of %@. They will load when you're online.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De gemeenten en postcodes van %@ konden niet worden gedownload. Ze worden geladen zodra je online bent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de télécharger les communes et codes postaux de %@. Ils se chargeront dès que vous serez en ligne."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron descargar los municipios y códigos postales de %@. Se cargarán cuando tengas conexión."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gemeinden und Postleitzahlen von %@ konnten nicht geladen werden. Sie werden geladen, sobald du online bist."
+          }
+        }
+      }
+    },
     "Countries are counted as soon as you have an activity there. Postcodes are only available where their boundaries are open data. In the United Kingdom and Ireland, local authorities count as municipalities; in Andorra and San Marino, parishes and castelli.": {
       "localizations": {
         "nl": {

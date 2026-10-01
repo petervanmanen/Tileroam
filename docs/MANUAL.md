@@ -117,7 +117,7 @@ Municipalities and postcodes are available for 22 countries:
 - the United Kingdom
 - Vatican City
 
-A country is counted as soon as you have an activity there; there is nothing to set up.
+A country is counted as soon as you have an activity there; there is nothing to set up. The municipality and postcode boundaries of a country are downloaded the first time you have an activity there, so the app itself stays small. This needs an internet connection once per country.
 
 ## Your devices and iCloud
 
