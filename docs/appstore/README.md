@@ -59,6 +59,8 @@ The boundaries aren't in the app. Each country is an Apple-hosted asset pack (`r
 2. Upload them to App Store Connect. Use the **Transporter** app (sign in, then drag the `.aar` files in), or the App Store Connect API.
    - Upload all 22 the first time.
    - After that, only upload the packs whose boundaries changed.
+   - **Scripted:** `Tools/upload_asset_packs.sh` (all countries) or `Tools/upload_asset_packs.sh NL BE` builds and uploads with `iTMSTransporter`, using the API key in `~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8` and the environment variables `ASC_KEY_ID` and `ASC_ISSUER_ID`.
+   - **On GitHub:** the **Asset packs** workflow does the same. It runs automatically for countries whose `AssetPacks/Regions` files change on `main`, or by hand from Actions → Asset packs → Run workflow.
 3. In App Store Connect, check that the packs appear under the app's Background Assets, and that they're submitted with the version.
    - Without them, the Towns and Postcodes tabs stay empty, with a "couldn't download" message.
    - TestFlight builds download them too, so test there first.
