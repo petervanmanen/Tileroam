@@ -7,7 +7,8 @@ Everything needed for App Store Connect is in this folder:
 | [metadata-en.md](metadata-en.md), [metadata-nl.md](metadata-nl.md) | Name, subtitle, promotional text, description, keywords, URLs, categories |
 | [app-privacy.md](app-privacy.md) | Answers for the App Privacy questionnaire |
 | [review-notes.md](review-notes.md) | Notes for App Review, including how to try the app with sample rides |
-| [screenshots/iphone-6.9](screenshots/iphone-6.9) | iPhone screenshots, 1320 × 2868 (6.9″ display) |
+| [screenshots/iphone-6.5](screenshots/iphone-6.5) | iPhone screenshots, 1284 × 2778 (6.5″ display) |
+| [screenshots/iphone-6.9](screenshots/iphone-6.9) | iPhone screenshots, 1320 × 2868 (6.9″ display, if App Store Connect asks for that size) |
 | [screenshots/ipad-13](screenshots/ipad-13) | iPad screenshots, 2064 × 2752 (13″ display) |
 | [check_metadata.py](check_metadata.py) | Checks the texts against App Store Connect's character limits |
 
@@ -102,7 +103,7 @@ xcodebuild -exportArchive -archivePath build/Tileroam.xcarchive -exportOptionsPl
 
 ## 5. Fill in the version page
 1. **Screenshots:**
-   - Drag the files from `screenshots/iphone-6.9` into "iPhone 6.9″ Display" and from `screenshots/ipad-13` into "iPad 13″ Display".
+   - Drag the files from `screenshots/iphone-6.5` into "iPhone 6.5″ Display" and from `screenshots/ipad-13` into "iPad 13″ Display".
    - Recommended order: 01-tiles, 05-plan, 02-towns, 03-postcodes, 06-statistics, 04-routes, 00-intro. Apple uses the first three in search results.
    - App Store Connect scales them down for smaller devices.
 2. **Texts:** promotional text, description, keywords, support URL and marketing URL, from `metadata-en.md`.
