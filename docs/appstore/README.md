@@ -84,6 +84,18 @@ xcodebuild -exportArchive -archivePath build/Tileroam.xcarchive -exportOptionsPl
 4. Wait for the processing email (about 10–30 minutes). Export compliance is already answered in `Info.plist` (`ITSAppUsesNonExemptEncryption = NO`), so no question appears.
 5. Optional: test the build via **TestFlight** on your own iPhone and iPad first.
 
+### Or let GitHub Actions do it
+`.github/workflows/testflight.yml` tests, archives and uploads to TestFlight on GitHub's `xcode-27` runner. It uses the repository secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (App Store Connect API key) and `STRAVA_CONFIG_PLIST`.
+- **Release a version:** tag it and push the tag. That uploads version 1.0.1:
+  ```bash
+  git tag v1.0.1 && git push origin v1.0.1
+  ```
+- **Upload the current version again:** Actions → TestFlight → **Run workflow**.
+- **Build numbers:** 100 + the workflow run number, set automatically. Don't upload builds numbered above 100 by hand.
+- **Signing:** the runner has no certificates. The archive is built unsigned, `Tools/ci_sign_archive.sh` signs it ad hoc with its entitlements, and the export does the distribution signing with the API key (cloud signing).
+
+`.github/workflows/test.yml` runs the tests on every push and pull request. It doesn't use any secrets.
+
 ## 5. Fill in the version page
 1. **Screenshots:**
    - Drag the files from `screenshots/iphone-6.9` into "iPhone 6.9″ Display" and from `screenshots/ipad-13` into "iPad 13″ Display".

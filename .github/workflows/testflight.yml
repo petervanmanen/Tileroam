@@ -1,0 +1,98 @@
+name: TestFlight
+
+# Tests, archives and uploads a build to TestFlight.
+# - Push a tag like v1.0.1 to upload version 1.0.1.
+# - Or run it by hand (Actions → TestFlight → Run workflow) to upload the project's version.
+# The build number is 100 + the workflow's run number.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 27.0
+        run: sudo xcode-select -s /Applications/Xcode_27.app
+
+      - name: Version and build number
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION=$(grep -m1 'MARKETING_VERSION = ' Tileroam.xcodeproj/project.pbxproj | sed -E 's/.*= ([0-9.]+);/\1/')
+          fi
+          [[ "$VERSION" =~ ^[0-9]+(\.[0-9]+){1,2}$ ]] || { echo "Invalid version: $VERSION"; exit 1; }
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "KEY_PATH=$RUNNER_TEMP/AuthKey.p8" >> "$GITHUB_ENV"
+          echo "BUILD=$((100 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+          echo "Uploading version $VERSION ($((100 + GITHUB_RUN_NUMBER)))" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write Strava configuration and API key
+        shell: bash
+        env:
+          STRAVA_CONFIG_PLIST: ${{ secrets.STRAVA_CONFIG_PLIST }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          printf '%s' "$STRAVA_CONFIG_PLIST" > Tileroam/StravaConfig.plist
+          plutil -lint Tileroam/StravaConfig.plist
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
+
+      - name: Run tests
+        shell: bash
+        run: |
+          xcodebuild test \
+            -project Tileroam.xcodeproj -scheme Tileroam \
+            -destination 'platform=iOS Simulator,OS=27.0,name=iPhone 18 Pro' \
+            -derivedDataPath build/test \
+            2>&1 | tee build-test.log | grep -E "error:|✘|TEST SUCCEEDED|TEST FAILED"
+
+      - name: Archive
+        shell: bash
+        run: |
+          xcodebuild archive \
+            -project Tileroam.xcodeproj -scheme Tileroam -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/Tileroam.xcarchive \
+            CODE_SIGNING_ALLOWED=NO MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="$BUILD" \
+            2>&1 | tee build-archive.log | grep -E "error:|ARCHIVE SUCCEEDED|ARCHIVE FAILED"
+          Tools/ci_sign_archive.sh build/Tileroam.xcarchive
+
+      - name: Sign and upload to App Store Connect
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build/Tileroam.xcarchive \
+            -exportOptionsPlist Tools/ExportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            2>&1 | tee build-export.log | grep -E "error|warning|Upload succeeded|EXPORT SUCCEEDED|EXPORT FAILED"
+
+      - name: Remove the API key
+        if: always()
+        run: rm -f "$KEY_PATH" Tileroam/StravaConfig.plist
+
+      - name: Keep the logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-logs
+          path: build-*.log
