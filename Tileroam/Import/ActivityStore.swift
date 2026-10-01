@@ -17,6 +17,7 @@ final class ActivityStore {
     private(set) var visitedPostcodes: Set<String> = []
     private(set) var eddingtonCycling = Eddington()
     private(set) var eddingtonRunning = Eddington()
+    private(set) var eddingtonWalking = Eddington()
     /// Incremented whenever the map data changes.
     private(set) var version = 0
 
@@ -42,7 +43,7 @@ final class ActivityStore {
     var problem: String? { importFolders.compactMap(\.problem).first }
 
     func activityCount(inFolder id: String) -> Int {
-        guard let folder = FolderAccess.importFolders().first(where: { $0.id == id }) else { return 0 }
+        guard let folder = (FolderAccess.importFolders() + [.internalFolder]).first(where: { $0.id == id }) else { return 0 }
         return folderActivities.count { folder.owns($0.id) }
     }
 
@@ -141,7 +142,7 @@ final class ActivityStore {
     private func detectCountries(load: Bool = true) {
         guard countriesAutomatic else { return }
         var found = Set<String>()
-        for a in folderActivities + stravaActivities where !countryScannedIDs.contains(a.id) {
+        for a in folderActivities + stravaActivities where !countryScannedIDs.contains(a.id) && a.isVirtual != true {
             countryScannedIDs.insert(a.id)
             let coordinates = a.coordinates
             guard !coordinates.isEmpty else { continue }
@@ -181,6 +182,9 @@ final class ActivityStore {
     var activitiesWithoutGPS: Int {
         activities.count { $0.trackData.isEmpty }
     }
+
+    /// Activities drawn on the map (real GPS, not indoor or virtual).
+    var mapActivities: [Activity] { activities.filter(\.isOnMap) }
 
     var totalDistanceKm: Double {
         activities.reduce(0) { $0 + $1.distance } / 1000
@@ -271,8 +275,9 @@ final class ActivityStore {
 
     /// Imports new and changed files from all folders.
     func refresh() async {
-        let folders = FolderAccess.importFolders()
-        guard !isImporting, !folders.isEmpty else { return }
+        // The internal Import folder ("On My iPhone › Tileroam › Import") is always read too.
+        let folders = FolderAccess.importFolders() + [.internalFolder]
+        guard !isImporting else { return }
         isImporting = true
         progress = (0, 0)
         defer { isImporting = false }
@@ -294,7 +299,7 @@ final class ActivityStore {
                 switch event {
                 case .started(let found, let toParse):
                     progress = (0, toParse)
-                    if found == 0 {
+                    if found == 0, !folder.isInternal {
                         setProblem(String(localized: "No .fit files found in “\(folder.name)”. Choose the folder that contains your .fit files."), for: folder.id)
                     }
                 case .folderUnreadable(let message):
@@ -335,11 +340,19 @@ final class ActivityStore {
         exportFolderLocation = FolderAccess.displayLocation(url)
         exportMessage = nil
 
-        // Earlier versions saved into the source folder; move those files to the new folder.
-        if let old = FolderAccess.importFolders().first.flatMap(FolderAccess.resolve), let new = FolderAccess.resolve(.export) {
+        // Move files saved earlier in the app's internal storage (or, in early versions, in the
+        // first import folder) to the new save folder.
+        let sources = [FolderAccess.internalFolder] + FolderAccess.importFolders().filter { !$0.isInternal }.prefix(1).compactMap(FolderAccess.resolve)
+        if let new = FolderAccess.resolve(.export) {
             do {
                 let moved = try await Task.detached(priority: .userInitiated) {
-                    try StravaExport.moveExports(from: old, to: new)
+                    var moved = 0
+                    for old in sources {
+                        moved += try StravaExport.moveExports(from: old, to: new)
+                    }
+                    moved += try StravaExport.moveExports(from: FolderAccess.internalFolder, to: new, subfolder: "Routes",
+                                                          isOwn: { $0.hasSuffix("-Tileroam.gpx") })
+                    return moved
                 }.value
                 if moved > 0 { exportMessage = String(localized: "Moved \(moved) earlier saved files to “\(url.lastPathComponent)”.") }
             } catch {
@@ -347,6 +360,14 @@ final class ActivityStore {
             }
         }
         syncStrava()
+    }
+
+    /// Save in the app's internal storage again. Files already in the chosen folder stay there.
+    func useInternalSaveFolder() {
+        FolderAccess.clearSaveFolder()
+        exportFolderName = nil
+        exportFolderLocation = nil
+        exportMessage = nil
     }
 
     // MARK: Strava
@@ -399,10 +420,6 @@ final class ActivityStore {
         while !Task.isCancelled {
             do {
                 try await fetchStravaList(strava)
-                guard FolderAccess.resolve(.export) != nil else {
-                    stravaStatus = String(localized: "Choose a save folder in Settings to download detailed GPS")
-                    return
-                }
                 try await fetchStravaDetails(strava)
                 stravaStatus = nil
                 return
@@ -427,12 +444,23 @@ final class ActivityStore {
 
     /// New activities since the latest known one (everything on the first sync), with summary routes.
     private func fetchStravaList(_ strava: StravaClient) async throws {
-        let after = stravaActivities.compactMap(\.startDate).max()?.addingTimeInterval(-24 * 3600)
+        // Caches from before virtual detection: fetch the whole list once to set the flag.
+        let needsVirtualFlags = stravaActivities.contains { $0.isVirtual == nil }
+        let after = needsVirtualFlags ? nil : stravaActivities.compactMap(\.startDate).max()?.addingTimeInterval(-24 * 3600)
         var known = Set(stravaActivities.map(\.id))
         var page = 1
         while !Task.isCancelled {
             stravaStatus = known.isEmpty ? String(localized: "Fetching Strava activities…") : String(localized: "Checking Strava for new activities…")
             let summaries = try await strava.activities(page: page, after: after)
+            if needsVirtualFlags {
+                let virtual = Dictionary(summaries.map { (StravaImport.id(for: $0.id), StravaImport.isVirtual($0)) },
+                                         uniquingKeysWith: { a, _ in a })
+                for i in stravaActivities.indices {
+                    guard let flag = virtual[stravaActivities[i].id] else { continue }
+                    stravaActivities[i].isVirtual = flag
+                    if flag { stravaActivities[i].isSummary = false } // no GPS to download for virtual rides
+                }
+            }
             let new = await Task.detached(priority: .userInitiated) {
                 summaries.map(StravaImport.activity(from:))
             }.value.filter { !known.contains($0.id) }
@@ -451,8 +479,8 @@ final class ActivityStore {
     /// Strava activity as a .fit file in the folder's "Strava" subfolder. Activities that the
     /// folder already has (same start time) are skipped to save API calls and avoid duplicates.
     private func fetchStravaDetails(_ strava: StravaClient) async throws {
-        // Only ever write to the app's own save folder, never to the source folder.
-        let folder = FolderAccess.resolve(.export)
+        // The chosen save folder, or the app's internal storage; never an import folder.
+        let folder = FolderAccess.saveFolder()
         let inFolderWithGPS = ActivityMerge.Index(folderActivities.filter { !$0.trackData.isEmpty })
         let inFolder = ActivityMerge.Index(folderActivities)
 
@@ -462,22 +490,20 @@ final class ActivityStore {
         }
 
         // Activities without GPS: export needs no API calls.
-        if let folder {
-            let noGPS = stravaActivities.indices.filter {
-                let a = stravaActivities[$0]
-                return a.trackData.isEmpty && a.exportedFile == nil && !inFolder.contains(a)
-            }
-            for (n, index) in noGPS.enumerated() {
-                if Task.isCancelled { return }
-                stravaStatus = String(localized: "Saving Strava activities to folder: \(n) of \(noGPS.count)")
-                await export(index, stream: nil, to: folder)
-            }
+        let noGPS = stravaActivities.indices.filter {
+            let a = stravaActivities[$0]
+            return a.trackData.isEmpty && a.exportedFile == nil && !inFolder.contains(a)
+        }
+        for (n, index) in noGPS.enumerated() {
+            if Task.isCancelled { return }
+            stravaStatus = String(localized: "Saving Strava activities to folder: \(n) of \(noGPS.count)")
+            await export(index, stream: nil, to: folder)
         }
 
         let queue = stravaActivities
             .filter { a in
                 !a.trackData.isEmpty && !inFolderWithGPS.contains(a)
-                    && (a.isSummary == true || (folder != nil && a.exportedFile == nil))
+                    && (a.isSummary == true || a.exportedFile == nil)
             }
             .sorted { ($0.startDate ?? .distantPast) > ($1.startDate ?? .distantPast) }
 
@@ -491,7 +517,7 @@ final class ActivityStore {
             }.value
             guard let index = stravaActivities.firstIndex(where: { $0.id == activity.id }) else { continue }
             stravaActivities[index] = updated
-            if let folder { await export(index, stream: stream, to: folder) }
+            await export(index, stream: stream, to: folder)
             if (done + 1) % 25 == 0 {
                 recompute()
                 if let id = stravaAthleteID { saveStrava(id) }
@@ -575,7 +601,7 @@ final class ActivityStore {
         var tiles17 = Set<Int64>()
         var municipalities = Set<String>()
         var postcodes = Set<String>()
-        for a in activities {
+        for a in activities where a.isOnMap {
             tiles14.formUnion(a.tiles14 ?? [])
             tiles17.formUnion(a.tiles17 ?? [])
             municipalities.formUnion(a.municipalities ?? [])
@@ -600,6 +626,7 @@ final class ActivityStore {
         }
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
         eddingtonRunning = Eddington(activities: activities, sports: Eddington.runningSports)
+        eddingtonWalking = Eddington(activities: activities, sports: Eddington.walkingSports)
         WidgetData.save(cycling: eddingtonCycling, running: eddingtonRunning)
         version += 1
         if regions != nil { detectCountries() }

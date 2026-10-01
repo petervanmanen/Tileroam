@@ -36,7 +36,10 @@ enum ActivityMerge {
 
     /// Best GPS first, then the longest distance (some copies of indoor rides have 0 km).
     static func best(of members: [Activity]) -> Activity {
-        members.max { ($0.quality, $0.distance) < ($1.quality, $1.distance) }!
+        var best = members.max { ($0.quality, $0.distance) < ($1.quality, $1.distance) }!
+        // One copy known to be virtual (Strava VirtualRide, Zwift .fit) makes the workout virtual.
+        if members.contains(where: { $0.isVirtual == true }) { best.isVirtual = true }
+        return best
     }
 
     static func isSameWorkout(_ a: Activity, _ b: Activity) -> Bool {

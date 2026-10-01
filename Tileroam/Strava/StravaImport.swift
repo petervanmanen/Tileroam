@@ -8,14 +8,21 @@ enum StravaImport {
         activity.id.hasPrefix("strava:") ? Int(activity.id.dropFirst("strava:".count)) : nil
     }
 
+    /// Zwift, Rouvy and other virtual or trainer activities: no real places.
+    static func isVirtual(_ s: StravaSummary) -> Bool {
+        (s.sportType ?? s.type ?? "").hasPrefix("Virtual") || s.trainer == true || Activity.looksVirtual(name: s.name)
+    }
+
     static func activity(from s: StravaSummary) -> Activity {
-        let polyline = s.trainer == true ? nil : s.map?.summaryPolyline
+        let virtual = isVirtual(s)
+        let polyline = virtual ? nil : s.map?.summaryPolyline
         let points = polyline.map(decodePolyline) ?? []
         var a = Importer.makeActivity(points: points, id: id(for: s.id), cacheKey: "", name: s.name,
                                       sport: sportName(s.sportType ?? s.type), startDate: s.startDate,
                                       distance: s.distance, isSummary: !points.isEmpty)
         a.elapsedTime = s.elapsedTime
         a.movingTime = s.movingTime
+        a.isVirtual = virtual
         return a
     }
 
@@ -32,6 +39,7 @@ enum StravaImport {
         a.elapsedTime = activity.elapsedTime
         a.movingTime = activity.movingTime
         a.exportedFile = activity.exportedFile
+        a.isVirtual = activity.isVirtual
         return a
     }
 

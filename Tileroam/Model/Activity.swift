@@ -24,6 +24,19 @@ struct Activity: Codable, Sendable, Identifiable {
     var regionsKey: String?
     /// True while the track is only Strava's simplified summary polyline.
     var isSummary: Bool?
+    /// Indoor or virtual ride/run (Zwift, Rouvy, …): counts in statistics, but its GPS track
+    /// is not a real place, so it is kept off the map, tiles, municipalities and postcodes.
+    var isVirtual: Bool?
+
+    /// Shown on the map and counted for tiles, municipalities and postcodes.
+    var isOnMap: Bool { isVirtual != true && !trackData.isEmpty }
+
+    /// Names used by virtual platforms and indoor exports (e.g. HealthFit "Indoor Cycling-Companion").
+    static func looksVirtual(name: String) -> Bool {
+        let n = name.lowercased()
+        return ["zwift", "rouvy", "mywhoosh", "bkool", "fulgaz", "trainerroad", "wahoo systm", "kinomap",
+                "virtual", "indoor"].contains { n.contains($0) }
+    }
     /// Seconds (Strava only, used when exporting).
     var elapsedTime: Double?
     var movingTime: Double?

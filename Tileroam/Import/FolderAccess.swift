@@ -40,6 +40,48 @@ enum FolderAccess {
         return url
     }
 
+    // MARK: Internal storage
+
+    /// "On My iPhone" / "On My iPad", as the Files app names the device's own storage.
+    static var onMyDevice: String {
+        isPad ? String(localized: "On My iPad") : String(localized: "On My iPhone")
+    }
+
+    /// Location of the internal storage as the Files app shows it.
+    static var internalLocation: String { "\(onMyDevice) › Tileroam" }
+
+    private static let isPad: Bool = {
+        var info = utsname()
+        uname(&info)
+        let machine = withUnsafeBytes(of: &info.machine) { String(decoding: $0.prefix { $0 != 0 }, as: UTF8.self) }
+        let model = ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? machine
+        return model.hasPrefix("iPad")
+    }()
+
+    /// The app's own storage, visible in the Files app as "On My iPhone › Tileroam".
+    static var internalFolder: URL { URL.documentsDirectory }
+
+    /// Always-present import folder inside the app ("On My iPhone › Tileroam › Import").
+    static var internalImportFolder: URL {
+        let url = internalFolder.appending(path: "Import", directoryHint: .isDirectory)
+        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// Where downloaded activities and planned routes are saved: the chosen save folder,
+    /// or the app's internal storage when none is chosen.
+    static func saveFolder() -> URL {
+        resolve(.export) ?? internalFolder
+    }
+
+    static var hasChosenSaveFolder: Bool { resolve(.export) != nil }
+
+    /// Go back to saving in the app's internal storage.
+    static func clearSaveFolder() {
+        UserDefaults.standard.removeObject(forKey: Slot.export.bookmarkKey)
+        UserDefaults.standard.removeObject(forKey: Slot.export.nameKey)
+    }
+
     // MARK: Import folders
 
     /// A folder with .fit files to import. Activities from the first (legacy) folder keep their
@@ -50,6 +92,12 @@ enum FolderAccess {
         var bookmark: Data
 
         static let legacyID = "main"
+        static let internalID = "internal"
+
+        /// The import folder inside the app's own storage.
+        static let internalFolder = ImportFolder(id: internalID, name: "Tileroam", bookmark: Data())
+
+        var isInternal: Bool { id == Self.internalID }
 
         func activityID(for relativePath: String) -> String {
             id == Self.legacyID ? relativePath : "\(id)|\(relativePath)"
@@ -112,6 +160,7 @@ enum FolderAccess {
     }
 
     static func resolve(_ folder: ImportFolder) -> URL? {
+        if folder.isInternal { return internalImportFolder }
         #if DEBUG
         if let path = UserDefaults.standard.string(forKey: "FitFolder") {
             return URL(filePath: path, directoryHint: .isDirectory)
@@ -141,10 +190,10 @@ enum FolderAccess {
             return (["iCloud Drive"] + components[(i + 2)...]).joined(separator: " › ")
         }
         if path.hasPrefix(URL.documentsDirectory.standardizedFileURL.path(percentEncoded: false)) {
-            return String(localized: "On My iPhone › Tileroam (app storage)")
+            return internalLocation
         }
         if let i = components.firstIndex(of: "File Provider Storage") {
-            return ([String(localized: "On My iPhone")] + components[(i + 1)...]).joined(separator: " › ")
+            return ([onMyDevice] + components[(i + 1)...]).joined(separator: " › ")
         }
         return components.suffix(3).joined(separator: " › ")
     }

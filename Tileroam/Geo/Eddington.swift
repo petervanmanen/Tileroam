@@ -27,4 +27,5 @@ struct Eddington: Sendable, Equatable, Codable {
 
     static let cyclingSports: Set<String> = ["Cycling", "E-biking"]
     static let runningSports: Set<String> = ["Running"]
+    static let walkingSports: Set<String> = ["Walking", "Hiking"]
 }

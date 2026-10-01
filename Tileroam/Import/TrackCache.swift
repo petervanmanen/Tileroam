@@ -17,7 +17,7 @@ enum TrackCache {
         /// Bump when parsing or derived data (tiles, gemeenten, durations) changes.
         var version: Int {
             switch self {
-            case .folder: 2
+            case .folder: 3
             case .strava: 1
             }
         }

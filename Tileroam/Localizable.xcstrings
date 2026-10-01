@@ -57,6 +57,62 @@
         }
       }
     },
+    "%@ › Import": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ › Import"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ › Import"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ › Import"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ › Import"
+          }
+        }
+      }
+    },
+    "%lld / %lld": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
     "%lld / %lld municipalities visited": {
       "localizations": {
         "nl": {
@@ -495,6 +551,150 @@
         }
       }
     },
+    "%lld more walks of at least %lld km to reach %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ of at least %2$lld km to reach %3$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg more walk"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg more walks"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog %#@n@ van minstens %2$lld km voor %3$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg wandeling"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg wandelingen"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encore %#@n@ d’au moins %2$lld km pour atteindre %3$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg marche"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg marches"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ más de al menos %2$lld km para llegar a %3$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg caminata"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg caminatas"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch %#@n@ à mindestens %2$lld km bis %3$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg Spaziergang"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg Spaziergänge"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld municipalities": {
       "localizations": {
         "en": {
@@ -589,30 +789,30 @@
         }
       }
     },
-    "%lld on map · %lld without GPS": {
+    "%lld on map · %lld indoor, virtual or without GPS": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld op de kaart · %2$lld zonder gps"
+            "value": "%1$lld op de kaart · %2$lld binnen, virtueel of zonder gps"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld sur la carte · %2$lld sans GPS"
+            "value": "%1$lld sur la carte · %2$lld en intérieur, virtuelles ou sans GPS"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld en el mapa · %2$lld sin GPS"
+            "value": "%1$lld en el mapa · %2$lld en interior, virtuales o sin GPS"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld auf der Karte · %2$lld ohne GPS"
+            "value": "%1$lld auf der Karte · %2$lld indoor, virtuell oder ohne GPS"
           }
         }
       }
@@ -1245,6 +1445,34 @@
         }
       }
     },
+    "All Time": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totaal"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depuis le début"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desde siempre"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insgesamt"
+          }
+        }
+      }
+    },
     "Allow Tileroam to use your location in Settings to center the map on where you are.": {
       "localizations": {
         "nl": {
@@ -1493,90 +1721,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Speicherordner wählen…"
-          }
-        }
-      }
-    },
-    "Choose a save folder above to download detailed GPS and save Strava activities as .fit files.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies hierboven een bewaarmap om gedetailleerde gps te downloaden en Strava-activiteiten als .fit-bestanden te bewaren."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez un dossier d’enregistrement ci-dessus pour télécharger le GPS détaillé et enregistrer les activités Strava en fichiers .fit."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige arriba una carpeta de guardado para descargar el GPS detallado y guardar las actividades de Strava como archivos .fit."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle oben einen Speicherordner, um detailliertes GPS zu laden und Strava-Aktivitäten als .fit-Dateien zu speichern."
-          }
-        }
-      }
-    },
-    "Choose a save folder in Settings first (e.g. iCloud Drive › Tileroam).": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies eerst een bewaarmap in Instellingen (bijv. iCloud Drive › Tileroam)."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez d’abord un dossier d’enregistrement dans Réglages (p. ex. iCloud Drive › Tileroam)."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige primero una carpeta de guardado en Ajustes (p. ej., iCloud Drive › Tileroam)."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle zuerst einen Speicherordner in den Einstellungen (z. B. iCloud Drive › Tileroam)."
-          }
-        }
-      }
-    },
-    "Choose a save folder in Settings to download detailed GPS": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies een bewaarmap in Instellingen om gedetailleerde gps te downloaden"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez un dossier d’enregistrement dans Réglages pour télécharger le GPS détaillé"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige una carpeta de guardado en Ajustes para descargar el GPS detallado"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle in den Einstellungen einen Speicherordner, um detailliertes GPS zu laden"
           }
         }
       }
@@ -2057,6 +2201,34 @@
         }
       }
     },
+    "Counted for the countries switched on in Settings.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geteld voor de landen die in Instellingen aanstaan."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comptées pour les pays activés dans Réglages."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contados para los países activados en Ajustes."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gezählt für die in den Einstellungen aktivierten Länder."
+          }
+        }
+      }
+    },
     "Countries": {
       "localizations": {
         "nl": {
@@ -2081,6 +2253,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Länder"
+          }
+        }
+      }
+    },
+    "Countries visited": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Landen bezocht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pays visités"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Países visitados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besuchte Länder"
+          }
+        }
+      }
+    },
+    "Cycling": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fietsen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vélo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ciclismo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radfahren"
           }
         }
       }
@@ -2169,34 +2397,6 @@
         }
       }
     },
-    "Distance": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afstand"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distance"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distancia"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distanz"
-          }
-        }
-      }
-    },
     "Done": {
       "localizations": {
         "nl": {
@@ -2221,6 +2421,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fertig"
+          }
+        }
+      }
+    },
+    "E-biking": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-biken"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vélo électrique"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bici eléctrica"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-Bike"
           }
         }
       }
@@ -2369,58 +2597,30 @@
         }
       }
     },
-    "Eddington cycling": {
+    "Eddington Number": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eddington fietsen"
+            "value": "Eddington-getal"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eddington vélo"
+            "value": "Nombre d’Eddington"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eddington ciclismo"
+            "value": "Número de Eddington"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eddington Radfahren"
-          }
-        }
-      }
-    },
-    "Eddington running": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eddington hardlopen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eddington course"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eddington carrera"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eddington Laufen"
+            "value": "Eddington-Zahl"
           }
         }
       }
@@ -2509,6 +2709,34 @@
         }
       }
     },
+    "Fitness": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fitness"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fitness"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fitness"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fitness"
+          }
+        }
+      }
+    },
     "Get Started": {
       "localizations": {
         "nl": {
@@ -2533,6 +2761,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Los geht’s"
+          }
+        }
+      }
+    },
+    "Hiking": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiken"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Randonnée"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senderismo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wandern"
           }
         }
       }
@@ -2617,6 +2873,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Route wird verbessert…"
+          }
+        }
+      }
+    },
+    "Inline skating": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inlineskaten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roller"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patinaje en línea"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inlineskaten"
+          }
+        }
+      }
+    },
+    "Internal storage": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interne opslag"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stockage interne"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almacenamiento interno"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interner Speicher"
           }
         }
       }
@@ -3017,6 +3329,62 @@
         }
       }
     },
+    "Municipalities per Country": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeenten per land"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Communes par pays"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Municipios por país"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeinden pro Land"
+          }
+        }
+      }
+    },
+    "Municipalities visited": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeenten bezocht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Communes visitées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Municipios visitados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besuchte Gemeinden"
+          }
+        }
+      }
+    },
     "New: %@": {
       "localizations": {
         "nl": {
@@ -3101,30 +3469,58 @@
         }
       }
     },
-    "None": {
+    "No activities.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Geen"
+            "value": "Geen activiteiten."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucun"
+            "value": "Aucune activité."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ninguna"
+            "value": "Sin actividades."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keiner"
+            "value": "Keine Aktivitäten."
+          }
+        }
+      }
+    },
+    "No municipalities visited yet.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog geen gemeenten bezocht."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune commune visitée pour l’instant."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no has visitado ningún municipio."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Gemeinden besucht."
           }
         }
       }
@@ -3241,6 +3637,34 @@
         }
       }
     },
+    "On My iPad": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Op mijn iPad"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur mon iPad"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En mi iPad"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf meinem iPad"
+          }
+        }
+      }
+    },
     "On My iPhone": {
       "localizations": {
         "nl": {
@@ -3265,34 +3689,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auf meinem iPhone"
-          }
-        }
-      }
-    },
-    "On My iPhone › Tileroam (app storage)": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Op mijn iPhone › Tileroam (app-opslag)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sur mon iPhone › Tileroam (stockage de l’app)"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En mi iPhone › Tileroam (almacenamiento de la app)"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auf meinem iPhone › Tileroam (App-Speicher)"
           }
         }
       }
@@ -3405,6 +3801,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verbinde optional Strava, um deinen ganzen Verlauf mit GPS zu laden. Aktivitäten werden auch als .fit-Dateien in einem Ordner deiner Wahl gespeichert, etwa iCloud Drive › Tileroam."
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overig"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autre"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otros"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonstiges"
+          }
+        }
+      }
+    },
+    "Overview": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overzicht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aperçu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überblick"
           }
         }
       }
@@ -3601,6 +4053,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Postleitzahlen"
+          }
+        }
+      }
+    },
+    "Postcodes visited": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postcodes bezocht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codes postaux visités"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Códigos postales visitados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besuchte Postleitzahlen"
           }
         }
       }
@@ -3825,6 +4305,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Routen folgen fahrradfreundlichen Wegen"
+          }
+        }
+      }
+    },
+    "Rowing": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roeien"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aviron"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rudern"
+          }
+        }
+      }
+    },
+    "Running": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hardlopen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Course"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carrera"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laufen"
           }
         }
       }
@@ -4361,6 +4897,34 @@
         }
       }
     },
+    "Skiing": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skiën"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ski"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esquí"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skifahren"
+          }
+        }
+      }
+    },
     "Skip": {
       "localizations": {
         "nl": {
@@ -4641,30 +5205,30 @@
         }
       }
     },
-    "Strava activities are saved as .fit files in “%@/%@”. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.": {
+    "Strava activities are saved as .fit files in the save folder's “%@” subfolder. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strava-activiteiten worden als .fit-bestanden bewaard in “%1$@/%2$@”. Gedetailleerde gps wordt binnen de Strava-limiet gedownload (ongeveer 100 activiteiten per 15 minuten, 1000 per dag) en gaat automatisch verder."
+            "value": "Strava-activiteiten worden als .fit-bestanden bewaard in de submap “%@” van de bewaarmap. Gedetailleerde gps wordt binnen de Strava-limiet gedownload (ongeveer 100 activiteiten per 15 minuten, 1000 per dag) en gaat automatisch verder."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les activités Strava sont enregistrées en fichiers .fit dans « %1$@/%2$@ ». Le GPS détaillé se télécharge dans la limite de Strava (environ 100 activités par 15 minutes, 1000 par jour) et reprend automatiquement."
+            "value": "Les activités Strava sont enregistrées en fichiers .fit dans le sous-dossier « %@ » du dossier d’enregistrement. Le GPS détaillé se télécharge dans la limite de Strava (environ 100 activités par 15 minutes, 1000 par jour) et reprend automatiquement."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Las actividades de Strava se guardan como archivos .fit en “%1$@/%2$@”. El GPS detallado se descarga dentro del límite de Strava (unas 100 actividades cada 15 minutos, 1000 al día) y continúa automáticamente."
+            "value": "Las actividades de Strava se guardan como archivos .fit en la subcarpeta “%@” de la carpeta de guardado. El GPS detallado se descarga dentro del límite de Strava (unas 100 actividades cada 15 minutos, 1000 al día) y continúa automáticamente."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strava-Aktivitäten werden als .fit-Dateien in „%1$@/%2$@“ gespeichert. Detailliertes GPS wird im Rahmen des Strava-Limits geladen (etwa 100 Aktivitäten pro 15 Minuten, 1000 pro Tag) und läuft automatisch weiter."
+            "value": "Strava-Aktivitäten werden als .fit-Dateien im Unterordner „%@“ des Speicherordners gespeichert. Detailliertes GPS wird im Rahmen des Strava-Limits geladen (etwa 100 Aktivitäten pro 15 Minuten, 1000 pro Tag) und läuft automatisch weiter."
           }
         }
       }
@@ -4865,6 +5429,34 @@
         }
       }
     },
+    "Swimming": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwemmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Natation"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Natación"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwimmen"
+          }
+        }
+      }
+    },
     "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, countries and folders.": {
       "localizations": {
         "nl": {
@@ -4977,6 +5569,62 @@
         }
       }
     },
+    "The largest number E such that you covered at least E km on at least E days. Walking includes hikes.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het grootste getal E waarvoor je op minstens E dagen minstens E km hebt afgelegd. Wandelen telt hikes mee."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le plus grand nombre E tel que vous ayez parcouru au moins E km pendant au moins E jours. La marche inclut les randonnées."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mayor número E tal que has recorrido al menos E km en al menos E días. Caminar incluye el senderismo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die größte Zahl E, für die du an mindestens E Tagen mindestens E km zurückgelegt hast. Gehen schließt Wanderungen ein."
+          }
+        }
+      }
+    },
+    "This Year (%@)": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dit jaar (%@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette année (%@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este año (%@)"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Jahr (%@)"
+          }
+        }
+      }
+    },
     "Tile %lld/%lld": {
       "localizations": {
         "nl": {
@@ -5005,30 +5653,30 @@
         }
       }
     },
-    "Tileroam reads .fit files from these folders and their subfolders. Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.": {
+    "Tileroam reads .fit files from these folders and their subfolders, and always from the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam leest .fit-bestanden uit deze mappen en hun submappen. Veeg een map naar links om hem te verwijderen; de activiteiten verdwijnen van de kaart, de bestanden zelf blijven ongemoeid."
+            "value": "Tileroam leest .fit-bestanden uit deze mappen en hun submappen, en altijd uit de map Import in de eigen opslag (zet bestanden daar met de Bestanden-app of AirDrop). Veeg een map naar links om hem te verwijderen; de activiteiten verdwijnen van de kaart, de bestanden zelf blijven ongemoeid."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam lit les fichiers .fit de ces dossiers et de leurs sous-dossiers. Balayez un dossier vers la gauche pour le retirer ; ses activités disparaissent de la carte, les fichiers ne sont pas modifiés."
+            "value": "Tileroam lit les fichiers .fit de ces dossiers et de leurs sous-dossiers, ainsi que toujours du dossier Import de son propre stockage (déposez-y des fichiers avec l’app Fichiers ou AirDrop). Balayez un dossier vers la gauche pour le retirer ; ses activités disparaissent de la carte, les fichiers ne sont pas modifiés."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam lee los archivos .fit de estas carpetas y sus subcarpetas. Desliza una carpeta a la izquierda para quitarla; sus actividades desaparecen del mapa, los archivos no se tocan."
+            "value": "Tileroam lee los archivos .fit de estas carpetas y sus subcarpetas, y siempre de la carpeta Import de su propio almacenamiento (pon archivos ahí con la app Archivos o AirDrop). Desliza una carpeta a la izquierda para quitarla; sus actividades desaparecen del mapa, los archivos no se tocan."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam liest .fit-Dateien aus diesen Ordnern und ihren Unterordnern. Wische einen Ordner nach links, um ihn zu entfernen; seine Aktivitäten verschwinden von der Karte, die Dateien selbst bleiben unverändert."
+            "value": "Tileroam liest .fit-Dateien aus diesen Ordnern und ihren Unterordnern und immer aus dem Ordner Import im eigenen Speicher (lege Dateien dort mit der Dateien-App oder AirDrop ab). Wische einen Ordner nach links, um ihn zu entfernen; seine Aktivitäten verschwinden von der Karte, die Dateien selbst bleiben unverändert."
           }
         }
       }
@@ -5061,58 +5709,58 @@
         }
       }
     },
-    "Tileroam saves downloaded activities as .fit files here, in a “%@” subfolder. Tip: in the picker, go to iCloud Drive, create a new folder “Tileroam” and open it.": {
+    "Tileroam saves planned routes and downloaded activities here, in “Routes” and “%@” subfolders. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam bewaart gedownloade activiteiten hier als .fit-bestanden, in een submap “%@”. Tip: ga in de kiezer naar iCloud Drive, maak een nieuwe map “Tileroam” en open die."
+            "value": "Tileroam bewaart geplande routes en gedownloade activiteiten hier, in de submappen “Routes” en “%@”. Zonder gekozen map blijven ze in de eigen opslag van de app, die je in de Bestanden-app kunt openen. Kies een map, bijvoorbeeld een nieuwe map “Tileroam” in iCloud Drive, om ze in iCloud te bewaren."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam enregistre ici les activités téléchargées en fichiers .fit, dans un sous-dossier « %@ ». Astuce : dans le sélecteur, allez dans iCloud Drive, créez un dossier « Tileroam » et ouvrez-le."
+            "value": "Tileroam enregistre ici les parcours planifiés et les activités téléchargées, dans les sous-dossiers « Routes » et « %@ ». Sans dossier choisi, ils restent dans le stockage de l’app, accessible depuis l’app Fichiers. Choisissez un dossier, par exemple un nouveau dossier « Tileroam » dans iCloud Drive, pour les garder dans iCloud."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam guarda aquí las actividades descargadas como archivos .fit, en una subcarpeta “%@”. Consejo: en el selector, ve a iCloud Drive, crea una carpeta “Tileroam” y ábrela."
+            "value": "Tileroam guarda aquí las rutas planificadas y las actividades descargadas, en las subcarpetas “Routes” y “%@”. Sin carpeta elegida se quedan en el almacenamiento propio de la app, que puedes abrir en la app Archivos. Elige una carpeta, por ejemplo una nueva carpeta “Tileroam” en iCloud Drive, para guardarlas en iCloud."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam speichert geladene Aktivitäten hier als .fit-Dateien im Unterordner „%@“. Tipp: Gehe in der Auswahl zu iCloud Drive, erstelle einen Ordner „Tileroam“ und öffne ihn."
+            "value": "Tileroam speichert geplante Routen und geladene Aktivitäten hier, in den Unterordnern „Routes“ und „%@“. Ohne gewählten Ordner bleiben sie im eigenen Speicher der App, den du in der Dateien-App öffnen kannst. Wähle einen Ordner, zum Beispiel einen neuen Ordner „Tileroam“ in iCloud Drive, um sie in iCloud zu behalten."
           }
         }
       }
     },
-    "Tileroam saves planned routes here as GPX files, in a “Routes” subfolder. Tip: in the picker, go to iCloud Drive, create a new folder “Tileroam” and open it.": {
+    "Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam bewaart geplande routes hier als GPX-bestanden, in een submap “Routes”. Tip: ga in de kiezer naar iCloud Drive, maak een nieuwe map “Tileroam” en open die."
+            "value": "Tileroam bewaart geplande routes hier, in een submap “Routes”. Zonder gekozen map blijven ze in de eigen opslag van de app, die je in de Bestanden-app kunt openen. Kies een map, bijvoorbeeld een nieuwe map “Tileroam” in iCloud Drive, om ze in iCloud te bewaren."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam enregistre ici les parcours planifiés en fichiers GPX, dans un sous-dossier « Routes ». Astuce : dans le sélecteur, allez dans iCloud Drive, créez un dossier « Tileroam » et ouvrez-le."
+            "value": "Tileroam enregistre ici les parcours planifiés, dans un sous-dossier « Routes ». Sans dossier choisi, ils restent dans le stockage de l’app, accessible depuis l’app Fichiers. Choisissez un dossier, par exemple un nouveau dossier « Tileroam » dans iCloud Drive, pour les garder dans iCloud."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam guarda aquí las rutas planificadas como archivos GPX, en una subcarpeta “Routes”. Consejo: en el selector, ve a iCloud Drive, crea una carpeta “Tileroam” y ábrela."
+            "value": "Tileroam guarda aquí las rutas planificadas, en una subcarpeta “Routes”. Sin carpeta elegida se quedan en el almacenamiento propio de la app, que puedes abrir en la app Archivos. Elige una carpeta, por ejemplo una nueva carpeta “Tileroam” en iCloud Drive, para guardarlas en iCloud."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam speichert geplante Routen hier als GPX-Dateien im Unterordner „Routes“. Tipp: Gehe in der Auswahl zu iCloud Drive, erstelle einen Ordner „Tileroam“ und öffne ihn."
+            "value": "Tileroam speichert geplante Routen hier im Unterordner „Routes“. Ohne gewählten Ordner bleiben sie im eigenen Speicher der App, den du in der Dateien-App öffnen kannst. Wähle einen Ordner, zum Beispiel einen neuen Ordner „Tileroam“ in iCloud Drive, um sie in iCloud zu behalten."
           }
         }
       }
@@ -5201,6 +5849,62 @@
         }
       }
     },
+    "Total": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totaal"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesamt"
+          }
+        }
+      }
+    },
+    "Use Internal Storage": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebruik interne opslag"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utiliser le stockage interne"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usar almacenamiento interno"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internen Speicher verwenden"
+          }
+        }
+      }
+    },
     "Visited": {
       "localizations": {
         "nl": {
@@ -5225,6 +5929,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Besucht"
+          }
+        }
+      }
+    },
+    "Walking": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wandelen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marche"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caminar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehen"
           }
         }
       }

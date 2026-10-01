@@ -9,6 +9,17 @@ struct FITActivityData: Sendable {
     var totalDistance: Double?
     /// Seconds.
     var elapsedTime: Double?
+    /// FIT sub_sport (e.g. 6 indoor cycling, 58 virtual activity).
+    var subSport: UInt8?
+    /// FIT manufacturer from file_id (e.g. 260 Zwift).
+    var manufacturer: UInt16?
+
+    /// Indoor or virtual (Zwift, Rouvy, …): GPS positions, if any, are not real places.
+    var isVirtual: Bool {
+        if let subSport, FITDecoder.virtualSubSports.contains(subSport) { return true }
+        if let manufacturer, FITDecoder.virtualManufacturers.contains(manufacturer) { return true }
+        return false
+    }
 }
 
 enum FITError: Error, Equatable {
@@ -129,9 +140,19 @@ enum FITDecoder {
             }
             guard let lat, let lon, lat != Int32.max, lon != Int32.max, lat != 0 || lon != 0 else { return }
             result.points.append(GeoPoint(lat: Double(lat) * semicircleToDegrees, lon: Double(lon) * semicircleToDegrees))
+        case 0: // file_id
+            forEachField(def, b, offset) { number, value in
+                if number == 1, value != 0xFFFF { result.manufacturer = result.manufacturer ?? UInt16(truncatingIfNeeded: value) }
+            }
+        case 12: // sport
+            forEachField(def, b, offset) { number, value in
+                if number == 1, value != 0xFF { result.subSport = result.subSport ?? UInt8(truncatingIfNeeded: value) }
+            }
         case 18: // session
             forEachField(def, b, offset) { number, value in
                 switch number {
+                case 6 where value != 0xFF:
+                    result.subSport = result.subSport ?? UInt8(truncatingIfNeeded: value)
                 case 5 where value != 0xFF:
                     result.sport = result.sport ?? UInt8(truncatingIfNeeded: value)
                 case 2 where value != 0xFFFF_FFFF:
@@ -167,6 +188,12 @@ enum FITDecoder {
         }
         return value
     }
+
+    /// sub_sport values for indoor and virtual activities: treadmill (1), indoor cycling (6),
+    /// indoor rowing (14) and virtual activity (58, used by Zwift, Rouvy, MyWhoosh and others).
+    static let virtualSubSports: Set<UInt8> = [1, 6, 14, 58]
+    /// Manufacturer ids of virtual platforms that don't always set sub_sport: Zwift (260).
+    static let virtualManufacturers: Set<UInt16> = [260]
 
     static func sportName(_ sport: UInt8?) -> String {
         switch sport {

@@ -25,6 +25,7 @@ struct ContentView: View {
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     @State private var showPicker = false
     @State private var showSettings = false
+    @State private var showStatistics = false
     @State private var pickerPurpose = PickerPurpose.source
     @State private var pickAfterSettings: PickerPurpose?
     @State private var selectedArea: Area?
@@ -87,6 +88,16 @@ struct ContentView: View {
                     }
                 })
             }
+            .sheet(isPresented: $showStatistics) {
+                NavigationStack {
+                    StatisticsView()
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showStatistics = false }
+                            }
+                        }
+                }
+            }
             .fullScreenCover(isPresented: $showIntro) {
                 IntroView {
                     hasSeenIntro = true
@@ -98,6 +109,7 @@ struct ContentView: View {
                 #if DEBUG
                 // Screenshots: -ShowSettings YES opens Settings on launch.
                 if UserDefaults.standard.bool(forKey: "ShowSettings") { showSettings = true }
+                if UserDefaults.standard.bool(forKey: "ShowStatistics") { showStatistics = true }
                 #endif
             }
             .task { await store.refreshAll() }
@@ -158,6 +170,13 @@ struct ContentView: View {
                 }
                 .accessibilityLabel(plan.isPlanning ? Text("Stop route planning") : Text("Plan a route"))
                 Button {
+                    showStatistics = true
+                } label: {
+                    Image(systemName: "chart.bar.xaxis")
+                        .font(.title3)
+                }
+                .accessibilityLabel("Statistics")
+                Button {
                     showSettings = true
                 } label: {
                     Image(systemName: "gearshape")
@@ -176,9 +195,9 @@ struct ContentView: View {
             let count = tileZoom.countLabel(store.tiles(tileZoom).count)
             return String(localized: "\(count) · max square \(s.maxSquare)×\(s.maxSquare) · cluster \(s.maxCluster)")
         case .activities:
-            let noGPS = store.activitiesWithoutGPS
+            let onMap = store.mapActivities.count
             let e = store.eddingtonCycling
-            return String(localized: "\(store.activities.count - noGPS) on map · \(noGPS) without GPS")
+            return String(localized: "\(onMap) on map · \(store.activities.count - onMap) indoor, virtual or without GPS")
                 + "\n" + String(localized: "Eddington \(e.number) · \(e.daysNeeded) more rides of \(e.number + 1) km to reach \(e.number + 1)")
         case .gemeenten:
             guard let areas = store.municipalityAreas else { return String(localized: "Loading municipalities…") }

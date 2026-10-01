@@ -75,6 +75,7 @@ enum Importer {
         var activity = makeActivity(points: fit.points, id: id, cacheKey: cacheKey, name: name,
                                     sport: FITDecoder.sportName(fit.sport), startDate: fit.startTime, distance: fit.totalDistance)
         activity.elapsedTime = fit.elapsedTime
+        activity.isVirtual = fit.isVirtual || Activity.looksVirtual(name: name)
         return activity
     }
 

@@ -14,9 +14,16 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    LabeledContent("Selected", value: store.exportFolderName ?? String(localized: "None"))
-                    if let location = store.exportFolderLocation {
-                        Text(location)
+                    if let name = store.exportFolderName {
+                        LabeledContent("Selected", value: name)
+                        if let location = store.exportFolderLocation {
+                            Text(location)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        LabeledContent("Selected", value: String(localized: "Internal storage"))
+                        Text(FolderAccess.internalLocation)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -24,13 +31,16 @@ struct SettingsView: View {
                         Text(message).font(.footnote)
                     }
                     Button("Choose Save Folder…") { onChooseFolder(.export) }
+                    if store.exportFolderName != nil {
+                        Button("Use Internal Storage") { store.useInternalSaveFolder() }
+                    }
                 } header: {
                     Text("Save Folder")
                 } footer: {
                     if FeatureFlags.strava {
-                        Text("Tileroam saves downloaded activities as .fit files here, in a “\(StravaExport.subfolder)” subfolder. Tip: in the picker, go to iCloud Drive, create a new folder “Tileroam” and open it.")
+                        Text("Tileroam saves planned routes and downloaded activities here, in “Routes” and “\(StravaExport.subfolder)” subfolders. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.")
                     } else {
-                        Text("Tileroam saves planned routes here as GPX files, in a “Routes” subfolder. Tip: in the picker, go to iCloud Drive, create a new folder “Tileroam” and open it.")
+                        Text("Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.")
                     }
                 }
 
@@ -57,13 +67,25 @@ struct SettingsView: View {
                             Button("Remove", role: .destructive) { store.removeFolder(id: folder.id) }
                         }
                     }
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack {
+                            Label("Internal storage", systemImage: "iphone")
+                            Spacer()
+                            Text("\(store.activityCount(inFolder: FolderAccess.ImportFolder.internalID)) activities")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        Text("\(FolderAccess.internalLocation) › Import")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     Button("Add Folder…") { onChooseFolder(.source) }
                     Button("Rescan Now") { Task { await store.refresh() } }
-                        .disabled(store.isImporting || !store.hasImportFolders)
+                        .disabled(store.isImporting)
                 } header: {
                     Text("Import Folders")
                 } footer: {
-                    Text("Tileroam reads .fit files from these folders and their subfolders. Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.")
+                    Text("Tileroam reads .fit files from these folders and their subfolders, and always from the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.")
                 }
 
                 #if STRAVA
@@ -85,13 +107,14 @@ struct SettingsView: View {
 
                 countriesSection
 
-                Section("Statistics") {
+                Section {
+                    NavigationLink {
+                        StatisticsView()
+                    } label: {
+                        Label("Statistics", systemImage: "chart.bar.xaxis")
+                    }
                     LabeledContent("Activities", value: store.activities.count.formatted())
                     LabeledContent("Without GPS", value: store.activitiesWithoutGPS.formatted())
-                    LabeledContent("Distance", value: Measurement(value: store.totalDistanceKm, unit: UnitLength.kilometers)
-                        .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0)))))
-                    eddingtonRow(String(localized: "Eddington cycling"), store.eddingtonCycling, running: false)
-                    eddingtonRow(String(localized: "Eddington running"), store.eddingtonRunning, running: true)
                 }
 
                 if !store.failedFiles.isEmpty {
@@ -133,19 +156,6 @@ extension SettingsView {
         } label: {
             Text(zoom.title)
             Text("Max square \(stats.maxSquare)×\(stats.maxSquare) · cluster \(stats.maxCluster)")
-        }
-    }
-
-    private func eddingtonRow(_ title: String, _ e: Eddington, running: Bool) -> some View {
-        LabeledContent {
-            Text(e.number.formatted()).font(.headline)
-        } label: {
-            Text(title)
-            if running {
-                Text("\(e.daysNeeded) more runs of at least \(e.number + 1) km to reach \(e.number + 1)")
-            } else {
-                Text("\(e.daysNeeded) more rides of at least \(e.number + 1) km to reach \(e.number + 1)")
-            }
         }
     }
 
@@ -219,11 +229,7 @@ extension SettingsView {
             Text("Strava")
         } footer: {
             if store.isStravaConnected {
-                if let folder = store.exportFolderName {
-                    Text("Strava activities are saved as .fit files in “\(folder)/\(StravaExport.subfolder)”. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.")
-                } else {
-                    Text("Choose a save folder above to download detailed GPS and save Strava activities as .fit files.")
-                }
+                Text("Strava activities are saved as .fit files in the save folder's “\(StravaExport.subfolder)” subfolder. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.")
             }
         }
         .confirmationDialog("Disconnect Strava?", isPresented: $confirmDisconnect, titleVisibility: .visible) {

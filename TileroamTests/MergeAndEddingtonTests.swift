@@ -67,3 +67,42 @@ struct EddingtonTests {
         #expect(e.daysNeeded == 1)
     }
 }
+
+struct VirtualActivityTests {
+    @Test func fitSubSportAndManufacturerMarkVirtual() {
+        var zwift = FITActivityData()
+        zwift.manufacturer = 260
+        #expect(zwift.isVirtual)
+        var rouvy = FITActivityData()
+        rouvy.subSport = 58
+        #expect(rouvy.isVirtual)
+        var outdoor = FITActivityData()
+        outdoor.subSport = 0
+        outdoor.manufacturer = 1 // Garmin
+        #expect(!outdoor.isVirtual)
+    }
+
+    @Test func namesMarkVirtual() {
+        #expect(Activity.looksVirtual(name: "2021-12-10-163527-Indoor Cycling-Companion"))
+        #expect(Activity.looksVirtual(name: "Zwift - Watopia"))
+        #expect(Activity.looksVirtual(name: "ROUVY - Stelvio"))
+        #expect(!Activity.looksVirtual(name: "Morning Ride"))
+    }
+
+    @Test func virtualRidesStayOffTheMapButMerge() {
+        var zwift = Activity(id: "strava:1", cacheKey: "", name: "Watopia", sport: "Cycling",
+                             startDate: Date(timeIntervalSince1970: 1000), distance: 30_000,
+                             trackData: Data(count: 16))
+        zwift.isVirtual = true
+        zwift.elapsedTime = 3600
+        var healthFit = Activity(id: "ride.fit", cacheKey: "", name: "Cycling", sport: "Cycling",
+                                 startDate: Date(timeIntervalSince1970: 1060), distance: 30_000,
+                                 trackData: Data(count: 16))
+        healthFit.elapsedTime = 3500
+        #expect(!zwift.isOnMap)
+        let merged = ActivityMerge.merge([zwift, healthFit])
+        #expect(merged.count == 1)
+        #expect(merged[0].isVirtual == true)
+        #expect(!merged[0].isOnMap)
+    }
+}

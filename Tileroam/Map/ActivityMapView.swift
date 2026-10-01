@@ -182,7 +182,7 @@ struct ActivityMapView: UIViewRepresentable {
                                             selected: planning ? plan.selectedTiles(zoom) : [],
                                             highlight: coverage?.newTiles(zoom) ?? []), level: .aboveRoads)
             case .activities:
-                for (sport, activities) in Dictionary(grouping: store.activities, by: \.sport) {
+                for (sport, activities) in Dictionary(grouping: store.mapActivities, by: \.sport) {
                     let lines = activities.map { a in
                         let coords = a.coordinates
                         return MKPolyline(coordinates: coords, count: coords.count)
@@ -233,7 +233,7 @@ struct ActivityMapView: UIViewRepresentable {
                     })
                 }
             case .activities:
-                center = MapFocus.densestCenter(store.activities.flatMap { a in
+                center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
             case .gemeenten, .postcodes:

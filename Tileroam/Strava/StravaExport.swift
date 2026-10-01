@@ -40,7 +40,8 @@ enum StravaExport {
 
     /// Moves previously exported files from `oldFolder/Strava` to `newFolder/Strava`.
     /// Returns the number of files moved.
-    static func moveExports(from oldFolder: URL, to newFolder: URL) throws -> Int {
+    static func moveExports(from oldFolder: URL, to newFolder: URL, subfolder: String = subfolder,
+                            isOwn: (String) -> Bool = isOwnFile) throws -> Int {
         let oldAccess = oldFolder.startAccessingSecurityScopedResource()
         let newAccess = newFolder.startAccessingSecurityScopedResource()
         defer {
@@ -57,7 +58,7 @@ enum StravaExport {
         for name in names {
             // iCloud placeholders look like ".name.fit.icloud"
             let realName = name.hasPrefix(".") && name.hasSuffix(".icloud") ? String(name.dropFirst().dropLast(7)) : name
-            guard isOwnFile(realName) else { continue }
+            guard isOwn(realName) else { continue }
             let from = source.appending(path: name)
             let to = target.appending(path: realName)
             var coordinationError: NSError?

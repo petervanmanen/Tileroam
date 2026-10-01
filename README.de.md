@@ -15,6 +15,9 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
 - **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
 - **Eddington-Zahl** für Radfahren und Laufen, auch als **Widget** auf dem Home-Bildschirm und Sperrbildschirm.
+- **Statistik**: besuchte Länder und Gemeinden, Eddington-Zahlen für Radfahren, Gehen und Laufen sowie Summen pro Sportart für dieses Jahr und insgesamt.
+- **Indoor- und virtuelle Fahrten** (Zwift, Rouvy, MyWhoosh, Rollentrainer) zählen in der Statistik, bleiben aber von Karte, Kacheln, Gemeinden und Postleitzahlen fern.
+- **Speicher ist optional**: Ohne gewählten Ordner speichert Tileroam Routen und Strava-Dateien im eigenen Speicher (Dateien-App › Auf meinem iPhone › Tileroam) und liest auch `.fit`-Dateien aus dem Ordner Import dort.
 - **iPad**-Layout mit Seitenleiste, allen Ausrichtungen und Multitasking.
 - Verfügbar auf **Englisch, Niederländisch, Französisch, Spanisch und Deutsch**.
 - Die Karte öffnet sich auf deinem größten Cluster, dort, wo du am meisten fährst.

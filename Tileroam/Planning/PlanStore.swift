@@ -208,17 +208,15 @@ final class PlanStore {
     /// Saves the planned route in the save folder (Tileroam/Routes).
     func saveToFolder() async {
         guard let route, route.source == .planned else { return }
-        guard let folder = FolderAccess.resolve(.export) else {
-            error = String(localized: "Choose a save folder in Settings first (e.g. iCloud Drive › Tileroam).")
-            return
-        }
+        let folder = FolderAccess.saveFolder()
         let data = GPX.write(name: route.name, track: route.coordinates, waypoints: route.stops)
         let name = Self.fileName()
         do {
             try await Task.detached(priority: .userInitiated) {
                 try SaveFolder.write(data, name: name, subfolder: "Routes", in: folder)
             }.value
-            message = String(localized: "Saved to \(folder.lastPathComponent)/Routes/\(name)")
+            let place = FolderAccess.hasChosenSaveFolder ? folder.lastPathComponent : FolderAccess.internalLocation
+            message = String(localized: "Saved to \(place)/Routes/\(name)")
         } catch {
             self.error = String(localized: "Could not save: \(error.localizedDescription)")
         }
