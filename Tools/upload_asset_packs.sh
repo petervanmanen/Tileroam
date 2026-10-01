@@ -13,7 +13,7 @@ set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
 : ${ASC_KEY_ID:?set ASC_KEY_ID} ${ASC_ISSUER_ID:?set ASC_ISSUER_ID}
-ASC_APP_ID=${ASC_APP_ID:-TILEROAM_APPLE_ID}
+ASC_APP_ID=${ASC_APP_ID:-6818280181}
 [[ $ASC_APP_ID == <-> ]] || { echo "Set ASC_APP_ID to the app's numeric Apple ID" >&2; exit 1 }
 
 # iTMSTransporter looks for the key in ./private_keys first.

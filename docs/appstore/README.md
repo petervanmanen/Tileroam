@@ -22,6 +22,7 @@ Public pages the App Store links to:
    - Name: Tileroam
    - Primary language: English (U.K.)
    - Bundle ID: `nl.petervanmanen.Tileroam`
+   - Apple ID (numeric, assigned by App Store Connect): `6818280181`
    - SKU: `tileroam`
 2. Check that the identifiers exist in [Certificates, Identifiers & Profiles](https://developer.apple.com/account/resources/identifiers/list). Xcode created them during development:
    - App ID `nl.petervanmanen.Tileroam`, with App Groups and iCloud (CloudKit/Documents);
