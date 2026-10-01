@@ -159,3 +159,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - French postcode zones are calculated outlines around addresses and can overlap.
 - The UK postcode districts (2018) and Spanish postcodes (around 2015) are older datasets.
 - Route planning depends on the public OSRM server, which is a free community service without guarantees.
+
+## License
+
+The source code is licensed under the [MIT License](LICENSE). The bundled boundary data keeps the licenses of its sources (CC BY, OGL, Licence Ouverte, ODbL and others); see [DATA-LICENSES.md](DATA-LICENSES.md).

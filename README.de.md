@@ -159,3 +159,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - Französische Postleitzahlzonen sind berechnete Umrisse um Adressen und können sich überschneiden.
 - Die britischen Postcode Districts (2018) und die spanischen Postleitzahlen (um 2015) sind ältere Datensätze.
 - Die Routenplanung hängt vom öffentlichen OSRM-Server ab, einem kostenlosen Community-Dienst ohne Garantien.
+
+## Lizenz
+
+Der Quellcode steht unter der [MIT-Lizenz](LICENSE). Die mitgelieferten Grenzdaten behalten die Lizenzen ihrer Quellen (CC BY, OGL, Licence Ouverte, ODbL und andere); siehe [DATA-LICENSES.md](DATA-LICENSES.md).

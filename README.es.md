@@ -159,3 +159,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - Las zonas postales francesas son contornos calculados alrededor de direcciones y pueden solaparse.
 - Los postcode districts británicos (2018) y los códigos postales españoles (hacia 2015) son conjuntos de datos más antiguos.
 - La planificación depende del servidor OSRM público, un servicio comunitario gratuito sin garantías.
+
+## Licencia
+
+El código fuente está bajo la [licencia MIT](LICENSE). Los datos de límites incluidos conservan las licencias de sus fuentes (CC BY, OGL, Licence Ouverte, ODbL y otras); consulta [DATA-LICENSES.md](DATA-LICENSES.md).

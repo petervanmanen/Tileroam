@@ -159,3 +159,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - Les zones de codes postaux françaises sont des contours calculés autour des adresses et peuvent se chevaucher.
 - Les postcode districts britanniques (2018) et les codes postaux espagnols (vers 2015) sont des jeux de données plus anciens.
 - La planification dépend du serveur OSRM public, un service communautaire gratuit sans garantie.
+
+## Licence
+
+Le code source est sous [licence MIT](LICENSE). Les données de limites incluses conservent les licences de leurs sources (CC BY, OGL, Licence Ouverte, ODbL et autres) ; voir [DATA-LICENSES.md](DATA-LICENSES.md).

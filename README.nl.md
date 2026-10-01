@@ -159,3 +159,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - Franse postcodezones zijn berekende omtrekken rond adressen en kunnen overlappen.
 - De Britse postcodedistricten (2018) en Spaanse postcodes (rond 2015) zijn oudere datasets.
 - Routeplanning hangt af van de publieke OSRM-server, een gratis communitydienst zonder garanties.
+
+## Licentie
+
+De broncode valt onder de [MIT-licentie](LICENSE). De meegeleverde grensdata houdt de licenties van de bronnen (CC BY, OGL, Licence Ouverte, ODbL en andere); zie [DATA-LICENSES.md](DATA-LICENSES.md).
