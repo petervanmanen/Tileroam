@@ -1,7 +1,7 @@
 #!/bin/zsh
-# Builds and uploads the region asset packs to App Store Connect with the command-line tool
-# inside Transporter (Mac App Store). Xcode's own iTMSTransporter is only a stub, so this runs
-# on a Mac with Transporter installed, not on GitHub's runners.
+# Builds and uploads the region asset packs to App Store Connect with iTMSTransporter: the one
+# inside Transporter.app (Mac App Store) or Apple's standalone installer in /usr/local/itms
+# (what the GitHub workflow installs). Xcode's own iTMSTransporter is only a stub.
 #
 #   Tools/upload_asset_packs.sh            # all countries
 #   Tools/upload_asset_packs.sh NL BE      # some countries
@@ -17,8 +17,11 @@ ROOT=${0:A:h:h}
 : ${ASC_KEY_ID:?set ASC_KEY_ID} ${ASC_ISSUER_ID:?set ASC_ISSUER_ID}
 ASC_APP_ID=${ASC_APP_ID:-6818280181}
 [[ $ASC_APP_ID == <-> ]] || { echo "Set ASC_APP_ID to the app's numeric Apple ID" >&2; exit 1 }
-TRANSPORTER=/Applications/Transporter.app/Contents/itms/bin/iTMSTransporter
-[[ -x $TRANSPORTER ]] || { echo "Install Transporter from the Mac App Store first" >&2; exit 1 }
+TRANSPORTER=
+for t in /Applications/Transporter.app/Contents/itms/bin/iTMSTransporter /usr/local/itms/bin/iTMSTransporter; do
+  [[ -x $t ]] && { TRANSPORTER=$t; break }
+done
+[[ -n $TRANSPORTER ]] || { echo "Install Transporter from the Mac App Store first" >&2; exit 1 }
 
 # iTMSTransporter looks for the key in ./private_keys first.
 WORK=$(mktemp -d)
@@ -47,6 +50,10 @@ for pack in $packs; do
     # No recognizable error lines: show how the log ends instead.
     [[ -n $errors ]] || errors=$(grep -vE "DEBUG|DBG-X" $WORK/upload.log | tail -15 || true)
     print -r -- "$errors" >&2
+    if [[ -n ${GITHUB_ACTIONS:-} ]]; then
+      # As an annotation, so the error shows on the run's summary page.
+      print -r -- "::error title=Upload of ${pack:t} failed::${${errors//\%/%25}//$'\n'/%0A}"
+    fi
     (( ${#failed} < 3 )) || break # the rest would most likely fail the same way
   fi
 done

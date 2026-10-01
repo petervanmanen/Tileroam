@@ -1,0 +1,64 @@
+name: Asset packs
+
+# Uploads the municipality/postcode asset packs to App Store Connect.
+# - Automatically for the countries whose files in AssetPacks/Regions change on main.
+# - By hand: Actions → Asset packs → Run workflow (leave "countries" empty for all).
+on:
+  push:
+    branches: [main]
+    paths: ['AssetPacks/Regions/*.fmr']
+  workflow_dispatch:
+    inputs:
+      countries:
+        description: 'Country codes separated by spaces (empty = all)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: asset-packs
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: xcode-27
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Select Xcode 27.0
+        run: sudo xcode-select -s /Applications/Xcode_27.app
+
+      # Xcode's iTMSTransporter is only a stub and runners can't install Transporter from the
+      # Mac App Store; Apple's standalone installer works (actions/runner-images#13389).
+      - name: Install Transporter
+        run: |
+          curl -fsSL "https://itunesconnect.apple.com/WebObjects/iTunesConnect.woa/ra/resources/download/public/Transporter__OSX/bin/" -o "$RUNNER_TEMP/itmstransporter.pkg"
+          sudo installer -pkg "$RUNNER_TEMP/itmstransporter.pkg" -target /
+          /usr/local/itms/bin/iTMSTransporter -version
+
+      - name: Countries to upload
+        shell: bash
+        env:
+          INPUT_COUNTRIES: ${{ github.event.inputs.countries }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == push ]]; then
+            COUNTRIES=$(git diff --name-only HEAD^ HEAD -- 'AssetPacks/Regions/*.fmr' | xargs -n1 basename | cut -d- -f1 | sort -u | xargs)
+          else
+            COUNTRIES="$INPUT_COUNTRIES"
+          fi
+          [[ "$COUNTRIES" =~ ^[A-Z\ ]*$ ]] || { echo "Invalid countries: $COUNTRIES"; exit 1; }
+          echo "COUNTRIES=$COUNTRIES" >> "$GITHUB_ENV"
+          echo "Countries: ${COUNTRIES:-all}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build and upload
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: Tools/upload_asset_packs.sh $COUNTRIES
