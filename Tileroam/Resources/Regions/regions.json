@@ -1,0 +1,449 @@
+{
+ "NL": {
+  "municipalities": {
+   "file": "NL-municipalities.fmr",
+   "count": 342,
+   "bbox": [
+    3.3584,
+    50.7504,
+    7.2275,
+    53.554
+   ],
+   "source": "CBS / PDOK gebiedsindelingen 2025",
+   "license": "CC BY 4.0",
+   "attribution": "© CBS, Kadaster"
+  },
+  "postcodes": {
+   "file": "NL-postcodes.fmr",
+   "count": 4071,
+   "bbox": [
+    3.3584,
+    50.7504,
+    7.2275,
+    53.5174
+   ],
+   "source": "CBS postcode4 2024 via PDOK",
+   "license": "CC BY 4.0",
+   "attribution": "© CBS, Kadaster"
+  }
+ },
+ "BE": {
+  "municipalities": {
+   "file": "BE-municipalities.fmr",
+   "count": 565,
+   "bbox": [
+    2.5413,
+    49.497,
+    6.4081,
+    51.5051
+   ],
+   "source": "NGI-IGN via Opendatasoft (georef-belgium-municipality)",
+   "license": "NGI open data licence",
+   "attribution": "© NGI-IGN"
+  },
+  "postcodes": {
+   "file": "BE-postcodes.fmr",
+   "count": 1150,
+   "bbox": [
+    2.5554,
+    49.5131,
+    6.4081,
+    51.5051
+   ],
+   "source": "bpost / NGI-IGN via Opendatasoft (georef-belgium-postal-codes)",
+   "license": "custom (see source)",
+   "attribution": "© bpost, NGI-IGN"
+  }
+ },
+ "DE": {
+  "municipalities": {
+   "file": "DE-municipalities.fmr",
+   "count": 10949,
+   "bbox": [
+    5.8663,
+    47.2701,
+    15.0418,
+    55.0587
+   ],
+   "source": "BKG VG250 via Opendatasoft (georef-germany-gemeinde)",
+   "license": "dl-de/by-2-0",
+   "attribution": "© GeoBasis-DE / BKG"
+  },
+  "postcodes": {
+   "file": "DE-postcodes.fmr",
+   "count": 8173,
+   "bbox": [
+    5.8667,
+    47.2702,
+    15.0419,
+    55.0587
+   ],
+   "source": "OpenStreetMap (tdudek/de-plz-geojson)",
+   "license": "ODbL",
+   "attribution": "© OpenStreetMap contributors"
+  }
+ },
+ "FR": {
+  "municipalities": {
+   "file": "FR-municipalities.fmr",
+   "count": 34888,
+   "bbox": [
+    -178.1857,
+    -60.0041,
+    139.0107,
+    51.0892
+   ],
+   "source": "IGN Admin Express / INSEE via Opendatasoft (georef-france-commune)",
+   "license": "Licence Ouverte 2.0",
+   "attribution": "© IGN, INSEE"
+  },
+  "postcodes": {
+   "file": "FR-postcodes.fmr",
+   "count": 6158,
+   "bbox": [
+    -61.8079,
+    -21.3874,
+    55.8319,
+    51.0823
+   ],
+   "source": "adresse.data.gouv.fr – contours calculés des zones codes postaux",
+   "license": "Licence Ouverte 2.0",
+   "attribution": "© Etalab, BAN"
+  }
+ },
+ "ES": {
+  "municipalities": {
+   "file": "ES-municipalities.fmr",
+   "count": 8223,
+   "bbox": [
+    -18.1607,
+    27.6377,
+    4.3277,
+    43.7913
+   ],
+   "source": "IGN via Opendatasoft (georef-spain-municipio)",
+   "license": "CC BY 4.0",
+   "attribution": "© IGN España"
+  },
+  "postcodes": {
+   "file": "ES-postcodes.fmr",
+   "count": 10874,
+   "bbox": [
+    -18.1609,
+    27.6378,
+    4.3279,
+    43.79
+   ],
+   "source": "CNIG códigos postales (inigoflores/ds-codigos-postales)",
+   "license": "CC BY 4.0",
+   "attribution": "© CNIG, Correos"
+  }
+ },
+ "CH": {
+  "municipalities": {
+   "file": "CH-municipalities.fmr",
+   "count": 2128,
+   "bbox": [
+    5.9559,
+    45.818,
+    10.4922,
+    47.8085
+   ],
+   "source": "swisstopo swissBOUNDARIES3D via Opendatasoft",
+   "license": "opendata.swiss BY",
+   "attribution": "© swisstopo"
+  },
+  "postcodes": {
+   "file": "CH-postcodes.fmr",
+   "count": 3181,
+   "bbox": [
+    5.9559,
+    45.818,
+    10.4922,
+    47.8085
+   ],
+   "source": "swisstopo Amtliches Ortschaftenverzeichnis via Opendatasoft",
+   "license": "opendata.swiss (see source)",
+   "attribution": "© swisstopo"
+  }
+ },
+ "AT": {
+  "municipalities": {
+   "file": "AT-municipalities.fmr",
+   "count": 2092,
+   "bbox": [
+    9.5308,
+    46.3725,
+    17.1608,
+    49.0205
+   ],
+   "source": "Statistik Austria Gemeinden 2025-01-01",
+   "license": "CC BY 4.0",
+   "attribution": "© Statistik Austria"
+  }
+ },
+ "LU": {
+  "municipalities": {
+   "file": "LU-municipalities.fmr",
+   "count": 100,
+   "bbox": [
+    5.7357,
+    49.4479,
+    6.5309,
+    50.1828
+   ],
+   "source": "data.public.lu – limites administratives",
+   "license": "CC0",
+   "attribution": "© ACT Luxembourg"
+  }
+ },
+ "GB": {
+  "municipalities": {
+   "file": "GB-municipalities.fmr",
+   "count": 361,
+   "bbox": [
+    -8.6494,
+    49.8828,
+    1.7631,
+    60.8514
+   ],
+   "source": "ONS local authority districts via Opendatasoft",
+   "license": "OGL v3.0",
+   "attribution": "Contains OS data © Crown copyright and database right; © ONS"
+  },
+  "postcodes": {
+   "file": "GB-postcodes.fmr",
+   "count": 2836,
+   "bbox": [
+    -8.647,
+    49.8633,
+    1.7615,
+    60.8614
+   ],
+   "source": "GB postcode districts (figshare 6050105, from ONS/OS open data)",
+   "license": "CC BY 4.0",
+   "attribution": "Contains OS data © Crown copyright; Royal Mail data © Royal Mail copyright; ONS"
+  }
+ },
+ "IE": {
+  "municipalities": {
+   "file": "IE-municipalities.fmr",
+   "count": 31,
+   "bbox": [
+    -10.6909,
+    51.4199,
+    -5.9945,
+    55.4503
+   ],
+   "source": "Tailte Éireann – Local Authorities 2024",
+   "license": "CC BY 4.0",
+   "attribution": "© Tailte Éireann"
+  }
+ },
+ "PT": {
+  "municipalities": {
+   "file": "PT-municipalities.fmr",
+   "count": 308,
+   "bbox": [
+    -31.2688,
+    30.0295,
+    -6.1892,
+    42.1543
+   ],
+   "source": "DGT CAOP via Opendatasoft (georef-portugal-concelho)",
+   "license": "Public domain",
+   "attribution": "© Direção-Geral do Território"
+  }
+ },
+ "IT": {
+  "municipalities": {
+   "file": "IT-municipalities.fmr",
+   "count": 7904,
+   "bbox": [
+    6.6266,
+    35.4929,
+    18.5204,
+    47.0918
+   ],
+   "source": "ISTAT via Opendatasoft (georef-italy-comune)",
+   "license": "CC BY 3.0",
+   "attribution": "© ISTAT"
+  }
+ },
+ "LI": {
+  "municipalities": {
+   "file": "LI-municipalities.fmr",
+   "count": 11,
+   "bbox": [
+    9.4718,
+    47.0485,
+    9.6357,
+    47.2706
+   ],
+   "source": "geoBoundaries LIE ADM1 (OpenStreetMap)",
+   "license": "ODbL",
+   "attribution": "© OpenStreetMap contributors, geoBoundaries"
+  }
+ },
+ "MC": {
+  "municipalities": {
+   "file": "MC-municipalities.fmr",
+   "count": 1,
+   "bbox": [
+    7.409,
+    43.7248,
+    7.4398,
+    43.7519
+   ],
+   "source": "geoBoundaries MCO ADM0 (OpenStreetMap)",
+   "license": "ODbL",
+   "attribution": "© OpenStreetMap contributors, geoBoundaries"
+  }
+ },
+ "AD": {
+  "municipalities": {
+   "file": "AD-municipalities.fmr",
+   "count": 7,
+   "bbox": [
+    1.4123,
+    42.4297,
+    1.7867,
+    42.6552
+   ],
+   "source": "geoBoundaries AND ADM1",
+   "license": "Public domain",
+   "attribution": "geoBoundaries, Wikimedia Commons"
+  }
+ },
+ "SM": {
+  "municipalities": {
+   "file": "SM-municipalities.fmr",
+   "count": 9,
+   "bbox": [
+    12.4033,
+    43.8937,
+    12.5161,
+    43.9921
+   ],
+   "source": "geoBoundaries SMR ADM1 (OpenStreetMap)",
+   "license": "ODbL",
+   "attribution": "© OpenStreetMap contributors, geoBoundaries"
+  }
+ },
+ "VA": {
+  "municipalities": {
+   "file": "VA-municipalities.fmr",
+   "count": 1,
+   "bbox": [
+    12.4457,
+    41.9003,
+    12.4585,
+    41.9075
+   ],
+   "source": "geoBoundaries VAT ADM0",
+   "license": "geoBoundaries (see source)",
+   "attribution": "geoBoundaries"
+  }
+ },
+ "DK": {
+  "municipalities": {
+   "file": "DK-municipalities.fmr",
+   "count": 99,
+   "bbox": [
+    8.0753,
+    54.5591,
+    15.1932,
+    57.7517
+   ],
+   "source": "DAGI kommuner (Neogeografen/dagi)",
+   "license": "Danish free data licence",
+   "attribution": "© SDFI / Klimadatastyrelsen (DAGI)"
+  },
+  "postcodes": {
+   "file": "DK-postcodes.fmr",
+   "count": 592,
+   "bbox": [
+    8.0753,
+    54.5591,
+    15.1932,
+    57.7517
+   ],
+   "source": "DAGI postnumre (Neogeografen/dagi)",
+   "license": "Danish free data licence",
+   "attribution": "© SDFI / Klimadatastyrelsen (DAGI)"
+  }
+ },
+ "SE": {
+  "municipalities": {
+   "file": "SE-municipalities.fmr",
+   "count": 290,
+   "bbox": [
+    10.5935,
+    55.1371,
+    24.1777,
+    69.06
+   ],
+   "source": "OpenStreetMap (admin_level 7, via Overpass)",
+   "license": "ODbL",
+   "attribution": "© OpenStreetMap contributors"
+  }
+ },
+ "NO": {
+  "municipalities": {
+   "file": "NO-municipalities.fmr",
+   "count": 357,
+   "bbox": [
+    4.5007,
+    57.9594,
+    31.1681,
+    71.1855
+   ],
+   "source": "Kartverket kommuner 2024 (robhop/fylker-og-kommuner)",
+   "license": "CC BY 4.0",
+   "attribution": "© Kartverket"
+  }
+ },
+ "FI": {
+  "municipalities": {
+   "file": "FI-municipalities.fmr",
+   "count": 308,
+   "bbox": [
+    19.3041,
+    59.7581,
+    31.5867,
+    70.0927
+   ],
+   "source": "Statistics Finland kunta1000k_2025",
+   "license": "CC BY 4.0",
+   "attribution": "© Tilastokeskus / Statistics Finland"
+  },
+  "postcodes": {
+   "file": "FI-postcodes.fmr",
+   "count": 3026,
+   "bbox": [
+    19.4721,
+    59.722,
+    31.5867,
+    70.0923
+   ],
+   "source": "Statistics Finland postal code areas (Paavo) 2025",
+   "license": "CC BY 4.0",
+   "attribution": "© Tilastokeskus / Statistics Finland"
+  }
+ },
+ "IS": {
+  "municipalities": {
+   "file": "IS-municipalities.fmr",
+   "count": 61,
+   "bbox": [
+    -24.5327,
+    63.2958,
+    -13.4946,
+    66.5664
+   ],
+   "source": "Náttúrufræðistofnun / LMI IS 50V sveitarfélög",
+   "license": "CC BY 4.0",
+   "attribution": "© Náttúrufræðistofnun Íslands"
+  }
+ }
+}

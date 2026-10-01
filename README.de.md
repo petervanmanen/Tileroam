@@ -1,0 +1,161 @@
+# Tileroam
+
+[English](README.md) · [Nederlands](README.nl.md) · [Français](README.fr.md) · [Español](README.es.md) · **Deutsch**
+
+Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtouren, Läufen und Wanderungen überall warst: jede Kartenkachel, Gemeinde und jedes Postleitzahlgebiet, das du besucht hast. Sie liest `.fit`-Dateien aus einem oder mehreren iCloud Drive-Ordnern (zum Beispiel Exporte aus HealthFit, Garmin oder Wahoo) und kann deinen Verlauf aus Strava importieren. Außerdem plant sie Radrouten zu Orten, an denen du noch nicht warst.
+
+![Tileroam auf dem iPhone: Kacheln, Squadratinhos, Gemeinden und Routenplanung](docs/screenshots/overview.jpg)
+
+## Funktionen
+
+- **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) und *Squadratinhos* auf Zoom 17 (~190 m, wie bei Squadrats). Beide werden immer gezählt; du wählst, welche die Karte zeigt. Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
+- **Routen**: alle deine Aktivitäten auf einer Karte, nach Sportart eingefärbt.
+- **Gemeinden und Postleitzahlen** in 22 europäischen Ländern, mit besucht/gesamt pro Land.
+- **Routenplanung**: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, und Tileroam plant die kürzeste Radrundfahrt ab deinem Standort durch alle diese Orte. Teile sie als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch ein vorhandenes GPX öffnen, um zu sehen, welche neuen Orte es bringen würde.
+- **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
+- **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
+- **Eddington-Zahl** für Radfahren und Laufen, auch als **Widget** auf dem Home-Bildschirm und Sperrbildschirm.
+- **iPad**-Layout mit Seitenleiste, allen Ausrichtungen und Multitasking.
+- Verfügbar auf **Englisch, Niederländisch, Französisch, Spanisch und Deutsch**.
+- Die Karte öffnet sich auf deinem größten Cluster, dort, wo du am meisten fährst.
+
+## Bildschirmfotos
+
+| Kacheln (Zoom 14) | Squadratinhos (Zoom 17) | Routen | Gemeinden |
+|---|---|---|---|
+| ![Kacheln](docs/screenshots/tiles.jpg) | ![Squadratinhos](docs/screenshots/squadratinhos.jpg) | ![Routen](docs/screenshots/routes.jpg) | ![Gemeinden](docs/screenshots/municipalities.jpg) |
+
+| Postleitzahlen | Routenplanung | Einstellungen | Einführung |
+|---|---|---|---|
+| ![Postleitzahlen](docs/screenshots/postcodes.jpg) | ![Routenplanung](docs/screenshots/planning.jpg) | ![Einstellungen](docs/screenshots/settings.jpg) | ![Einführung](docs/screenshots/intro.jpg) |
+
+**iPad**
+
+| Kacheln | Routenplanung |
+|---|---|
+| ![Kacheln auf dem iPad](docs/screenshots/ipad-tiles.jpg) | ![Routenplanung auf dem iPad](docs/screenshots/ipad-planning.jpg) |
+
+*Die Bildschirmfotos zeigen generierte Demo-Fahrten rund um Utrecht, keine echten Aktivitäten.*
+
+## Länder
+
+| Land | Gemeinden | Postleitzahlen |
+|---|---|---|
+| Niederlande | 342 gemeenten | 4.071 (PC4) |
+| Belgien | 565 | 1.150 |
+| Luxemburg | 100 communes | – |
+| Deutschland | 10.949 Gemeinden | 8.173 PLZ |
+| Frankreich | 34.888 communes | 6.158 (angenäherte Zonen) |
+| Spanien | 8.223 municipios | 10.874 |
+| Portugal | 308 concelhos | – |
+| Italien | 7.904 comuni | – |
+| Schweiz | 2.128 Gemeinden | 3.181 PLZ |
+| Österreich | 2.092 Gemeinden | – |
+| Liechtenstein, Monaco, Andorra, San Marino, Vatikanstadt | 11 / 1 / 7 / 9 / 1 | – |
+| Vereinigtes Königreich | 361 Local Authorities | 2.836 Postcode Districts |
+| Irland | 31 Local Authorities | – |
+| Dänemark | 98 kommuner | 592 |
+| Norwegen | 357 kommuner | – |
+| Schweden | 290 kommuner | – |
+| Finnland | 308 kunnat | 3.026 |
+| Island | 61 sveitarfélög | – |
+
+Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Länder werden anhand deiner Aktivitäten automatisch aktiviert; du kannst sie in den Einstellungen ändern.
+
+## Erste Schritte
+
+Voraussetzungen: Xcode 27 oder neuer, iOS/iPadOS 18 oder neuer, eine Apple-ID zum Signieren (ein kostenloses Konto genügt; Apps laufen dann nach 7 Tagen ab).
+
+1. Klone das Repository und öffne `Tileroam.xcodeproj`.
+2. Wähle für die Targets **Tileroam** und **TileroamWidget** dein Team unter *Signing & Capabilities*. Ändere den Bundle Identifier (`nl.petervanmanen.Tileroam`) und die App Group (`group.nl.petervanmanen.Tileroam`) auf deine eigenen.
+3. Optional, für Strava: siehe unten.
+4. Starte die App auf deinem iPhone oder iPad. Wähle beim ersten Start einen oder mehrere iCloud Drive-Ordner mit deinen `.fit`-Dateien. Ordner kannst du später unter *Einstellungen → Importordner* hinzufügen oder entfernen.
+
+### Strava (optional)
+
+Strava ist nur in **Entwicklungs-Builds** enthalten: Die Kompilierbedingung `STRAVA` ist für die Debug-Konfiguration gesetzt. Release-Builds (Archive für TestFlight und den App Store) enthalten keine Strava-Bildschirme, stellen keine Strava-Anfragen und lassen `StravaSecrets.plist` weg. Um Strava in einen Release-Build aufzunehmen, füge `STRAVA` zu den *Active Compilation Conditions* für Release hinzu.
+
+
+1. Lege unter [strava.com/settings/api](https://www.strava.com/settings/api) eine API-Anwendung mit `localhost` als *Authorization Callback Domain* an.
+2. Kopiere `StravaSecrets.example.plist` nach `Tileroam/StravaSecrets.plist` und trage `ClientID` und `ClientSecret` ein. Diese Datei steht in `.gitignore`.
+3. Baue und starte die App und wähle in den Einstellungen *Mit Strava verbinden*.
+
+Die App spricht direkt mit der Strava-API, mit dem Client Secret in der App. Für die private Nutzung mit deiner eigenen API-Anwendung ist das in Ordnung. Für eine öffentliche Verteilung verlagere den Token-Austausch auf einen kleinen Server, damit das Secret nicht mit der App ausgeliefert wird, und bitte Strava, das Athletenlimit deiner Anwendung zu erhöhen.
+
+Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitätenliste kommt schnell mit vereinfachten Strecken; detailliertes GPS wird danach ergänzt, und die Synchronisierung läuft automatisch weiter.
+
+## So funktioniert es
+
+- **FIT-Dateien** werden von einem kleinen eingebauten Decoder gelesen (`FIT/FITDecoder.swift`). Strecken, Kacheln und besuchte Gebiete werden zwischengespeichert, sodass beim nächsten Start nur neue oder geänderte Dateien gelesen werden.
+- **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
+- **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
+- **Gemeinden und Postleitzahlen** sind als kompakte Binärdateien enthalten (`Resources/Regions/*.fmr`, insgesamt 33 MB), mit einem räumlichen Index für schnelle Abfragen.
+- Die **Routenplanung** nutzt den öffentlichen [OSRM](https://project-osrm.org)-Fahrradrouter von [openstreetmap.de](https://routing.openstreetmap.de). Er bestimmt die beste Reihenfolge; danach wählt Tileroam in jedem Ziel den Punkt, der den Umweg am kleinsten hält.
+
+## Grenzdaten
+
+Die Grenzdateien werden von `Tools/build_regions.py` aus den offenen Datenquellen erzeugt, die unter *Einstellungen → Quellen und Lizenzen* aufgeführt sind:
+
+```bash
+python3 -m venv venv && venv/bin/pip install pyshp pyproj shapely
+venv/bin/python Tools/build_regions.py <download-ordner> Tileroam/Resources/Regions
+```
+
+Das Skript dokumentiert, woher jede Quelldatei stammt. Es projiziert nach WGS84 um, führt Teile pro Code zusammen, vereinfacht die Grenzen auf ~25 m (Gemeinden) bzw. ~20 m (Postleitzahlen) und schreibt das kompakte Format.
+
+| Land | Quelle und Lizenz |
+|---|---|
+| Niederlande | CBS / Kadaster über PDOK (CC BY 4.0) |
+| Belgien | NGI-IGN, bpost über Opendatasoft (Postleitzahl-Lizenz: siehe Quelle) |
+| Deutschland | BKG (dl-de/by-2-0); Postleitzahlen © OpenStreetMap-Mitwirkende (ODbL) |
+| Frankreich | IGN, INSEE; Postleitzahlzonen Etalab / BAN (Licence Ouverte 2.0) |
+| Spanien | IGN, CNIG, Correos (CC BY 4.0) |
+| Portugal | Direção-Geral do Território (gemeinfrei) |
+| Italien | ISTAT (CC BY 3.0) |
+| Schweiz | swisstopo (opendata.swiss) |
+| Österreich | Statistik Austria (CC BY 4.0) |
+| Luxemburg | ACT (CC0) |
+| Vereinigtes Königreich | ONS, OS (OGL v3.0); Postcode Districts (CC BY 4.0) |
+| Irland | Tailte Éireann (CC BY 4.0) |
+| Dänemark | SDFI / Klimadatastyrelsen DAGI |
+| Norwegen | Kartverket (CC BY 4.0) |
+| Schweden | © OpenStreetMap-Mitwirkende (ODbL) |
+| Finnland | Statistics Finland (CC BY 4.0) |
+| Island | Náttúrufræðistofnun Íslands (CC BY 4.0) |
+| Kleinstaaten | geoBoundaries / © OpenStreetMap-Mitwirkende (ODbL) |
+
+Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch OSRM / FOSSGIS.
+
+## Datenschutz
+
+Tileroam hat keinen Server und keine Analysewerkzeuge. Deine Aktivitäten, Kacheln und Statistiken bleiben auf deinem Gerät und in den iCloud-Ordnern, die du auswählst. Strava-Tokens werden im Schlüsselbund gespeichert. Wenn du eine Route planst, werden Startpunkt und Stopps an den OSRM-Routingdienst von openstreetmap.de gesendet.
+
+## Projektstruktur
+
+```
+Tileroam/
+  FIT/          FIT-Decoder und -Encoder
+  Geo/          Kacheln, Gemeinden/Postleitzahlen, Eddington, Vereinfachung
+  Import/       Ordnerzugriff, Import, Cache, Zusammenführen, ActivityStore
+  Map/          MKMapView-Wrapper und Overlays (Kacheln, Gebiete, Routen)
+  Planning/     Routenplanung (OSRM), GPX, Abdeckung
+  Strava/       Strava-API-Client, Export als .fit
+  Views/        SwiftUI-Bildschirme (Karte, Einstellungen, Einführung, Planungsleiste)
+  Resources/Regions/   mitgelieferte Grenzen von Gemeinden und Postleitzahlen
+TileroamWidget/   Eddington-Widget
+TileroamTests/    Unit-Tests (Swift Testing)
+Tools/             Skript und Quellen für die Grenzdaten
+```
+
+## Tests
+
+```bash
+xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 17'
+```
+
+## Einschränkungen
+
+- Postleitzahlgrenzen sind in Österreich, Luxemburg, Irland, Portugal, Italien, Norwegen, Schweden und Island keine offenen Daten.
+- Französische Postleitzahlzonen sind berechnete Umrisse um Adressen und können sich überschneiden.
+- Die britischen Postcode Districts (2018) und die spanischen Postleitzahlen (um 2015) sind ältere Datensätze.
+- Die Routenplanung hängt vom öffentlichen OSRM-Server ab, einem kostenlosen Community-Dienst ohne Garantien.

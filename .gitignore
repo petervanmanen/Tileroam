@@ -1,0 +1,12 @@
+# Xcode
+build/
+build-release/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# macOS
+.DS_Store
+
+# Secrets (copy StravaSecrets.example.plist)
+Tileroam/StravaSecrets.plist
