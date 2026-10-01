@@ -39,7 +39,13 @@ for pack in $packs; do
     echo "  done"
   else
     failed+=${pack:t}
-    grep -E "ERROR|error" $WORK/upload.log | tail -5 >&2
+    errors=$(grep -E "ERROR|rror Messages|\"(title|detail|code)\"" $WORK/upload.log | grep -v "DEBUG" | tail -8)
+    print -r -- "$errors" >&2
+    if [[ -n ${GITHUB_ACTIONS:-} ]]; then
+      # As an annotation, so the error shows on the run's summary page.
+      print -r -- "::error title=Upload of ${pack:t} failed::${${errors//\%/%25}//$'\n'/%0A}"
+    fi
+    (( ${#failed} < 3 )) || break # the rest would most likely fail the same way
   fi
 done
 (( ${#failed} == 0 )) || { echo "Failed: $failed" >&2; exit 1 }
