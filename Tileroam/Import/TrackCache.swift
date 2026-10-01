@@ -39,7 +39,12 @@ enum TrackCache {
         encoder.outputFormat = .binary
         guard let data = try? encoder.encode(Payload(version: source.version, folder: folder ?? "", activities: activities)) else { return }
         try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
-        try? data.write(to: url(source), options: .atomic)
+        var url = url(source)
+        try? data.write(to: url, options: .atomic)
+        // Rebuilt from the files (or Strava) when missing: keep it out of device backups.
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try? url.setResourceValues(values)
     }
 
     static func clear(_ source: Source = .folder) {

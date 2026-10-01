@@ -415,6 +415,28 @@ final class ActivityStore {
         exportMessage = nil
     }
 
+    // MARK: Sample rides
+
+    private(set) var hasSampleRides = FolderAccess.hasSampleRides
+
+    func addSampleRides() async {
+        await Task.detached(priority: .userInitiated) {
+            let folder = FolderAccess.sampleRidesFolder
+            try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            for url in FolderAccess.bundledSampleRides {
+                try? FileManager.default.copyItem(at: url, to: folder.appending(path: url.lastPathComponent))
+            }
+        }.value
+        hasSampleRides = true
+        await refresh()
+    }
+
+    func removeSampleRides() async {
+        try? FileManager.default.removeItem(at: FolderAccess.sampleRidesFolder)
+        hasSampleRides = false
+        await refresh()
+    }
+
     // MARK: iCloud
 
     private static let movedToICloudKey = "movedToICloud"

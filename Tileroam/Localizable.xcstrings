@@ -4397,6 +4397,34 @@
         }
       }
     },
+    "Remove Sample Rides": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwijder voorbeeldritten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer les sorties d’exemple"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitar rutas de ejemplo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beispielfahrten entfernen"
+          }
+        }
+      }
+    },
     "Replan": {
       "localizations": {
         "nl": {
@@ -6213,6 +6241,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gesamt"
+          }
+        }
+      }
+    },
+    "Try with Sample Rides": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probeer met voorbeeldritten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essayer avec des sorties d’exemple"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probar con rutas de ejemplo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Beispielfahrten ausprobieren"
           }
         }
       }

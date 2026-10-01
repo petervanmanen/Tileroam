@@ -372,6 +372,14 @@ struct ContentView: View {
                         .buttonStyle(.bordered)
                 }
                 #endif
+                Button {
+                    Task { await store.addSampleRides() }
+                } label: {
+                    Text("Try with Sample Rides")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderless)
+                .padding(.top, 4)
             }
             .frame(maxWidth: 280)
         }

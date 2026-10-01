@@ -243,14 +243,16 @@ actor StravaClient {
         return (data, http)
     }
 
-    /// Keeps the last failed request for diagnosis (no tokens or secrets).
+    /// Keeps the last failed request for diagnosis (no tokens or secrets); development builds only.
     private static func logError(request: URLRequest, response: HTTPURLResponse, body: String) {
+        #if DEBUG
         var url = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)!
         url.queryItems = url.queryItems?.filter { !["code", "refresh_token"].contains($0.name) }
         let headers = response.allHeaderFields.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n")
         let text = "\(Date.now)\n\(request.httpMethod ?? "GET") \(url.string ?? "")\nstatus \(response.statusCode)\n\n\(headers)\n\n\(body)\n"
         try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
         try? text.write(to: URL.applicationSupportDirectory.appending(path: "strava-last-error.txt"), atomically: true, encoding: .utf8)
+        #endif
     }
 
     /// When to stop sending requests, based on Strava's rate limit headers:

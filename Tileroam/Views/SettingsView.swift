@@ -98,6 +98,9 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     Button("Add Folder…") { onChooseFolder(.source) }
+                    if store.hasSampleRides {
+                        Button("Remove Sample Rides", role: .destructive) { Task { await store.removeSampleRides() } }
+                    }
                     Button("Rescan Now") { Task { await store.refresh() } }
                         .disabled(store.isImporting)
                 } header: {

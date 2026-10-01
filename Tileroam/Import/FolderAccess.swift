@@ -69,6 +69,23 @@ enum FolderAccess {
         return url
     }
 
+    // MARK: Sample rides
+
+    /// Bundled example rides, copied here on request so new users (and App Review) can try the
+    /// app without their own files. Kept on the device only, never in iCloud.
+    static var sampleRidesFolder: URL {
+        internalImportFolder.appending(path: "Sample Rides", directoryHint: .isDirectory)
+    }
+
+    static var bundledSampleRides: [URL] {
+        (Bundle.main.urls(forResourcesWithExtension: "fit", subdirectory: nil) ?? [])
+            .filter { $0.lastPathComponent.hasPrefix("Sample-Ride-") }
+    }
+
+    static var hasSampleRides: Bool {
+        FileManager.default.fileExists(atPath: sampleRidesFolder.path(percentEncoded: false))
+    }
+
     // MARK: iCloud Drive
 
     static let iCloudContainerID = "iCloud.nl.petervanmanen.Tileroam"
