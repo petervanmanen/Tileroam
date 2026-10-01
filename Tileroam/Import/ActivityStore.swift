@@ -273,6 +273,27 @@ final class ActivityStore {
         recompute()
     }
 
+    /// Copies individual .fit files into the internal Import folder and imports them.
+    func importFiles(_ urls: [URL]) async {
+        let target = FolderAccess.internalImportFolder
+        let failed = await Task.detached(priority: .userInitiated) {
+            var failed = [String]()
+            for url in urls {
+                let didAccess = url.startAccessingSecurityScopedResource()
+                defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+                do {
+                    let data = try FolderAccess.read(url)
+                    try data.write(to: target.appending(path: url.lastPathComponent), options: .atomic)
+                } catch {
+                    failed.append(String(localized: "Could not read “\(url.lastPathComponent)”: \(error.localizedDescription)"))
+                }
+            }
+            return failed
+        }.value
+        await refresh()
+        failedFiles += failed
+    }
+
     /// Imports new and changed files from all folders.
     func refresh() async {
         // The internal Import folder ("On My iPhone › Tileroam › Import") is always read too.

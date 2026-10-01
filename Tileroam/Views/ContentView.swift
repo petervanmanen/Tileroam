@@ -8,13 +8,18 @@ enum PickerPurpose {
     case export
     /// A GPX route to check against visited tiles and areas.
     case gpx
+    /// Individual .fit files, copied into the app's internal Import folder.
+    case fitFiles
 
     var contentTypes: [UTType] {
         switch self {
         case .source, .export: [.folder]
         case .gpx: [UTType(filenameExtension: "gpx"), .xml].compactMap { $0 }
+        case .fitFiles: [UTType(filenameExtension: "fit") ?? .data, .data]
         }
     }
+
+    var allowsMultipleSelection: Bool { self == .source || self == .fitFiles }
 }
 
 struct ContentView: View {
@@ -59,15 +64,18 @@ struct ContentView: View {
             .overlay(alignment: .topLeading) { if isWide { sidePanel } }
             .overlay(alignment: .bottomTrailing) { if isWide { mapControls.padding(24) } }
             .overlay {
-                if !store.hasImportFolders && store.activities.isEmpty { emptyState }
+                if !store.hasImportFolders && store.activities.isEmpty && !store.isStravaConnected && !store.isImporting {
+                    emptyState
+                }
             }
             .fileImporter(isPresented: $showPicker, allowedContentTypes: pickerPurpose.contentTypes,
-                          allowsMultipleSelection: pickerPurpose == .source) { result in
+                          allowsMultipleSelection: pickerPurpose.allowsMultipleSelection) { result in
                 guard case .success(let urls) = result, let url = urls.first else { return }
                 switch pickerPurpose {
                 case .source: Task { await store.addFolders(urls) }
                 case .export: Task { await store.selectExportFolder(url) }
                 case .gpx: Task { await plan.importGPX(url, with: store) }
+                case .fitFiles: Task { await store.importFiles(urls) }
                 }
             }
             .sheet(isPresented: $showSettings, onDismiss: {
@@ -320,21 +328,51 @@ struct ContentView: View {
         }
     }
 
+    /// First start: choose a folder, import files or connect Strava.
     private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "folder.badge.plus")
+        VStack(spacing: 14) {
+            Image(systemName: "map")
                 .font(.largeTitle)
-            Text("Choose your activities folder")
+                .foregroundStyle(.green)
+            Text("Add your activities")
                 .font(.headline)
-            Text("Select the iCloud Drive folder that contains your .fit files.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            Button("Choose Folder") {
-                pickerPurpose = .source
-                showPicker = true
+            if FeatureFlags.strava {
+                Text("Choose a folder with .fit files, import files, or connect Strava to see where you have been.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            } else {
+                Text("Choose a folder with .fit files or import files to see where you have been.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
+            VStack(spacing: 10) {
+                Button {
+                    pickerPurpose = .source
+                    showPicker = true
+                } label: {
+                    Label("Choose Folder…", systemImage: "folder.badge.plus")
+                        .frame(maxWidth: .infinity)
+                }
                 .buttonStyle(.borderedProminent)
+                Button {
+                    pickerPurpose = .fitFiles
+                    showPicker = true
+                } label: {
+                    Label("Import .fit Files…", systemImage: "doc.badge.plus")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                #if STRAVA
+                if store.stravaConfig != nil {
+                    StravaConnectButton()
+                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.bordered)
+                }
+                #endif
+            }
+            .frame(maxWidth: 280)
         }
         .padding(24)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))

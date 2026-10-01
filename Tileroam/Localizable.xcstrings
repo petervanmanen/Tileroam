@@ -1445,6 +1445,34 @@
         }
       }
     },
+    "Add your activities": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg je activiteiten toe"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez vos activités"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade tus actividades"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Füge deine Aktivitäten hinzu"
+          }
+        }
+      }
+    },
     "All Time": {
       "localizations": {
         "nl": {
@@ -1641,34 +1669,6 @@
         }
       }
     },
-    "Choose Folder": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies map"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisir un dossier"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elegir carpeta"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ordner wählen"
-          }
-        }
-      }
-    },
     "Choose Folder…": {
       "localizations": {
         "nl": {
@@ -1725,6 +1725,62 @@
         }
       }
     },
+    "Choose a folder with .fit files or import files to see where you have been.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies een map met .fit-bestanden of importeer bestanden om te zien waar je bent geweest."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez un dossier de fichiers .fit ou importez des fichiers pour voir où vous êtes allé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige una carpeta con archivos .fit o importa archivos para ver dónde has estado."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen Ordner mit .fit-Dateien oder importiere Dateien, um zu sehen, wo du warst."
+          }
+        }
+      }
+    },
+    "Choose a folder with .fit files, import files, or connect Strava to see where you have been.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies een map met .fit-bestanden, importeer bestanden of koppel Strava om te zien waar je bent geweest."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez un dossier de fichiers .fit, importez des fichiers ou connectez Strava pour voir où vous êtes allé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige una carpeta con archivos .fit, importa archivos o conecta Strava para ver dónde has estado."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen Ordner mit .fit-Dateien, importiere Dateien oder verbinde Strava, um zu sehen, wo du warst."
+          }
+        }
+      }
+    },
     "Choose it again in Settings.": {
       "localizations": {
         "nl": {
@@ -1777,34 +1833,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wähle den iCloud Drive-Ordner mit deinen .fit-Dateien, zum Beispiel Exporte aus HealthFit, Garmin oder Wahoo. Tileroam liest sie direkt und erkennt neue Dateien automatisch."
-          }
-        }
-      }
-    },
-    "Choose your activities folder": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies je map met activiteiten"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez votre dossier d’activités"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige tu carpeta de actividades"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle deinen Aktivitätenordner"
           }
         }
       }
@@ -2817,6 +2845,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hybrid"
+          }
+        }
+      }
+    },
+    "Import .fit Files…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importeer .fit-bestanden…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importer des fichiers .fit…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar archivos .fit…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ".fit-Dateien importieren…"
           }
         }
       }
@@ -4753,34 +4809,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wähle beliebig viele Orte, auch gemischt"
-          }
-        }
-      }
-    },
-    "Select the iCloud Drive folder that contains your .fit files.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies de iCloud Drive-map met je .fit-bestanden."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sélectionnez le dossier iCloud Drive qui contient vos fichiers .fit."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Selecciona la carpeta de iCloud Drive con tus archivos .fit."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle den iCloud Drive-Ordner mit deinen .fit-Dateien."
           }
         }
       }

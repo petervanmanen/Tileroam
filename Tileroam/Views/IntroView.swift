@@ -49,11 +49,12 @@ struct IntroView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
         }
-        .fileImporter(isPresented: $showPicker, allowedContentTypes: [.folder],
-                      allowsMultipleSelection: pickerPurpose == .source) { result in
+        .fileImporter(isPresented: $showPicker, allowedContentTypes: pickerPurpose.contentTypes,
+                      allowsMultipleSelection: pickerPurpose.allowsMultipleSelection) { result in
             guard case .success(let urls) = result, let url = urls.first else { return }
             switch pickerPurpose {
             case .export: Task { await store.selectExportFolder(url) }
+            case .fitFiles: Task { await store.importFiles(urls) }
             default: Task { await store.addFolders(urls) }
             }
         }
@@ -112,6 +113,13 @@ struct IntroView: View {
                 } label: {
                     Label(store.hasImportFolders ? String(localized: "Add Another Folder") : String(localized: "Choose Folder…"),
                           systemImage: "folder.badge.plus")
+                }
+                .buttonStyle(.bordered)
+                Button {
+                    pickerPurpose = .fitFiles
+                    showPicker = true
+                } label: {
+                    Label("Import .fit Files…", systemImage: "doc.badge.plus")
                 }
                 .buttonStyle(.bordered)
                 ForEach(store.importFolders) { folder in
