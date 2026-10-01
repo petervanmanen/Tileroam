@@ -10,3 +10,5 @@ xcuserdata/
 
 # Secrets (copy StravaSecrets.example.plist)
 Tileroam/StravaSecrets.plist
+
+Tileroam/StravaConfig.plist

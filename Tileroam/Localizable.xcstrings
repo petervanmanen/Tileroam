@@ -4225,6 +4225,34 @@
         }
       }
     },
+    "Powered by Strava": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powered by Strava"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powered by Strava"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powered by Strava"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powered by Strava"
+          }
+        }
+      }
+    },
     "Remove": {
       "localizations": {
         "nl": {
@@ -5733,6 +5761,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Die größte Zahl E, für die du an mindestens E Tagen mindestens E km zurückgelegt hast. Gehen schließt Wanderungen ein."
+          }
+        }
+      }
+    },
+    "The login request expired. Please try again.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het inlogverzoek is verlopen. Probeer het opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La demande de connexion a expiré. Réessayez."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La solicitud de inicio de sesión ha caducado. Inténtalo de nuevo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Anmeldeanfrage ist abgelaufen. Bitte versuche es erneut."
           }
         }
       }

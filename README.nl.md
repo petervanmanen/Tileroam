@@ -76,14 +76,16 @@ Vereisten: Xcode 27 of nieuwer, iOS/iPadOS 18 of nieuwer, een Apple ID om te ond
 
 ### Strava (optioneel)
 
-Strava zit alleen in **ontwikkelbuilds**: de compilatievoorwaarde `STRAVA` staat aan voor de Debug-configuratie. Release-builds (Archive voor TestFlight en de App Store) bevatten geen Strava-schermen, doen geen Strava-verzoeken en laten `StravaSecrets.plist` weg. Wil je Strava toch in een Release-build, voeg dan `STRAVA` toe aan *Active Compilation Conditions* voor Release.
-
+Inloggen gaat via de **Strava-app** (één tik op *Authorize*) of, zonder Strava-app, via de webinlog van Strava. Het Client Secret staat op een kleine **tokenservice** ([`backend/strava-auth`](backend/strava-auth), een Cloudflare Worker); de app zelf bevat alleen de Client ID.
 
 1. Maak een API-applicatie op [strava.com/settings/api](https://www.strava.com/settings/api) met als *Authorization Callback Domain* `localhost`.
-2. Kopieer `StravaSecrets.example.plist` naar `Tileroam/StravaSecrets.plist` en vul `ClientID` en `ClientSecret` in. Dit bestand staat in `.gitignore`.
-3. Bouw en start de app en kies *Koppel met Strava* in Instellingen.
+2. Zet de tokenservice live zoals beschreven in [`backend/strava-auth/README.md`](backend/strava-auth/README.md).
+3. Kopieer `StravaConfig.example.plist` naar `Tileroam/StravaConfig.plist` en vul `ClientID` en `TokenServiceURL` in (de Worker-URL eindigend op `/token`). Geen van beide is geheim; het bestand staat in `.gitignore` omdat het je eigen configuratie is.
+4. Bouw en start de app en tik op *Connect with Strava*.
 
-De app praat rechtstreeks met de Strava-API, met het Client Secret in de app. Voor persoonlijk gebruik met je eigen API-applicatie is dat prima. Voor publieke distributie verplaats je de tokenuitwisseling naar een kleine server, zodat het secret niet in de app zit, en vraag je Strava om de limiet van één sporter te verhogen.
+Tijdens ontwikkeling kun je de tokenservice overslaan: zet `ClientID` en `ClientSecret` in `Tileroam/StravaSecrets.plist` (zie `StravaSecrets.example.plist`). Dat bestand wordt alleen in Debug-builds gebruikt en zit niet in Release-builds.
+
+Strava zit in **ontwikkelbuilds**: de compilatievoorwaarde `STRAVA` staat aan voor de Debug-configuratie. Wil je Strava in een Release-build, voeg dan `STRAVA` toe aan *Active Compilation Conditions* voor Release (met de tokenservice ingesteld). Voor andere gebruikers moet Strava eerst de sporterlimiet van je applicatie verhogen (standaard één sporter).
 
 Strava staat ongeveer 100 verzoeken per 15 minuten en 1.000 per dag toe. De activiteitenlijst komt snel binnen met vereenvoudigde routes; gedetailleerde gps wordt daarna aangevuld en de synchronisatie gaat automatisch verder.
 
@@ -131,7 +133,7 @@ Routeplanning: © OpenStreetMap-bijdragers (ODbL), routering door OSRM / FOSSGIS
 
 ## Privacy
 
-Tileroam heeft geen server en geen analytics. Je activiteiten, tegels en statistieken blijven op je apparaat en in de iCloud-mappen die je zelf kiest. Strava-tokens worden in de sleutelhanger bewaard. Als je een route plant, worden het startpunt en de stops naar de OSRM-routeplanner van openstreetmap.de gestuurd.
+Tileroam heeft geen server en geen analytics. Je activiteiten, tegels en statistieken blijven op je apparaat en in de iCloud-mappen die je zelf kiest. Strava-tokens worden in de sleutelhanger bewaard. De Strava-inlogcode en het vernieuwen van tokens lopen via de tokenservice (Cloudflare Worker), die niets bewaart of logt. Als je een route plant, worden het startpunt en de stops naar de OSRM-routeplanner van openstreetmap.de gestuurd.
 
 ## Projectstructuur
 

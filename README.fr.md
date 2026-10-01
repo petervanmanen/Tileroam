@@ -76,14 +76,16 @@ Prérequis : Xcode 27 ou plus récent, iOS/iPadOS 18 ou plus récent, un identif
 
 ### Strava (facultatif)
 
-Strava n’est inclus que dans les **builds de développement** : la condition de compilation `STRAVA` est définie pour la configuration Debug. Les builds Release (Archive pour TestFlight et l’App Store) ne contiennent aucun écran Strava, n’effectuent aucune requête Strava et n’incluent pas `StravaSecrets.plist`. Pour inclure Strava dans un build Release, ajoutez `STRAVA` aux *Active Compilation Conditions* de Release.
-
+La connexion passe par l’**app Strava** (un toucher sur *Authorize*) ou, sans l’app Strava, par la connexion web de Strava. Le Client Secret reste sur un petit **service de jetons** ([`backend/strava-auth`](backend/strava-auth), un Cloudflare Worker) ; l’app ne contient que le Client ID.
 
 1. Créez une application API sur [strava.com/settings/api](https://www.strava.com/settings/api) avec `localhost` comme *Authorization Callback Domain*.
-2. Copiez `StravaSecrets.example.plist` vers `Tileroam/StravaSecrets.plist` et renseignez `ClientID` et `ClientSecret`. Ce fichier est dans `.gitignore`.
-3. Compilez et lancez l’app, puis choisissez *Se connecter avec Strava* dans Réglages.
+2. Déployez le service de jetons comme décrit dans [`backend/strava-auth/README.md`](backend/strava-auth/README.md).
+3. Copiez `StravaConfig.example.plist` vers `Tileroam/StravaConfig.plist` et renseignez `ClientID` et `TokenServiceURL` (l’URL du Worker se terminant par `/token`). Aucune des deux valeurs n’est secrète ; le fichier est dans `.gitignore` car c’est votre propre configuration.
+4. Compilez et lancez l’app, puis touchez *Connect with Strava*.
 
-L’app communique directement avec l’API Strava, avec le Client Secret intégré à l’app. C’est acceptable pour un usage personnel avec votre propre application API. Pour une distribution publique, déplacez l’échange de jetons vers un petit serveur afin que le secret ne soit pas livré dans l’app, et demandez à Strava d’augmenter la limite d’athlètes de votre application.
+Pendant le développement, vous pouvez vous passer du service : mettez `ClientID` et `ClientSecret` dans `Tileroam/StravaSecrets.plist` (voir `StravaSecrets.example.plist`). Ce fichier n’est utilisé que dans les builds Debug et n’est pas inclus dans les builds Release.
+
+Strava est inclus dans les **builds de développement** : la condition de compilation `STRAVA` est définie pour la configuration Debug. Pour livrer Strava dans un build Release, ajoutez `STRAVA` aux *Active Compilation Conditions* de Release (avec le service de jetons configuré). Pour d’autres utilisateurs, Strava doit d’abord augmenter la limite d’athlètes de votre application (un seul par défaut).
 
 Strava autorise environ 100 requêtes par 15 minutes et 1 000 par jour. La liste des activités arrive vite avec des tracés simplifiés ; le GPS détaillé est complété ensuite et la synchronisation reprend automatiquement.
 
@@ -131,7 +133,7 @@ Planification : © contributeurs OpenStreetMap (ODbL), itinéraires par OSRM / F
 
 ## Confidentialité
 
-Tileroam n’a ni serveur ni outil d’analyse. Vos activités, tuiles et statistiques restent sur votre appareil et dans les dossiers iCloud que vous choisissez. Les jetons Strava sont stockés dans le trousseau. Lorsque vous planifiez un parcours, le point de départ et les étapes sont envoyés au service d’itinéraires OSRM d’openstreetmap.de.
+Tileroam n’a ni serveur ni outil d’analyse. Vos activités, tuiles et statistiques restent sur votre appareil et dans les dossiers iCloud que vous choisissez. Les jetons Strava sont stockés dans le trousseau. Le code de connexion Strava et le renouvellement des jetons passent par le service de jetons (Cloudflare Worker), qui ne stocke ni ne journalise rien. Lorsque vous planifiez un parcours, le point de départ et les étapes sont envoyés au service d’itinéraires OSRM d’openstreetmap.de.
 
 ## Structure du projet
 

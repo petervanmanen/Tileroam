@@ -393,6 +393,11 @@ final class ActivityStore {
 
     // MARK: Strava
 
+    /// Starts a login; returns the state value to send along.
+    func beginStravaLogin() async -> String? {
+        await strava?.beginLogin()
+    }
+
     func completeStravaLogin(callback: URL) async {
         guard let strava else { return }
         do {

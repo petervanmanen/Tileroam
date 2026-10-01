@@ -76,14 +76,16 @@ Voraussetzungen: Xcode 27 oder neuer, iOS/iPadOS 18 oder neuer, eine Apple-ID zu
 
 ### Strava (optional)
 
-Strava ist nur in **Entwicklungs-Builds** enthalten: Die Kompilierbedingung `STRAVA` ist für die Debug-Konfiguration gesetzt. Release-Builds (Archive für TestFlight und den App Store) enthalten keine Strava-Bildschirme, stellen keine Strava-Anfragen und lassen `StravaSecrets.plist` weg. Um Strava in einen Release-Build aufzunehmen, füge `STRAVA` zu den *Active Compilation Conditions* für Release hinzu.
-
+Die Anmeldung läuft über die **Strava-App** (ein Tippen auf *Authorize*) oder, ohne Strava-App, über die Web-Anmeldung von Strava. Das Client Secret liegt auf einem kleinen **Token-Dienst** ([`backend/strava-auth`](backend/strava-auth), ein Cloudflare Worker); die App enthält nur die Client ID.
 
 1. Lege unter [strava.com/settings/api](https://www.strava.com/settings/api) eine API-Anwendung mit `localhost` als *Authorization Callback Domain* an.
-2. Kopiere `StravaSecrets.example.plist` nach `Tileroam/StravaSecrets.plist` und trage `ClientID` und `ClientSecret` ein. Diese Datei steht in `.gitignore`.
-3. Baue und starte die App und wähle in den Einstellungen *Mit Strava verbinden*.
+2. Richte den Token-Dienst ein, wie in [`backend/strava-auth/README.md`](backend/strava-auth/README.md) beschrieben.
+3. Kopiere `StravaConfig.example.plist` nach `Tileroam/StravaConfig.plist` und trage `ClientID` und `TokenServiceURL` ein (die Worker-URL mit `/token` am Ende). Keiner der Werte ist geheim; die Datei steht in `.gitignore`, weil sie deine eigene Konfiguration ist.
+4. Baue und starte die App und tippe auf *Connect with Strava*.
 
-Die App spricht direkt mit der Strava-API, mit dem Client Secret in der App. Für die private Nutzung mit deiner eigenen API-Anwendung ist das in Ordnung. Für eine öffentliche Verteilung verlagere den Token-Austausch auf einen kleinen Server, damit das Secret nicht mit der App ausgeliefert wird, und bitte Strava, das Athletenlimit deiner Anwendung zu erhöhen.
+Während der Entwicklung kannst du den Dienst weglassen: Trage `ClientID` und `ClientSecret` in `Tileroam/StravaSecrets.plist` ein (siehe `StravaSecrets.example.plist`). Diese Datei wird nur in Debug-Builds verwendet und fehlt in Release-Builds.
+
+Strava ist in **Entwicklungs-Builds** enthalten: Die Kompilierbedingung `STRAVA` ist für Debug gesetzt. Um Strava in einem Release-Build auszuliefern, füge `STRAVA` zu den *Active Compilation Conditions* für Release hinzu (mit eingerichtetem Token-Dienst). Für andere Nutzer muss Strava zuerst das Athletenlimit deiner Anwendung erhöhen (standardmäßig ein Athlet).
 
 Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitätenliste kommt schnell mit vereinfachten Strecken; detailliertes GPS wird danach ergänzt, und die Synchronisierung läuft automatisch weiter.
 
@@ -131,7 +133,7 @@ Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch OSRM / FOSSGIS
 
 ## Datenschutz
 
-Tileroam hat keinen Server und keine Analysewerkzeuge. Deine Aktivitäten, Kacheln und Statistiken bleiben auf deinem Gerät und in den iCloud-Ordnern, die du auswählst. Strava-Tokens werden im Schlüsselbund gespeichert. Wenn du eine Route planst, werden Startpunkt und Stopps an den OSRM-Routingdienst von openstreetmap.de gesendet.
+Tileroam hat keinen Server und keine Analysewerkzeuge. Deine Aktivitäten, Kacheln und Statistiken bleiben auf deinem Gerät und in den iCloud-Ordnern, die du auswählst. Strava-Tokens werden im Schlüsselbund gespeichert. Der Strava-Anmeldecode und das Erneuern der Tokens laufen über den Token-Dienst (Cloudflare Worker), der nichts speichert oder protokolliert. Wenn du eine Route planst, werden Startpunkt und Stopps an den OSRM-Routingdienst von openstreetmap.de gesendet.
 
 ## Projektstruktur
 

@@ -100,8 +100,21 @@ actor StravaClient {
     // MARK: Authentication
 
     /// Handles the `tileroam://localhost?code=…` callback of the OAuth flow.
+    /// Random value sent with the login request and checked on return (protects against forged callbacks).
+    private var pendingState: String?
+
+    func beginLogin() -> String {
+        let state = UUID().uuidString.replacingOccurrences(of: "-", with: "")
+        pendingState = state
+        return state
+    }
+
     func completeLogin(callback: URL) async throws -> StravaTokens {
         let items = URLComponents(url: callback, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        guard let expected = pendingState, items.first(where: { $0.name == "state" })?.value == expected else {
+            throw StravaError.loginFailed(String(localized: "The login request expired. Please try again."))
+        }
+        pendingState = nil
         if let error = items.first(where: { $0.name == "error" })?.value { throw StravaError.loginFailed(error) }
         guard let code = items.first(where: { $0.name == "code" })?.value else { throw StravaError.loginFailed("no code") }
         let scope = items.first(where: { $0.name == "scope" })?.value ?? ""
@@ -141,14 +154,26 @@ actor StravaClient {
         let athlete: Athlete?
     }
 
+    /// Exchanges a code or refresh token. Through the token service when configured, so the
+    /// Client Secret stays on the server; directly with the secret only in development builds.
     private func tokenRequest(_ params: [String: String]) async throws -> TokenResponse {
-        var request = URLRequest(url: URL(string: "https://www.strava.com/oauth/token")!)
-        request.httpMethod = "POST"
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        var form = URLComponents()
-        form.queryItems = (params.merging(["client_id": config.clientID, "client_secret": config.clientSecret]) { a, _ in a })
-            .map { URLQueryItem(name: $0.key, value: $0.value) }
-        request.httpBody = form.percentEncodedQuery?.data(using: .utf8)
+        var request: URLRequest
+        if let service = config.tokenServiceURL {
+            request = URLRequest(url: service)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONSerialization.data(withJSONObject: params)
+        } else if let secret = config.clientSecret {
+            request = URLRequest(url: URL(string: "https://www.strava.com/oauth/token")!)
+            request.httpMethod = "POST"
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            var form = URLComponents()
+            form.queryItems = (params.merging(["client_id": config.clientID, "client_secret": secret]) { a, _ in a })
+                .map { URLQueryItem(name: $0.key, value: $0.value) }
+            request.httpBody = form.percentEncodedQuery?.data(using: .utf8)
+        } else {
+            throw StravaError.notConnected
+        }
         let (data, _) = try await send(request)
         return try decoder.decode(TokenResponse.self, from: data)
     }

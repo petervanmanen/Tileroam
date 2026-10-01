@@ -55,11 +55,21 @@
 			);
 			target = AA0000000000000000000022 /* TileroamWidget */;
 		};
+		AA0000000000000000000045 /* Exceptions for "Tileroam" folder in "Tileroam" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA0000000000000000000020 /* Tileroam */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AA0000000000000000000040 /* Tileroam */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA0000000000000000000045 /* Exceptions for "Tileroam" folder in "Tileroam" target */,
+			);
 			path = Tileroam;
 			sourceTree = "<group>";
 		};
@@ -348,13 +358,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Tileroam/Tileroam.entitlements;
+				INFOPLIST_FILE = Tileroam/Info.plist;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9XCZUWMGXB;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Tileroam;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. To plan a route, your start point and stops are sent to the OpenStreetMap routing service.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -379,6 +389,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Tileroam/Tileroam.entitlements;
+				INFOPLIST_FILE = Tileroam/Info.plist;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9XCZUWMGXB;
@@ -386,7 +397,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Tileroam;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. To plan a route, your start point and stops are sent to the OpenStreetMap routing service.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -228,6 +228,8 @@ extension SettingsView {
         } header: {
             Text("Strava")
         } footer: {
+            PoweredByStrava()
+                .padding(.vertical, 4)
             if store.isStravaConnected {
                 Text("Strava activities are saved as .fit files in the save folder's “\(StravaExport.subfolder)” subfolder. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.")
             }
@@ -242,26 +244,37 @@ extension SettingsView {
 }
 
 #if STRAVA
-/// "Connect with Strava", used in Settings and the introduction.
+/// The official "Connect with Strava" button. Opens the Strava app's authorize screen when the
+/// app is installed (it returns via tileroam://), otherwise Strava's web login.
 struct StravaConnectButton: View {
     @Environment(ActivityStore.self) private var store
     @Environment(\.webAuthenticationSession) private var webAuthenticationSession
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         Button {
             Task { await connect() }
         } label: {
-            Label("Connect with Strava", systemImage: "link")
-                .foregroundStyle(.orange)
+            Image("StravaConnect")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 48)
         }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Connect with Strava")
         .disabled(store.stravaConfig == nil)
     }
 
     private func connect() async {
-        guard let config = store.stravaConfig else { return }
+        guard let config = store.stravaConfig, let state = await store.beginStravaLogin() else { return }
+        let appURL = config.appAuthorizeURL(state: state)
+        if UIApplication.shared.canOpenURL(appURL) {
+            openURL(appURL) // the Strava app returns to tileroam://localhost (handled in TileroamApp)
+            return
+        }
         do {
             let callback = try await webAuthenticationSession.authenticate(
-                using: config.authorizeURL,
+                using: config.webAuthorizeURL(state: state),
                 callbackURLScheme: StravaConfig.callbackScheme,
                 preferredBrowserSession: .shared)
             await store.completeStravaLogin(callback: callback)
@@ -273,6 +286,16 @@ struct StravaConnectButton: View {
     }
 }
 
+/// "Powered by Strava", required next to data from Strava.
+struct PoweredByStrava: View {
+    var body: some View {
+        Image("PoweredByStrava")
+            .resizable()
+            .scaledToFit()
+            .frame(height: 22)
+            .accessibilityLabel("Powered by Strava")
+    }
+}
 #endif
 
 /// Searchable list of municipalities or postcodes of the switched-on countries.

@@ -118,3 +118,27 @@ struct ImportFolderTests {
         #expect(garmin.owns("A1B2|2023/ride.fit") && !garmin.owns("2023/ride.fit"))
     }
 }
+
+struct StravaLoginTests {
+    @Test func authorizeURLsCarryStateAndRedirect() throws {
+        let config = StravaConfig(clientID: "12345", tokenServiceURL: URL(string: "https://example.workers.dev/token"), clientSecret: nil)
+        let app = try #require(URLComponents(url: config.appAuthorizeURL(state: "abc"), resolvingAgainstBaseURL: false))
+        #expect(app.scheme == "strava" && app.host == "oauth" && app.path == "/mobile/authorize")
+        let items = Dictionary(uniqueKeysWithValues: (app.queryItems ?? []).map { ($0.name, $0.value ?? "") })
+        #expect(items["client_id"] == "12345")
+        #expect(items["redirect_uri"] == "tileroam://localhost")
+        #expect(items["state"] == "abc")
+        #expect(items["scope"] == "read,activity:read_all")
+        let web = config.webAuthorizeURL(state: "abc")
+        #expect(web.absoluteString.hasPrefix("https://www.strava.com/oauth/mobile/authorize?"))
+    }
+
+    @Test func callbackWithWrongStateIsRejected() async {
+        let config = StravaConfig(clientID: "12345", tokenServiceURL: URL(string: "https://example.invalid/token"), clientSecret: nil)
+        let client = StravaClient(config: config)
+        _ = await client.beginLogin()
+        await #expect(throws: StravaError.self) {
+            try await client.completeLogin(callback: URL(string: "tileroam://localhost?state=forged&code=abcdef0123&scope=read,activity:read_all")!)
+        }
+    }
+}

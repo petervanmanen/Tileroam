@@ -10,6 +10,11 @@ struct TileroamApp: App {
             ContentView()
                 .environment(store)
                 .environment(plan)
+                .onOpenURL { url in
+                    // Return from the Strava app's authorize screen: tileroam://localhost?code=…
+                    guard url.scheme == StravaConfig.callbackScheme else { return }
+                    Task { await store.completeStravaLogin(callback: url) }
+                }
         }
     }
 }
