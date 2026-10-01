@@ -39,7 +39,9 @@ for pack in $packs; do
     echo "  done"
   else
     failed+=${pack:t}
-    errors=$(grep -E "ERROR|rror Messages|\"(title|detail|code)\"" $WORK/upload.log | grep -v "DEBUG" | tail -8)
+    errors=$(grep -E "ERROR|rror Messages|\"(title|detail|code)\"" $WORK/upload.log | grep -v "DEBUG" | tail -8 || true)
+    # No recognizable error lines: show how the log ends instead.
+    [[ -n $errors ]] || errors=$(grep -vE "DEBUG|DBG-X" $WORK/upload.log | tail -15 || true)
     print -r -- "$errors" >&2
     if [[ -n ${GITHUB_ACTIONS:-} ]]; then
       # As an annotation, so the error shows on the run's summary page.
