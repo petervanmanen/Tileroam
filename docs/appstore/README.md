@@ -72,6 +72,12 @@ xcrun ba-serve serve AssetPacks/build/*.aar --host <your-mac>.local
 - In the simulator, the Debug-only launch argument `-RegionsDir <repo>/AssetPacks/Regions` skips downloading and reads the files directly.
 
 ## 4. Archive and upload
+From the command line, this does the same as the Xcode steps below. The second command signs for distribution and uploads to App Store Connect:
+```bash
+xcodebuild archive -project Tileroam.xcodeproj -scheme Tileroam -configuration Release -destination 'generic/platform=iOS' -archivePath build/Tileroam.xcarchive -allowProvisioningUpdates
+xcodebuild -exportArchive -archivePath build/Tileroam.xcarchive -exportOptionsPlist Tools/ExportOptions.plist -exportPath build/export -allowProvisioningUpdates
+```
+
 1. In Xcode, select the destination **Any iOS Device (arm64)**.
 2. **Product → Archive.**
 3. In the Organizer: **Distribute App → App Store Connect → Upload**, with automatic signing.

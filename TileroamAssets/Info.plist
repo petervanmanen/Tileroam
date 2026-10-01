@@ -9,9 +9,5 @@
 	</dict>
 	<key>BAAppGroupID</key>
 	<string>group.nl.petervanmanen.Tileroam</string>
-	<key>BAHasManagedAssetPacks</key>
-	<true/>
-	<key>BAUsesAppleHosting</key>
-	<true/>
 </dict>
 </plist>
