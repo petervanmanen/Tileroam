@@ -49,6 +49,9 @@ struct IntroView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
         }
+        // Opaque on its own: on iPad the full-screen cover can otherwise show the map through it.
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground).ignoresSafeArea())
         .fileImporter(isPresented: $showPicker, allowedContentTypes: pickerPurpose.contentTypes,
                       allowsMultipleSelection: pickerPurpose.allowsMultipleSelection) { result in
             guard case .success(let urls) = result, let url = urls.first else { return }

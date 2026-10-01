@@ -112,6 +112,7 @@ struct ContentView: View {
                     hasSeenIntro = true
                     showIntro = false
                 }
+                .presentationBackground(Color(.systemBackground))
             }
             .onAppear {
                 if !hasSeenIntro { showIntro = true }
