@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 /// Persists access to user-selected (iCloud Drive) folders and lists their .fit files.
 enum FolderAccess {
@@ -68,10 +69,55 @@ enum FolderAccess {
         return url
     }
 
-    /// Where downloaded activities and planned routes are saved: the chosen save folder,
-    /// or the app's internal storage when none is chosen.
+    // MARK: iCloud Drive
+
+    static let iCloudContainerID = "iCloud.nl.petervanmanen.Tileroam"
+    private static let iCloudURL = OSAllocatedUnfairLock<URL?>(initialState: nil)
+
+    /// The app's own folder in iCloud Drive ("iCloud Drive › Tileroam"); nil when the user is
+    /// not signed in to iCloud or iCloud Drive is off for Tileroam. Set by `updateICloudFolder()`.
+    static var iCloudFolder: URL? { iCloudURL.withLock { $0 } }
+
+    /// Location of the iCloud folder as the Files app shows it.
+    static var iCloudLocation: String { "iCloud Drive › Tileroam" }
+
+    /// Looks up the iCloud folder. The first lookup can take a while: call it off the main thread.
+    @discardableResult
+    static func updateICloudFolder() -> URL? {
+        let url: URL? = if FileManager.default.ubiquityIdentityToken != nil,
+                           let container = FileManager.default.url(forUbiquityContainerIdentifier: iCloudContainerID) {
+            container.appending(path: "Documents", directoryHint: .isDirectory)
+        } else {
+            nil
+        }
+        if let url { try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true) }
+        iCloudURL.withLock { $0 = url }
+        return url
+    }
+
+    /// Where downloaded activities and planned routes are saved: the chosen save folder, else
+    /// Tileroam's iCloud Drive folder, else the app's internal storage.
     static func saveFolder() -> URL {
-        resolve(.export) ?? internalFolder
+        resolve(.export) ?? iCloudFolder ?? internalFolder
+    }
+
+    /// Where files go when no save folder is chosen, as the Files app shows it.
+    static var defaultSaveLocation: String {
+        iCloudFolder != nil ? iCloudLocation : internalLocation
+    }
+
+    /// Folders that are always read: the internal Import folder and, when available, the
+    /// iCloud folder (which has the activities saved on the user's other devices).
+    static var builtInFolders: [ImportFolder] {
+        [.internalFolder] + (iCloudFolder != nil ? [.iCloudDrive] : [])
+    }
+
+    /// Where "Import .fit Files…" copies files to: iCloud, so other devices get them too.
+    static var importTarget: URL {
+        guard let iCloudFolder else { return internalImportFolder }
+        let url = iCloudFolder.appending(path: "Import", directoryHint: .isDirectory)
+        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
     }
 
     static var hasChosenSaveFolder: Bool { resolve(.export) != nil }
@@ -93,11 +139,16 @@ enum FolderAccess {
 
         static let legacyID = "main"
         static let internalID = "internal"
+        static let iCloudID = "icloud"
 
         /// The import folder inside the app's own storage.
         static let internalFolder = ImportFolder(id: internalID, name: "Tileroam", bookmark: Data())
+        /// Tileroam's folder in iCloud Drive, shared by the user's devices.
+        static let iCloudDrive = ImportFolder(id: iCloudID, name: "iCloud Drive", bookmark: Data())
 
         var isInternal: Bool { id == Self.internalID }
+        /// Built in (internal storage or iCloud), not chosen by the user.
+        var isBuiltIn: Bool { id == Self.internalID || id == Self.iCloudID }
 
         func activityID(for relativePath: String) -> String {
             id == Self.legacyID ? relativePath : "\(id)|\(relativePath)"
@@ -161,6 +212,7 @@ enum FolderAccess {
 
     static func resolve(_ folder: ImportFolder) -> URL? {
         if folder.isInternal { return internalImportFolder }
+        if folder.id == ImportFolder.iCloudID { return iCloudFolder }
         #if DEBUG
         if let path = UserDefaults.standard.string(forKey: "FitFolder") {
             return URL(filePath: path, directoryHint: .isDirectory)
@@ -187,7 +239,10 @@ enum FolderAccess {
             return (["iCloud Drive"] + components[(i + 1)...]).joined(separator: " › ")
         }
         if let i = components.firstIndex(of: "Mobile Documents"), i + 1 < components.count {
-            return (["iCloud Drive"] + components[(i + 2)...]).joined(separator: " › ")
+            // An app's container, e.g. "iCloud~nl~petervanmanen~Tileroam/Documents/Strava"
+            let app = components[i + 1].split(separator: "~").last.map(String.init) ?? ""
+            let rest = components.dropFirst(i + 2).drop { $0 == "Documents" }
+            return (["iCloud Drive", app] + rest).joined(separator: " › ")
         }
         if path.hasPrefix(URL.documentsDirectory.standardizedFileURL.path(percentEncoded: false)) {
             return internalLocation

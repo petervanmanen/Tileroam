@@ -215,7 +215,7 @@ final class PlanStore {
             try await Task.detached(priority: .userInitiated) {
                 try SaveFolder.write(data, name: name, subfolder: "Routes", in: folder)
             }.value
-            let place = FolderAccess.hasChosenSaveFolder ? folder.lastPathComponent : FolderAccess.internalLocation
+            let place = FolderAccess.hasChosenSaveFolder ? folder.lastPathComponent : FolderAccess.defaultSaveLocation
             message = String(localized: "Saved to \(place)/Routes/\(name)")
         } catch {
             self.error = String(localized: "Could not save: \(error.localizedDescription)")

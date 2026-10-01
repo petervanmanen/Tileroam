@@ -22,8 +22,8 @@ struct SettingsView: View {
                                 .foregroundStyle(.secondary)
                         }
                     } else {
-                        LabeledContent("Selected", value: String(localized: "Internal storage"))
-                        Text(FolderAccess.internalLocation)
+                        LabeledContent("Selected", value: store.isICloudAvailable ? "iCloud Drive" : String(localized: "Internal storage"))
+                        Text(FolderAccess.defaultSaveLocation)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -32,15 +32,19 @@ struct SettingsView: View {
                     }
                     Button("Choose Save Folder…") { onChooseFolder(.export) }
                     if store.exportFolderName != nil {
-                        Button("Use Internal Storage") { store.useInternalSaveFolder() }
+                        if store.isICloudAvailable {
+                            Button("Use iCloud Drive") { store.useDefaultSaveFolder() }
+                        } else {
+                            Button("Use Internal Storage") { store.useDefaultSaveFolder() }
+                        }
                     }
                 } header: {
                     Text("Save Folder")
                 } footer: {
                     if FeatureFlags.strava {
-                        Text("Tileroam saves planned routes and downloaded activities here, in “Routes” and “\(StravaExport.subfolder)” subfolders. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.")
+                        Text("Tileroam saves planned routes and downloaded activities here, in “Routes” and “\(StravaExport.subfolder)” subfolders. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.")
                     } else {
-                        Text("Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.")
+                        Text("Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.")
                     }
                 }
 
@@ -67,6 +71,20 @@ struct SettingsView: View {
                             Button("Remove", role: .destructive) { store.removeFolder(id: folder.id) }
                         }
                     }
+                    if store.isICloudAvailable {
+                        VStack(alignment: .leading, spacing: 3) {
+                            HStack {
+                                Label("iCloud Drive", systemImage: "icloud")
+                                Spacer()
+                                Text("\(store.activityCount(inFolder: FolderAccess.ImportFolder.iCloudID)) activities")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Text(FolderAccess.iCloudLocation)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                     VStack(alignment: .leading, spacing: 3) {
                         HStack {
                             Label("Internal storage", systemImage: "iphone")
@@ -85,7 +103,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Import Folders")
                 } footer: {
-                    Text("Tileroam reads .fit files from these folders and their subfolders, and always from the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.")
+                    Text("Tileroam reads .fit files from these folders and their subfolders, and always from its own folder in iCloud Drive, shared by your devices, and the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.")
                 }
 
                 #if STRAVA

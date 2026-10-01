@@ -63,6 +63,10 @@ struct StravaTests {
         #expect(fit.sport == 2)
         #expect(fit.totalDistance == 1234.5)
         #expect(fit.startTime == start)
+        #expect(!fit.isVirtual)
+
+        encoder.subSport = 58
+        #expect(try FITDecoder.decode(encoder.encode()).isVirtual)
     }
 
     @Test func exportFileName() {
@@ -108,6 +112,15 @@ struct StravaExportMoveTests {
 }
 
 struct ImportFolderTests {
+    @Test func iCloudLocations() {
+        let root = "/private/var/mobile/Library/Mobile Documents"
+        #expect(FolderAccess.displayLocation(URL(filePath: "\(root)/com~apple~CloudDocs/Sport/FIT"))
+                == "iCloud Drive › Sport › FIT")
+        #expect(FolderAccess.displayLocation(URL(filePath: "\(root)/iCloud~nl~petervanmanen~Tileroam/Documents/Strava"))
+                == "iCloud Drive › Tileroam › Strava")
+        #expect(FolderAccess.ImportFolder.iCloudDrive.isBuiltIn)
+    }
+
     @Test func activityIDsPerFolder() {
         let legacy = FolderAccess.ImportFolder(id: FolderAccess.ImportFolder.legacyID, name: "HealthFit", bookmark: Data())
         let garmin = FolderAccess.ImportFolder(id: "A1B2", name: "Garmin", bookmark: Data())

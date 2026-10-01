@@ -43,9 +43,12 @@ final class ActivityStore {
     var problem: String? { importFolders.compactMap(\.problem).first }
 
     func activityCount(inFolder id: String) -> Int {
-        guard let folder = (FolderAccess.importFolders() + [.internalFolder]).first(where: { $0.id == id }) else { return 0 }
+        guard let folder = (FolderAccess.importFolders() + [.internalFolder, .iCloudDrive]).first(where: { $0.id == id }) else { return 0 }
         return folderActivities.count { folder.owns($0.id) }
     }
+
+    /// Tileroam's iCloud Drive folder is available (signed in, iCloud Drive on).
+    private(set) var isICloudAvailable = false
 
     // The app's own folder for downloaded activities
     private(set) var exportFolderName: String?
@@ -226,10 +229,24 @@ final class ActivityStore {
         recompute()
         chooseInitialCountries()
         loadRegions()
+        _ = NotificationCenter.default.addObserver(forName: SettingsSync.didChangeExternally, object: nil,
+                                                   queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.applySyncedCountries() }
+        }
+    }
+
+    /// Countries chosen on another device (see `SettingsSync`).
+    private func applySyncedCountries() {
+        let saved = Set(UserDefaults.standard.stringArray(forKey: Self.countriesKey) ?? [])
+        guard !saved.isEmpty, saved != enabledCountries else { return }
+        enabledCountries = saved
+        pruneCountriesAfterCount = false
+        loadRegions()
     }
 
     /// Re-scans the folder and continues the Strava sync.
     func refreshAll() async {
+        await updateICloud() // so Strava saves to iCloud from the start
         syncStrava()
         await refresh()
     }
@@ -273,9 +290,10 @@ final class ActivityStore {
         recompute()
     }
 
-    /// Copies individual .fit files into the internal Import folder and imports them.
+    /// Copies individual .fit files into the Import folder (in iCloud when available) and imports them.
     func importFiles(_ urls: [URL]) async {
-        let target = FolderAccess.internalImportFolder
+        await updateICloud()
+        let target = FolderAccess.importTarget
         let failed = await Task.detached(priority: .userInitiated) {
             var failed = [String]()
             for url in urls {
@@ -296,12 +314,14 @@ final class ActivityStore {
 
     /// Imports new and changed files from all folders.
     func refresh() async {
-        // The internal Import folder ("On My iPhone › Tileroam › Import") is always read too.
-        let folders = FolderAccess.importFolders() + [.internalFolder]
         guard !isImporting else { return }
         isImporting = true
         progress = (0, 0)
         defer { isImporting = false }
+        await updateICloud()
+        // The internal Import folder ("On My iPhone › Tileroam › Import") and the iCloud folder
+        // are always read too.
+        let folders = FolderAccess.importFolders() + FolderAccess.builtInFolders
         updateFolderStatuses()
 
         var all = [Activity]()
@@ -320,7 +340,7 @@ final class ActivityStore {
                 switch event {
                 case .started(let found, let toParse):
                     progress = (0, toParse)
-                    if found == 0, !folder.isInternal {
+                    if found == 0, !folder.isBuiltIn {
                         setProblem(String(localized: "No .fit files found in “\(folder.name)”. Choose the folder that contains your .fit files."), for: folder.id)
                     }
                 case .folderUnreadable(let message):
@@ -361,9 +381,10 @@ final class ActivityStore {
         exportFolderLocation = FolderAccess.displayLocation(url)
         exportMessage = nil
 
-        // Move files saved earlier in the app's internal storage (or, in early versions, in the
-        // first import folder) to the new save folder.
-        let sources = [FolderAccess.internalFolder] + FolderAccess.importFolders().filter { !$0.isInternal }.prefix(1).compactMap(FolderAccess.resolve)
+        // Move files saved earlier in the app's own storage (internal or iCloud; in early
+        // versions, the first import folder) to the new save folder.
+        let ownStorage = [FolderAccess.internalFolder] + [FolderAccess.iCloudFolder].compactMap { $0 }
+        let sources = ownStorage + FolderAccess.importFolders().filter { !$0.isBuiltIn }.prefix(1).compactMap(FolderAccess.resolve)
         if let new = FolderAccess.resolve(.export) {
             do {
                 let moved = try await Task.detached(priority: .userInitiated) {
@@ -371,8 +392,10 @@ final class ActivityStore {
                     for old in sources {
                         moved += try StravaExport.moveExports(from: old, to: new)
                     }
-                    moved += try StravaExport.moveExports(from: FolderAccess.internalFolder, to: new, subfolder: "Routes",
-                                                          isOwn: { $0.hasSuffix("-Tileroam.gpx") })
+                    for old in ownStorage {
+                        moved += try StravaExport.moveExports(from: old, to: new, subfolder: "Routes",
+                                                              isOwn: { $0.hasSuffix("-Tileroam.gpx") })
+                    }
                     return moved
                 }.value
                 if moved > 0 { exportMessage = String(localized: "Moved \(moved) earlier saved files to “\(url.lastPathComponent)”.") }
@@ -383,12 +406,41 @@ final class ActivityStore {
         syncStrava()
     }
 
-    /// Save in the app's internal storage again. Files already in the chosen folder stay there.
-    func useInternalSaveFolder() {
+    /// Save in Tileroam's own folder again (iCloud Drive, or internal storage without iCloud).
+    /// Files already in the chosen folder stay there.
+    func useDefaultSaveFolder() {
         FolderAccess.clearSaveFolder()
         exportFolderName = nil
         exportFolderLocation = nil
         exportMessage = nil
+    }
+
+    // MARK: iCloud
+
+    private static let movedToICloudKey = "movedToICloud"
+
+    /// Looks up the iCloud folder; the first time it is available, moves what the app saved in
+    /// its internal storage there so the user's other devices get it.
+    private func updateICloud() async {
+        let folder = await Task.detached(priority: .userInitiated) { FolderAccess.updateICloudFolder() }.value
+        isICloudAvailable = folder != nil
+        guard let folder, !UserDefaults.standard.bool(forKey: Self.movedToICloudKey) else { return }
+        UserDefaults.standard.set(true, forKey: Self.movedToICloudKey)
+        let saveHere = !FolderAccess.hasChosenSaveFolder
+        let moved = await Task.detached(priority: .userInitiated) {
+            let local = FolderAccess.internalFolder
+            var moved = (try? StravaExport.moveExports(from: local, to: folder, subfolder: "Import",
+                                                       isOwn: { $0.lowercased().hasSuffix(".fit") })) ?? 0
+            if saveHere {
+                moved += (try? StravaExport.moveExports(from: local, to: folder)) ?? 0
+                moved += (try? StravaExport.moveExports(from: local, to: folder, subfolder: "Routes",
+                                                        isOwn: { $0.hasSuffix("-Tileroam.gpx") })) ?? 0
+            }
+            return moved
+        }.value
+        if moved > 0 {
+            exportMessage = String(localized: "Moved \(moved) files to \(FolderAccess.iCloudLocation).")
+        }
     }
 
     // MARK: Strava

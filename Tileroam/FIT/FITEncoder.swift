@@ -18,6 +18,8 @@ struct FITEncoder {
     var distance: Double
     /// FIT sport enum.
     var sport: UInt8
+    /// FIT sub_sport enum; 58 marks a virtual activity (Zwift, Rouvy, …).
+    var subSport: UInt8 = 0
     var samples: [Sample] = []
 
     private var body = [UInt8]()
@@ -52,7 +54,7 @@ struct FITEncoder {
         let elapsedMs = UInt32(max(0, elapsedTime) * 1000)
         let timerMs = UInt32(max(0, movingTime > 0 ? movingTime : elapsedTime) * 1000)
         let distanceCm = UInt32(max(0, distance) * 100)
-        let sport = self.sport
+        let sport = self.sport, subSport = self.subSport
         let samples = self.samples
 
         // file_id: type, manufacturer, product, time_created
@@ -81,13 +83,13 @@ struct FITEncoder {
                                               (7, 4, 0x86), (8, 4, 0x86), (9, 4, 0x86)])
         data(local: 2) { $0.u32(end); $0.u8(9); $0.u8(1); $0.u32(start); $0.u32(elapsedMs); $0.u32(timerMs); $0.u32(distanceCm) }
 
-        // session: + sport, first_lap_index, num_laps
+        // session: + sport, sub_sport, first_lap_index, num_laps
         define(local: 3, global: 18, fields: [(253, 4, 0x86), (0, 1, 0x00), (1, 1, 0x00), (2, 4, 0x86),
                                               (7, 4, 0x86), (8, 4, 0x86), (9, 4, 0x86), (5, 1, 0x00),
-                                              (25, 2, 0x84), (26, 2, 0x84)])
+                                              (6, 1, 0x00), (25, 2, 0x84), (26, 2, 0x84)])
         data(local: 3) {
             $0.u32(end); $0.u8(8); $0.u8(1); $0.u32(start); $0.u32(elapsedMs); $0.u32(timerMs); $0.u32(distanceCm)
-            $0.u8(sport); $0.u16(0); $0.u16(1)
+            $0.u8(sport); $0.u8(subSport); $0.u16(0); $0.u16(1)
         }
 
         // activity: timestamp, total_timer_time, num_sessions, type, event, event_type

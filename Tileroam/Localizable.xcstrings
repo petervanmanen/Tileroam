@@ -3385,6 +3385,150 @@
         }
       }
     },
+    "Moved %lld files to %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moved %#@n@ to %2$@."
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg file"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg files"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ verplaatst naar %2$@."
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg bestand"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg bestanden"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ déplacé(s) vers %2$@."
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg fichier"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg fichiers"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ movido(s) a %2$@."
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg archivo"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg archivos"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ nach %2$@ verschoben."
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg Datei"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg Dateien"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Municipalities": {
       "localizations": {
         "nl": {
@@ -5849,30 +5993,30 @@
         }
       }
     },
-    "Tileroam reads .fit files from these folders and their subfolders, and always from the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.": {
+    "Tileroam reads .fit files from these folders and their subfolders, and always from its own folder in iCloud Drive, shared by your devices, and the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam leest .fit-bestanden uit deze mappen en hun submappen, en altijd uit de map Import in de eigen opslag (zet bestanden daar met de Bestanden-app of AirDrop). Veeg een map naar links om hem te verwijderen; de activiteiten verdwijnen van de kaart, de bestanden zelf blijven ongemoeid."
+            "value": "Tileroam leest .fit-bestanden uit deze mappen en hun submappen, en altijd uit de eigen map in iCloud Drive, die je apparaten delen, en uit de map Import in de eigen opslag (zet bestanden daar met de Bestanden-app of AirDrop). Veeg een map naar links om hem te verwijderen; de activiteiten verdwijnen van de kaart, de bestanden zelf blijven ongemoeid."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam lit les fichiers .fit de ces dossiers et de leurs sous-dossiers, ainsi que toujours du dossier Import de son propre stockage (déposez-y des fichiers avec l’app Fichiers ou AirDrop). Balayez un dossier vers la gauche pour le retirer ; ses activités disparaissent de la carte, les fichiers ne sont pas modifiés."
+            "value": "Tileroam lit les fichiers .fit de ces dossiers et de leurs sous-dossiers, ainsi que toujours de son dossier iCloud Drive, partagé par vos appareils, et du dossier Import de son propre stockage (déposez-y des fichiers avec l’app Fichiers ou AirDrop). Balayez un dossier vers la gauche pour le retirer ; ses activités disparaissent de la carte, les fichiers ne sont pas modifiés."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam lee los archivos .fit de estas carpetas y sus subcarpetas, y siempre de la carpeta Import de su propio almacenamiento (pon archivos ahí con la app Archivos o AirDrop). Desliza una carpeta a la izquierda para quitarla; sus actividades desaparecen del mapa, los archivos no se tocan."
+            "value": "Tileroam lee los archivos .fit de estas carpetas y sus subcarpetas, y siempre de su propia carpeta en iCloud Drive, compartida por tus dispositivos, y de la carpeta Import de su propio almacenamiento (pon archivos ahí con la app Archivos o AirDrop). Desliza una carpeta a la izquierda para quitarla; sus actividades desaparecen del mapa, los archivos no se tocan."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam liest .fit-Dateien aus diesen Ordnern und ihren Unterordnern und immer aus dem Ordner Import im eigenen Speicher (lege Dateien dort mit der Dateien-App oder AirDrop ab). Wische einen Ordner nach links, um ihn zu entfernen; seine Aktivitäten verschwinden von der Karte, die Dateien selbst bleiben unverändert."
+            "value": "Tileroam liest .fit-Dateien aus diesen Ordnern und ihren Unterordnern und immer aus dem eigenen Ordner in iCloud Drive, den deine Geräte teilen, sowie aus dem Ordner Import im eigenen Speicher (lege Dateien dort mit der Dateien-App oder AirDrop ab). Wische einen Ordner nach links, um ihn zu entfernen; seine Aktivitäten verschwinden von der Karte, die Dateien selbst bleiben unverändert."
           }
         }
       }
@@ -5905,58 +6049,58 @@
         }
       }
     },
-    "Tileroam saves planned routes and downloaded activities here, in “Routes” and “%@” subfolders. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.": {
+    "Tileroam saves planned routes and downloaded activities here, in “Routes” and “%@” subfolders. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam bewaart geplande routes en gedownloade activiteiten hier, in de submappen “Routes” en “%@”. Zonder gekozen map blijven ze in de eigen opslag van de app, die je in de Bestanden-app kunt openen. Kies een map, bijvoorbeeld een nieuwe map “Tileroam” in iCloud Drive, om ze in iCloud te bewaren."
+            "value": "Tileroam bewaart geplande routes en gedownloade activiteiten hier, in de submappen “Routes” en “%@”. Zonder gekozen map gaan ze naar de map van Tileroam in iCloud Drive, zodat je andere apparaten ze ook hebben, of naar de eigen opslag van de app als iCloud Drive uit staat."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam enregistre ici les parcours planifiés et les activités téléchargées, dans les sous-dossiers « Routes » et « %@ ». Sans dossier choisi, ils restent dans le stockage de l’app, accessible depuis l’app Fichiers. Choisissez un dossier, par exemple un nouveau dossier « Tileroam » dans iCloud Drive, pour les garder dans iCloud."
+            "value": "Tileroam enregistre ici les parcours planifiés et les activités téléchargées, dans les sous-dossiers « Routes » et « %@ ». Sans dossier choisi, ils vont dans le dossier Tileroam d’iCloud Drive, pour que vos autres appareils les aient aussi, ou dans le stockage de l’app si iCloud Drive est désactivé."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam guarda aquí las rutas planificadas y las actividades descargadas, en las subcarpetas “Routes” y “%@”. Sin carpeta elegida se quedan en el almacenamiento propio de la app, que puedes abrir en la app Archivos. Elige una carpeta, por ejemplo una nueva carpeta “Tileroam” en iCloud Drive, para guardarlas en iCloud."
+            "value": "Tileroam guarda aquí las rutas planificadas y las actividades descargadas, en las subcarpetas “Routes” y “%@”. Sin carpeta elegida van a la carpeta de Tileroam en iCloud Drive, para que tus otros dispositivos también las tengan, o al almacenamiento propio de la app si iCloud Drive está desactivado."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam speichert geplante Routen und geladene Aktivitäten hier, in den Unterordnern „Routes“ und „%@“. Ohne gewählten Ordner bleiben sie im eigenen Speicher der App, den du in der Dateien-App öffnen kannst. Wähle einen Ordner, zum Beispiel einen neuen Ordner „Tileroam“ in iCloud Drive, um sie in iCloud zu behalten."
+            "value": "Tileroam speichert geplante Routen und geladene Aktivitäten hier, in den Unterordnern „Routes“ und „%@“. Ohne gewählten Ordner landen sie im Tileroam-Ordner in iCloud Drive, damit deine anderen Geräte sie auch haben, oder im eigenen Speicher der App, wenn iCloud Drive aus ist."
           }
         }
       }
     },
-    "Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they stay in the app's own storage, which you can open in the Files app. Choose a folder, for example a new “Tileroam” folder in iCloud Drive, to keep them in iCloud.": {
+    "Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam bewaart geplande routes hier, in een submap “Routes”. Zonder gekozen map blijven ze in de eigen opslag van de app, die je in de Bestanden-app kunt openen. Kies een map, bijvoorbeeld een nieuwe map “Tileroam” in iCloud Drive, om ze in iCloud te bewaren."
+            "value": "Tileroam bewaart geplande routes hier, in een submap “Routes”. Zonder gekozen map gaan ze naar de map van Tileroam in iCloud Drive, zodat je andere apparaten ze ook hebben, of naar de eigen opslag van de app als iCloud Drive uit staat."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam enregistre ici les parcours planifiés, dans un sous-dossier « Routes ». Sans dossier choisi, ils restent dans le stockage de l’app, accessible depuis l’app Fichiers. Choisissez un dossier, par exemple un nouveau dossier « Tileroam » dans iCloud Drive, pour les garder dans iCloud."
+            "value": "Tileroam enregistre ici les parcours planifiés, dans un sous-dossier « Routes ». Sans dossier choisi, ils vont dans le dossier Tileroam d’iCloud Drive, pour que vos autres appareils les aient aussi, ou dans le stockage de l’app si iCloud Drive est désactivé."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam guarda aquí las rutas planificadas, en una subcarpeta “Routes”. Sin carpeta elegida se quedan en el almacenamiento propio de la app, que puedes abrir en la app Archivos. Elige una carpeta, por ejemplo una nueva carpeta “Tileroam” en iCloud Drive, para guardarlas en iCloud."
+            "value": "Tileroam guarda aquí las rutas planificadas, en una subcarpeta “Routes”. Sin carpeta elegida van a la carpeta de Tileroam en iCloud Drive, para que tus otros dispositivos también las tengan, o al almacenamiento propio de la app si iCloud Drive está desactivado."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam speichert geplante Routen hier im Unterordner „Routes“. Ohne gewählten Ordner bleiben sie im eigenen Speicher der App, den du in der Dateien-App öffnen kannst. Wähle einen Ordner, zum Beispiel einen neuen Ordner „Tileroam“ in iCloud Drive, um sie in iCloud zu behalten."
+            "value": "Tileroam speichert geplante Routen hier im Unterordner „Routes“. Ohne gewählten Ordner landen sie im Tileroam-Ordner in iCloud Drive, damit deine anderen Geräte sie auch haben, oder im eigenen Speicher der App, wenn iCloud Drive aus ist."
           }
         }
       }
@@ -6097,6 +6241,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Internen Speicher verwenden"
+          }
+        }
+      }
+    },
+    "Use iCloud Drive": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebruik iCloud Drive"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utiliser iCloud Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usar iCloud Drive"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Drive verwenden"
           }
         }
       }
@@ -6499,6 +6671,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zoom 17"
+          }
+        }
+      }
+    },
+    "iCloud Drive": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Drive"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Drive"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Drive"
           }
         }
       }

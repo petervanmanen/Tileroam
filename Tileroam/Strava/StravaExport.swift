@@ -23,6 +23,8 @@ enum StravaExport {
                                  movingTime: activity.movingTime ?? 0,
                                  distance: activity.distance,
                                  sport: FITEncoder.sport(forName: activity.sport))
+        // Keeps virtual rides recognizable when another device imports the file.
+        if activity.isVirtual == true { encoder.subSport = 58 }
         if let stream {
             encoder.samples = stream.points.indices.map { i in
                 FITEncoder.Sample(date: start.addingTimeInterval(i < stream.times.count ? stream.times[i] : Double(i)),

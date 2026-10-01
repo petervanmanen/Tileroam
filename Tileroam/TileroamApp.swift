@@ -5,6 +5,10 @@ struct TileroamApp: App {
     @State private var store = ActivityStore()
     @State private var plan = PlanStore()
 
+    init() {
+        SettingsSync.start()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
