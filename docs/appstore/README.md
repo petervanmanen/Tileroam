@@ -85,7 +85,7 @@ xcodebuild -exportArchive -archivePath build/Tileroam.xcarchive -exportOptionsPl
 5. Optional: test the build via **TestFlight** on your own iPhone and iPad first.
 
 ### Or let GitHub Actions do it
-`.github/workflows/testflight.yml` tests, archives and uploads to TestFlight on GitHub's `xcode-27` runner. It uses the repository secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (App Store Connect API key) and `STRAVA_CONFIG_PLIST`.
+`.github/workflows/testflight.yml` tests, archives and uploads to TestFlight on GitHub's `xcode-27` runner. It uses the repository secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` and `STRAVA_CONFIG_PLIST`. The first three are an App Store Connect API key, which must have the **Admin** role: with App Manager, cloud signing for distribution fails (exit code 70).
 - **Release a version:** tag it and push the tag. That uploads version 1.0.1:
   ```bash
   git tag v1.0.1 && git push origin v1.0.1
