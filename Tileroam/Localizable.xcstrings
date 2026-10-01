@@ -1193,62 +1193,6 @@
         }
       }
     },
-    "%lld/%lld municipalities": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld gemeenten"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld communes"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld municipios"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld Gemeinden"
-          }
-        }
-      }
-    },
-    "%lld/%lld municipalities · %lld/%lld postcodes": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld gemeenten · %3$lld/%4$lld postcodes"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld communes · %3$lld/%4$lld codes postaux"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld municipios · %3$lld/%4$lld códigos postales"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld/%2$lld Gemeinden · %3$lld/%4$lld Postleitzahlen"
-          }
-        }
-      }
-    },
     "Activities": {
       "localizations": {
         "nl": {
@@ -2201,58 +2145,30 @@
         }
       }
     },
-    "Counted for the countries switched on in Settings.": {
+    "Countries are counted as soon as you have an activity there. Postcodes are only available where their boundaries are open data. In the United Kingdom and Ireland, local authorities count as municipalities; in Andorra and San Marino, parishes and castelli.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Geteld voor de landen die in Instellingen aanstaan."
+            "value": "Een land telt mee zodra je er een activiteit hebt. Postcodes zijn er alleen waar de grenzen open data zijn. In het Verenigd Koninkrijk en Ierland tellen local authorities als gemeenten; in Andorra en San Marino de parochies en castelli."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comptées pour les pays activés dans Réglages."
+            "value": "Un pays est compté dès que vous y avez une activité. Les codes postaux ne sont disponibles que là où leurs limites sont des données ouvertes. Au Royaume-Uni et en Irlande, les autorités locales comptent comme communes ; en Andorre et à Saint-Marin, les paroisses et castelli."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Contados para los países activados en Ajustes."
+            "value": "Un país cuenta en cuanto tienes una actividad allí. Los códigos postales solo están disponibles donde sus límites son datos abiertos. En el Reino Unido e Irlanda, las autoridades locales cuentan como municipios; en Andorra y San Marino, las parroquias y castelli."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gezählt für die in den Einstellungen aktivierten Länder."
-          }
-        }
-      }
-    },
-    "Countries": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Landen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pays"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Países"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Länder"
+            "value": "Ein Land zählt, sobald du dort eine Aktivität hast. Postleitzahlen gibt es nur, wo ihre Grenzen offene Daten sind. Im Vereinigten Königreich und in Irland zählen Local Authorities als Gemeinden, in Andorra und San Marino die Parroquias und Castelli."
           }
         }
       }
@@ -3525,34 +3441,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gemeinden"
-          }
-        }
-      }
-    },
-    "Municipalities and postcodes are counted for the switched-on countries. Postcodes are only available where their boundaries are open data. In the United Kingdom and Ireland, local authorities count as municipalities; in Andorra and San Marino, parishes and castelli.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemeenten en postcodes worden geteld voor de ingeschakelde landen. Postcodes zijn er alleen waar de grenzen open data zijn. In het Verenigd Koninkrijk en Ierland tellen local authorities als gemeenten; in Andorra en San Marino de parochies en castelli."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les communes et codes postaux sont comptés pour les pays activés. Les codes postaux ne sont disponibles que là où leurs limites sont des données ouvertes. Au Royaume-Uni et en Irlande, les autorités locales comptent comme communes ; en Andorre et à Saint-Marin, les paroisses et castelli."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Los municipios y códigos postales se cuentan para los países activados. Los códigos postales solo están disponibles donde sus límites son datos abiertos. En el Reino Unido e Irlanda, las autoridades locales cuentan como municipios; en Andorra y San Marino, las parroquias y castelli."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemeinden und Postleitzahlen werden für die aktivierten Länder gezählt. Postleitzahlen gibt es nur, wo ihre Grenzen offene Daten sind. Im Vereinigten Königreich und in Irland zählen Local Authorities als Gemeinden, in Andorra und San Marino die Parroquias und Castelli."
           }
         }
       }

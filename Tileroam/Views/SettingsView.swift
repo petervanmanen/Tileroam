@@ -126,8 +126,6 @@ struct SettingsView: View {
                     Text("Zoom 14 tiles (~1.5 km in the Netherlands) are the explorer tiles of VeloViewer, StatsHunters and rideeverytile.com. Zoom 17 squadratinhos (~190 m) are used by Squadrats. Both are always counted; this setting chooses which one the map, statistics and route planning use.")
                 }
 
-                countriesSection
-
                 Section {
                     NavigationLink {
                         StatisticsView()
@@ -177,40 +175,6 @@ extension SettingsView {
         } label: {
             Text(zoom.title)
             Text("Max square \(stats.maxSquare)×\(stats.maxSquare) · cluster \(stats.maxCluster)")
-        }
-    }
-
-    @ViewBuilder
-    private var countriesSection: some View {
-        let municipalities = store.regionCounts(.municipalities)
-        let postcodes = store.regionCounts(.postcodes)
-        Section {
-            ForEach(Country.sortedByName) { country in
-                Toggle(isOn: Binding(get: { store.enabledCountries.contains(country.code) },
-                                     set: { store.setCountry(country.code, enabled: $0) })) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("\(country.flag) \(country.name)")
-                        if let m = municipalities[country.code] {
-                            if let p = postcodes[country.code] {
-                                Text("\(m.visited)/\(m.total) municipalities · \(p.visited)/\(p.total) postcodes")
-                                    .font(.caption).foregroundStyle(.secondary)
-                            } else {
-                                Text("\(m.visited)/\(m.total) municipalities")
-                                    .font(.caption).foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                }
-            }
-            NavigationLink("Municipalities") { AreaList(kind: .municipalities) }
-            NavigationLink("Postcodes") { AreaList(kind: .postcodes) }
-        } header: {
-            HStack {
-                Text("Countries")
-                if store.isLoadingRegions { ProgressView().controlSize(.small) }
-            }
-        } footer: {
-            Text("Municipalities and postcodes are counted for the switched-on countries. Postcodes are only available where their boundaries are open data. In the United Kingdom and Ireland, local authorities count as municipalities; in Andorra and San Marino, parishes and castelli.")
         }
     }
 
@@ -318,39 +282,6 @@ struct PoweredByStrava: View {
     }
 }
 #endif
-
-/// Searchable list of municipalities or postcodes of the switched-on countries.
-private struct AreaList: View {
-    @Environment(ActivityStore.self) private var store
-    let kind: AreaKind
-    @State private var search = ""
-
-    var body: some View {
-        let areas = store.regions?.areas(kind).all ?? []
-        let visited = kind == .municipalities ? store.visitedMunicipalities : store.visitedPostcodes
-        let filtered = areas.filter {
-            search.isEmpty || $0.name.localizedCaseInsensitiveContains(search) || $0.localCode.hasPrefix(search)
-        }
-        let byCountry = Dictionary(grouping: filtered, by: \.country)
-        List {
-            ForEach(Country.sortedByName.filter { byCountry[$0.code] != nil }) { country in
-                Section("\(country.flag) \(country.name)") {
-                    ForEach(byCountry[country.code]!.sorted { $0.name < $1.name || ($0.name == $1.name && $0.code < $1.code) }) { area in
-                        let isVisited = visited.contains(area.code)
-                        Label {
-                            Text(kind == .postcodes ? area.postcodeLabel : area.name)
-                        } icon: {
-                            Image(systemName: isVisited ? "checkmark.circle.fill" : "circle")
-                                .foregroundStyle(isVisited ? .green : .secondary)
-                        }
-                    }
-                }
-            }
-        }
-        .searchable(text: $search)
-        .navigationTitle(kind == .municipalities ? String(localized: "Municipalities") : String(localized: "Postcodes"))
-    }
-}
 
 /// Data sources and licenses (required attribution).
 private struct SourcesView: View {

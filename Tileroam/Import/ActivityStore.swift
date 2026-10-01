@@ -89,14 +89,6 @@ final class ActivityStore {
         }
     }
 
-    func setCountry(_ code: String, enabled: Bool) {
-        countriesAutomatic = false
-        pruneCountriesAfterCount = false
-        if enabled { enabledCountries.insert(code) } else { enabledCountries.remove(code) }
-        UserDefaults.standard.set(Array(enabledCountries).sorted(), forKey: Self.countriesKey)
-        loadRegions()
-    }
-
     /// Visited/total per country for a kind of area.
     func regionCounts(_ kind: AreaKind) -> [String: (visited: Int, total: Int)] {
         guard let areas = regions?.areas(kind) else { return [:] }
@@ -119,13 +111,6 @@ final class ActivityStore {
         }
     }
 
-    private static let countriesAutomaticKey = "countriesAutomatic"
-
-    /// Countries follow the activities until the user switches one on or off.
-    private var countriesAutomatic: Bool {
-        get { UserDefaults.standard.object(forKey: Self.countriesAutomaticKey) as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: Self.countriesAutomaticKey) }
-    }
     private var countryScannedIDs = Set<String>()
 
     private func chooseInitialCountries() {
@@ -136,14 +121,16 @@ final class ActivityStore {
             let region = Locale.current.region?.identifier ?? "NL"
             enabledCountries = [Country.named(region) != nil ? region : "NL"]
         }
+        // Countries follow the activities: drop any without visits after the first count
+        // (earlier versions let the user switch countries on by hand).
+        pruneCountriesAfterCount = true
         detectCountries(load: false)
     }
 
-    /// Automatic mode: switch on countries whose bounding box contains new activities. Bounding
-    /// boxes overlap (Monaco lies within France's, southern Netherlands within Belgium's), so
-    /// countries without visits are dropped again after the next count.
+    /// Switches on countries whose bounding box contains new activities. Bounding boxes overlap
+    /// (Monaco lies within France's, southern Netherlands within Belgium's), so countries
+    /// without visits are dropped again after the next count.
     private func detectCountries(load: Bool = true) {
-        guard countriesAutomatic else { return }
         var found = Set<String>()
         for a in folderActivities + stravaActivities where !countryScannedIDs.contains(a.id) && a.isVirtual != true {
             countryScannedIDs.insert(a.id)
@@ -228,19 +215,6 @@ final class ActivityStore {
         }
         recompute()
         chooseInitialCountries()
-        loadRegions()
-        _ = NotificationCenter.default.addObserver(forName: SettingsSync.didChangeExternally, object: nil,
-                                                   queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { self?.applySyncedCountries() }
-        }
-    }
-
-    /// Countries chosen on another device (see `SettingsSync`).
-    private func applySyncedCountries() {
-        let saved = Set(UserDefaults.standard.stringArray(forKey: Self.countriesKey) ?? [])
-        guard !saved.isEmpty, saved != enabledCountries else { return }
-        enabledCountries = saved
-        pruneCountriesAfterCount = false
         loadRegions()
     }
 

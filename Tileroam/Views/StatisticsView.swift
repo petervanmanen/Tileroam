@@ -11,8 +11,7 @@ struct StatisticsView: View {
         let visitedCountries = Country.sortedByName.filter { (municipalities[$0.code]?.visited ?? 0) > 0 }
         List {
             Section("Overview") {
-                LabeledContent("Countries visited",
-                               value: "\(visitedCountries.count) / \(store.enabledCountries.count)")
+                LabeledContent("Countries visited", value: visitedCountries.count.formatted())
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
                 LabeledContent(TileZoom.explorer.title, value: store.tiles14.count.formatted())
@@ -49,7 +48,7 @@ struct StatisticsView: View {
             } header: {
                 Text("Municipalities per Country")
             } footer: {
-                Text("Counted for the countries switched on in Settings.")
+                Text("Countries are counted as soon as you have an activity there. Postcodes are only available where their boundaries are open data. In the United Kingdom and Ireland, local authorities count as municipalities; in Andorra and San Marino, parishes and castelli.")
             }
 
             totals(title: String(localized: "This Year (\(String(year)))"),

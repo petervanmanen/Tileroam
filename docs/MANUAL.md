@@ -117,7 +117,7 @@ Municipalities and postcodes are available for 22 countries:
 - the United Kingdom
 - Vatican City
 
-Tileroam switches on the countries where you have activities automatically. You can change this in Settings → Countries.
+A country is counted as soon as you have an activity there; there is nothing to set up.
 
 ## Your devices and iCloud
 
