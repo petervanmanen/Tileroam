@@ -165,6 +165,10 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - The UK postcode districts (2018) and Spanish postcodes (around 2015) are older datasets.
 - Route planning depends on the public OSRM server, which is a free community service without guarantees.
 
+## Privacy
+
+Tileroam has no accounts, analytics or tracking, and your activities stay on your device and in your own iCloud. See the [privacy policy](PRIVACY.md).
+
 ## License
 
 The source code is licensed under the [MIT License](LICENSE). The bundled boundary data keeps the licenses of its sources (CC BY, OGL, Licence Ouverte, ODbL and others); see [DATA-LICENSES.md](DATA-LICENSES.md).
