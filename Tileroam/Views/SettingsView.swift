@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var confirmDisconnect = false
     @State private var confirmDeleteStravaFiles = false
     @State private var stravaFileCount = 0
+    @State private var showStorage = false
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     let onChooseFolder: (PickerPurpose) -> Void
     let onShowIntro: () -> Void
@@ -136,6 +137,8 @@ struct SettingsView: View {
                     }
                     LabeledContent("Activities", value: store.activities.count.formatted())
                     LabeledContent("Without GPS", value: store.activitiesWithoutGPS.formatted())
+                } footer: {
+                    Text("Activities without GPS (indoor workouts, or workouts synced into Apple Health without a route) are counted but can't be drawn.")
                 }
 
                 if !store.failedFiles.isEmpty {
@@ -150,16 +153,20 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Button("Clear Cache & Re-import", role: .destructive) {
-                        Task { await store.clearCache() }
+                    NavigationLink {
+                        StorageView()
+                    } label: {
+                        Label("Storage", systemImage: "internaldrive")
                     }
-                    .disabled(store.isImporting)
-                } footer: {
-                    Text("Activities without GPS (indoor workouts, or workouts synced into Apple Health without a route) are counted but can't be drawn.")
                 }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showStorage) { StorageView() }
+            #if DEBUG
+            // Screenshots: -ShowSettings YES -ShowStorage YES opens Settings → Storage on launch.
+            .onAppear { if UserDefaults.standard.bool(forKey: "ShowStorage") { showStorage = true } }
+            #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }

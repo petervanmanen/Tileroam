@@ -47,6 +47,11 @@ enum TrackCache {
         try? url.setResourceValues(values)
     }
 
+    /// Size of a cache file on the device.
+    static func bytes(_ source: Source = .folder) -> Int {
+        (try? url(source).resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+    }
+
     static func clear(_ source: Source = .folder) {
         try? FileManager.default.removeItem(at: url(source))
     }

@@ -16,17 +16,8 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
   - `PlanStore.plan(with:)` now always uses `CurrentLocation`; `plan(from:with:)` already takes any start.
 - ~~Municipalities and postcodes only where route maps exist~~: done on `feature/benelux-areas` (phase 1). The boundary packs of the 19 dropped countries are still in App Store Connect; they're removed with the cleanup script (phase 2).
 - ~~Script to remove asset packs from App Store Connect~~: done as `Tools/clean_asset_packs.sh` (phase 2). Apple's API can't delete or archive packs, so the script lists missing and unused packs and archiving happens on the website. Archiving the 19 dropped boundary packs (`regions-DE`, `regions-FR`, …) is skipped for now: the app doesn't request them, so they do no harm.
-- **Storage in Settings:** a "Storage" screen showing what Tileroam keeps on the device and letting users remove downloaded map data.
-  - Per downloaded routing area (for example "Utrecht area, 52°N 5°E, 52 MB") and per country's boundaries, with sizes and a remove action: `AssetPackManager.remove(assetPackWithID:)`, plus clearing the matching links in `Application Support/Routing/tiles-<build>`.
-  - The activity caches, also removable (they're rebuilt from the files).
-  - Removed data downloads again the next time it's needed.
-  - Show this in the user guide too.
-- **Large map downloads only on Wi-Fi:** routing areas and boundaries above 25 MB in total are downloaded only on Wi-Fi.
-  - Before downloading, check the connection with `NWPathMonitor`. Mobile data and personal hotspots count as `isExpensive`; Low Data Mode counts as `isConstrained`.
-  - On mobile data with more than 25 MB to download, don't start. Say "Map data for this area (73 MB) downloads on Wi-Fi", with a "Download Anyway" button.
-  - Add a setting to allow large downloads over mobile data.
-  - Check how Apple's Background Assets already handle mobile data for on-demand packs, so the app doesn't contradict the system.
-  - Also applies to boundary downloads (France is about 10 MB, so mostly routing).
+- ~~Storage in Settings~~: done on `feature/storage` (phase 3). Settings → Storage lists the downloaded routing areas (named after a nearby town, with size; swipe or "Remove All" to delete), the boundaries per country (info only, they reload automatically) and the activity cache with "Clear Cache & Re-import".
+- ~~Large map downloads only on Wi-Fi~~: done on `feature/storage` (phase 3). Above 25 MB, routing areas wait for Wi-Fi (`NWPathMonitor`: not expensive, not constrained), with "Download Anyway" and a setting "Download Map Data over Mobile Data". Background Assets has no mobile-data policy for on-demand packs, so the rule lives in the app. Boundary packs are under 1 MB, so they're left out of the rule.
 - **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release

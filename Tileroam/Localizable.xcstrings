@@ -29,6 +29,34 @@
         }
       }
     },
+    "%@ area": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebied %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone de %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zona de %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebiet %@"
+          }
+        }
+      }
+    },
     "%@ · max square %lld×%lld · cluster %lld": {
       "localizations": {
         "nl": {
@@ -1249,6 +1277,34 @@
         }
       }
     },
+    "Activity cache": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activiteitencache"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache des activités"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caché de actividades"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivitäten-Cache"
+          }
+        }
+      }
+    },
     "Activity data from Strava when connected": {
       "localizations": {
         "nl": {
@@ -1441,6 +1497,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erlaube Tileroam in den Einstellungen, deinen Standort zu verwenden, um die Karte auf dich zu zentrieren."
+          }
+        }
+      }
+    },
+    "Areas of about 70 × 110 km, downloaded when you plan a route there. Swipe left to remove one; it downloads again the next time you plan there.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebieden van ongeveer 70 × 110 km, gedownload als je er een route plant. Veeg naar links om er een te verwijderen; het wordt opnieuw gedownload als je er weer plant."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zones d'environ 70 × 110 km, téléchargées quand vous y planifiez un parcours. Balayez vers la gauche pour en supprimer une ; elle sera retéléchargée la prochaine fois."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonas de unos 70 × 110 km, descargadas cuando planificas una ruta allí. Desliza a la izquierda para eliminar una; se vuelve a descargar la próxima vez que planifiques allí."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebiete von etwa 70 × 110 km, geladen, wenn du dort eine Route planst. Nach links wischen zum Entfernen; beim nächsten Planen dort wird es erneut geladen."
           }
         }
       }
@@ -2641,6 +2725,90 @@
         }
       }
     },
+    "Download Anyway": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toch downloaden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger quand même"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar de todos modos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trotzdem laden"
+          }
+        }
+      }
+    },
+    "Download Map Data over Mobile Data": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens via mobiele data downloaden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger les cartes via les données cellulaires"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar mapas con datos móviles"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten über mobile Daten laden"
+          }
+        }
+      }
+    },
+    "Downloaded for the countries you have activities in. They're small and load again automatically, so they can't be removed here.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gedownload voor de landen waarin je activiteiten hebt. Ze zijn klein en worden automatisch opnieuw geladen, dus je kunt ze hier niet verwijderen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargés pour les pays où vous avez des activités. Ils sont petits et se rechargent automatiquement, ils ne peuvent donc pas être supprimés ici."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargados para los países donde tienes actividades. Son pequeños y se cargan de nuevo automáticamente, así que no se pueden eliminar aquí."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für die Länder geladen, in denen du Aktivitäten hast. Sie sind klein und werden automatisch neu geladen, daher kann man sie hier nicht entfernen."
+          }
+        }
+      }
+    },
     "Downloading map data for route planning (about %@)…": {
       "localizations": {
         "nl": {
@@ -3233,6 +3401,34 @@
         }
       }
     },
+    "It downloads again the next time you plan a route.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het wordt opnieuw gedownload als je weer een route plant."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elles seront retéléchargées la prochaine fois que vous planifierez un parcours."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se vuelve a descargar la próxima vez que planifiques una ruta."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie werden beim nächsten Planen einer Route erneut geladen."
+          }
+        }
+      }
+    },
     "Loading municipalities…": {
       "localizations": {
         "nl": {
@@ -3425,6 +3621,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kartenstil"
+          }
+        }
+      }
+    },
+    "Map data for this area (%@) downloads on Wi-Fi.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens voor dit gebied (%@) worden via wifi gedownload."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données cartographiques de cette zone (%@) se téléchargent en Wi-Fi."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los datos de mapa de esta zona (%@) se descargan con wifi."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten für dieses Gebiet (%@) werden über WLAN geladen."
+          }
+        }
+      }
+    },
+    "Map data larger than %@ downloads only on Wi-Fi, unless this is on. While planning, you can also choose Download Anyway.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens groter dan %@ worden alleen via wifi gedownload, tenzij dit aan staat. Tijdens het plannen kun je ook kiezen voor Toch downloaden."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données cartographiques de plus de %@ se téléchargent uniquement en Wi-Fi, sauf si cette option est activée. Pendant la planification, vous pouvez aussi choisir Télécharger quand même."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los datos de mapa de más de %@ solo se descargan con wifi, salvo que esto esté activado. Al planificar también puedes elegir Descargar de todos modos."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten über %@ werden nur über WLAN geladen, außer dies ist aktiviert. Beim Planen kannst du auch Trotzdem laden wählen."
           }
         }
       }
@@ -3801,6 +4053,34 @@
         }
       }
     },
+    "Municipalities and Postcodes": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeenten en postcodes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Communes et codes postaux"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Municipios y códigos postales"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeinden und Postleitzahlen"
+          }
+        }
+      }
+    },
     "Municipalities and postcodes in the Netherlands, Belgium and Luxembourg": {
       "localizations": {
         "nl": {
@@ -3997,6 +4277,34 @@
         }
       }
     },
+    "No boundaries downloaded.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen grenzen gedownload."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune limite téléchargée."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay límites descargados."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Grenzen geladen."
+          }
+        }
+      }
+    },
     "No municipalities visited yet.": {
       "localizations": {
         "nl": {
@@ -4021,6 +4329,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Noch keine Gemeinden besucht."
+          }
+        }
+      }
+    },
+    "No route planning areas downloaded.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen routeplanningsgebieden gedownload."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune zone de planification téléchargée."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay zonas de planificación descargadas."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Routenplanungsgebiete geladen."
           }
         }
       }
@@ -4669,6 +5005,62 @@
         }
       }
     },
+    "Remove All": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles verwijderen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout supprimer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar todo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle entfernen"
+          }
+        }
+      }
+    },
+    "Remove All Route Planning Data": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle routeplanningsgegevens verwijderen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer toutes les données de planification"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar todos los datos de planificación"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Routenplanungsdaten entfernen"
+          }
+        }
+      }
+    },
     "Remove Sample Rides": {
       "localizations": {
         "nl": {
@@ -4693,6 +5085,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Beispielfahrten entfernen"
+          }
+        }
+      }
+    },
+    "Remove all route planning map data?": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle kaartgegevens voor routeplanning verwijderen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer toutes les données cartographiques de planification ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar todos los datos de mapa de planificación?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Kartendaten für die Routenplanung entfernen?"
           }
         }
       }
@@ -4749,6 +5169,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jetzt neu scannen"
+          }
+        }
+      }
+    },
+    "Route Planning Map Data": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens routeplanning"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Données cartographiques de planification"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datos de mapa para planificar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten für die Routenplanung"
           }
         }
       }
@@ -5733,6 +6181,34 @@
         }
       }
     },
+    "Storage": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opslag"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stockage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almacenamiento"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speicher"
+          }
+        }
+      }
+    },
     "Strava": {
       "localizations": {
         "nl": {
@@ -6597,6 +7073,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gesamt"
+          }
+        }
+      }
+    },
+    "Tracks, tiles and areas read from your .fit files, so they don't have to be read again at every start. Clearing it reads all files again.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sporen, tegels en gebieden uit je .fit-bestanden, zodat ze niet bij elke start opnieuw gelezen hoeven te worden. Wissen leest alle bestanden opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traces, tuiles et zones lues dans vos fichiers .fit, pour ne pas les relire à chaque démarrage. Le vider relit tous les fichiers."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorridos, teselas y zonas leídos de tus archivos .fit, para no tener que leerlos en cada inicio. Al vaciarla se leen todos los archivos de nuevo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tracks, Kacheln und Gebiete aus deinen .fit-Dateien, damit sie nicht bei jedem Start neu gelesen werden. Leeren liest alle Dateien neu ein."
           }
         }
       }

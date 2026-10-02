@@ -37,6 +37,13 @@ actor ValhallaRouter: CyclingRouter {
         try start(.directory(dir))
     }
 
+    /// Forgets the loaded areas (after some were removed), so the next plan links them again.
+    func forget() {
+        engine = nil
+        tiles = nil
+        loadedPacks = []
+    }
+
     private func start(_ tiles: RoutingData.Tiles) throws {
         if engine != nil, self.tiles == tiles { return }
         let config = try RoutingData.writeConfig(tiles)

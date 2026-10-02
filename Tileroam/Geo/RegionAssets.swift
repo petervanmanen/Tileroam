@@ -59,6 +59,29 @@ enum RegionAssets {
         return try AssetPackManager.shared.contents(at: FilePath(name), searchingInAssetPackWithID: packID(country))
     }
 
+    /// Size on the device of a country's downloaded boundary files, or nil when not downloaded.
+    static func downloadedBytes(country: String) -> Int? {
+        let names = AreaKind.allCases.map { "\(country)-\($0.rawValue).fmr" }
+        var total = 0, found = false
+        for name in names {
+            let url: URL?
+            #if DEBUG
+            if let localDirectory {
+                url = localDirectory.appending(path: name)
+            } else {
+                url = try? AssetPackManager.shared.url(for: FilePath(name))
+            }
+            #else
+            url = try? AssetPackManager.shared.url(for: FilePath(name))
+            #endif
+            if let url, let size = try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize {
+                total += size
+                found = true
+            }
+        }
+        return found ? total : nil
+    }
+
     #if DEBUG
     /// Development and screenshots in the simulator: read the files from a folder on the Mac
     /// instead of asset packs, e.g. `-RegionsDir /path/to/Tileroam/AssetPacks/Regions`.
