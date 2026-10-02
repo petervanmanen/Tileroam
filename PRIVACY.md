@@ -15,16 +15,25 @@ Tileroam reads .fit files from folders you choose, from its own folder in iCloud
 Your location is used to:
 - show where you are on the map;
 - show the tiles around you in the "Tiles Around You" widget;
-- start planned routes from where you are.
+- start planned routes from where you are, unless you choose another starting point.
 
-Your location stays on your device. The widget reads it from a container that only Tileroam and its widget can open. Route planning also runs entirely on your device, with OpenStreetMap routing data that Tileroam downloads once (from Apple, like the boundaries); your start point and stops are not sent anywhere.
+Your location stays on your device. The widget reads it from a container that only Tileroam and its widget can open. Route planning also runs entirely on your device, with OpenStreetMap routing data that Tileroam downloads from Apple; your route, its start and its stops are not sent anywhere.
 
 You can turn off location access at any time in the Settings app. Tileroam keeps working without it.
+
+### Starting points
+You can start a planned route somewhere other than your location:
+- **Search:** what you type in the search field goes to Apple's MapKit search to find matching addresses and places, as in any app with Apple Maps search.
+- **Long-press on the map:** the coordinate goes to Apple's MapKit to look up the address there, so the starting point gets a name.
+- **Recent starting points:** your last five are kept on your device only. Swipe one away in the list to remove it.
+
+### Map data downloads
+Municipality and postcode boundaries and the route planning map data are downloaded from Apple's servers (App Store asset packs) when they are first needed. Apple handles these downloads like app downloads. You can see and remove the route planning map data in Settings → Storage.
 
 ### iCloud
 If you are signed in to iCloud, Tileroam stores two things in your own iCloud account, so all your devices have them:
 - **Files:** planned routes, downloaded activities and imported files, in the "iCloud Drive › Tileroam" folder.
-- **Settings:** a few settings, such as the tile zoom, map style and countries.
+- **Settings:** a few settings, such as the tile zoom and map style.
 
 This data is stored by Apple under your Apple Account and [Apple's privacy policy](https://www.apple.com/legal/privacy/). The developer has no access to it.
 

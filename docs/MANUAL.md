@@ -112,7 +112,7 @@ Settings → Storage shows what Tileroam keeps on your device:
 
 ## Your devices and iCloud
 
-If you are signed in to iCloud with iCloud Drive on, Tileroam keeps its files in **iCloud Drive › Tileroam**. That includes planned routes, Strava downloads and imported files. Every device signed in to the same Apple Account sees the same activities. The tile size, map style and countries are also kept in sync.
+If you are signed in to iCloud with iCloud Drive on, Tileroam keeps its files in **iCloud Drive › Tileroam**. That includes planned routes, Strava downloads and imported files. Every device signed in to the same Apple Account sees the same activities. The tile size and map style are also kept in sync.
 
 You can choose a different save folder in Settings → Save Folder. Without iCloud, files are kept on the device, in **On My iPhone › Tileroam**. You can open both locations in the Files app.
 

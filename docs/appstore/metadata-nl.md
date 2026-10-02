@@ -21,7 +21,7 @@ GEMEENTEN EN POSTCODES
 Zie welke gemeenten en postcodegebieden je hebt bezocht in Nederland, België en Luxemburg.
 
 PLAN ROUTES NAAR NIEUWE TEGELS
-Tik op de tegels, gemeenten of postcodes die je wilt verzamelen. Tileroam plant een fietsrondje vanaf waar je bent en laat precies zien wat het oplevert. Exporteer als GPX voor je fietscomputer, of open een GPX om te zien wat een route brengt.
+Tik op de tegels, gemeenten of postcodes die je wilt verzamelen. Tileroam plant een fietsrondje vanaf waar je bent, of vanaf een startpunt dat je kiest, en laat precies zien wat het oplevert. Routes worden op je iPhone of iPad berekend met OpenStreetMap-gegevens, dus plannen werkt ook offline zodra een gebied is gedownload. Routeplanning werkt in Nederland, België en Luxemburg. Exporteer de route als GPX voor je fietscomputer, of open een GPX om te zien wat een route brengt.
 
 STATISTIEKEN EN EDDINGTON-GETAL
 Je Eddington-getal voor fietsen, hardlopen en wandelen, met hoeveel activiteiten je nog nodig hebt voor het volgende. Plus totalen per sport voor dit jaar en altijd, en je voortgang per land.
@@ -37,7 +37,7 @@ OP AL JE APPARATEN
 Met iCloud staan je activiteiten en geplande routes op je iPhone en iPad, in iCloud Drive › Tileroam.
 
 PRIVACY VOOROP
-Geen account, geen analytics, geen advertenties, geen tracking. Je activiteiten worden op je apparaat verwerkt en in je eigen iCloud bewaard.
+Geen account, geen analytics, geen advertenties, geen tracking. Je activiteiten worden op je apparaat verwerkt en in je eigen iCloud bewaard, en ook je routes worden op je apparaat gepland.
 
 Probeer het direct met de ingebouwde voorbeeldritten.
 

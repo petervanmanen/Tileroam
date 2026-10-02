@@ -11,13 +11,14 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 - **Teselas**: teselas de mapa de zoom 14 (~1,5 km, como en VeloViewer, StatsHunters y [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) y *squadratinhos* de zoom 17 (~190 m, como en Squadrats). Siempre se cuentan ambos; tú eliges cuál muestra el mapa. Incluye tu **cuadrado máximo** y tu **mayor clúster**.
 - **Rutas**: todas tus actividades en un mapa, coloreadas por deporte.
 - **Municipios y códigos postales** en los Países Bajos, Bélgica y Luxemburgo, con visitados/total por país.
-- **Planificación de rutas**: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta desde tu ubicación pasando por todos. Compártela como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos conseguirías.
+- **Planificación de rutas** en los Países Bajos, Bélgica y Luxemburgo: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
 - **Strava**: importa todo tu historial con GPS. Las actividades también se guardan como archivos `.fit` estándar en la carpeta que elijas.
 - **Duplicados fusionados**: el mismo entrenamiento registrado por varios dispositivos o apps (reloj, Zwift, Strava, HealthFit) cuenta una sola vez.
-- **Número de Eddington** para ciclismo y carrera, también como **widget** en la pantalla de inicio y la pantalla bloqueada.
+- **Widgets**: *Teselas a tu alrededor* (un mapa de las teselas cerca de ti) y *Número de Eddington*, en la pantalla de inicio y la pantalla bloqueada.
 - **Estadísticas**: países y municipios visitados, números de Eddington para ciclismo, caminar y carrera, y totales por deporte de este año y desde siempre.
 - Las **salidas en interior y virtuales** (Zwift, Rouvy, MyWhoosh, rodillo) cuentan en las estadísticas pero quedan fuera del mapa, las teselas, los municipios y los códigos postales.
 - **Almacenamiento opcional**: sin carpeta elegida, Tileroam guarda rutas y archivos de Strava en su propio almacenamiento (app Archivos › En mi iPhone › Tileroam) y también lee archivos `.fit` de su carpeta Import.
+- **Ajustes → Almacenamiento** muestra los datos de mapa descargados y permite eliminarlos. Las descargas de mapas de más de 25 MB esperan al wifi, salvo que permitas los datos móviles.
 - Diseño para **iPad** con panel lateral, todas las orientaciones y multitarea.
 - Disponible en **inglés, neerlandés, francés, español y alemán**.
 - El mapa se abre en tu mayor clúster, donde más pedaleas.
@@ -48,7 +49,7 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 | Bélgica | 565 | 1.150 |
 | Luxemburgo | 100 communes | – |
 
-Los códigos postales solo se incluyen donde sus límites se publican como datos abiertos. Los países se activan automáticamente según tus actividades; puedes cambiarlos en Ajustes.
+Las teselas, rutas y estadísticas funcionan en todas partes; los municipios, códigos postales y la planificación cubren estos tres países. Los códigos postales solo se incluyen donde sus límites se publican como datos abiertos. Los límites de un país se descargan automáticamente la primera vez que tienes una actividad allí.
 
 ## Primeros pasos
 
@@ -77,8 +78,8 @@ Strava permite unas 100 solicitudes cada 15 minutos y 1.000 al día. La lista de
 - Los **archivos FIT** se leen con un pequeño decodificador integrado (`FIT/FITDecoder.swift`). Rutas, teselas y zonas visitadas se guardan en caché, así que en el siguiente inicio solo se leen los archivos nuevos o modificados.
 - Las **teselas** usan la fórmula estándar de teselas Web Mercator (`Geo/TileGrid.swift`). El cuadrado máximo y el clúster se calculan solo sobre las teselas visitadas, por lo que siguen siendo rápidos incluso con teselas de zoom 17 repartidas por Europa.
 - **Duplicados**: las actividades del mismo tipo que se solapan en el tiempo se fusionan (`Import/ActivityMerge.swift`); se conserva la copia con el mejor GPS y la mayor distancia.
-- Los **municipios y códigos postales** son archivos binarios compactos (`AssetPacks/Regions/*.fmr`, 33 MB en total) con un índice espacial para búsquedas rápidas. No van en la app: cada país es un asset pack alojado por Apple (`regions-NL`, …) que la app descarga con Background Assets en cuanto tienes una actividad allí. `Tools/build_asset_packs.sh` los prepara para App Store Connect; en el simulador, `-RegionsDir <repo>/AssetPacks/Regions` los lee directamente.
-- La **planificación** usa el planificador de rutas en bici público [OSRM](https://project-osrm.org) de [openstreetmap.de](https://routing.openstreetmap.de). Este determina el mejor orden; después Tileroam elige, dentro de cada objetivo, el punto que menos alarga la ruta.
+- Los **municipios y códigos postales** son archivos binarios compactos (`AssetPacks/Regions/*.fmr`, 1,5 MB en total) con un índice espacial para búsquedas rápidas. No van en la app: cada país es un asset pack alojado por Apple (`regions-NL`, …) que la app descarga con Background Assets en cuanto tienes una actividad allí. `Tools/build_asset_packs.sh` los prepara para App Store Connect; en el simulador, `-RegionsDir <repo>/AssetPacks/Regions` los lee directamente.
+- La **planificación** funciona en el dispositivo con [Valhalla](https://github.com/valhalla/valhalla), a través de [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), y teselas de OpenStreetMap de los Países Bajos, Bélgica y Luxemburgo. Las teselas llegan como asset packs alojados por Apple, por zonas de 1° × 1°, de modo que un plan solo descarga su propia zona (unos 60 MB alrededor de Utrecht en lugar de 480 MB para todo). Las descargas de más de 25 MB esperan al wifi (`MapDataDownloads`). El orden de visita se resuelve con distancias en línea recta (`TripSolver`, mucho más rápido que una matriz de rutas en el dispositivo); después, dentro de cada objetivo, el planificador elige el punto que minimiza el desvío, y Valhalla calcula la ruta circular. Cómo generar las teselas y añadir países: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Datos de límites
 
@@ -97,11 +98,13 @@ El script documenta de dónde viene cada archivo fuente. Reproyecta a WGS84, fus
 | Bélgica | NGI-IGN, bpost vía Opendatasoft (licencia de códigos postales: ver la fuente) |
 | Luxemburgo | ACT (CC0) |
 
-Planificación de rutas: © colaboradores de OpenStreetMap (ODbL), rutas por OSRM / FOSSGIS.
+Planificación de rutas: © colaboradores de OpenStreetMap (ODbL), rutas calculadas por Valhalla en el dispositivo.
 
-## Privacidad
+## Documentación
 
-Tileroam no tiene servidor ni analíticas. Tus actividades, teselas y estadísticas se quedan en tu dispositivo y en las carpetas de iCloud que elijas. Los tokens de Strava se guardan en el llavero. El código de inicio de sesión de Strava y la renovación de tokens pasan por el servicio de tokens (Cloudflare Worker), que no guarda ni registra nada. Cuando planificas una ruta, el punto de partida y las paradas se envían al servicio de rutas OSRM de openstreetmap.de.
+- [Guía de uso](docs/MANUAL.md) (en inglés)
+- [Soporte y preguntas frecuentes](SUPPORT.md) (en inglés)
+- [Kit para la App Store](docs/appstore/README.md): metadatos, capturas, respuestas de privacidad, notas para la revisión
 
 ## Estructura del proyecto
 
@@ -110,29 +113,34 @@ Tileroam/
   FIT/          decodificador y codificador FIT
   Geo/          teselas, municipios/códigos postales, Eddington, simplificación
   Import/       acceso a carpetas, importación, caché, fusión de duplicados, ActivityStore
-  Map/          envoltorio de MKMapView y capas (teselas, zonas, rutas)
-  Planning/     planificación (OSRM), GPX, cobertura
-  Strava/       cliente de la API de Strava, exportación a .fit
-  Views/        pantallas SwiftUI (mapa, ajustes, introducción, panel de planificación)
-  (AssetPacks/Regions/ límites de municipios y códigos postales, como asset packs)
-TileroamWidget/   widget de Eddington
+  Map/          contenedor de MKMapView y capas (teselas, zonas, rutas)
+  Planning/     planificación (Valhalla en el dispositivo), datos de rutas, puntos de partida, GPX, cobertura
+  Strava/       cliente de la API de Strava, eventos webhook, exportación a .fit
+  Views/        pantallas SwiftUI (mapa, ajustes, almacenamiento, introducción, panel de planificación)
+TileroamAssets/   extensión de descarga de Background Assets
+TileroamWidget/   widgets: Teselas a tu alrededor, Número de Eddington
 TileroamTests/    pruebas unitarias (Swift Testing)
-Tools/             script y fuentes de los datos de límites
+AssetPacks/       límites de municipios y códigos postales, servidos como asset packs
+backend/          servicio de tokens de Strava y cola de eventos webhook (Cloudflare Worker)
+Tools/            scripts de datos, rutas, asset packs, capturas y publicación
 ```
 
 ## Pruebas
 
 ```bash
-xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
 ## Limitaciones
 
-- Los límites de los códigos postales no son datos abiertos en Austria, Luxemburgo, Irlanda, Portugal, Italia, Noruega, Suecia e Islandia.
-- Las zonas postales francesas son contornos calculados alrededor de direcciones y pueden solaparse.
-- Los postcode districts británicos (2018) y los códigos postales españoles (hacia 2015) son conjuntos de datos más antiguos.
-- La planificación depende del servidor OSRM público, un servicio comunitario gratuito sin garantías.
+- Los municipios, códigos postales y la planificación cubren solo los Países Bajos, Bélgica y Luxemburgo. [docs/ROUTING.md](docs/ROUTING.md) explica cómo añadir países.
+- Luxemburgo no tiene límites de códigos postales como datos abiertos.
+- Las rutas son circulares; las rutas de ida de A a B aún no son compatibles.
+
+## Privacidad
+
+Tileroam no tiene cuentas, analíticas ni seguimiento. Tus actividades, teselas y estadísticas se quedan en tu dispositivo y en tu propio iCloud, y la planificación se hace en el dispositivo. Los tokens de Strava se guardan en el llavero. El único servidor es el servicio de tokens de Strava ([`backend/strava-auth`](backend/strava-auth)): intercambia el código de inicio de sesión sin guardar tokens, y conserva los eventos webhook de Strava (números de deportista y de actividad, 30 días como máximo) para que la app pueda eliminar las actividades que borraste en Strava. Consulta la [política de privacidad](PRIVACY.md) (en inglés).
 
 ## Licencia
 
-El código fuente está bajo la [licencia MIT](LICENSE). Los datos de límites incluidos conservan las licencias de sus fuentes (CC BY, OGL, Licence Ouverte, ODbL y otras); consulta [DATA-LICENSES.md](DATA-LICENSES.md).
+El código fuente está bajo la [licencia MIT](LICENSE). Los datos de límites mantienen las licencias de sus fuentes (CC BY 4.0, CC0 y las licencias de NGI y bpost), y los datos de rutas son © colaboradores de OpenStreetMap (ODbL); consulta [DATA-LICENSES.md](DATA-LICENSES.md).

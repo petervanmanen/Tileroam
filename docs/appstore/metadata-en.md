@@ -21,7 +21,7 @@ MUNICIPALITIES AND POSTCODES
 See which municipalities and postcode areas you have visited in the Netherlands, Belgium and Luxembourg.
 
 PLAN ROUTES TO NEW TILES
-Tap the tiles, municipalities or postcodes you want to collect. Tileroam plans a cycling round trip from where you are and shows exactly what it will add. Export it as GPX for your bike computer, or open a GPX to see what a route would bring.
+Tap the tiles, municipalities or postcodes you want to collect. Tileroam plans a cycling round trip from where you are, or from a starting point you choose, and shows exactly what it will add. Routes are calculated on your iPhone or iPad with OpenStreetMap data, so planning also works offline once an area is downloaded. Route planning covers the Netherlands, Belgium and Luxembourg. Export the route as GPX for your bike computer, or open a GPX to see what a route would bring.
 
 STATISTICS AND EDDINGTON NUMBER
 Your Eddington number for cycling, running and walking, with how many more activities you need for the next one. Plus totals per sport for this year and all time, and your progress per country.
@@ -37,7 +37,7 @@ ON ALL YOUR DEVICES
 With iCloud, your activities and planned routes are on your iPhone and iPad alike, in iCloud Drive › Tileroam.
 
 PRIVATE BY DESIGN
-No account, no analytics, no ads, no tracking. Your activities are processed on your device and stored in your own iCloud.
+No account, no analytics, no ads, no tracking. Your activities are processed on your device and stored in your own iCloud, and your routes are planned on your device too.
 
 Try it right away with the built-in sample rides.
 

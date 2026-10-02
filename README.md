@@ -11,13 +11,14 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 - **Tiles**: zoom 14 map tiles (~1.5 km, as on VeloViewer, StatsHunters and [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) and zoom 17 *squadratinhos* (~190 m, as on Squadrats). Both are always counted; you choose which one the map shows. Includes your **max square** and **max cluster**.
 - **Routes**: all your activities on one map, coloured by sport.
 - **Municipalities and postcodes** in the Netherlands, Belgium and Luxembourg, with visited/total per country.
-- **Route planning**: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip from your location through all of them. Share it as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
+- **Route planning** in the Netherlands, Belgium and Luxembourg: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
 - **Strava**: import your full history with GPS. Activities are also saved as standard `.fit` files in a folder of your choice.
 - **Duplicates merged**: the same workout recorded by several devices or apps (watch, Zwift, Strava, HealthFit) counts once.
-- **Eddington number** for cycling and running, also as a Home Screen and Lock Screen **widget**.
+- **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
 - **Statistics**: countries and municipalities visited, Eddington numbers for cycling, walking and running, and totals per sport for this year and all time.
 - **Indoor and virtual rides** (Zwift, Rouvy, MyWhoosh, trainer rides) count in the statistics but stay off the map, tiles, municipalities and postcodes.
 - **Storage is optional**: without a chosen folder, Tileroam saves routes and Strava files in its own storage (Files app › On My iPhone › Tileroam) and also reads `.fit` files from its Import folder there.
+- **Settings → Storage** shows the downloaded map data and lets you remove it. Map downloads over 25 MB wait for Wi-Fi unless you allow mobile data.
 - **iPad** layout with a side panel, all orientations and multitasking.
 - Available in **English, Dutch, French, Spanish and German**.
 - The map opens on your biggest cluster, so you start where you ride most.
@@ -48,7 +49,7 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 | Belgium | 565 | 1,150 |
 | Luxembourg | 100 communes | – |
 
-Postcodes are only included where their boundaries are published as open data. Countries switch on automatically based on your activities; you can change them in Settings.
+Tiles, routes and statistics work everywhere; municipalities, postcodes and route planning cover these three countries. Postcodes are only included where their boundaries are published as open data. A country's boundaries are downloaded automatically the first time you have an activity there.
 
 ## Getting started
 
@@ -77,8 +78,8 @@ Strava allows about 100 requests per 15 minutes and 1,000 per day. The activity 
 - **FIT files** are decoded by a small built-in decoder (`FIT/FITDecoder.swift`). Parsed routes, tiles and visited areas are cached, so only new or changed files are read on the next launch.
 - **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for zoom 17 tiles spread across Europe.
 - **Duplicates**: activities of the same kind that overlap in time are merged (`Import/ActivityMerge.swift`); the copy with the best GPS and the longest distance is kept.
-- **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 33 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
-- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium and Luxembourg. The tiles come as Apple-hosted asset packs per 1° × 1° area, so a plan downloads only its own area (about 60 MB around Utrecht instead of 480 MB for everything). The visiting order comes from Valhalla's cycling-time matrix (`TripSolver`); then, inside each target, the planner picks the point that keeps the detour shortest. How to build the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
+- **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 1.5 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
+- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium and Luxembourg. The tiles come as Apple-hosted asset packs per 1° × 1° area, so a plan downloads only its own area (about 60 MB around Utrecht instead of 480 MB for everything). Downloads over 25 MB wait for Wi-Fi (`MapDataDownloads`). The visiting order is solved on straight-line distances (`TripSolver`, much faster than a routing matrix on the device); then, inside each target, the planner picks the point that keeps the detour shortest, and Valhalla routes the round trip. How to build the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Region data
 
@@ -105,10 +106,6 @@ Route planning: © OpenStreetMap contributors (ODbL), routing by Valhalla on the
 - [Support and FAQ](SUPPORT.md)
 - [App Store submission kit](docs/appstore/README.md): metadata, screenshots, privacy answers, review notes
 
-## Privacy
-
-Tileroam has no server and no analytics. Your activities, tiles and statistics stay on your device and in the iCloud folders you choose. Strava tokens are stored in the Keychain. The Strava login code and token refreshes pass through the token service (Cloudflare Worker), which stores and logs nothing. Route planning runs on the device; nothing is sent.
-
 ## Project structure
 
 ```
@@ -117,32 +114,33 @@ Tileroam/
   Geo/          tiles, municipalities/postcodes, Eddington, simplification
   Import/       folder access, import, cache, duplicate merging, ActivityStore
   Map/          MKMapView wrapper and overlays (tiles, areas, routes)
-  Planning/     route planning (OSRM), GPX, coverage
-  Strava/       Strava API client, export to .fit
-  Views/        SwiftUI screens (map, settings, introduction, plan panel)
-  (AssetPacks/Regions/ municipality and postcode boundaries, served as asset packs)
-TileroamWidget/   Eddington widget
+  Planning/     route planning (Valhalla on the device), routing data, starting points, GPX, coverage
+  Strava/       Strava API client, webhook events, export to .fit
+  Views/        SwiftUI screens (map, settings, storage, introduction, plan panel)
+TileroamAssets/   Background Assets downloader extension
+TileroamWidget/   widgets: Tiles Around You, Eddington Number
 TileroamTests/    unit tests (Swift Testing)
-Tools/             data build script and sources
+AssetPacks/       municipality and postcode boundaries, served as asset packs
+backend/          Strava token service and webhook event queue (Cloudflare Worker)
+Tools/            data, routing, asset pack, screenshot and release scripts
 ```
 
 ## Tests
 
 ```bash
-xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
 ## Limitations
 
-- Postcode boundaries are not open data in Austria, Luxembourg, Ireland, Portugal, Italy, Norway, Sweden and Iceland.
-- French postcode zones are calculated outlines around addresses and can overlap.
-- The UK postcode districts (2018) and Spanish postcodes (around 2015) are older datasets.
-- Route planning covers the Netherlands, Belgium and Luxembourg only (see docs/ROUTING.md to add countries).
+- Municipalities, postcodes and route planning cover the Netherlands, Belgium and Luxembourg only. [docs/ROUTING.md](docs/ROUTING.md) describes how to add countries.
+- Luxembourg has no open postcode boundaries.
+- Routes are round trips; one-way routes from A to B aren't supported yet.
 
 ## Privacy
 
-Tileroam has no accounts, analytics or tracking, and your activities stay on your device and in your own iCloud. See the [privacy policy](PRIVACY.md).
+Tileroam has no accounts, analytics or tracking. Your activities, tiles and statistics stay on your device and in your own iCloud, and route planning runs on the device. Strava tokens are kept in the Keychain. The only server is the Strava token service ([`backend/strava-auth`](backend/strava-auth)): it exchanges the login code without storing tokens, and keeps Strava's webhook events (athlete and activity numbers, at most 30 days) so the app can delete activities you removed on Strava. See the [privacy policy](PRIVACY.md).
 
 ## License
 
-The source code is licensed under the [MIT License](LICENSE). The bundled boundary data keeps the licenses of its sources (CC BY, OGL, Licence Ouverte, ODbL and others); see [DATA-LICENSES.md](DATA-LICENSES.md).
+The source code is licensed under the [MIT License](LICENSE). The boundary data keeps the licenses of its sources (CC BY 4.0, CC0 and the NGI and bpost licences), and the routing data is © OpenStreetMap contributors (ODbL); see [DATA-LICENSES.md](DATA-LICENSES.md).
