@@ -1,5 +1,5 @@
-// Compares Tileroam's asset packs in App Store Connect with what the app needs, and lists which
-// ones are unused (to archive) and which are missing (to upload). Run it with
+// Compares Tileroam's asset packs (municipality and postcode boundaries) in App Store Connect with
+// what the app needs, and lists which ones are unused (to archive) and which are missing (to upload). Run it with
 // Tools/clean_asset_packs.sh, which also explains the settings.
 //
 // With ARCHIVE="<prefix> …" it also archives the unused packs whose IDs start with one of those
@@ -29,20 +29,8 @@ func neededBoundaryPacks() -> Set<String> {
     return Set(codes.map { "regions-\($0)" })
 }
 
-/// Routing packs: the base and area packs of every bundled routing index.
-func neededRoutingPacks() -> Set<String> {
-    struct Index: Decodable { struct Area: Decodable { let pack: String }; let base: String; let areas: [Area] }
-    let resources = root.appending(path: "Tileroam/Resources")
-    let files = (try? FileManager.default.contentsOfDirectory(atPath: resources.path(percentEncoded: false))) ?? []
-    var packs = Set<String>()
-    for file in files where file.hasPrefix("routing-") && file.hasSuffix(".json") {
-        guard let data = try? Data(contentsOf: resources.appending(path: file)),
-              let index = try? JSONDecoder().decode(Index.self, from: data) else { continue }
-        packs.insert(index.base)
-        packs.formUnion(index.areas.map(\.pack))
-    }
-    return packs
-}
+// The routing data isn't in asset packs any more (it's on Cloudflare R2 since October 2026), so
+// the earlier routing packs ("routing-benelux-…", "routing-west-…") all count as unused.
 
 // MARK: App Store Connect
 
@@ -131,7 +119,7 @@ func listPacks() async throws -> [Pack] {
 
 // MARK: Report
 
-let needed = neededBoundaryPacks().union(neededRoutingPacks())
+let needed = neededBoundaryPacks()
 if env["OFFLINE"] == "1" {
     // Only what the app needs, without contacting App Store Connect.
     print("The app needs \(needed.count) asset packs:")
@@ -152,7 +140,7 @@ let archived = packs.filter(\.archived).count
 func mb(_ b: Int64) -> String { String(format: "%.1f MB", Double(b) / 1_000_000) }
 
 print("Asset packs in App Store Connect: \(packs.count) (\(archived) archived)")
-print("The app needs \(needed.count): \(neededBoundaryPacks().count) boundary, \(neededRoutingPacks().count) routing.\n")
+print("The app needs \(needed.count) boundary packs.\n")
 if missing.isEmpty {
     print("✓ Every needed pack is in App Store Connect.")
 } else {

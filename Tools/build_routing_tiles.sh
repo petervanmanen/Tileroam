@@ -1,22 +1,23 @@
 #!/bin/zsh
 # Builds the on-device routing data: Valhalla tiles from OpenStreetMap for a group of countries,
-# split into Apple-hosted asset packs per 1° × 1° area so the app downloads only what a route
-# needs. See docs/ROUTING.md.
+# gzipped per tile for Cloudflare R2, where the app downloads only the tiles a route needs. See
+# docs/ROUTING.md.
 #
-#   Tools/build_routing_tiles.sh benelux netherlands belgium luxembourg
+#   Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany
 #
-# The first argument names the build; the rest are Geofabrik extract names under europe/
-# (https://download.geofabrik.de/europe.html). Countries routed across each other's borders must
-# be in the same build.
+# The first argument names the build (keep "west"; see docs/ROUTING.md, "Versions"); the rest are
+# Geofabrik extract names under europe/ (https://download.geofabrik.de/europe.html). Countries
+# routed across each other's borders must be in the same build.
 #
 # Output:
-#   AssetPacks/build/routing-<name>-<area>.aar and routing-<name>-base.aar: the asset packs to
-#     upload (Tools/upload_asset_packs.sh routing-<name>)
-#   Tileroam/Resources/routing-<name>.json: the index of areas the app bundles (commit it)
+#   AssetPacks/build/routing/r2/<name>/v<version>/…: the gzipped tiles to upload
+#     (Tools/upload_routing_r2.sh <name>)
+#   Tileroam/Resources/routing-<name>.json: the index of tiles the app bundles (commit it)
 #   AssetPacks/build/routing/routing-<name>.tar: all tiles in one file, for the simulator
 #     (-RoutingTar) and the engine tests
 #
-# ROUTING_REPACK=1 only redoes the asset packs and index from the last build's tiles.
+# ROUTING_REPACK=1 only redoes step 5 (gzip and index) from the last build's tile extract.
+# ROUTING_CONCURRENCY limits the build threads (default: all cores), for Macs with little memory.
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 # Must match the Valhalla version inside valhalla-mobile (Tileroam.xcodeproj pins valhalla-mobile
@@ -40,15 +41,14 @@ export PATH=$VENV/bin:$PATH
 
 TILES=$OUT/tiles-$NAME
 TAR=$OUT/routing-$NAME.tar
-STAGING=$OUT/packs-$NAME
+R2=$OUT/r2
 
 if [[ -n ${ROUTING_REPACK:-} ]]; then
-  # Only step 5 again, from the tiles staged by the last build (for example after changing which
+  # Only step 5 again, from the last build's tile extract (for example after changing which
   # countries are covered): no download and no tile build.
-  [[ -d $STAGING ]] || { echo "No earlier build in $STAGING" >&2; exit 1 }
+  [[ -s $TAR ]] || { echo "No earlier build: $TAR is missing" >&2; exit 1 }
   rm -rf $TILES; mkdir -p $TILES
-  (cd $STAGING && find routing-$NAME-*(/) -name '*.gph' | while read f; do
-    mkdir -p $TILES/${${f#*/}:h}; ln -f $f $TILES/${f#*/}; done)
+  tar -xf $TAR -C $TILES
 else
 
 # 1. OpenStreetMap extracts from Geofabrik (re-downloaded when older than a week).
@@ -75,7 +75,6 @@ fi
 
 # 3. Tiles, in one build so the countries connect.
 rm -rf $TILES; mkdir -p $TILES
-# ROUTING_CONCURRENCY limits the build threads (default: all cores), for Macs with little memory.
 # Cycling only: no car-only roads, driveways or car shortcuts (about 10% smaller). Footpaths stay,
 # so routes can cross pedestrian zones with the bike pushed; ROUTING_PEDESTRIAN=False drops them
 # too (about 25% smaller in total).
@@ -98,35 +97,17 @@ python $ROOT/Tools/valhalla_build_extract.py -c $OUT/config-$NAME.json -v >> $OU
 echo "Tile extract: $TAR ($(du -h $TAR | cut -f1))"
 fi
 
-# 5. Asset packs per 1° area, plus the base pack, and the index the app bundles. Only the areas
-#    within reach of the covered countries (RoutingData.countries, or ROUTING_COUNTRIES).
+# 5. Gzipped tiles for R2, and the index the app bundles. Only the tiles within reach of the
+#    covered countries (RoutingData.countries, or ROUTING_COUNTRIES).
 # The index goes into the app's resources, except for test builds ("<name>-test").
 INDEX=$ROOT/Tileroam/Resources/routing-$NAME.json
 [[ $NAME == *-test ]] && INDEX=$OUT/routing-$NAME.json
-# Every new build of the same name is the next version of its data (uploaded as new versions of
-# the same pack IDs); a repack keeps the version. ROUTING_VERSION overrides it.
+# Every new build of the same name is the next version of its data (its own folder on R2); a
+# repack keeps the version. ROUTING_VERSION overrides it.
 previous=$( [[ -f $INDEX ]] && python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('version', 1))" $INDEX || echo 0 )
 if [[ -n ${ROUTING_VERSION:-} ]]; then :
 elif [[ -n ${ROUTING_REPACK:-} ]]; then ROUTING_VERSION=$(( previous > 0 ? previous : 1 ))
 else ROUTING_VERSION=$(( previous + 1 )); fi
 export ROUTING_VERSION
-rm -rf $STAGING
-python3 $ROOT/Tools/split_routing_tiles.py $TILES $NAME $STAGING $INDEX
+python3 $ROOT/Tools/pack_routing_tiles.py $TILES $NAME $R2 $INDEX
 rm -rf $TILES
-rm -f $ROOT/AssetPacks/build/routing-$NAME.aar(N) $ROOT/AssetPacks/build/routing-$NAME-*.aar(N)
-total=0
-for dir in $STAGING/routing-$NAME-*(/); do
-  pack=${dir:t}
-  selectors=$(cd $dir && for level in *(/); do printf '{ "directory": "%s" },' $level; done)
-  cat > $dir.manifest.json <<JSON
-{
-  "assetPackID": "$pack",
-  "downloadPolicy": { "onDemand": {} },
-  "fileSelectors": [ ${selectors%,} ],
-  "platforms": [ "iOS" ]
-}
-JSON
-  (cd $dir && xcrun ba-package package $dir.manifest.json --output-path $ROOT/AssetPacks/build/$pack.aar --quiet)
-  total=$(( total + $(stat -f %z $ROOT/AssetPacks/build/$pack.aar) ))
-done
-echo "Asset packs: $(ls $STAGING | grep -vc manifest) in AssetPacks/build/routing-$NAME-*.aar ($(( total / 1000000 )) MB together)"

@@ -139,10 +139,10 @@ final class PlanStore {
     }
 
     /// Removes downloaded route planning areas (Settings → Storage).
-    func removeRoutingData(_ areas: [RoutingIndex.Area], includingBase: Bool) async {
+    func removeRoutingData(_ tiles: [RoutingIndex.Tile], all: Bool) async {
         guard let index = RoutingData.index else { return }
         await router.forget()
-        await RoutingData.remove(areas, includingBase: includingBase, index: index)
+        if all { RoutingData.removeAll(index) } else { RoutingData.remove(tiles, index: index) }
     }
 
     /// Plans again, downloading the map data over mobile data this once.
@@ -189,7 +189,7 @@ final class PlanStore {
     /// Gets the routing data for the area, saying how much has to be downloaded.
     private func prepareRouting(around points: [GeoPoint], margin: Double) async throws {
         if let index = RoutingData.index {
-            let bytes = RoutingData.downloadBytes(for: RoutingData.packs(around: points, margin: margin, in: index), index: index)
+            let bytes = RoutingData.downloadBytes(for: RoutingData.tiles(around: points, margin: margin, in: index), index: index)
             guard MapDataDownloads.mayDownload(bytes: bytes, allowedOnce: allowMobileDataOnce) else {
                 throw RoutingError.waitingForWiFi(bytes: bytes)
             }

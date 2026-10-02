@@ -28,6 +28,7 @@ The app reads them to delete its copies of deleted activities, or everything whe
   - Activity files are processed on the device and stored in the user's own iCloud. Apple holds that data for the user; the developer has no access, so it does not count as collected.
   - Strava activities go directly from Strava to the device. The token service forwards the login and refresh requests to Strava without storing tokens; it keeps only the event queue described above.
 - **Location (precise and coarse):** not collected. It is used on the device only: the map, route planning (Valhalla on the device) and the widget.
+- **Coarse location (route planning map data):** not collected. The app downloads map tiles (about 25 × 25 km) around a plan from the developer's Cloudflare R2 bucket. The request carries the IP address and which tiles, as any download does, but nothing is stored or logged (R2 has no access logs unless they're set up), so under Apple's definition (data kept longer than needed to answer the request) it isn't collected. Keep the bucket without access logging.
 - **Search history:** not collected. Starting point searches and the address lookup for a long-pressed starting point go to Apple's MapKit, a platform service like the map itself, not to the developer. Recent starting points stay on the device.
 
 ## Tracking

@@ -7,8 +7,8 @@ actor ValhallaRouter: CyclingRouter {
     private var engine: Valhalla?
     /// The tiles the engine was started with.
     private var tiles: RoutingData.Tiles?
-    /// Area packs linked into the tile directory so far.
-    private var loadedPacks = Set<String>()
+    /// Tiles in the tile directory when the engine started.
+    private var loadedTiles = Set<String>()
 
     /// Bicycle costing: a hybrid bike that prefers cycle paths and quiet roads, like the
     /// "routed-bike" profile Tileroam used before.
@@ -16,8 +16,8 @@ actor ValhallaRouter: CyclingRouter {
         ["bicycle_type": "Hybrid", "use_roads": 0.3, "use_hills": 0.4, "avoid_bad_surfaces": 0.4]
     }
 
-    /// Makes sure the engine has the tiles of every 1° area within `margin` meters of `points`,
-    /// downloading area packs where needed (the first time this can take a while).
+    /// Makes sure the engine has the tiles within `margin` meters of `points`, downloading them
+    /// where needed (the first time in an area this can take a while).
     func prepare(around points: [GeoPoint], margin: Double, index: RoutingIndex? = RoutingData.index) async throws {
         #if DEBUG
         // Simulator and tests: one tile extract with everything (-RoutingTar).
@@ -27,22 +27,21 @@ actor ValhallaRouter: CyclingRouter {
         }
         #endif
         guard let index else { throw RoutingError.dataUnavailable("no routing index") }
-        let areas = RoutingData.packs(around: points, margin: margin, in: index)
-        guard !areas.isEmpty else { throw RoutingError.outsideRegion }
-        let needed = Set(areas.map(\.pack))
-        if engine != nil, needed.isSubset(of: loadedPacks) { return }
-        let (dir, replaced) = try await RoutingData.tileDirectory(for: areas, index: index)
-        if replaced { loadedPacks = [] } // the earlier packs were removed: another version
-        loadedPacks.formUnion(needed)
+        let tiles = RoutingData.tiles(around: points, margin: margin, in: index)
+        guard !tiles.isEmpty else { throw RoutingError.outsideRegion }
+        let needed = Set(tiles.map(\.path))
+        if engine != nil, needed.isSubset(of: loadedTiles) { return }
+        let dir = try await RoutingData.download(tiles, index: index)
+        loadedTiles.formUnion(needed)
         engine = nil // restart, so Valhalla sees the new tiles
         try start(.directory(dir))
     }
 
-    /// Forgets the loaded areas (after some were removed), so the next plan links them again.
+    /// Forgets the loaded tiles (after some were removed), so the next plan downloads them again.
     func forget() {
         engine = nil
         tiles = nil
-        loadedPacks = []
+        loadedTiles = []
     }
 
     private func start(_ tiles: RoutingData.Tiles) throws {
