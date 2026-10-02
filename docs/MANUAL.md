@@ -75,7 +75,7 @@ Like Towns, but for postcode areas. Available for:
 
 You can also **open an existing GPX file** to see which new tiles and areas it would collect.
 
-Route planning works in **the Netherlands, Belgium and Luxembourg**: your location and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data for that area, typically a few to 60 MB; Wi-Fi is best. After that, planning in that area also works offline, and nothing is sent anywhere.
+Route planning works in **the Netherlands, Belgium and Luxembourg**: your location and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data for that area, typically a few to 60 MB. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
 
 ## Statistics
 
@@ -96,6 +96,14 @@ Add Tileroam widgets to your Home Screen. Touch and hold the Home Screen, tap **
 Municipalities and postcodes are available for **the Netherlands, Belgium and Luxembourg**, the same countries as route planning. Postcodes exist for the Netherlands and Belgium. Tiles, routes and statistics work everywhere.
 
 A country is counted as soon as you have an activity there; there is nothing to set up. The municipality and postcode boundaries of a country are downloaded the first time you have an activity there, so the app itself stays small. This needs an internet connection once per country.
+
+## Storage
+
+Settings → Storage shows what Tileroam keeps on your device:
+- **Route planning map data:** the areas downloaded for route planning, about 70 × 110 km each, named after a town in the area. Swipe left on an area to remove it, or remove all of them at once. Removed areas download again the next time you plan a route there.
+- **Download Map Data over Mobile Data:** allows map downloads larger than 25 MB without Wi-Fi.
+- **Municipalities and postcodes:** the boundaries per country. They are small and download again automatically, so they can't be removed.
+- **Activity cache:** what Tileroam has read from your .fit files. **Clear Cache & Re-import** empties it and reads all files again; your files themselves are not touched.
 
 ## Your devices and iCloud
 

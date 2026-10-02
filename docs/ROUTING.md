@@ -105,7 +105,7 @@ Example: adding Germany.
      ```
      It writes `docs/appstore/routing-coverage.geojson`, following Apple's rules: at most 20 polygons of at most 20 points, closed, no holes. It's checked to contain every municipality of those countries.
 5. **Test** in the simulator with `-RoutingPacksDir …/packs-west`: plan a route that crosses the new border.
-6. **Upload** the new packs (`Tools/upload_asset_packs.sh routing-west`), then ship the app version that uses them. Keep the old packs in App Store Connect until no supported app version uses them any more.
+6. **Upload** the new packs (`Tools/upload_asset_packs.sh routing-west`), then ship the app version that uses them. Keep the old packs in App Store Connect until no supported app version uses them any more. `Tools/clean_asset_packs.sh` then lists them as unused, to archive on the website.
 
 Only countries with municipality boundaries in Tileroam (see `Country.all`) can be detected by the bundled outlines. For a country outside that list, first add its boundaries (`Tools/build_regions.py`, `Tools/build_country_outlines.py`).
 

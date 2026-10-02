@@ -25,6 +25,8 @@ enum RoutingError: LocalizedError, Equatable {
     case dataUnavailable(String)
     /// The routing engine couldn't find a route.
     case engine(String)
+    /// The map data to download is large and the device isn't on Wi-Fi.
+    case waitingForWiFi(bytes: Int)
 
     var errorDescription: String? {
         switch self {
@@ -34,6 +36,8 @@ enum RoutingError: LocalizedError, Equatable {
             String(localized: "The route planning data couldn't be loaded: \(message)")
         case .engine(let message):
             String(localized: "Route planning failed: \(message)")
+        case .waitingForWiFi(let bytes):
+            String(localized: "Map data for this area (\(MapDataDownloads.format(bytes))) downloads on Wi-Fi.")
         }
     }
 }

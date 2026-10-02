@@ -15,6 +15,10 @@ final class PlanStore {
     private(set) var isWorking = false
     private(set) var status: String?
     private(set) var error: String?
+    /// Set when planning waits for Wi-Fi to download this many bytes of map data.
+    private(set) var waitingForWiFi: Int?
+    /// "Download Anyway": allows one large download over mobile data.
+    private var allowMobileDataOnce = false
     private(set) var message: String?
     /// GPX of the current route in a temporary file, for sharing.
     private(set) var gpxURL: URL?
@@ -85,18 +89,36 @@ final class PlanStore {
         isWorking = true
         error = nil
         message = nil
+        waitingForWiFi = nil
         defer {
             isWorking = false
             status = nil
+            allowMobileDataOnce = false
         }
         do {
             status = String(localized: "Finding your location…")
             let here = try await location.get().coordinate
             let start = GeoPoint(lat: here.latitude, lon: here.longitude)
             try await plan(from: start, with: store)
+        } catch RoutingError.waitingForWiFi(let bytes) {
+            waitingForWiFi = bytes
+            self.error = RoutingError.waitingForWiFi(bytes: bytes).localizedDescription
         } catch {
             self.error = error.localizedDescription
         }
+    }
+
+    /// Removes downloaded route planning areas (Settings → Storage).
+    func removeRoutingData(_ areas: [RoutingIndex.Area], includingBase: Bool) async {
+        guard let index = RoutingData.index else { return }
+        await router.forget()
+        await RoutingData.remove(areas, includingBase: includingBase, index: index)
+    }
+
+    /// Plans again, downloading the map data over mobile data this once.
+    func downloadAnyway(with store: ActivityStore) async {
+        allowMobileDataOnce = true
+        await plan(with: store)
     }
 
     func plan(from start: GeoPoint, with store: ActivityStore) async throws {
@@ -137,14 +159,12 @@ final class PlanStore {
     /// Gets the routing data for the area, saying how much has to be downloaded.
     private func prepareRouting(around points: [GeoPoint], margin: Double) async throws {
         if let index = RoutingData.index {
-            let missing = RoutingData.packs(around: points, margin: margin, in: index)
-                .filter { !RoutingData.isDownloaded($0.pack) }
-            let bytes = missing.reduce(0) { $0 + $1.bytes }
-                + (RoutingData.isDownloaded(index.base) ? 0 : index.baseBytes)
-            // Packs download compressed, at about 40% of the tiles' size.
-            let download = Measurement(value: Double(bytes) * 0.4 / 1_000_000, unit: UnitInformationStorage.megabytes)
+            let bytes = RoutingData.downloadBytes(for: RoutingData.packs(around: points, margin: margin, in: index), index: index)
+            guard MapDataDownloads.mayDownload(bytes: bytes, allowedOnce: allowMobileDataOnce) else {
+                throw RoutingError.waitingForWiFi(bytes: bytes)
+            }
             status = bytes > 0
-                ? String(localized: "Downloading map data for route planning (about \(download.formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))))…")
+                ? String(localized: "Downloading map data for route planning (about \(MapDataDownloads.format(bytes)))…")
                 : String(localized: "Loading the route planning data…")
         }
         try await router.prepare(around: points, margin: margin)

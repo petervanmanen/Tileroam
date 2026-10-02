@@ -52,7 +52,7 @@ enum RoutingData {
     /// Downloads the given area packs (plus the base pack) where needed and links their tiles into
     /// one directory for Valhalla.
     static func tileDirectory(for areas: [RoutingIndex.Area], index: RoutingIndex) async throws -> URL {
-        let dir = URL.applicationSupportDirectory.appending(path: "Routing/tiles-\(index.name)", directoryHint: .isDirectory)
+        let dir = tileDirectory(index)
         let packs = [(index.base, index.baseFiles)] + areas.map { ($0.pack, $0.files) }
         for (pack, files) in packs {
             let source = try await packFolder(pack)
@@ -99,13 +99,55 @@ enum RoutingData {
         return { file in (try? manager.url(for: FilePath(file))) ?? URL(filePath: "/missing/\(file)") }
     }
 
-    /// Whether the pack is already on the device (iOS 26.4 and later; earlier: unknown, so false).
-    static func isDownloaded(_ pack: String) -> Bool {
+    /// Whether a pack is on the device: its tiles are linked into the tile directory (works on
+    /// every iOS version) or, from iOS 26.4, the system says so.
+    static func isDownloaded(_ pack: String, firstFile: String?, index: RoutingIndex) -> Bool {
         #if DEBUG
         if UserDefaults.standard.string(forKey: "RoutingPacksDir") != nil { return true }
         #endif
+        if let firstFile {
+            let link = tileDirectory(index).appending(path: firstFile).path(percentEncoded: false)
+            if let target = try? FileManager.default.destinationOfSymbolicLink(atPath: link),
+               FileManager.default.fileExists(atPath: target) { return true }
+        }
         if #available(iOS 26.4, *) { return AssetPackManager.shared.assetPackIsAvailableLocally(withID: pack) }
         return false
+    }
+
+    static func isDownloaded(_ area: RoutingIndex.Area, index: RoutingIndex) -> Bool {
+        isDownloaded(area.pack, firstFile: area.files.first, index: index)
+    }
+
+    static func isBaseDownloaded(_ index: RoutingIndex) -> Bool {
+        isDownloaded(index.base, firstFile: index.baseFiles.first, index: index)
+    }
+
+    /// Estimated download size of the areas (and the base pack) that aren't on the device yet.
+    /// Packs download compressed, at about 40% of the tiles' size.
+    static func downloadBytes(for areas: [RoutingIndex.Area], index: RoutingIndex) -> Int {
+        let tiles = areas.filter { !isDownloaded($0, index: index) }.reduce(0) { $0 + $1.bytes }
+            + (isBaseDownloaded(index) ? 0 : index.baseBytes)
+        return Int(Double(tiles) * 0.4)
+    }
+
+    /// Where the links to the downloaded tiles live.
+    static func tileDirectory(_ index: RoutingIndex) -> URL {
+        URL.applicationSupportDirectory.appending(path: "Routing/tiles-\(index.name)", directoryHint: .isDirectory)
+    }
+
+    /// Removes downloaded area packs (or, with `includingBase`, everything): their tile links and
+    /// the packs themselves. They download again when a plan needs them.
+    static func remove(_ areas: [RoutingIndex.Area], includingBase: Bool, index: RoutingIndex) async {
+        let dir = tileDirectory(index)
+        var packs = areas.map { ($0.pack, $0.files) }
+        if includingBase { packs.append((index.base, index.baseFiles)) }
+        for (pack, files) in packs {
+            for file in files { try? FileManager.default.removeItem(at: dir.appending(path: file)) }
+            #if DEBUG
+            if UserDefaults.standard.string(forKey: "RoutingPacksDir") != nil { continue }
+            #endif
+            try? await AssetPackManager.shared.remove(assetPackWithID: pack)
+        }
     }
 
     /// Valhalla's configuration (`Resources/valhalla.json`, made with the same Valhalla version as

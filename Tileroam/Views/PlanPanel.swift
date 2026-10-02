@@ -21,9 +21,13 @@ struct PlanPanel: View {
                 }
             }
             if let error = plan.error {
-                Label(error, systemImage: "exclamationmark.triangle.fill")
+                Label(error, systemImage: plan.waitingForWiFi != nil ? "wifi" : "exclamationmark.triangle.fill")
                     .font(.footnote)
                     .symbolRenderingMode(.multicolor)
+                if plan.waitingForWiFi != nil {
+                    Button("Download Anyway") { Task { await plan.downloadAnyway(with: store) } }
+                        .font(.footnote)
+                }
             }
             if let message = plan.message {
                 Label(message, systemImage: "checkmark.circle.fill")
