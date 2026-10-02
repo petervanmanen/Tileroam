@@ -198,9 +198,9 @@ if !prefixes.isEmpty {
         print("Nothing archived.")
         exit(1)
     }
-    let auth = "Bearer \(try token())"
     var failed = [String]()
     for (n, p) in toArchive.enumerated() {
+        let auth = "Bearer \(try token())" // fresh for every pack: a slow run can outlast a token
         var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(p.resourceID)")!)
         request.httpMethod = "PATCH"
         request.setValue(auth, forHTTPHeaderField: "Authorization")
