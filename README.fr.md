@@ -10,8 +10,8 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 
 - **Tuiles** : tuiles de carte au zoom 14 (~1,5 km, comme sur VeloViewer, StatsHunters et [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) et *squadratinhos* au zoom 17 (~190 m, comme sur Squadrats). Les deux sont toujours comptés ; vous choisissez celui que la carte affiche. Avec votre **carré max** et votre **plus grand cluster**.
 - **Parcours** : toutes vos activités sur une seule carte, colorées par sport.
-- **Communes et codes postaux** aux Pays-Bas, en Belgique et au Luxembourg, avec visités/total par pays.
-- **Planification d’itinéraire** aux Pays-Bas, en Belgique et au Luxembourg : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte qui les relie tous. Elle part de votre position, ou d’un **point de départ** que vous recherchez ou choisissez par un appui long sur la carte (les départs récents sont mémorisés). Les itinéraires sont calculés **sur l’appareil**, donc la planification fonctionne aussi hors ligne une fois la zone téléchargée. Partagez l’itinéraire en **GPX** ou enregistrez-le dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
+- **Communes et codes postaux** aux Pays-Bas, en Belgique, au Luxembourg et en Allemagne, avec visités/total par pays.
+- **Planification d’itinéraire** aux Pays-Bas, en Belgique, au Luxembourg et en Allemagne : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte qui les relie tous. Elle part de votre position, ou d’un **point de départ** que vous recherchez ou choisissez par un appui long sur la carte (les départs récents sont mémorisés). Les itinéraires sont calculés **sur l’appareil**, donc la planification fonctionne aussi hors ligne une fois la zone téléchargée. Partagez l’itinéraire en **GPX** ou enregistrez-le dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
 - **Strava** : importez tout votre historique avec le GPS. Les activités sont aussi enregistrées en fichiers `.fit` standard dans le dossier de votre choix.
 - **Doublons fusionnés** : une même séance enregistrée par plusieurs appareils ou apps (montre, Zwift, Strava, HealthFit) ne compte qu’une fois.
 - **Widgets** : *Tuiles autour de vous* (une carte des tuiles près de vous) et *Nombre d’Eddington*, sur l’écran d’accueil et l’écran verrouillé.
@@ -48,8 +48,9 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 | Pays-Bas | 342 gemeenten | 4 071 (PC4) |
 | Belgique | 565 | 1 150 |
 | Luxembourg | 100 communes | – |
+| Allemagne | 10 949 Gemeinden | 8 173 (PLZ) |
 
-Les tuiles, parcours et statistiques fonctionnent partout ; les communes, codes postaux et la planification couvrent ces trois pays. Les codes postaux ne sont inclus que là où leurs limites sont publiées en données ouvertes. Les limites d’un pays sont téléchargées automatiquement dès que vous y avez une activité.
+Les tuiles, parcours et statistiques fonctionnent partout ; les communes, codes postaux et la planification couvrent ces quatre pays. Les codes postaux ne sont inclus que là où leurs limites sont publiées en données ouvertes. Les limites d’un pays sont téléchargées automatiquement dès que vous y avez une activité.
 
 ## Pour commencer
 
@@ -78,8 +79,8 @@ Strava autorise environ 100 requêtes par 15 minutes et 1 000 par jour. La liste
 - Les **fichiers FIT** sont lus par un petit décodeur intégré (`FIT/FITDecoder.swift`). Tracés, tuiles et zones visitées sont mis en cache ; au lancement suivant, seuls les fichiers nouveaux ou modifiés sont lus.
 - Les **tuiles** utilisent la formule standard des tuiles Web Mercator (`Geo/TileGrid.swift`). Le carré max et le cluster sont calculés uniquement sur les tuiles visitées, ce qui reste rapide même pour des tuiles zoom 17 réparties dans toute l’Europe.
 - **Doublons** : les activités du même type qui se chevauchent dans le temps sont fusionnées (`Import/ActivityMerge.swift`) ; la copie au meilleur GPS et à la plus longue distance est conservée.
-- Les **communes et codes postaux** sont des fichiers binaires compacts (`AssetPacks/Regions/*.fmr`, 1,5 Mo au total) avec un index spatial pour des recherches rapides. Ils ne sont pas dans l’app : chaque pays est un asset pack hébergé par Apple (`regions-NL`, …) que l’app télécharge avec Background Assets dès que vous y avez une activité. `Tools/build_asset_packs.sh` les prépare pour App Store Connect ; dans le simulateur, `-RegionsDir <repo>/AssetPacks/Regions` les lit directement.
-- La **planification** fonctionne sur l’appareil avec [Valhalla](https://github.com/valhalla/valhalla), via [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), et des tuiles OpenStreetMap pour les Pays-Bas, la Belgique et le Luxembourg. Les tuiles sont des asset packs hébergés par Apple, par zone de 1° × 1°, si bien qu’un plan ne télécharge que sa propre zone (environ 60 Mo autour d’Utrecht au lieu de 480 Mo pour tout). Les téléchargements de plus de 25 Mo attendent le Wi-Fi (`MapDataDownloads`). L’ordre de passage est calculé sur les distances à vol d’oiseau (`TripSolver`, bien plus rapide qu’une matrice d’itinéraires sur l’appareil) ; ensuite, dans chaque cible, le planificateur choisit le point qui minimise le détour, et Valhalla calcule la boucle. Construire les tuiles et ajouter des pays : [docs/ROUTING.md](docs/ROUTING.md).
+- Les **communes et codes postaux** sont des fichiers binaires compacts (`AssetPacks/Regions/*.fmr`, 6,3 Mo au total) avec un index spatial pour des recherches rapides. Ils ne sont pas dans l’app : chaque pays est un asset pack hébergé par Apple (`regions-NL`, …) que l’app télécharge avec Background Assets dès que vous y avez une activité. `Tools/build_asset_packs.sh` les prépare pour App Store Connect ; dans le simulateur, `-RegionsDir <repo>/AssetPacks/Regions` les lit directement.
+- La **planification** fonctionne sur l’appareil avec [Valhalla](https://github.com/valhalla/valhalla), via [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), et des tuiles OpenStreetMap pour les Pays-Bas, la Belgique, le Luxembourg et l’Allemagne. Les tuiles sont des asset packs hébergés par Apple, par zone de 1° × 1°, si bien qu’un plan ne télécharge que sa propre zone (environ 100 Mo pour un plan dans une zone, au lieu de 2,3 Go pour tout). Les téléchargements de plus de 25 Mo attendent le Wi-Fi (`MapDataDownloads`). L’ordre de passage est calculé sur les distances à vol d’oiseau (`TripSolver`, bien plus rapide qu’une matrice d’itinéraires sur l’appareil) ; ensuite, dans chaque cible, le planificateur choisit le point qui minimise le détour, et Valhalla calcule la boucle. Construire les tuiles et ajouter des pays : [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Données des limites
 
@@ -97,6 +98,7 @@ Le script indique l’origine de chaque fichier source. Il reprojette en WGS84, 
 | Pays-Bas | CBS / Kadaster via PDOK (CC BY 4.0) |
 | Belgique | NGI-IGN, bpost via Opendatasoft (licence des codes postaux : voir la source) |
 | Luxembourg | ACT (CC0) |
+| Allemagne | BKG VG250 (dl-de/by-2-0); codes postaux : OpenStreetMap (ODbL) |
 
 Planification : © contributeurs OpenStreetMap (ODbL), itinéraires calculés par Valhalla sur l’appareil.
 
@@ -133,7 +135,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 ## Limites
 
-- Les communes, codes postaux et la planification couvrent uniquement les Pays-Bas, la Belgique et le Luxembourg. [docs/ROUTING.md](docs/ROUTING.md) explique comment ajouter des pays.
+- Les communes, codes postaux et la planification couvrent uniquement les Pays-Bas, la Belgique, le Luxembourg et l’Allemagne. [docs/ROUTING.md](docs/ROUTING.md) explique comment ajouter des pays.
 - Le Luxembourg n’a pas de limites de codes postaux en données ouvertes.
 - Les itinéraires sont des boucles ; les trajets simples de A à B ne sont pas encore pris en charge.
 
@@ -143,4 +145,4 @@ Tileroam n’a ni comptes, ni outil d’analyse, ni pistage. Vos activités, tui
 
 ## Licence
 
-Le code source est sous [licence MIT](LICENSE). Les données de limites conservent les licences de leurs sources (CC BY 4.0, CC0 et les licences de NGI et bpost), et les données d’itinéraires sont © contributeurs OpenStreetMap (ODbL) ; voir [DATA-LICENSES.md](DATA-LICENSES.md).
+Le code source est sous [licence MIT](LICENSE). Les données de limites conservent les licences de leurs sources (CC BY 4.0, CC0, dl-de/by-2-0, ODbL et les licences de NGI et bpost), et les données d’itinéraires sont © contributeurs OpenStreetMap (ODbL) ; voir [DATA-LICENSES.md](DATA-LICENSES.md).

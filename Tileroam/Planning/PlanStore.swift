@@ -155,7 +155,7 @@ final class PlanStore {
         let regions: RegionData? = await store.loadedRegions()
         let targets = selected.sorted { $0.sortKey < $1.sortKey }
             .compactMap { TargetGeometry($0, regions: regions) }
-        // The routing data covers the Netherlands, Belgium and Luxembourg.
+        // The routing data covers the Netherlands, Belgium, Luxembourg and Germany.
         guard RoutingData.covers(start),
               targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
             throw RoutingError.outsideRegion
@@ -226,8 +226,15 @@ final class PlanStore {
     func planDemoRoute(with store: ActivityStore, pace: Duration? = nil) async {
         let regions = await store.loadedRegions()
         isPlanning = true
-        let start = GeoPoint(lat: 52.0907, lon: 5.1214)
-        setStart(StartPoint(name: "Utrecht Centrum", start), remember: false)
+        var start = GeoPoint(lat: 52.0907, lon: 5.1214)
+        var startName = "Utrecht Centrum"
+        // -PlanDemoStart "lat,lon": the same demo elsewhere, for example at a border.
+        let parts = (UserDefaults.standard.string(forKey: "PlanDemoStart") ?? "").split(separator: ",").compactMap { Double($0) }
+        if parts.count == 2 {
+            start = GeoPoint(lat: parts[0], lon: parts[1])
+            startName = StartPoint.coordinateName(start)
+        }
+        setStart(StartPoint(name: startName, start), remember: false)
         // The four nearest unvisited tiles around the start.
         let startCell = TileGrid.cell(lat: start.lat, lon: start.lon, zoom: .explorer)!
         var candidates = [(distance: Int, key: Int64)]()

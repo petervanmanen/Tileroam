@@ -10,8 +10,8 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 
 - **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) und *Squadratinhos* auf Zoom 17 (~190 m, wie bei Squadrats). Beide werden immer gezählt; du wählst, welche die Karte zeigt. Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
 - **Routen**: alle deine Aktivitäten auf einer Karte, nach Sportart eingefärbt.
-- **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien und Luxemburg, mit besucht/gesamt pro Land.
-- **Routenplanung** in den Niederlanden, Belgien und Luxemburg: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
+- **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg und Deutschland, mit besucht/gesamt pro Land.
+- **Routenplanung** in den Niederlanden, Belgien, Luxemburg und Deutschland: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
 - **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
 - **Widgets**: *Kacheln um dich herum* (eine Karte der Kacheln in deiner Nähe) und *Eddington-Zahl*, auf dem Home-Bildschirm und dem Sperrbildschirm.
@@ -48,8 +48,9 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 | Niederlande | 342 gemeenten | 4.071 (PC4) |
 | Belgien | 565 | 1.150 |
 | Luxemburg | 100 communes | – |
+| Deutschland | 10.949 Gemeinden | 8.173 (PLZ) |
 
-Kacheln, Routen und Statistiken funktionieren überall; Gemeinden, Postleitzahlen und Routenplanung decken diese drei Länder ab. Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Die Grenzen eines Landes werden automatisch geladen, sobald du dort eine Aktivität hast.
+Kacheln, Routen und Statistiken funktionieren überall; Gemeinden, Postleitzahlen und Routenplanung decken diese vier Länder ab. Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Die Grenzen eines Landes werden automatisch geladen, sobald du dort eine Aktivität hast.
 
 ## Erste Schritte
 
@@ -78,8 +79,8 @@ Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitä
 - **FIT-Dateien** werden von einem kleinen eingebauten Decoder gelesen (`FIT/FITDecoder.swift`). Strecken, Kacheln und besuchte Gebiete werden zwischengespeichert, sodass beim nächsten Start nur neue oder geänderte Dateien gelesen werden.
 - **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
 - **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
-- **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 1,5 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
-- Die **Routenplanung** läuft auf dem Gerät mit [Valhalla](https://github.com/valhalla/valhalla), über [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), und OpenStreetMap-Kacheln für die Niederlande, Belgien und Luxemburg. Die Kacheln kommen als von Apple gehostete Asset Packs pro 1° × 1°-Gebiet, sodass ein Plan nur sein eigenes Gebiet lädt (etwa 60 MB rund um Utrecht statt 480 MB für alles). Downloads über 25 MB warten auf WLAN (`MapDataDownloads`). Die Reihenfolge wird auf Luftlinien-Entfernungen bestimmt (`TripSolver`, viel schneller als eine Routing-Matrix auf dem Gerät); danach wählt der Planer in jedem Ziel den Punkt mit dem kleinsten Umweg, und Valhalla berechnet die Rundtour. Kacheln bauen und Länder hinzufügen: [docs/ROUTING.md](docs/ROUTING.md).
+- **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 6,3 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
+- Die **Routenplanung** läuft auf dem Gerät mit [Valhalla](https://github.com/valhalla/valhalla), über [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), und OpenStreetMap-Kacheln für die Niederlande, Belgien, Luxemburg und Deutschland. Die Kacheln kommen als von Apple gehostete Asset Packs pro 1° × 1°-Gebiet, sodass ein Plan nur sein eigenes Gebiet lädt (etwa 100 MB für einen Plan in einem Gebiet statt 2,3 GB für alles). Downloads über 25 MB warten auf WLAN (`MapDataDownloads`). Die Reihenfolge wird auf Luftlinien-Entfernungen bestimmt (`TripSolver`, viel schneller als eine Routing-Matrix auf dem Gerät); danach wählt der Planer in jedem Ziel den Punkt mit dem kleinsten Umweg, und Valhalla berechnet die Rundtour. Kacheln bauen und Länder hinzufügen: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Grenzdaten
 
@@ -97,6 +98,7 @@ Das Skript dokumentiert, woher jede Quelldatei stammt. Es projiziert nach WGS84 
 | Niederlande | CBS / Kadaster über PDOK (CC BY 4.0) |
 | Belgien | NGI-IGN, bpost über Opendatasoft (Postleitzahl-Lizenz: siehe Quelle) |
 | Luxemburg | ACT (CC0) |
+| Deutschland | BKG VG250 (dl-de/by-2-0); Postleitzahlen: OpenStreetMap (ODbL) |
 
 Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch Valhalla auf dem Gerät.
 
@@ -133,7 +135,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 ## Einschränkungen
 
-- Gemeinden, Postleitzahlen und Routenplanung decken nur die Niederlande, Belgien und Luxemburg ab. [docs/ROUTING.md](docs/ROUTING.md) beschreibt, wie man Länder hinzufügt.
+- Gemeinden, Postleitzahlen und Routenplanung decken nur die Niederlande, Belgien, Luxemburg und Deutschland ab. [docs/ROUTING.md](docs/ROUTING.md) beschreibt, wie man Länder hinzufügt.
 - Luxemburg hat keine offenen Postleitzahlgrenzen.
 - Routen sind Rundtouren; einfache Strecken von A nach B werden noch nicht unterstützt.
 
@@ -143,4 +145,4 @@ Tileroam hat keine Konten, keine Analysewerkzeuge und kein Tracking. Deine Aktiv
 
 ## Lizenz
 
-Der Quellcode steht unter der [MIT-Lizenz](LICENSE). Die Grenzdaten behalten die Lizenzen ihrer Quellen (CC BY 4.0, CC0 sowie die Lizenzen von NGI und bpost), und die Routingdaten sind © OpenStreetMap-Mitwirkende (ODbL); siehe [DATA-LICENSES.md](DATA-LICENSES.md).
+Der Quellcode steht unter der [MIT-Lizenz](LICENSE). Die Grenzdaten behalten die Lizenzen ihrer Quellen (CC BY 4.0, CC0, dl-de/by-2-0, ODbL sowie die Lizenzen von NGI und bpost), und die Routingdaten sind © OpenStreetMap-Mitwirkende (ODbL); siehe [DATA-LICENSES.md](DATA-LICENSES.md).

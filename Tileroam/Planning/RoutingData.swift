@@ -7,9 +7,9 @@ import System
 /// 1° × 1° area, so a plan downloads only the areas it needs. See docs/ROUTING.md.
 enum RoutingData {
     /// Countries the routing data covers. Built together, so routes cross their borders.
-    static let countries: Set<String> = ["NL", "BE", "LU"]
+    static let countries: Set<String> = ["NL", "BE", "LU", "DE"]
     /// The build whose index (`Resources/routing-<name>.json`) the app bundles.
-    static let build = "benelux"
+    static let build = "west"
 
     /// Whether `p` lies in a country the routing data covers.
     static func covers(_ p: GeoPoint) -> Bool {
@@ -147,6 +147,27 @@ enum RoutingData {
             if UserDefaults.standard.string(forKey: "RoutingPacksDir") != nil { continue }
             #endif
             try? await AssetPackManager.shared.remove(assetPackWithID: pack)
+        }
+    }
+
+    /// Earlier builds whose packs may still be on the device (from TestFlight versions). Their tiles
+    /// don't connect with the current build, so they're only taking space.
+    static let retiredBuilds = ["benelux"]
+
+    /// Removes the tile links and downloaded packs of `retiredBuilds`. Their area IDs follow the
+    /// 1° grid, so every possible ID in the region is tried; only packs on the device are removed.
+    static func removeRetiredBuilds() async {
+        for build in retiredBuilds {
+            let dir = URL.applicationSupportDirectory.appending(path: "Routing/tiles-\(build)", directoryHint: .isDirectory)
+            try? FileManager.default.removeItem(at: dir)
+            guard #available(iOS 26.4, *) else { continue }
+            var ids = ["routing-\(build)-base"]
+            for lat in 45...56 {
+                for lon in 0...16 { ids.append(String(format: "routing-%@-n%02de%03d", build, lat, lon)) }
+            }
+            for id in ids where AssetPackManager.shared.assetPackIsAvailableLocally(withID: id) {
+                try? await AssetPackManager.shared.remove(assetPackWithID: id)
+            }
         }
     }
 

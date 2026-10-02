@@ -81,3 +81,26 @@ struct ValhallaEngineTests {
         #expect((8_000...25_000).contains(route.distance))
     }
 }
+
+/// The production build (Tools/build_routing_tiles.sh west …, not in Git): checks that routes cross
+/// the Dutch–German border, which needs the countries in one build.
+private let westBuild: URL? = {
+    let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+    let tar = root.appending(path: "AssetPacks/build/routing/routing-west.tar")
+    return FileManager.default.fileExists(atPath: tar.path(percentEncoded: false)) ? tar : nil
+}()
+
+@Suite(.serialized, .enabled(if: westBuild != nil))
+struct WestRoutingTests {
+    @Test func routesAcrossTheGermanBorder() async throws {
+        UserDefaults.standard.removeObject(forKey: "RoutingPacksDir")
+        UserDefaults.standard.set(westBuild!.path(percentEncoded: false), forKey: "RoutingTar")
+        defer { UserDefaults.standard.removeObject(forKey: "RoutingTar") }
+        let kerkrade = GeoPoint(lat: 50.8657, lon: 6.0628), aachen = GeoPoint(lat: 50.7753, lon: 6.0839)
+        #expect(RoutingData.covers(kerkrade) && RoutingData.covers(aachen))
+        let router = ValhallaRouter()
+        try await router.prepare(around: [kerkrade, aachen], margin: 15_000)
+        let r = try await router.route([kerkrade, aachen])
+        #expect((9_000...20_000).contains(r.distance)) // about 12 km by bike
+    }
+}

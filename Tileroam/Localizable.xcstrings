@@ -4109,30 +4109,30 @@
         }
       }
     },
-    "Municipalities and postcodes in the Netherlands, Belgium and Luxembourg": {
+    "Municipalities and postcodes in the Netherlands, Belgium, Luxembourg and Germany": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemeenten en postcodes in Nederland, België en Luxemburg"
+            "value": "Gemeenten en postcodes in Nederland, België, Luxemburg en Duitsland"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Communes et codes postaux aux Pays-Bas, en Belgique et au Luxembourg"
+            "value": "Communes et codes postaux aux Pays-Bas, en Belgique, au Luxembourg et en Allemagne"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Municipios y códigos postales en los Países Bajos, Bélgica y Luxemburgo"
+            "value": "Municipios y códigos postales en los Países Bajos, Bélgica, Luxemburgo y Alemania"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemeinden und Postleitzahlen in den Niederlanden, Belgien und Luxemburg"
+            "value": "Gemeinden und Postleitzahlen in den Niederlanden, Belgien, Luxemburg und Deutschland"
           }
         }
       }
@@ -5369,30 +5369,30 @@
         }
       }
     },
-    "Route planning is available in the Netherlands, Belgium and Luxembourg. The starting point and all selected items must be there.": {
+    "Route planning is available in the Netherlands, Belgium, Luxembourg and Germany. The starting point and all selected items must be there.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Routeplanning is beschikbaar in Nederland, België en Luxemburg. Het startpunt en alle geselecteerde onderdelen moeten daar liggen."
+            "value": "Routeplanning is beschikbaar in Nederland, België, Luxemburg en Duitsland. Het startpunt en alle geselecteerde onderdelen moeten daar liggen."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La planification d’itinéraires est disponible aux Pays-Bas, en Belgique et au Luxembourg. Le point de départ et tous les éléments sélectionnés doivent s’y trouver."
+            "value": "La planification d’itinéraires est disponible aux Pays-Bas, en Belgique, au Luxembourg et en Allemagne. Le point de départ et tous les éléments sélectionnés doivent s’y trouver."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La planificación de rutas está disponible en los Países Bajos, Bélgica y Luxemburgo. El punto de partida y todos los elementos seleccionados deben estar allí."
+            "value": "La planificación de rutas está disponible en los Países Bajos, Bélgica, Luxemburgo y Alemania. El punto de partida y todos los elementos seleccionados deben estar allí."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Routenplanung ist in den Niederlanden, Belgien und Luxemburg verfügbar. Der Startpunkt und alle ausgewählten Elemente müssen dort liegen."
+            "value": "Die Routenplanung ist in den Niederlanden, Belgien, Luxemburg und Deutschland verfügbar. Der Startpunkt und alle ausgewählten Elemente müssen dort liegen."
           }
         }
       }

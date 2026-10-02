@@ -56,7 +56,7 @@ Apple's rules:
 ## Pitfalls learned
 - **Never pass `-mapMode`** to the tour: launch arguments override `@AppStorage`, and the tab switches silently don't happen. The tour sets `mode = .squares` itself.
 - **Strip carriage returns:** `simctl launch --console-pty` output ends lines with `\r`, which breaks shell arithmetic. The script uses `tr -d '\r'`.
-- **Duration varies:** route planning (Valhalla on the device; needs `AssetPacks/build/routing/routing-benelux.tar`, see docs/ROUTING.md) takes a little longer the first time, so the length varies by a few seconds. The script caps at 30 s and fails if the result is under 15 s. If Statistics gets cut off, shorten the waits in `runPreviewTour()`.
+- **Duration varies:** route planning (Valhalla on the device; needs `AssetPacks/build/routing/routing-west.tar`, see docs/ROUTING.md) takes a little longer the first time, so the length varies by a few seconds. The script caps at 30 s and fails if the result is under 15 s. If Statistics gets cut off, shorten the waits in `runPreviewTour()`.
 - **Blank start:** if the first frames show the map without tiles, raise the 6 s wait before `PREVIEW_TOUR_START`.
 - **Route behind Statistics:** right after planning ends, the route can stay visible behind the Statistics sheet for a few seconds. That's MapKit redrawing slowly in the simulator, not a bug; it's gone after a few seconds.
 - **Planning is slower on the iPad simulator** (about 8 s against 4 s on the iPhone), so the iPad video is the one closest to 30 s.

@@ -13,6 +13,8 @@ attribution and follow the license of each source.
 | `BE-municipalities` | NGI-IGN via Opendatasoft | NGI open data licence | © NGI-IGN |
 | `BE-postcodes` | bpost / NGI-IGN via Opendatasoft | custom, see source | © bpost, NGI-IGN |
 | `LU-municipalities` | data.public.lu | CC0 | ACT Luxembourg |
+| `DE-municipalities` | BKG VG250 via Opendatasoft | dl-de/by-2-0 | © GeoBasis-DE / BKG |
+| `DE-postcodes` | OpenStreetMap (tdudek/de-plz-geojson) | **ODbL 1.0** | © OpenStreetMap contributors |
 | `regions.json` | Generated manifest | as above | – |
 
 Files derived from OpenStreetMap (**ODbL 1.0**) are made available under the

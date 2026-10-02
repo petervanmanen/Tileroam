@@ -16,7 +16,9 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
 - **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release
-- **Asset pack count:** the 36 routing packs are uploaded (2 October 2026), 58 packs in total with the boundaries. Confirm that App Store Connect accepts them for the version under review; if not, combine routing areas.
+- **Germany** (branch `feature/germany`): routing build `west` (NL, BE, LU, DE), 92 packs. Upload them with `Tools/upload_asset_packs.sh routing-west` before releasing the app version that bundles `routing-west.json`. Asset packs: 58 + 92 = 150 of Apple's 200.
+- **Later:** archive the 36 `routing-benelux-*` packs and the 18 unused boundary packs on the App Store Connect website once no app version uses them (`Tools/clean_asset_packs.sh` lists them); that frees 54 of the 200.
+- **Possible improvement:** the base pack (Valhalla's level-0 main roads, 36 MB) comes with every first plan. Splitting it per 4° tile would make a first plan about 30 MB smaller.
 - **Test routing on a device** via TestFlight: plan near home, across a border, from a chosen starting point, and offline in an area downloaded before. (`feature/valhalla-routing` is already in `main`.)
 - ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.
 - **App Store Connect, App Privacy:** add *Identifiers → User ID*, and remove *Precise Location* (route planning no longer sends it); see `docs/appstore/app-privacy.md`.

@@ -31,7 +31,7 @@ enum RoutingError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .outsideRegion:
-            String(localized: "Route planning is available in the Netherlands, Belgium and Luxembourg. The starting point and all selected items must be there.")
+            String(localized: "Route planning is available in the Netherlands, Belgium, Luxembourg and Germany. The starting point and all selected items must be there.")
         case .dataUnavailable(let message):
             String(localized: "The route planning data couldn't be loaded: \(message)")
         case .engine(let message):

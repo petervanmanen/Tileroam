@@ -15,6 +15,8 @@
 #   Tileroam/Resources/routing-<name>.json: the index of areas the app bundles (commit it)
 #   AssetPacks/build/routing/routing-<name>.tar: all tiles in one file, for the simulator
 #     (-RoutingTar) and the engine tests
+#
+# ROUTING_REPACK=1 only redoes the asset packs and index from the last build's tiles.
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 # Must match the Valhalla version inside valhalla-mobile (Tileroam.xcodeproj pins valhalla-mobile
@@ -23,7 +25,7 @@ VALHALLA_VERSION=3.6.3
 ROOT=${0:A:h:h}
 OUT=$ROOT/AssetPacks/build/routing
 NAME=${1:?pack name, e.g. benelux}; shift
-(( $# )) || { echo "usage: build_routing_tiles.sh <name> <geofabrik europe extract>…" >&2; exit 1 }
+(( $# )) || [[ -n ${ROUTING_REPACK:-} ]] || { echo "usage: build_routing_tiles.sh <name> <geofabrik europe extract>…" >&2; exit 1 }
 mkdir -p $OUT/osm
 
 # Valhalla's tools (pyvalhalla, Python 3.12+) in a local environment.
@@ -35,6 +37,19 @@ if [[ ! -x $VENV/bin/valhalla_build_tiles ]]; then
   $VENV/bin/pip install -q pyvalhalla==$VALHALLA_VERSION
 fi
 export PATH=$VENV/bin:$PATH
+
+TILES=$OUT/tiles-$NAME
+TAR=$OUT/routing-$NAME.tar
+STAGING=$OUT/packs-$NAME
+
+if [[ -n ${ROUTING_REPACK:-} ]]; then
+  # Only step 5 again, from the tiles staged by the last build (for example after changing which
+  # countries are covered): no download and no tile build.
+  [[ -d $STAGING ]] || { echo "No earlier build in $STAGING" >&2; exit 1 }
+  rm -rf $TILES; mkdir -p $TILES
+  (cd $STAGING && find routing-$NAME-*(/) -name '*.gph' | while read f; do
+    mkdir -p $TILES/${${f#*/}:h}; ln -f $f $TILES/${f#*/}; done)
+else
 
 # 1. OpenStreetMap extracts from Geofabrik (re-downloaded when older than a week).
 pbfs=()
@@ -59,9 +74,8 @@ if (( ${#pbfs} > 1 )); then
 fi
 
 # 3. Tiles, in one build so the countries connect.
-TILES=$OUT/tiles-$NAME
-TAR=$OUT/routing-$NAME.tar
 rm -rf $TILES; mkdir -p $TILES
+# ROUTING_CONCURRENCY limits the build threads (default: all cores), for Macs with little memory.
 # Cycling only: no car-only roads, driveways or car shortcuts (about 10% smaller). Footpaths stay,
 # so routes can cross pedestrian zones with the bike pushed; ROUTING_PEDESTRIAN=False drops them
 # too (about 25% smaller in total).
@@ -69,10 +83,12 @@ python -m valhalla.valhalla_build_config --mjolnir-tile-dir $TILES --mjolnir-til
   --mjolnir-timezone "" --mjolnir-admin "" --mjolnir-traffic-extract "" \
   --mjolnir-include-driving False --mjolnir-include-driveways False --mjolnir-shortcuts False \
   --mjolnir-include-pedestrian ${ROUTING_PEDESTRIAN:-True} \
-  --mjolnir-concurrency $(sysctl -n hw.ncpu) > $OUT/config-$NAME.json 2>/dev/null
+  --mjolnir-concurrency ${ROUTING_CONCURRENCY:-$(sysctl -n hw.ncpu)} > $OUT/config-$NAME.json 2>/dev/null
 echo "Building tiles for $*…"
 valhalla_build_tiles -c $OUT/config-$NAME.json $pbfs > $OUT/build-$NAME.log 2>&1 || {
   tail -20 $OUT/build-$NAME.log >&2; exit 1 }
+# The merged extract is only an input; it's made again on the next build (saves several GB).
+[[ -n ${MERGED:-} ]] && rm -f $MERGED
 
 # 4. All tiles in one file (simulator and tests).
 # (valhalla_build_extract refuses to overwrite and still exits 0, so remove the old one first.)
@@ -80,9 +96,10 @@ rm -f $TAR
 python $ROOT/Tools/valhalla_build_extract.py -c $OUT/config-$NAME.json -v >> $OUT/build-$NAME.log 2>&1
 [[ -s $TAR ]] || { echo "No tile extract written; see $OUT/build-$NAME.log" >&2; exit 1 }
 echo "Tile extract: $TAR ($(du -h $TAR | cut -f1))"
+fi
 
-# 5. Asset packs per 1° area, plus the base pack, and the index the app bundles.
-STAGING=$OUT/packs-$NAME
+# 5. Asset packs per 1° area, plus the base pack, and the index the app bundles. Only the areas
+#    within reach of the covered countries (RoutingData.countries, or ROUTING_COUNTRIES).
 rm -rf $STAGING
 # The index goes into the app's resources, except for test builds ("<name>-test").
 INDEX=$ROOT/Tileroam/Resources/routing-$NAME.json

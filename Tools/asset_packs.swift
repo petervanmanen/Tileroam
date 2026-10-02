@@ -111,6 +111,11 @@ if env["OFFLINE"] == "1" {
 }
 let packs = try await listPacks()
 let active = packs.filter { !$0.archived }
+if env["LIST"] == "1" {
+    // Only the IDs of the active packs, one per line (for Tools/upload_asset_packs.sh --resume).
+    for id in active.map(\.id).sorted() { print(id) }
+    exit(0)
+}
 let unused = active.filter { !needed.contains($0.id) }.sorted { $0.id < $1.id }
 let present = Set(active.map(\.id))
 let missing = needed.subtracting(present).sorted()
