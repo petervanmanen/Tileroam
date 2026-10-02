@@ -42,7 +42,7 @@ xcrun simctl privacy "$D" grant location-always $BID
 C=$(xcrun simctl get_app_container "$D" $BID data)
 mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
-COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-benelux.tar -AppleLanguages "(en)" -AppleLocale en_GB -tileZoom 14)
+COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB -tileZoom 14)
 
 # The simulator is slow to launch apps (system libraries load lazily), so the waits are long.
 shot() { # name, wait, args…

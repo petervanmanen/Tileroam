@@ -63,7 +63,8 @@ The seven shots are:
 | `-mapMode squares\|activities\|gemeenten\|postcodes` | Opens on that tab |
 | `-FocusZoom 9` | Zooms the map out one step (default 10); the Towns shot uses one less |
 | `-PlanDemo YES` | Selects tiles near Utrecht and plans a route, on the device with Valhalla |
-| `-RoutingTar <repo>/AssetPacks/build/routing/routing-benelux.tar` | Routing data for the plan shot. Build it first with `Tools/build_routing_tiles.sh benelux netherlands belgium luxembourg` (see docs/ROUTING.md). |
+| `-PlanDemoStart "lat,lon"` | The same demo from another start, for example on a border |
+| `-RoutingTar <repo>/AssetPacks/build/routing/routing-west.tar` | Routing data for the plan shot. Build it first with `Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany` (see docs/ROUTING.md). |
 | `-ShowStatistics YES` / `-ShowSettings YES` | Opens that screen at launch |
 | `-hasSeenIntro NO` | Shows the introduction |
 

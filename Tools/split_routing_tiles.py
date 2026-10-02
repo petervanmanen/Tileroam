@@ -11,11 +11,19 @@ the level-0 tiles. File paths stay as Valhalla names them ("2/000/791/223.gph"),
 links to them in one tile directory. All packs come from one build, so their roads connect.
 
 The index lists every pack with its area, size and files; the app bundles it.
+
+Only tiles within reach of the covered countries are packed (see routing_area_filter.py): the
+countries in ROUTING_COUNTRIES (for example "NL BE LU DE"), by default those in
+RoutingData.countries in Tileroam/Planning/RoutingData.swift.
 """
 import json
 import os
+import re
 import shutil
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from routing_area_filter import load_outlines, needed  # noqa: E402
 
 TILE_SIZE = {0: 4.0, 1: 1.0, 2: 0.25}
 
@@ -32,6 +40,22 @@ def cell_id(lat, lon):
     return f"{'n' if lat >= 0 else 's'}{abs(lat):02d}{'e' if lon >= 0 else 'w'}{abs(lon):03d}"
 
 
+def covered_countries():
+    if os.environ.get("ROUTING_COUNTRIES"):
+        return set(os.environ["ROUTING_COUNTRIES"].split())
+    source = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          "Tileroam", "Planning", "RoutingData.swift")
+    match = re.search(r"static let countries: Set<String> = \[([^\]]*)\]", open(source).read())
+    return set(re.findall(r'"([A-Z]{2})"', match.group(1)))
+
+
+countries = covered_countries()
+rings = load_outlines(countries)
+assert rings, f"no country outlines for {countries}"
+print(f"Packing the areas within reach of {' '.join(sorted(countries))}")
+reachable = {}  # (level, lat, lon) -> bool
+skipped = set()
+
 packs = {}  # pack id -> {"lat", "lon", "bytes", "files"}
 for root, _, files in os.walk(tiles):
     for f in files:
@@ -40,6 +64,13 @@ for root, _, files in os.walk(tiles):
         path = os.path.relpath(os.path.join(root, f), tiles)
         parts = path.split(os.sep)
         level, tile_id = int(parts[0]), int("".join(parts[1:])[:-4])
+        corner = tile_corner(level, tile_id)
+        key = (level, *corner)
+        if key not in reachable:
+            reachable[key] = needed(corner[0], corner[1], TILE_SIZE[level], rings)
+        if not reachable[key]:
+            skipped.add(key)
+            continue
         if level == 0:
             pack = f"routing-{name}-base"
             entry = packs.setdefault(pack, {"bytes": 0, "files": []})
@@ -72,4 +103,5 @@ index = {
 }
 with open(index_path, "w") as f:
     json.dump(index, f, separators=(",", ":"))
+print(f"Left out {len(skipped)} tiles beyond reach of {' '.join(sorted(countries))}")
 print(f"{len(index['areas'])} area packs + base pack; index {os.path.getsize(index_path) / 1000:.0f} KB")

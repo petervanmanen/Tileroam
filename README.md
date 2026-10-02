@@ -10,8 +10,8 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 
 - **Tiles**: zoom 14 map tiles (~1.5 km, as on VeloViewer, StatsHunters and [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) and zoom 17 *squadratinhos* (~190 m, as on Squadrats). Both are always counted; you choose which one the map shows. Includes your **max square** and **max cluster**.
 - **Routes**: all your activities on one map, coloured by sport.
-- **Municipalities and postcodes** in the Netherlands, Belgium and Luxembourg, with visited/total per country.
-- **Route planning** in the Netherlands, Belgium and Luxembourg: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
+- **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg and Germany, with visited/total per country.
+- **Route planning** in the Netherlands, Belgium, Luxembourg and Germany: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
 - **Strava**: import your full history with GPS. Activities are also saved as standard `.fit` files in a folder of your choice.
 - **Duplicates merged**: the same workout recorded by several devices or apps (watch, Zwift, Strava, HealthFit) counts once.
 - **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
@@ -48,8 +48,9 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 | Netherlands | 342 gemeenten | 4,071 (PC4) |
 | Belgium | 565 | 1,150 |
 | Luxembourg | 100 communes | – |
+| Germany | 10,949 Gemeinden | 8,173 (PLZ) |
 
-Tiles, routes and statistics work everywhere; municipalities, postcodes and route planning cover these three countries. Postcodes are only included where their boundaries are published as open data. A country's boundaries are downloaded automatically the first time you have an activity there.
+Tiles, routes and statistics work everywhere; municipalities, postcodes and route planning cover these four countries. Postcodes are only included where their boundaries are published as open data. A country's boundaries are downloaded automatically the first time you have an activity there.
 
 ## Getting started
 
@@ -78,8 +79,8 @@ Strava allows about 100 requests per 15 minutes and 1,000 per day. The activity 
 - **FIT files** are decoded by a small built-in decoder (`FIT/FITDecoder.swift`). Parsed routes, tiles and visited areas are cached, so only new or changed files are read on the next launch.
 - **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for zoom 17 tiles spread across Europe.
 - **Duplicates**: activities of the same kind that overlap in time are merged (`Import/ActivityMerge.swift`); the copy with the best GPS and the longest distance is kept.
-- **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 1.5 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
-- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium and Luxembourg. The tiles come as Apple-hosted asset packs per 1° × 1° area, so a plan downloads only its own area (about 60 MB around Utrecht instead of 480 MB for everything). Downloads over 25 MB wait for Wi-Fi (`MapDataDownloads`). The visiting order is solved on straight-line distances (`TripSolver`, much faster than a routing matrix on the device); then, inside each target, the planner picks the point that keeps the detour shortest, and Valhalla routes the round trip. How to build the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
+- **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 6.3 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
+- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium, Luxembourg and Germany. The tiles come as Apple-hosted asset packs per 1° × 1° area, so a plan downloads only its own area (about 100 MB for a plan in one area, instead of 2.3 GB for everything). Downloads over 25 MB wait for Wi-Fi (`MapDataDownloads`). The visiting order is solved on straight-line distances (`TripSolver`, much faster than a routing matrix on the device); then, inside each target, the planner picks the point that keeps the detour shortest, and Valhalla routes the round trip. How to build the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Region data
 
@@ -97,6 +98,7 @@ The script documents where each source file comes from. It reprojects to WGS84, 
 | Netherlands | CBS / Kadaster via PDOK (CC BY 4.0) |
 | Belgium | NGI-IGN, bpost via Opendatasoft (postcode licence: see source) |
 | Luxembourg | ACT (CC0) |
+| Germany | BKG VG250 (dl-de/by-2-0); postcodes: OpenStreetMap (ODbL) |
 
 Route planning: © OpenStreetMap contributors (ODbL), routing by Valhalla on the device.
 
@@ -133,7 +135,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 ## Limitations
 
-- Municipalities, postcodes and route planning cover the Netherlands, Belgium and Luxembourg only. [docs/ROUTING.md](docs/ROUTING.md) describes how to add countries.
+- Municipalities, postcodes and route planning cover the Netherlands, Belgium, Luxembourg and Germany only. [docs/ROUTING.md](docs/ROUTING.md) describes how to add countries.
 - Luxembourg has no open postcode boundaries.
 - Routes are round trips; one-way routes from A to B aren't supported yet.
 
@@ -143,4 +145,4 @@ Tileroam has no accounts, analytics or tracking. Your activities, tiles and stat
 
 ## License
 
-The source code is licensed under the [MIT License](LICENSE). The boundary data keeps the licenses of its sources (CC BY 4.0, CC0 and the NGI and bpost licences), and the routing data is © OpenStreetMap contributors (ODbL); see [DATA-LICENSES.md](DATA-LICENSES.md).
+The source code is licensed under the [MIT License](LICENSE). The boundary data keeps the licenses of its sources (CC BY 4.0, CC0, dl-de/by-2-0, ODbL and the NGI and bpost licences), and the routing data is © OpenStreetMap contributors (ODbL); see [DATA-LICENSES.md](DATA-LICENSES.md).

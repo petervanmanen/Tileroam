@@ -5,9 +5,14 @@
 #
 #   Tools/upload_asset_packs.sh                   # all countries' boundaries
 #   Tools/upload_asset_packs.sh NL BE             # some countries' boundaries
-#   Tools/upload_asset_packs.sh routing-benelux   # all routing packs of a build (its areas and
+#   Tools/upload_asset_packs.sh routing-west      # all routing packs of a build (its areas and
 #                                                 # base), built first with Tools/build_routing_tiles.sh
 #                                                 # (docs/ROUTING.md)
+#   Tools/upload_asset_packs.sh --resume routing-west
+#                                                 # only the packs App Store Connect doesn't have yet:
+#                                                 # to continue an interrupted upload of a new build.
+#                                                 # Don't use it after rebuilding an existing build:
+#                                                 # then every pack needs its new version.
 #
 # Needs an App Store Connect API key (Admin or App Manager):
 #   ASC_KEY_ID, ASC_ISSUER_ID  key and issuer IDs
@@ -37,6 +42,8 @@ else
 fi
 chmod 600 $WORK/private_keys/*
 
+resume=
+if [[ ${1:-} == --resume ]]; then resume=1; shift; fi
 countries=(${@:#routing-*})
 routing=(${(M)@:#routing-*})
 packs=()
@@ -51,9 +58,20 @@ for r in $routing; do
   packs+=($built)
 done
 
+if [[ -n $resume ]]; then
+  uploaded=(${(f)"$(LIST=1 TILEROAM_ROOT=$ROOT ASC_APP_ID=$ASC_APP_ID swift $ROOT/Tools/asset_packs.swift)"})
+  before=${#packs}
+  packs=(${packs:#*/(${(j:|:)~uploaded}).aar})
+  echo "Resuming: $(( before - ${#packs} )) of $before already in App Store Connect."
+fi
+# The base pack first: every plan needs it.
+packs=(${(M)packs:#*-base.aar} ${packs:#*-base.aar})
+
 failed=()
+n=0
 for pack in $packs; do
-  echo "Uploading ${pack:t}…"
+  n=$(( n + 1 ))
+  echo "[$n/${#packs}] Uploading ${pack:t} ($(du -h $pack | cut -f1 | tr -d ' '))…"
   if (cd $WORK && $TRANSPORTER -m uploadAssetPack -assetFile $pack -apple_id $ASC_APP_ID \
         -apiKey $ASC_KEY_ID -apiIssuer $ASC_ISSUER_ID -v informational > $WORK/upload.log 2>&1); then
     echo "  done"
@@ -67,8 +85,8 @@ for pack in $packs; do
       # As an annotation, so the error shows on the run's summary page.
       print -r -- "::error title=Upload of ${pack:t} failed::${${errors//\%/%25}//$'\n'/%0A}"
     fi
-    (( ${#failed} < 3 )) || break # the rest would most likely fail the same way
+    (( ${#failed} < 3 )) || { echo "Stopping after 3 failures. Fix the cause, then continue with --resume." >&2; break }
   fi
 done
-(( ${#failed} == 0 )) || { echo "Failed: $failed" >&2; exit 1 }
+(( ${#failed} == 0 )) || { echo "Failed: $failed. Run again with --resume to upload what's missing." >&2; exit 1 }
 echo "Uploaded ${#packs} asset pack(s)."

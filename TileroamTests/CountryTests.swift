@@ -11,12 +11,15 @@ struct CountryOutlinesTests {
         #expect(outlines.country(at: GeoPoint(lat: 50.6326, lon: 5.5797)) == "BE") // Liège
         #expect(outlines.country(at: GeoPoint(lat: 49.6116, lon: 6.1319)) == "LU") // Luxembourg
         #expect(outlines.country(at: GeoPoint(lat: 53.0600, lon: 4.8000)) == "NL") // Texel
+        #expect(outlines.country(at: GeoPoint(lat: 50.7753, lon: 6.0839)) == "DE") // Aachen
+        #expect(outlines.country(at: GeoPoint(lat: 52.5163, lon: 13.3777)) == "DE") // Berlin
+        #expect(outlines.country(at: GeoPoint(lat: 47.4210, lon: 10.9850)) == "DE") // Zugspitze area
     }
 
     @Test func pointsOutsideSupportedCountries() {
         #expect(outlines.country(at: GeoPoint(lat: 53.5, lon: 3.0)) == nil) // North Sea
         #expect(outlines.country(at: GeoPoint(lat: 50.0755, lon: 14.4378)) == nil) // Prague
-        #expect(outlines.country(at: GeoPoint(lat: 50.7753, lon: 6.0839)) == nil) // Aachen: Germany isn't covered
+        #expect(outlines.country(at: GeoPoint(lat: 47.5596, lon: 7.5886)) == nil) // Basel
         #expect(outlines.country(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == nil) // Paris
     }
 

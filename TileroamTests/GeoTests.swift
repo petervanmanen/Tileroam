@@ -63,7 +63,7 @@ struct GeoTests {
         return try Data(contentsOf: root.appending(path: "AssetPacks/Regions/\(country)-\(kind.rawValue).fmr"))
     }
 
-    static let regions = RegionData.load(countries: ["NL", "BE", "LU"], read: read)
+    static let regions = RegionData.load(countries: ["NL", "BE", "LU", "DE"], read: read)
 
     @Test func regionFilesDecode() throws {
         for country in Country.all {
@@ -83,7 +83,9 @@ struct GeoTests {
         #expect(m.area(at: GeoPoint(lat: 52.0907, lon: 5.1214))?.name == "Utrecht")
         #expect(m.area(at: GeoPoint(lat: 50.8466, lon: 4.3528))?.country == "BE") // Brussels
         #expect(m.area(at: GeoPoint(lat: 49.6116, lon: 6.1319))?.name == "Luxembourg")
-        #expect(m.area(at: GeoPoint(lat: 52.5163, lon: 13.3777)) == nil) // Berlin: Germany isn't covered
+        #expect(m.area(at: GeoPoint(lat: 52.5163, lon: 13.3777))?.country == "DE") // Berlin
+        #expect(m.area(at: GeoPoint(lat: 50.7753, lon: 6.0839))?.name == "Aachen")
+        #expect(m.area(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == nil) // Paris: France isn't covered
     }
 
     @Test func postcodeLookup() {
@@ -92,10 +94,11 @@ struct GeoTests {
         #expect(p.area(at: GeoPoint(lat: 52.0907, lon: 5.1214))?.code == "NL:3512") // Utrecht Dom
         #expect(p.area(at: GeoPoint(lat: 52.3731, lon: 4.8926))?.localCode == "1012") // Amsterdam Dam
         #expect(p.area(at: GeoPoint(lat: 50.8466, lon: 4.3528))?.country == "BE") // Brussels
+        #expect(p.area(at: GeoPoint(lat: 52.5163, lon: 13.3777))?.localCode == "10117") // Berlin, Brandenburger Tor
     }
 
-    @Test func onlyBeneluxCountries() {
-        #expect(Country.all.map(\.code) == ["NL", "BE", "LU"])
+    @Test func routingCountries() {
+        #expect(Country.all.map(\.code) == ["NL", "BE", "LU", "DE"])
         #expect(Set(Country.all.map(\.code)) == RoutingData.countries) // the same as route planning
     }
 

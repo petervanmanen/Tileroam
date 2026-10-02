@@ -69,5 +69,33 @@
    "license": "CC0",
    "attribution": "© ACT Luxembourg"
   }
+ },
+ "DE": {
+  "municipalities": {
+   "file": "DE-municipalities.fmr",
+   "count": 10949,
+   "bbox": [
+    5.8663,
+    47.2701,
+    15.0418,
+    55.0587
+   ],
+   "source": "BKG VG250 via Opendatasoft (georef-germany-gemeinde)",
+   "license": "dl-de/by-2-0",
+   "attribution": "© GeoBasis-DE / BKG"
+  },
+  "postcodes": {
+   "file": "DE-postcodes.fmr",
+   "count": 8173,
+   "bbox": [
+    5.8667,
+    47.2702,
+    15.0419,
+    55.0587
+   ],
+   "source": "OpenStreetMap (tdudek/de-plz-geojson)",
+   "license": "ODbL",
+   "attribution": "© OpenStreetMap contributors"
+  }
  }
 }
