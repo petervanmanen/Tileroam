@@ -21,7 +21,7 @@ final class PlanStore {
     /// Incremented whenever the map needs to redraw planning overlays.
     private(set) var version = 0
 
-    private let client = OSRMClient()
+    private let router = ValhallaRouter()
     private let location = CurrentLocation()
 
     func selectedTiles(_ zoom: TileZoom) -> Set<Int64> {
@@ -103,8 +103,15 @@ final class PlanStore {
         let regions: RegionData? = await store.loadedRegions()
         let targets = selected.sorted { $0.sortKey < $1.sortKey }
             .compactMap { TargetGeometry($0, regions: regions) }
+        // The routing data covers the Netherlands, Belgium and Luxembourg.
+        guard RoutingData.covers(start),
+              targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
+            throw RoutingError.outsideRegion
+        }
+        status = String(localized: "Loading the route planning data…")
+        try await router.prepare()
         let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
-        let client = self.client
+        let client = self.router
         let planned = try await Task.detached(priority: .userInitiated) {
             try await RoutePlanner.planRoute(
                 start: start, targets: targets, client: client,

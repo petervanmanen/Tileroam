@@ -3261,6 +3261,34 @@
         }
       }
     },
+    "Loading the route planning data…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routeplanner laden…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des données d’itinéraire…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargando los datos de rutas…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routendaten werden geladen…"
+          }
+        }
+      }
+    },
     "Location Access Is Off": {
       "localizations": {
         "nl": {
@@ -4753,6 +4781,34 @@
         }
       }
     },
+    "Route planning is available in the Netherlands, Belgium and Luxembourg. Your location and all selected items must be there.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routeplanning is beschikbaar in Nederland, België en Luxemburg. Je locatie en alle geselecteerde onderdelen moeten daar liggen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La planification d’itinéraires est disponible aux Pays-Bas, en Belgique et au Luxembourg. Votre position et tous les éléments sélectionnés doivent s’y trouver."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La planificación de rutas está disponible en los Países Bajos, Bélgica y Luxemburgo. Tu ubicación y todos los elementos seleccionados deben estar allí."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Routenplanung ist in den Niederlanden, Belgien und Luxemburg verfügbar. Dein Standort und alle ausgewählten Elemente müssen dort liegen."
+          }
+        }
+      }
+    },
     "Route planning · tap unvisited items to select them": {
       "localizations": {
         "nl": {
@@ -6205,6 +6261,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Die Anmeldeanfrage ist abgelaufen. Bitte versuche es erneut."
+          }
+        }
+      }
+    },
+    "The route planning data couldn't be loaded: %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De gegevens voor routeplanning konden niet worden geladen: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de charger les données d’itinéraire : %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron cargar los datos de rutas: %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Daten für die Routenplanung konnten nicht geladen werden: %@"
           }
         }
       }

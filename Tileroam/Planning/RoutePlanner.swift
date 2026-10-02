@@ -35,14 +35,14 @@ enum RoutePlanner {
     static let maxTargets = 50
 
     /// Targets in visiting order, each with the point the route should pass.
-    static func plan(start: GeoPoint, targets: [TargetGeometry], client: OSRMClient,
+    static func plan(start: GeoPoint, targets: [TargetGeometry], client: any CyclingRouter,
                      progress: @MainActor @Sendable (String) -> Void) async throws -> [(target: TargetGeometry, point: GeoPoint)] {
         let candidates = targets.map { t in
             t.candidates().sorted { Geo.distance($0, start) < Geo.distance($1, start) }
         }
         let usable = targets.indices.filter { !candidates[$0].isEmpty }
 
-        // 1. Visiting order on real cycling distances (OSRM solves the round trip).
+        // 1. Visiting order (see TripSolver), on straight-line distances.
         await progress(String(localized: "Finding the best order…"))
         let initial = usable.map { candidates[$0][0] }
         let order: [Int]
@@ -85,14 +85,14 @@ enum RoutePlanner {
     }
 
     /// Full planning: order, waypoints, route, and replacing waypoints that snap outside their target.
-    static func planRoute(start: GeoPoint, targets: [TargetGeometry], client: OSRMClient,
+    static func planRoute(start: GeoPoint, targets: [TargetGeometry], client: any CyclingRouter,
                           coverage: @Sendable ([GeoPoint]) -> RouteCoverage,
                           progress: @MainActor @Sendable (String) -> Void) async throws -> PlannedRoute {
         let planned = try await plan(start: start, targets: targets, client: client, progress: progress)
         let ordered = planned.map(\.target)
         var waypoints = planned.map(\.point)
 
-        var route: OSRMClient.Route?
+        var route: RoutedPath?
         for attempt in 0..<3 {
             await progress(attempt == 0 ? String(localized: "Planning the cycling route…") : String(localized: "Improving the route…"))
             let r = try await client.route([start] + waypoints + [start])
@@ -112,7 +112,7 @@ enum RoutePlanner {
             }
             if !changed { break }
         }
-        guard let route else { throw OSRMClient.OSRMError.server("no route") }
+        guard let route else { throw RoutingError.engine("no route") }
 
         await progress(String(localized: "Checking which tiles and areas you pass…"))
         let cov = coverage(route.coordinates)

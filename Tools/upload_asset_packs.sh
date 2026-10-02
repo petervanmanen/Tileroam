@@ -3,8 +3,10 @@
 # inside Transporter.app (Mac App Store) or Apple's standalone installer in /usr/local/itms
 # (what the GitHub workflow installs). Xcode's own iTMSTransporter is only a stub.
 #
-#   Tools/upload_asset_packs.sh            # all countries
-#   Tools/upload_asset_packs.sh NL BE      # some countries
+#   Tools/upload_asset_packs.sh                   # all countries' boundaries
+#   Tools/upload_asset_packs.sh NL BE             # some countries' boundaries
+#   Tools/upload_asset_packs.sh routing-benelux   # a routing pack, built first with
+#                                                 # Tools/build_routing_tiles.sh (docs/ROUTING.md)
 #
 # Needs an App Store Connect API key (Admin or App Manager):
 #   ASC_KEY_ID, ASC_ISSUER_ID  key and issuer IDs
@@ -34,9 +36,18 @@ else
 fi
 chmod 600 $WORK/private_keys/*
 
-$ROOT/Tools/build_asset_packs.sh "$@"
-packs=($ROOT/AssetPacks/build/regions-*.aar)
-if (( $# )); then packs=(${^@/#/$ROOT/AssetPacks/build/regions-}.aar); fi
+countries=(${@:#routing-*})
+routing=(${(M)@:#routing-*})
+packs=()
+if (( ${#countries} || ! $# )); then
+  $ROOT/Tools/build_asset_packs.sh $countries
+  if (( ${#countries} )); then packs=(${^countries/#/$ROOT/AssetPacks/build/regions-}.aar)
+  else packs=($ROOT/AssetPacks/build/regions-*.aar); fi
+fi
+for r in $routing; do
+  [[ -f $ROOT/AssetPacks/build/$r.aar ]] || { echo "Build $r first: Tools/build_routing_tiles.sh ${r#routing-} …" >&2; exit 1 }
+  packs+=$ROOT/AssetPacks/build/$r.aar
+done
 
 failed=()
 for pack in $packs; do

@@ -17,7 +17,7 @@ Your location is used to:
 - show the tiles around you in the "Tiles Around You" widget;
 - start planned routes from where you are.
 
-Your location stays on your device. The widget reads it from a container that only Tileroam and its widget can open. The only exception is route planning: when you plan a route, your start point and the stops you selected are sent to the public OpenStreetMap routing service (routing.openstreetmap.de, run by FOSSGIS e.V.), which calculates the cycling route. See the [FOSSGIS privacy policy](https://www.fossgis.de/datenschutzerklaerung/).
+Your location stays on your device. The widget reads it from a container that only Tileroam and its widget can open. Route planning also runs entirely on your device, with OpenStreetMap routing data that Tileroam downloads once (from Apple, like the boundaries); your start point and stops are not sent anywhere.
 
 You can turn off location access at any time in the Settings app. Tileroam keeps working without it.
 

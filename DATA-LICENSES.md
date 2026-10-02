@@ -39,5 +39,8 @@ Files derived from OpenStreetMap (**ODbL 1.0**) are made available under the
 [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/). Anyone
 may reuse them under the same license.
 
-Route planning in the app uses the OSRM service of openstreetmap.de; routes are
-© OpenStreetMap contributors (ODbL).
+The routing data (`routing-<name>.tar` asset packs, Valhalla tiles made by
+`Tools/build_routing_tiles.sh` from Geofabrik's OpenStreetMap extracts) is a
+Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
+contributors. The script and the extracts it names are the complete recipe to
+rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
