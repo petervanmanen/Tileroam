@@ -5,6 +5,10 @@ import Valhalla
 /// in `RoutingData`. Nothing leaves the device.
 actor ValhallaRouter: CyclingRouter {
     private var engine: Valhalla?
+    /// The tiles the engine was started with.
+    private var tiles: RoutingData.Tiles?
+    /// Area packs linked into the tile directory so far.
+    private var loadedPacks = Set<String>()
 
     /// Bicycle costing: a hybrid bike that prefers cycle paths and quiet roads, like the
     /// "routed-bike" profile Tileroam used before.
@@ -12,22 +16,41 @@ actor ValhallaRouter: CyclingRouter {
         ["bicycle_type": "Hybrid", "use_roads": 0.3, "use_hills": 0.4, "avoid_bad_surfaces": 0.4]
     }
 
-    /// Downloads the routing data if needed and starts the engine (slow the first time).
-    func prepare() async throws {
-        _ = try await valhalla()
+    /// Makes sure the engine has the tiles of every 1° area within `margin` meters of `points`,
+    /// downloading area packs where needed (the first time this can take a while).
+    func prepare(around points: [GeoPoint], margin: Double, index: RoutingIndex? = RoutingData.index) async throws {
+        #if DEBUG
+        // Simulator and tests: one tile extract with everything (-RoutingTar).
+        if let path = UserDefaults.standard.string(forKey: "RoutingTar") {
+            try start(.extract(URL(filePath: path)))
+            return
+        }
+        #endif
+        guard let index else { throw RoutingError.dataUnavailable("no routing index") }
+        let areas = RoutingData.packs(around: points, margin: margin, in: index)
+        guard !areas.isEmpty else { throw RoutingError.outsideRegion }
+        let needed = Set(areas.map(\.pack))
+        if engine != nil, needed.isSubset(of: loadedPacks) { return }
+        let dir = try await RoutingData.tileDirectory(for: areas, index: index)
+        loadedPacks.formUnion(needed)
+        engine = nil // restart, so Valhalla sees the new tiles
+        try start(.directory(dir))
     }
 
-    private func valhalla() async throws -> Valhalla {
-        if let engine { return engine }
-        let tiles = try await RoutingData.tileExtract()
-        let config = try RoutingData.writeConfig(tileExtract: tiles)
+    private func start(_ tiles: RoutingData.Tiles) throws {
+        if engine != nil, self.tiles == tiles { return }
+        let config = try RoutingData.writeConfig(tiles)
         do {
-            let engine = try Valhalla(configPath: config.path(percentEncoded: false))
-            self.engine = engine
-            return engine
+            engine = try Valhalla(configPath: config.path(percentEncoded: false))
+            self.tiles = tiles
         } catch {
             throw RoutingError.dataUnavailable(error.localizedDescription)
         }
+    }
+
+    private func valhalla() throws -> Valhalla {
+        guard let engine else { throw RoutingError.dataUnavailable("not prepared") }
+        return engine
     }
 
     /// The visiting order from straight-line distances. Valhalla's cycling matrix gives nearly the
@@ -48,7 +71,7 @@ actor ValhallaRouter: CyclingRouter {
 
     /// Runs a Valhalla action with a JSON request and returns the parsed JSON response.
     private func run(_ request: [String: Any], _ action: (Valhalla, String) throws -> String) async throws -> [String: Any] {
-        let engine = try await valhalla()
+        let engine = try valhalla()
         let json = String(decoding: try JSONSerialization.data(withJSONObject: request), as: UTF8.self)
         let text: String
         do {

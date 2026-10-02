@@ -5,8 +5,9 @@
 #
 #   Tools/upload_asset_packs.sh                   # all countries' boundaries
 #   Tools/upload_asset_packs.sh NL BE             # some countries' boundaries
-#   Tools/upload_asset_packs.sh routing-benelux   # a routing pack, built first with
-#                                                 # Tools/build_routing_tiles.sh (docs/ROUTING.md)
+#   Tools/upload_asset_packs.sh routing-benelux   # all routing packs of a build (its areas and
+#                                                 # base), built first with Tools/build_routing_tiles.sh
+#                                                 # (docs/ROUTING.md)
 #
 # Needs an App Store Connect API key (Admin or App Manager):
 #   ASC_KEY_ID, ASC_ISSUER_ID  key and issuer IDs
@@ -45,8 +46,9 @@ if (( ${#countries} || ! $# )); then
   else packs=($ROOT/AssetPacks/build/regions-*.aar); fi
 fi
 for r in $routing; do
-  [[ -f $ROOT/AssetPacks/build/$r.aar ]] || { echo "Build $r first: Tools/build_routing_tiles.sh ${r#routing-} …" >&2; exit 1 }
-  packs+=$ROOT/AssetPacks/build/$r.aar
+  built=($ROOT/AssetPacks/build/$r-*.aar(N))
+  (( ${#built} )) || { echo "Build $r first: Tools/build_routing_tiles.sh ${r#routing-} …" >&2; exit 1 }
+  packs+=($built)
 done
 
 failed=()

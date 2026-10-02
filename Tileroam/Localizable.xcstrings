@@ -2641,6 +2641,34 @@
         }
       }
     },
+    "Downloading map data for route planning (about %@)…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens voor routeplanning downloaden (ongeveer %@)…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargement des données de carte pour les itinéraires (environ %@)…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargando datos de mapa para planificar rutas (unos %@)…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten für die Routenplanung werden geladen (etwa %@)…"
+          }
+        }
+      }
+    },
     "E-biking": {
       "localizations": {
         "nl": {

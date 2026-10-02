@@ -1,16 +1,20 @@
 #!/bin/zsh
 # Builds the on-device routing data: Valhalla tiles from OpenStreetMap for a group of countries,
-# packed as one tile extract (.tar) in an Apple-hosted asset pack. See docs/ROUTING.md.
+# split into Apple-hosted asset packs per 1° × 1° area so the app downloads only what a route
+# needs. See docs/ROUTING.md.
 #
 #   Tools/build_routing_tiles.sh benelux netherlands belgium luxembourg
 #
-# The first argument names the pack (asset pack "routing-<name>", file "routing-<name>.tar"); the
-# rest are Geofabrik extract names under europe/ (https://download.geofabrik.de/europe.html).
-# Countries routed across each other's borders must be in the same build.
+# The first argument names the build; the rest are Geofabrik extract names under europe/
+# (https://download.geofabrik.de/europe.html). Countries routed across each other's borders must
+# be in the same build.
 #
-# Output in AssetPacks/build/routing (not in Git):
-#   routing-<name>.tar        the tile extract the app loads (also for the simulator: -RoutingTar)
-#   ../routing-<name>.aar     the asset pack to upload (Tools/upload_asset_packs.sh routing-<name>)
+# Output:
+#   AssetPacks/build/routing-<name>-<area>.aar and routing-<name>-base.aar: the asset packs to
+#     upload (Tools/upload_asset_packs.sh routing-<name>)
+#   Tileroam/Resources/routing-<name>.json: the index of areas the app bundles (commit it)
+#   AssetPacks/build/routing/routing-<name>.tar: all tiles in one file, for the simulator
+#     (-RoutingTar) and the engine tests
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 # Must match the Valhalla version inside valhalla-mobile (Tileroam.xcodeproj pins valhalla-mobile
@@ -70,24 +74,35 @@ echo "Building tiles for $*…"
 valhalla_build_tiles -c $OUT/config-$NAME.json $pbfs > $OUT/build-$NAME.log 2>&1 || {
   tail -20 $OUT/build-$NAME.log >&2; exit 1 }
 
-# 4. One tile extract with an index, which the app opens directly.
+# 4. All tiles in one file (simulator and tests).
 # (valhalla_build_extract refuses to overwrite and still exits 0, so remove the old one first.)
 rm -f $TAR
 python $ROOT/Tools/valhalla_build_extract.py -c $OUT/config-$NAME.json -v >> $OUT/build-$NAME.log 2>&1
 [[ -s $TAR ]] || { echo "No tile extract written; see $OUT/build-$NAME.log" >&2; exit 1 }
-rm -rf $TILES
 echo "Tile extract: $TAR ($(du -h $TAR | cut -f1))"
 
-# 5. Asset pack (on demand: downloaded when the user first plans a route).
-MANIFEST=$OUT/routing-$NAME.manifest.json
-cat > $MANIFEST <<JSON
+# 5. Asset packs per 1° area, plus the base pack, and the index the app bundles.
+STAGING=$OUT/packs-$NAME
+rm -rf $STAGING
+# The index goes into the app's resources, except for test builds ("<name>-test").
+INDEX=$ROOT/Tileroam/Resources/routing-$NAME.json
+[[ $NAME == *-test ]] && INDEX=$OUT/routing-$NAME.json
+python3 $ROOT/Tools/split_routing_tiles.py $TILES $NAME $STAGING $INDEX
+rm -rf $TILES
+rm -f $ROOT/AssetPacks/build/routing-$NAME.aar(N) $ROOT/AssetPacks/build/routing-$NAME-*.aar(N)
+total=0
+for dir in $STAGING/routing-$NAME-*(/); do
+  pack=${dir:t}
+  selectors=$(cd $dir && for level in *(/); do printf '{ "directory": "%s" },' $level; done)
+  cat > $dir.manifest.json <<JSON
 {
-  "assetPackID": "routing-$NAME",
+  "assetPackID": "$pack",
   "downloadPolicy": { "onDemand": {} },
-  "fileSelectors": [ { "file": "routing-$NAME.tar" } ],
+  "fileSelectors": [ ${selectors%,} ],
   "platforms": [ "iOS" ]
 }
 JSON
-rm -f $ROOT/AssetPacks/build/routing-$NAME.aar
-(cd $OUT && xcrun ba-package package $MANIFEST --output-path $ROOT/AssetPacks/build/routing-$NAME.aar --quiet)
-echo "Asset pack: AssetPacks/build/routing-$NAME.aar ($(du -h $ROOT/AssetPacks/build/routing-$NAME.aar | cut -f1))"
+  (cd $dir && xcrun ba-package package $dir.manifest.json --output-path $ROOT/AssetPacks/build/$pack.aar --quiet)
+  total=$(( total + $(stat -f %z $ROOT/AssetPacks/build/$pack.aar) ))
+done
+echo "Asset packs: $(ls $STAGING | grep -vc manifest) in AssetPacks/build/routing-$NAME-*.aar ($(( total / 1000000 )) MB together)"

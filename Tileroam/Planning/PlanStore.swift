@@ -108,18 +108,46 @@ final class PlanStore {
               targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
             throw RoutingError.outsideRegion
         }
-        status = String(localized: "Loading the route planning data…")
-        try await router.prepare()
+        let points = [start] + targets.flatMap { $0.candidates() }
         let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
-        let client = self.router
-        let planned = try await Task.detached(priority: .userInitiated) {
-            try await RoutePlanner.planRoute(
-                start: start, targets: targets, client: client,
-                coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0, visitedTiles17: visited.1,
-                                          visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions) },
-                progress: { [weak self] in self?.status = $0 })
-        }.value
+        let router = self.router
+        func attempt() async throws -> PlannedRoute {
+            try await Task.detached(priority: .userInitiated) {
+                try await RoutePlanner.planRoute(
+                    start: start, targets: targets, client: router,
+                    coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0, visitedTiles17: visited.1,
+                                              visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions) },
+                    progress: { [weak self] in self?.status = $0 })
+            }.value
+        }
+
+        // Only the 1° areas around the plan (with room for detours) are downloaded; if the route
+        // still needs more, try once more with a wider area.
+        var planned: PlannedRoute
+        do {
+            try await prepareRouting(around: points, margin: 15_000)
+            planned = try await attempt()
+        } catch RoutingError.engine {
+            try await prepareRouting(around: points, margin: 60_000)
+            planned = try await attempt()
+        }
         show(planned)
+    }
+
+    /// Gets the routing data for the area, saying how much has to be downloaded.
+    private func prepareRouting(around points: [GeoPoint], margin: Double) async throws {
+        if let index = RoutingData.index {
+            let missing = RoutingData.packs(around: points, margin: margin, in: index)
+                .filter { !RoutingData.isDownloaded($0.pack) }
+            let bytes = missing.reduce(0) { $0 + $1.bytes }
+                + (RoutingData.isDownloaded(index.base) ? 0 : index.baseBytes)
+            // Packs download compressed, at about 40% of the tiles' size.
+            let download = Measurement(value: Double(bytes) * 0.4 / 1_000_000, unit: UnitInformationStorage.megabytes)
+            status = bytes > 0
+                ? String(localized: "Downloading map data for route planning (about \(download.formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))))…")
+                : String(localized: "Loading the route planning data…")
+        }
+        try await router.prepare(around: points, margin: margin)
     }
 
     #if DEBUG

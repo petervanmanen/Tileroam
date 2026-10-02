@@ -2,17 +2,25 @@
 
 Tileroam plans cycling routes on the iPhone or iPad itself, with [Valhalla](https://github.com/valhalla/valhalla) and OpenStreetMap data. Nothing is sent to a server.
 
-The routing data comes from [Geofabrik](https://download.geofabrik.de)'s OpenStreetMap extracts. It's built on a Mac into one Valhalla *tile extract* and delivered to the app as an Apple-hosted asset pack, the same mechanism as the municipality and postcode boundaries.
+The routing data comes from [Geofabrik](https://download.geofabrik.de)'s OpenStreetMap extracts. It's built on a Mac into Valhalla tiles and split into Apple-hosted asset packs **per 1° × 1° area** (about 70 × 110 km), the same mechanism as the municipality and postcode boundaries. A plan downloads only the areas it needs.
 
-Route planning currently covers **the Netherlands, Belgium and Luxembourg**, in one pack: `routing-benelux`.
+Route planning currently covers **the Netherlands, Belgium and Luxembourg**: build `benelux`, 35 area packs plus a base pack, 487 MB together.
+
+| Example plan | Download |
+|---|---|
+| Around Utrecht | about 60 MB: area `n52e005` plus the base pack |
+| Around Bree | about 73 MB |
+| Rural or coastal areas | often only a few MB |
 
 ## How it fits together
 
 | Part | Where | What it does |
 |---|---|---|
 | Valhalla engine | Swift package [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), pinned to **0.6.3** in the Xcode project | Valhalla **3.6.3** compiled for iOS. Tileroam uses its `route` action with the `bicycle` costing. |
-| Engine settings | `Tileroam/Resources/valhalla.json` | Valhalla's configuration, made with `valhalla_build_config` of the same version. At runtime `RoutingData.writeConfig` fills in the tile extract's path. The bicycle limit is raised to 60 locations, for 50 stops. |
-| Routing data | asset pack `routing-benelux`, file `routing-benelux.tar` | Downloaded on demand the first time someone plans a route, then opened in place (`AssetPackManager.url(for:)`). |
+| Engine settings | `Tileroam/Resources/valhalla.json` | Valhalla's configuration, made with `valhalla_build_config` of the same version. At runtime `RoutingData.writeConfig` fills in the tile directory. The bicycle limit is raised to 60 locations, for 50 stops. |
+| Routing data | asset packs `routing-benelux-<area>` (for example `routing-benelux-n52e005`, the area from 52°N 5°E) and `routing-benelux-base` | Each area pack holds Valhalla's level-1 tile (1°, through roads) and level-2 tiles (0.25°, all local roads and paths) of that area. The base pack holds the level-0 tiles (4°, main roads), which every plan needs. |
+| Index | `Tileroam/Resources/routing-benelux.json` (bundled, committed) | Which areas exist, with their size and tile files. Written by `Tools/split_routing_tiles.py`; asset packs can't list their own contents. |
+| Downloading | `RoutingData.packs(around:margin:)`, `RoutingData.tileDirectory` | Takes every area within 15 km of the bounding box of the start and the selected items, downloads those packs and the base pack where needed, and links their tiles into one folder for Valhalla (`Application Support/Routing/tiles-benelux`). If Valhalla still finds no route (a detour off the edge), the planner retries once with 60 km of room. All packs come from one build, so the tiles connect. |
 | Covered countries | `RoutingData.countries` in `Tileroam/Planning/RoutingData.swift` | Planning is refused with a clear message when the start or a selected item lies outside these countries. The bundled country outlines decide this. |
 | Router | `Tileroam/Planning/ValhallaRouter.swift` | Stop order: `TripSolver` (nearest neighbour, 2-opt, relocation) on straight-line distances. Valhalla's cycling-time matrix gives nearly the same order but took 22 s for 30 stops on a Mac. The route: one `route` call with all stops as `break` locations. |
 | Planner | `Tileroam/Planning/RoutePlanner.swift` | Picks a point inside each target, orders the stops, routes, and retries when a stop snaps outside its target. |
@@ -46,8 +54,12 @@ The first argument names the pack; the others are Geofabrik extract names under 
    - car-only roads, driveways and car shortcuts (about 10% smaller).
 
    Footpaths stay in, so routes can cross pedestrian zones with the bike pushed. `ROUTING_PEDESTRIAN=False Tools/build_routing_tiles.sh …` drops them too, about 25% smaller in total, but then routes can't use pedestrian-only paths.
-4. **Packs the tiles** into one indexed tile extract, `AssetPacks/build/routing/routing-benelux.tar`, with `valhalla_build_extract`.
-5. **Packages the asset pack** `AssetPacks/build/routing-benelux.aar`, downloaded on demand.
+4. **Writes one tile extract** with all tiles, `AssetPacks/build/routing/routing-benelux.tar` (`valhalla_build_extract`). It's for the simulator and screenshots only; it isn't uploaded.
+5. **Splits the tiles per 1° area** (`Tools/split_routing_tiles.py`):
+   - writes the index `Tileroam/Resources/routing-benelux.json` (commit it with the app);
+   - packages the asset packs `AssetPacks/build/routing-benelux-<area>.aar` and `routing-benelux-base.aar`, all downloaded on demand.
+
+   Test builds named `<name>-test` keep their index in the build folder instead.
 
 Everything under `AssetPacks/build/` is ignored by Git. For Benelux, expect a few GB of temporary disk space and 10–20 minutes on an M-series Mac.
 
@@ -57,14 +69,16 @@ Everything under `AssetPacks/build/` is ignored by Git. For Benelux, expect a fe
 ASC_KEY_ID=<KeyID> ASC_ISSUER_ID=<IssuerID> Tools/upload_asset_packs.sh routing-benelux
 ```
 
-This uses the App Store Connect API key in `~/.appstoreconnect/private_keys/` and Transporter. The pack then has to be available to the builds that use it: TestFlight right away, and the App Store together with the version under review. The GitHub *Asset packs* workflow only handles the boundary packs; routing data is built and uploaded from a Mac, because it needs the large downloads.
+This uploads all 36 packs of the build, using the App Store Connect API key in `~/.appstoreconnect/private_keys/` and Transporter. The packs then have to be available to the builds that use it: TestFlight right away, and the App Store together with the version under review. The GitHub *Asset packs* workflow only handles the boundary packs; routing data is built and uploaded from a Mac, because it needs the large downloads.
 
-Refresh the data every few months, because OpenStreetMap changes: run the build again, then the upload. The app picks up the new version of the pack by itself.
+Refresh the data every few months, because OpenStreetMap changes. Run the build again, then upload **all** packs of the build and ship the new index with the next app version: tiles of different builds don't connect. Rebuilding can change which areas exist (rarely, for border or coast areas). An area that's new in the index but not yet uploaded would make planning there fail, so upload before releasing the app with the new index.
 
 ## Testing in the simulator
 
-- **The app:** launch the Debug build with `-RoutingTar <repo>/AssetPacks/build/routing/routing-benelux.tar`. Without it, the app tries to download the asset pack.
-- **Engine tests:** `TileroamTests/ValhallaEngineTests.swift` runs Valhalla in the simulator on `AssetPacks/build/routing/routing-lu-test.tar`, a small Luxembourg-only build. Make it with:
+- **The app, like production:** launch the Debug build with `-RoutingPacksDir <repo>/AssetPacks/build/routing/packs-benelux`. The app then takes the area packs from the build folder instead of downloading them, links them and plans exactly as on a device.
+- **The app, simplest:** `-RoutingTar <repo>/AssetPacks/build/routing/routing-benelux.tar` uses the one file with all tiles. The screenshot and preview scripts use this.
+- **Without either,** the app tries to download the asset packs.
+- **Engine tests:** `TileroamTests/ValhallaEngineTests.swift` runs Valhalla in the simulator on a small Luxembourg-only build: once from its tile extract, and once through its area packs, as in production. Make it with:
   ```bash
   Tools/build_routing_tiles.sh lu-test luxembourg
   ```
@@ -75,20 +89,18 @@ Refresh the data every few months, because OpenStreetMap changes: run the build 
 
 Example: adding Germany.
 
-1. **Choose the group.** Countries whose routes should cross each other's borders must be in **one** build. Germany borders the Netherlands, Belgium and Luxembourg, so it joins that build. The pack name changes accordingly, for example `routing-benelux-de`, or keep a neutral name like `routing-west`.
-2. **Mind the size.** Germany alone is about 4 GB of OpenStreetMap data and gives a much bigger tile extract. For several large countries, consider separate packs per region.
-   - Separate packs don't connect, so routes can't cross between them.
-   - The app would then need one Valhalla tile extract per pack, or a tile *directory* instead of a tar. valhalla-mobile supports both, as long as tiles that touch come from the same build.
+1. **Choose the build.** Countries whose routes should cross each other's borders must be in **one** build. Germany borders the Netherlands, Belgium and Luxembourg, so it joins that build under a new name, for example `west`. Because the data is split per 1° area, a bigger build doesn't make downloads bigger: a plan still only fetches its own areas.
+2. **Mind the build itself.** Germany alone is about 4 GB of OpenStreetMap data. Expect more disk space (tens of GB of temporary files) and an hour or more of build time. Check how many asset packs you end up with (about one per 1° area with data): Apple may limit the number of asset packs per app.
 3. **Build:**
    ```bash
-   Tools/build_routing_tiles.sh benelux-de netherlands belgium luxembourg germany
+   Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany
    ```
 4. **Update the app:**
-   - In `RoutingData.swift`: add the country codes to `RoutingData.countries`, and set `packID` and `fileName` to the new pack (`routing-benelux-de`, `routing-benelux-de.tar`).
+   - In `RoutingData.swift`: add the country codes to `RoutingData.countries`, and set `build` to `"west"`. The app then bundles `Resources/routing-west.json`; remove the old index file.
    - Update the text of `RoutingError.outsideRegion` in `Tileroam/Planning/Routing.swift`, and its translations in the string catalog.
    - Update `docs/MANUAL.md`, `docs/appstore/review-notes.md` and this document.
-5. **Test** in the simulator with `-RoutingTar …/routing-benelux-de.tar`: plan a route that crosses the new border.
-6. **Upload** the new pack (`Tools/upload_asset_packs.sh routing-benelux-de`), then ship the app version that uses it. Keep the old pack in App Store Connect until no supported app version uses it any more.
+5. **Test** in the simulator with `-RoutingPacksDir …/packs-west`: plan a route that crosses the new border.
+6. **Upload** the new packs (`Tools/upload_asset_packs.sh routing-west`), then ship the app version that uses them. Keep the old packs in App Store Connect until no supported app version uses them any more.
 
 Only countries with municipality boundaries in Tileroam (see `Country.all`) can be detected by the bundled outlines. For a country outside that list, first add its boundaries (`Tools/build_regions.py`, `Tools/build_country_outlines.py`).
 
