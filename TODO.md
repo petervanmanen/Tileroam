@@ -11,6 +11,11 @@
   - Lists the packs in App Store Connect and compares them with what the current app version needs (the boundary countries and the routing index).
   - Asks before removing anything.
   - Transporter has no remove mode (only upload, status and list), so this needs the App Store Connect API with the existing API key. Check first which calls Apple offers for asset packs, and that a pack still used by an older app version on users' devices isn't removed too early.
+- **Storage in Settings:** a "Storage" screen showing what Tileroam keeps on the device and letting users remove downloaded map data.
+  - Per downloaded routing area (for example "Utrecht area, 52°N 5°E, 52 MB") and per country's boundaries, with sizes and a remove action: `AssetPackManager.remove(assetPackWithID:)`, plus clearing the matching links in `Application Support/Routing/tiles-<build>`.
+  - The activity caches, also removable (they're rebuilt from the files).
+  - Removed data downloads again the next time it's needed.
+  - Show this in the user guide too.
 - **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release
