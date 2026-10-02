@@ -22,4 +22,4 @@
 ## Check
 - **Strava API terms:** data deletion via the webhook queue, rate limits granted for the app.
 - **Trademark check** for the name "Tileroam".
-- **Old Strava secret:** delete `Tileroam/StravaSecrets.plist` on the Mac, and preferably rotate the Client Secret (then update the Worker).
+- **Strava Client Secret:** preferably rotate it, since it used to be in local development builds (`StravaSecrets.plist`, now deleted); then update the Worker.
