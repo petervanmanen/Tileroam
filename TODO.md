@@ -2,6 +2,12 @@
 
 ## Features
 - **Apple Maps can hand cycling directions to Tileroam (routing app).** Declare `MKDirectionsApplicationSupportedModes` (bike) in Info.plist and handle the incoming `MKDirections.Request`: plan a cycling route from Maps' start to destination with Valhalla on the device, show it on the map, and offer it as GPX. Then upload `docs/appstore/routing-coverage.geojson` as the Routing App Coverage File; App Store Connect only uses it for routing apps. About half a day.
+- **Choose a different starting point for route planning,** instead of always the current location. For example, plan from home tonight for tomorrow's ride, or from a station or car park.
+  - In planning mode: "Start: My Location", which can be changed by long-pressing the map, searching an address or place (`MKLocalSearch`), or picking a saved place such as Home.
+  - The route still makes a round trip back to that start.
+  - The start must lie in the routing countries; the area download follows the chosen start.
+  - Show the start on the map with its own pin. Remember recent starting points.
+  - `PlanStore.plan(with:)` now always uses `CurrentLocation`; `plan(from:with:)` already takes any start.
 - **Municipalities and postcodes only where route maps exist** (now the Netherlands, Belgium and Luxembourg). Keeps the app consistent and the asset packs few.
   - Limit `Country.all` and the region files to the routing countries.
   - Rebuild `Tileroam/Resources/countries.fmr` (`Tools/build_country_outlines.py`) and the boundary packs.
