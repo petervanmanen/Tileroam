@@ -227,6 +227,7 @@ final class PlanStore {
         let regions = await store.loadedRegions()
         isPlanning = true
         let start = GeoPoint(lat: 52.0907, lon: 5.1214)
+        setStart(StartPoint(name: "Utrecht Centrum", start), remember: false)
         // The four nearest unvisited tiles around the start.
         let startCell = TileGrid.cell(lat: start.lat, lon: start.lon, zoom: .explorer)!
         var candidates = [(distance: Int, key: Int64)]()

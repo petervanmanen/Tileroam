@@ -11,13 +11,14 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 - **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) und *Squadratinhos* auf Zoom 17 (~190 m, wie bei Squadrats). Beide werden immer gezählt; du wählst, welche die Karte zeigt. Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
 - **Routen**: alle deine Aktivitäten auf einer Karte, nach Sportart eingefärbt.
 - **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien und Luxemburg, mit besucht/gesamt pro Land.
-- **Routenplanung**: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, und Tileroam plant die kürzeste Radrundfahrt ab deinem Standort durch alle diese Orte. Teile sie als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch ein vorhandenes GPX öffnen, um zu sehen, welche neuen Orte es bringen würde.
+- **Routenplanung** in den Niederlanden, Belgien und Luxemburg: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
 - **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
-- **Eddington-Zahl** für Radfahren und Laufen, auch als **Widget** auf dem Home-Bildschirm und Sperrbildschirm.
+- **Widgets**: *Kacheln um dich herum* (eine Karte der Kacheln in deiner Nähe) und *Eddington-Zahl*, auf dem Home-Bildschirm und dem Sperrbildschirm.
 - **Statistik**: besuchte Länder und Gemeinden, Eddington-Zahlen für Radfahren, Gehen und Laufen sowie Summen pro Sportart für dieses Jahr und insgesamt.
 - **Indoor- und virtuelle Fahrten** (Zwift, Rouvy, MyWhoosh, Rollentrainer) zählen in der Statistik, bleiben aber von Karte, Kacheln, Gemeinden und Postleitzahlen fern.
 - **Speicher ist optional**: Ohne gewählten Ordner speichert Tileroam Routen und Strava-Dateien im eigenen Speicher (Dateien-App › Auf meinem iPhone › Tileroam) und liest auch `.fit`-Dateien aus dem Ordner Import dort.
+- **Einstellungen → Speicher** zeigt die geladenen Kartendaten und lässt dich sie entfernen. Kartendownloads über 25 MB warten auf WLAN, außer du erlaubst mobile Daten.
 - **iPad**-Layout mit Seitenleiste, allen Ausrichtungen und Multitasking.
 - Verfügbar auf **Englisch, Niederländisch, Französisch, Spanisch und Deutsch**.
 - Die Karte öffnet sich auf deinem größten Cluster, dort, wo du am meisten fährst.
@@ -48,7 +49,7 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 | Belgien | 565 | 1.150 |
 | Luxemburg | 100 communes | – |
 
-Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Länder werden anhand deiner Aktivitäten automatisch aktiviert; du kannst sie in den Einstellungen ändern.
+Kacheln, Routen und Statistiken funktionieren überall; Gemeinden, Postleitzahlen und Routenplanung decken diese drei Länder ab. Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Die Grenzen eines Landes werden automatisch geladen, sobald du dort eine Aktivität hast.
 
 ## Erste Schritte
 
@@ -77,8 +78,8 @@ Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitä
 - **FIT-Dateien** werden von einem kleinen eingebauten Decoder gelesen (`FIT/FITDecoder.swift`). Strecken, Kacheln und besuchte Gebiete werden zwischengespeichert, sodass beim nächsten Start nur neue oder geänderte Dateien gelesen werden.
 - **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
 - **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
-- **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 33 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
-- Die **Routenplanung** nutzt den öffentlichen [OSRM](https://project-osrm.org)-Fahrradrouter von [openstreetmap.de](https://routing.openstreetmap.de). Er bestimmt die beste Reihenfolge; danach wählt Tileroam in jedem Ziel den Punkt, der den Umweg am kleinsten hält.
+- **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 1,5 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
+- Die **Routenplanung** läuft auf dem Gerät mit [Valhalla](https://github.com/valhalla/valhalla), über [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), und OpenStreetMap-Kacheln für die Niederlande, Belgien und Luxemburg. Die Kacheln kommen als von Apple gehostete Asset Packs pro 1° × 1°-Gebiet, sodass ein Plan nur sein eigenes Gebiet lädt (etwa 60 MB rund um Utrecht statt 480 MB für alles). Downloads über 25 MB warten auf WLAN (`MapDataDownloads`). Die Reihenfolge wird auf Luftlinien-Entfernungen bestimmt (`TripSolver`, viel schneller als eine Routing-Matrix auf dem Gerät); danach wählt der Planer in jedem Ziel den Punkt mit dem kleinsten Umweg, und Valhalla berechnet die Rundtour. Kacheln bauen und Länder hinzufügen: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Grenzdaten
 
@@ -97,11 +98,13 @@ Das Skript dokumentiert, woher jede Quelldatei stammt. Es projiziert nach WGS84 
 | Belgien | NGI-IGN, bpost über Opendatasoft (Postleitzahl-Lizenz: siehe Quelle) |
 | Luxemburg | ACT (CC0) |
 
-Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch OSRM / FOSSGIS.
+Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch Valhalla auf dem Gerät.
 
-## Datenschutz
+## Dokumentation
 
-Tileroam hat keinen Server und keine Analysewerkzeuge. Deine Aktivitäten, Kacheln und Statistiken bleiben auf deinem Gerät und in den iCloud-Ordnern, die du auswählst. Strava-Tokens werden im Schlüsselbund gespeichert. Der Strava-Anmeldecode und das Erneuern der Tokens laufen über den Token-Dienst (Cloudflare Worker), der nichts speichert oder protokolliert. Wenn du eine Route planst, werden Startpunkt und Stopps an den OSRM-Routingdienst von openstreetmap.de gesendet.
+- [Benutzerhandbuch](docs/MANUAL.md) (Englisch)
+- [Support und FAQ](SUPPORT.md) (Englisch)
+- [App-Store-Paket](docs/appstore/README.md): Metadaten, Screenshots, Datenschutzangaben, Hinweise für die Prüfung
 
 ## Projektstruktur
 
@@ -109,30 +112,35 @@ Tileroam hat keinen Server und keine Analysewerkzeuge. Deine Aktivitäten, Kache
 Tileroam/
   FIT/          FIT-Decoder und -Encoder
   Geo/          Kacheln, Gemeinden/Postleitzahlen, Eddington, Vereinfachung
-  Import/       Ordnerzugriff, Import, Cache, Zusammenführen, ActivityStore
+  Import/       Ordnerzugriff, Import, Cache, Zusammenführen von Duplikaten, ActivityStore
   Map/          MKMapView-Wrapper und Overlays (Kacheln, Gebiete, Routen)
-  Planning/     Routenplanung (OSRM), GPX, Abdeckung
-  Strava/       Strava-API-Client, Export als .fit
-  Views/        SwiftUI-Bildschirme (Karte, Einstellungen, Einführung, Planungsleiste)
-  (AssetPacks/Regions/ Grenzen von Gemeinden und Postleitzahlen, als Asset Packs)
-TileroamWidget/   Eddington-Widget
+  Planning/     Routenplanung (Valhalla auf dem Gerät), Routingdaten, Startpunkte, GPX, Abdeckung
+  Strava/       Strava-API-Client, Webhook-Ereignisse, Export als .fit
+  Views/        SwiftUI-Bildschirme (Karte, Einstellungen, Speicher, Einführung, Planungsbereich)
+TileroamAssets/   Background-Assets-Downloader-Erweiterung
+TileroamWidget/   Widgets: Kacheln um dich herum, Eddington-Zahl
 TileroamTests/    Unit-Tests (Swift Testing)
-Tools/             Skript und Quellen für die Grenzdaten
+AssetPacks/       Grenzen von Gemeinden und Postleitzahlen, als Asset Packs
+backend/          Strava-Tokendienst und Warteschlange für Webhook-Ereignisse (Cloudflare Worker)
+Tools/            Skripte für Daten, Routing, Asset Packs, Screenshots und Releases
 ```
 
 ## Tests
 
 ```bash
-xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
 ## Einschränkungen
 
-- Postleitzahlgrenzen sind in Österreich, Luxemburg, Irland, Portugal, Italien, Norwegen, Schweden und Island keine offenen Daten.
-- Französische Postleitzahlzonen sind berechnete Umrisse um Adressen und können sich überschneiden.
-- Die britischen Postcode Districts (2018) und die spanischen Postleitzahlen (um 2015) sind ältere Datensätze.
-- Die Routenplanung hängt vom öffentlichen OSRM-Server ab, einem kostenlosen Community-Dienst ohne Garantien.
+- Gemeinden, Postleitzahlen und Routenplanung decken nur die Niederlande, Belgien und Luxemburg ab. [docs/ROUTING.md](docs/ROUTING.md) beschreibt, wie man Länder hinzufügt.
+- Luxemburg hat keine offenen Postleitzahlgrenzen.
+- Routen sind Rundtouren; einfache Strecken von A nach B werden noch nicht unterstützt.
+
+## Datenschutz
+
+Tileroam hat keine Konten, keine Analysewerkzeuge und kein Tracking. Deine Aktivitäten, Kacheln und Statistiken bleiben auf deinem Gerät und in deiner eigenen iCloud, und die Routenplanung läuft auf dem Gerät. Strava-Tokens liegen im Schlüsselbund. Der einzige Server ist der Strava-Tokendienst ([`backend/strava-auth`](backend/strava-auth)): Er tauscht den Anmeldecode, ohne Tokens zu speichern, und bewahrt die Webhook-Ereignisse von Strava auf (Athleten- und Aktivitätsnummern, höchstens 30 Tage), damit die App Aktivitäten löschen kann, die du auf Strava gelöscht hast. Siehe die [Datenschutzerklärung](PRIVACY.md) (Englisch).
 
 ## Lizenz
 
-Der Quellcode steht unter der [MIT-Lizenz](LICENSE). Die mitgelieferten Grenzdaten behalten die Lizenzen ihrer Quellen (CC BY, OGL, Licence Ouverte, ODbL und andere); siehe [DATA-LICENSES.md](DATA-LICENSES.md).
+Der Quellcode steht unter der [MIT-Lizenz](LICENSE). Die Grenzdaten behalten die Lizenzen ihrer Quellen (CC BY 4.0, CC0 sowie die Lizenzen von NGI und bpost), und die Routingdaten sind © OpenStreetMap-Mitwirkende (ODbL); siehe [DATA-LICENSES.md](DATA-LICENSES.md).

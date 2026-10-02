@@ -17,21 +17,15 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
 
 ## Before release
 - **Asset pack count:** the 36 routing packs are uploaded (2 October 2026), 58 packs in total with the boundaries. Confirm that App Store Connect accepts them for the version under review; if not, combine routing areas.
-- **Merge `feature/valhalla-routing`** into `main` after testing on a device via TestFlight: plan near home, across a border, and offline in an area downloaded before.
+- **Test routing on a device** via TestFlight: plan near home, across a border, from a chosen starting point, and offline in an area downloaded before. (`feature/valhalla-routing` is already in `main`.)
 - ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.
 - **App Store Connect, App Privacy:** add *Identifiers → User ID*, and remove *Precise Location* (route planning no longer sends it); see `docs/appstore/app-privacy.md`.
 - **Strava demo account** for App Review, filled in in `docs/appstore/review-notes.md`.
-- **Update screenshots, privacy statements and texts** after the routing, Strava webhook and country changes:
-  - **Screenshots and app previews:** retake them with the skills (`app-store-screenshots`, `app-store-previews`) once the app is final.
-  - **Privacy:**
-    - Re-read `PRIVACY.md` against the final app: on-device routing, area downloads from Apple, the Strava event queue.
-    - Fill in App Privacy in App Store Connect from `docs/appstore/app-privacy.md`.
-    - Check `Tileroam/PrivacyInfo.xcprivacy`.
-  - **READMEs:**
-    - The Dutch, French, Spanish and German READMEs still describe OSRM/FOSSGIS route planning, and all five say "Planning/ … (OSRM)" in the project structure.
-    - The privacy sections of all five still say "no server" (the Worker now keeps Strava events).
-  - **App Store texts** (`docs/appstore/metadata-*.md`): route planning works in the Netherlands, Belgium and Luxembourg only and runs on the device. Also adjust the "22 countries" wording if the boundaries are limited to the routing countries.
-  - **User guide, support page and review notes:** a final check against the app.
+- ~~Update screenshots, privacy statements and texts~~: done on `release/1.0` (phase 6):
+  - READMEs in five languages, `PRIVACY.md` (starting point search and address lookup via Apple's MapKit), `app-privacy.md`, App Store texts (en, nl), support FAQ, review notes (try planning by searching "Utrecht Centraal" as the starting point).
+  - Screenshots (iPhone 6.9″ and 6.5″, iPad 13″) and app previews, with the starting point in the plan shot and the tour.
+  - Left: the README images in `docs/screenshots/` are older captures; the App Store ones are current.
+- **Release (you):** merge the open PRs, then push the tag `v1.0.0`. The TestFlight workflow builds version 1.0.0 and uploads it. Test it from TestFlight, then submit for review in App Store Connect.
 
 ## Check
 - **Strava API terms:** data deletion via the webhook queue, rate limits granted for the app.

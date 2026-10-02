@@ -11,13 +11,14 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 - **Tegels**: kaarttegels op zoom 14 (~1,5 km, zoals bij VeloViewer, StatsHunters en [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) en *squadratinho's* op zoom 17 (~190 m, zoals bij Squadrats). Beide worden altijd geteld; jij kiest welke de kaart toont. Inclusief je **max. vierkant** en **grootste cluster**.
 - **Routes**: al je activiteiten op één kaart, gekleurd per sport.
 - **Gemeenten en postcodes** in Nederland, België en Luxemburg, met bezocht/totaal per land.
-- **Routeplanning**: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit vanaf je locatie langs al die plekken. Deel hem als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
+- **Routeplanning** in Nederland, België en Luxemburg: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit langs al die plekken. Hij start vanaf je locatie, of vanaf een **startpunt** dat je zoekt of op de kaart ingedrukt houdt (recente startpunten worden onthouden). Routes worden **op het apparaat** berekend, dus plannen werkt ook offline zodra een gebied is gedownload. Deel de route als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
 - **Strava**: importeer je volledige geschiedenis met gps. Activiteiten worden ook als standaard `.fit`-bestanden bewaard in een map naar keuze.
 - **Dubbele activiteiten samengevoegd**: dezelfde training die door meerdere apparaten of apps is vastgelegd (horloge, Zwift, Strava, HealthFit) telt één keer.
-- **Eddington-getal** voor fietsen en hardlopen, ook als **widget** op het beginscherm en toegangsscherm.
+- **Widgets**: *Tegels om je heen* (een kaart van de tegels bij jou in de buurt) en *Eddington-getal*, op het beginscherm en toegangsscherm.
 - **Statistieken**: bezochte landen en gemeenten, Eddington-getallen voor fietsen, wandelen en hardlopen, en totalen per sport voor dit jaar en in totaal.
 - **Binnen- en virtuele ritten** (Zwift, Rouvy, MyWhoosh, trainerritten) tellen mee in de statistieken maar blijven van de kaart, tegels, gemeenten en postcodes.
 - **Opslag is optioneel**: zonder gekozen map bewaart Tileroam routes en Strava-bestanden in de eigen opslag (Bestanden-app › Op mijn iPhone › Tileroam) en leest het ook `.fit`-bestanden uit de map Import daar.
+- **Instellingen → Opslag** toont de gedownloade kaartgegevens en laat je ze verwijderen. Kaartdownloads groter dan 25 MB wachten op wifi, tenzij je mobiele data toestaat.
 - **iPad**-weergave met zijpaneel, alle oriëntaties en multitasking.
 - Beschikbaar in het **Engels, Nederlands, Frans, Spaans en Duits**.
 - De kaart opent op je grootste cluster, zodat je begint waar je het meest rijdt.
@@ -48,7 +49,7 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 | België | 565 | 1.150 |
 | Luxemburg | 100 communes | – |
 
-Postcodes zijn alleen opgenomen waar de grenzen als open data beschikbaar zijn. Landen worden automatisch ingeschakeld op basis van je activiteiten; je kunt dit aanpassen in Instellingen.
+Tegels, routes en statistieken werken overal; gemeenten, postcodes en routeplanning dekken deze drie landen. Postcodes zijn alleen opgenomen waar de grenzen als open data beschikbaar zijn. De grenzen van een land worden automatisch gedownload zodra je er een activiteit hebt.
 
 ## Aan de slag
 
@@ -77,8 +78,8 @@ Strava staat ongeveer 100 verzoeken per 15 minuten en 1.000 per dag toe. De acti
 - **FIT-bestanden** worden gelezen door een kleine ingebouwde decoder (`FIT/FITDecoder.swift`). Routes, tegels en bezochte gebieden worden bewaard in een cache, zodat bij de volgende start alleen nieuwe of gewijzigde bestanden worden gelezen.
 - **Tegels** gebruiken de standaard Web Mercator-tegelformule (`Geo/TileGrid.swift`). Max. vierkant en cluster worden alleen over de bezochte tegels berekend, zodat dat ook snel blijft voor zoom 17-tegels verspreid over Europa.
 - **Dubbelen**: activiteiten van hetzelfde soort die in de tijd overlappen worden samengevoegd (`Import/ActivityMerge.swift`); de kopie met de beste gps en de langste afstand blijft over.
-- **Gemeenten en postcodes** zijn compacte binaire bestanden (`AssetPacks/Regions/*.fmr`, samen 33 MB) met een ruimtelijke index voor snelle opzoekingen. Ze zitten niet in de app: elk land is een door Apple gehost asset pack (`regions-NL`, …) dat de app met Background Assets downloadt zodra je er een activiteit hebt. `Tools/build_asset_packs.sh` maakt de packs voor App Store Connect; in de simulator leest `-RegionsDir <repo>/AssetPacks/Regions` ze rechtstreeks.
-- **Routeplanning** gebruikt de publieke [OSRM](https://project-osrm.org)-fietsrouteplanner van [openstreetmap.de](https://routing.openstreetmap.de). Die bepaalt de beste volgorde; daarna kiest Tileroam binnen elk doel het punt dat de omweg het kleinst houdt.
+- **Gemeenten en postcodes** zijn compacte binaire bestanden (`AssetPacks/Regions/*.fmr`, samen 1,5 MB) met een ruimtelijke index voor snelle opzoekingen. Ze zitten niet in de app: elk land is een door Apple gehost asset pack (`regions-NL`, …) dat de app met Background Assets downloadt zodra je er een activiteit hebt. `Tools/build_asset_packs.sh` maakt de packs voor App Store Connect; in de simulator leest `-RegionsDir <repo>/AssetPacks/Regions` ze rechtstreeks.
+- **Routeplanning** draait op het apparaat met [Valhalla](https://github.com/valhalla/valhalla), via [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), en OpenStreetMap-tegels voor Nederland, België en Luxemburg. De tegels komen als door Apple gehoste asset packs per gebied van 1° × 1°, zodat een plan alleen het eigen gebied downloadt (ongeveer 60 MB rond Utrecht in plaats van 480 MB voor alles). Downloads groter dan 25 MB wachten op wifi (`MapDataDownloads`). De volgorde wordt bepaald op hemelsbrede afstanden (`TripSolver`, veel sneller dan een routematrix op het apparaat); daarna kiest de planner binnen elk doel het punt dat de omweg het kleinst houdt, en Valhalla berekent de rondrit. Hoe je de tegels bouwt en landen toevoegt: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Grensdata
 
@@ -97,11 +98,13 @@ Het script beschrijft waar elk bronbestand vandaan komt. Het herprojecteert naar
 | België | NGI-IGN, bpost via Opendatasoft (postcodelicentie: zie bron) |
 | Luxemburg | ACT (CC0) |
 
-Routeplanning: © OpenStreetMap-bijdragers (ODbL), routering door OSRM / FOSSGIS.
+Routeplanning: © OpenStreetMap-bijdragers (ODbL), routering door Valhalla op het apparaat.
 
-## Privacy
+## Documentatie
 
-Tileroam heeft geen server en geen analytics. Je activiteiten, tegels en statistieken blijven op je apparaat en in de iCloud-mappen die je zelf kiest. Strava-tokens worden in de sleutelhanger bewaard. De Strava-inlogcode en het vernieuwen van tokens lopen via de tokenservice (Cloudflare Worker), die niets bewaart of logt. Als je een route plant, worden het startpunt en de stops naar de OSRM-routeplanner van openstreetmap.de gestuurd.
+- [Gebruikershandleiding](docs/MANUAL.md) (Engels)
+- [Ondersteuning en veelgestelde vragen](SUPPORT.md) (Engels)
+- [App Store-pakket](docs/appstore/README.md): metadata, schermafbeeldingen, privacyantwoorden, notities voor de review
 
 ## Projectstructuur
 
@@ -111,28 +114,33 @@ Tileroam/
   Geo/          tegels, gemeenten/postcodes, Eddington, vereenvoudiging
   Import/       maptoegang, import, cache, samenvoegen, ActivityStore
   Map/          MKMapView-wrapper en overlays (tegels, gebieden, routes)
-  Planning/     routeplanning (OSRM), GPX, dekking
-  Strava/       Strava-API-client, export naar .fit
-  Views/        SwiftUI-schermen (kaart, instellingen, introductie, planpaneel)
-  (AssetPacks/Regions/ grenzen van gemeenten en postcodes, als asset packs)
-TileroamWidget/   Eddington-widget
+  Planning/     routeplanning (Valhalla op het apparaat), routeringsdata, startpunten, GPX, dekking
+  Strava/       Strava-API-client, webhook-meldingen, export naar .fit
+  Views/        SwiftUI-schermen (kaart, instellingen, opslag, introductie, planpaneel)
+TileroamAssets/   Background Assets-downloadextensie
+TileroamWidget/   widgets: Tegels om je heen, Eddington-getal
 TileroamTests/    unittests (Swift Testing)
-Tools/             script en bronnen voor de grensdata
+AssetPacks/       grenzen van gemeenten en postcodes, als asset packs
+backend/          Strava-tokenservice en wachtrij voor webhook-meldingen (Cloudflare Worker)
+Tools/            scripts voor data, routering, asset packs, schermafbeeldingen en releases
 ```
 
 ## Tests
 
 ```bash
-xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 17'
+xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
 ## Beperkingen
 
-- Postcodegrenzen zijn geen open data in Oostenrijk, Luxemburg, Ierland, Portugal, Italië, Noorwegen, Zweden en IJsland.
-- Franse postcodezones zijn berekende omtrekken rond adressen en kunnen overlappen.
-- De Britse postcodedistricten (2018) en Spaanse postcodes (rond 2015) zijn oudere datasets.
-- Routeplanning hangt af van de publieke OSRM-server, een gratis communitydienst zonder garanties.
+- Gemeenten, postcodes en routeplanning dekken alleen Nederland, België en Luxemburg. [docs/ROUTING.md](docs/ROUTING.md) beschrijft hoe je landen toevoegt.
+- Luxemburg heeft geen open postcodegrenzen.
+- Routes zijn rondritten; enkele routes van A naar B worden nog niet ondersteund.
+
+## Privacy
+
+Tileroam heeft geen accounts, analytics of tracking. Je activiteiten, tegels en statistieken blijven op je apparaat en in je eigen iCloud, en routeplanning draait op het apparaat. Strava-tokens worden in de sleutelhanger bewaard. De enige server is de Strava-tokenservice ([`backend/strava-auth`](backend/strava-auth)): die wisselt de inlogcode om zonder tokens te bewaren, en houdt de webhook-meldingen van Strava bij (sporter- en activiteitnummers, hoogstens 30 dagen), zodat de app activiteiten kan verwijderen die je op Strava hebt verwijderd. Zie het [privacybeleid](PRIVACY.md) (Engels).
 
 ## Licentie
 
-De broncode valt onder de [MIT-licentie](LICENSE). De meegeleverde grensdata houdt de licenties van de bronnen (CC BY, OGL, Licence Ouverte, ODbL en andere); zie [DATA-LICENSES.md](DATA-LICENSES.md).
+De broncode valt onder de [MIT-licentie](LICENSE). De grensdata houdt de licenties van de bronnen (CC BY 4.0, CC0 en de licenties van NGI en bpost), en de routeringsdata is © OpenStreetMap-bijdragers (ODbL); zie [DATA-LICENSES.md](DATA-LICENSES.md).

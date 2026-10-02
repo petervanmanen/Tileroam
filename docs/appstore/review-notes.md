@@ -11,7 +11,11 @@ HOW TO TRY IT WITHOUT YOUR OWN FILES
 2. On the "Add your activities" card, tap "Try with Sample Rides". This loads 24 bundled example rides around Utrecht, the Netherlands.
 3. Explore the tabs at the top: Tiles, Routes, Towns (municipalities) and Postcodes.
 4. Statistics: tap the chart button in the header.
-5. Route planning: tap the route button in the header, tap a few white (unvisited) tiles, then tap "Plan Route". Route planning covers the Netherlands, Belgium and Luxembourg, and the route starts at the device's location. Elsewhere the app explains this. To try it near the sample rides, set the simulator or device location to Utrecht (52.0907, 5.1214). The first plan downloads the routing data, an Apple-hosted asset pack, which takes a moment.
+5. Route planning covers the Netherlands, Belgium and Luxembourg and runs on the device. To try it from anywhere:
+   a. Tap the route button in the header.
+   b. Tap "Start: My Location" in the panel at the bottom and search for "Utrecht Centraal". Or long-press the map near the sample rides; a green flag marks the start.
+   c. Tap a few white (unvisited) tiles near the flag, then tap "Plan Route".
+   The first plan downloads the map data for that area (an Apple-hosted asset pack, about 60 MB), which takes a moment. Downloads over 25 MB wait for Wi-Fi; on mobile data, tap "Download Anyway". Settings → Storage shows the downloaded map data and can remove it.
 6. Widgets: "Tiles Around You" and "Eddington Number" can be added from the Home Screen widget gallery.
 
 The sample rides can be removed in Settings → Import Folders → Remove Sample Rides.
@@ -24,7 +28,7 @@ Tileroam can import activities from Strava (Settings → Strava → Connect with
 Strava is optional; the app is fully usable without it.
 
 LOCATION
-Location is used to show the user on the map, to start planned routes from there, and in the "Tiles Around You" widget. Route planning runs on the device (Valhalla with OpenStreetMap data), so the location never leaves the device.
+Location is used to show the user on the map, to start planned routes from there (unless the user chooses another starting point), and in the "Tiles Around You" widget. Route planning runs on the device (Valhalla with OpenStreetMap data), so the location never leaves the device.
 
 ICLOUD
 With iCloud Drive on, files are kept in "iCloud Drive › Tileroam" so the user's other devices see the same activities. Without iCloud, the app works the same with on-device storage.

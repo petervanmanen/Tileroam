@@ -28,6 +28,7 @@ The app reads them to delete its copies of deleted activities, or everything whe
   - Activity files are processed on the device and stored in the user's own iCloud. Apple holds that data for the user; the developer has no access, so it does not count as collected.
   - Strava activities go directly from Strava to the device. The token service forwards the login and refresh requests to Strava without storing tokens; it keeps only the event queue described above.
 - **Location (precise and coarse):** not collected. It is used on the device only: the map, route planning (Valhalla on the device) and the widget.
+- **Search history:** not collected. Starting point searches and the address lookup for a long-pressed starting point go to Apple's MapKit, a platform service like the map itself, not to the developer. Recent starting points stay on the device.
 
 ## Tracking
 Tileroam does not track users. There's no App Tracking Transparency prompt, no advertising identifier and no third-party SDKs.

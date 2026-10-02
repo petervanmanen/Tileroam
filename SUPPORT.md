@@ -34,6 +34,15 @@ Strava limits how many requests an app may make every 15 minutes and every day. 
 - Tileroam keeps its files in iCloud Drive › Tileroam, and both devices read them.
 - Strava is connected separately on each device. You only need to connect it on one device; its downloads reach the other through iCloud.
 
+**Route planning says the area isn't supported.**
+Route planning works in the Netherlands, Belgium and Luxembourg. The starting point and all selected tiles, municipalities and postcodes must be there. Away from home, choose a starting point inside these countries: tap "Start: My Location" in the planning panel, or long-press the map.
+
+**Route planning waits for Wi-Fi.**
+The first plan in an area downloads its map data. Downloads over 25 MB wait for Wi-Fi. Tap "Download Anyway" to use mobile data this once, or turn on Settings → Storage → Download Map Data over Mobile Data.
+
+**How much space does Tileroam use?**
+See Settings → Storage. You can remove downloaded route planning areas there; they download again when you plan a route in that area.
+
 **Where are my planned routes?**
 In the "Routes" subfolder of your save folder. By default that is iCloud Drive › Tileroam › Routes. Open it in the Files app.
 
