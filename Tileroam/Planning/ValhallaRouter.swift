@@ -31,7 +31,8 @@ actor ValhallaRouter: CyclingRouter {
         guard !areas.isEmpty else { throw RoutingError.outsideRegion }
         let needed = Set(areas.map(\.pack))
         if engine != nil, needed.isSubset(of: loadedPacks) { return }
-        let dir = try await RoutingData.tileDirectory(for: areas, index: index)
+        let (dir, replaced) = try await RoutingData.tileDirectory(for: areas, index: index)
+        if replaced { loadedPacks = [] } // the earlier packs were removed: another version
         loadedPacks.formUnion(needed)
         engine = nil // restart, so Valhalla sees the new tiles
         try start(.directory(dir))

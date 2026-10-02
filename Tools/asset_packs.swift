@@ -2,8 +2,9 @@
 // ones are unused (to archive) and which are missing (to upload). Run it with
 // Tools/clean_asset_packs.sh, which also explains the settings.
 //
-// App Store Connect's API can list asset packs but not delete or archive them (only create,
-// upload and read; the `archived` attribute is read-only), so archiving is done on the website.
+// With ARCHIVE="<prefix> …" it also archives the unused packs whose IDs start with one of those
+// prefixes (PATCH /v1/backgroundAssets/{id}, archived: true), after asking for confirmation.
+// Archiving removes all versions of a pack, for every app version, including TestFlight builds.
 import CryptoKit
 import Foundation
 
@@ -69,7 +70,35 @@ func token() throws -> String {
     return input + "." + base64URL(signature)
 }
 
+/// App Store Connect can be slow and flaky when archiving (a request took over a minute; others
+/// answered 500): a long timeout, and up to four tries, with growing pauses, when the connection
+/// times out or drops or the server answers with a 5xx error.
+func send(_ request: URLRequest, tries: Int = 4) async throws -> (Data, Int) {
+    var request = request
+    request.timeoutInterval = 300
+    var attempt = 0
+    while true {
+        attempt += 1
+        let pause = Duration.seconds(15 * attempt)
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            if (500...599).contains(status), attempt < tries {
+                FileHandle.standardError.write(Data("  App Store Connect answered \(status); trying again in \(pause)…\n".utf8))
+                try await Task.sleep(for: pause)
+                continue
+            }
+            return (data, status)
+        } catch let error as URLError where attempt < tries && [.timedOut, .networkConnectionLost].contains(error.code) {
+            FileHandle.standardError.write(Data("  \(error.localizedDescription) Trying again in \(pause)…\n".utf8))
+            try await Task.sleep(for: pause)
+        }
+    }
+}
+
 struct Pack {
+    /// App Store Connect's resource ID (for PATCH).
+    let resourceID: String
     let id: String
     let archived: Bool
     let bytes: Int64
@@ -83,15 +112,15 @@ func listPacks() async throws -> [Pack] {
     while let url = next {
         var request = URLRequest(url: url)
         request.setValue(auth, forHTTPHeaderField: "Authorization")
-        let (data, response) = try await URLSession.shared.data(for: request)
-        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        let (data, status) = try await send(request)
         guard status == 200 else {
             fail("App Store Connect answered \(status): \(String(decoding: data, as: UTF8.self).prefix(500))")
         }
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
         for item in json["data"] as? [[String: Any]] ?? [] {
             let a = item["attributes"] as? [String: Any] ?? [:]
-            packs.append(Pack(id: a["assetPackIdentifier"] as? String ?? "?",
+            packs.append(Pack(resourceID: item["id"] as? String ?? "",
+                              id: a["assetPackIdentifier"] as? String ?? "?",
                               archived: a["archived"] as? Bool ?? false,
                               bytes: (a["usedBytes"] as? NSNumber)?.int64Value ?? 0))
         }
@@ -133,13 +162,65 @@ if missing.isEmpty {
 if unused.isEmpty {
     print("✓ No unused packs.")
 } else {
-    print("\nUnused (\(unused.count), \(mb(unused.reduce(0) { $0 + $1.bytes })) together); archive them in App Store Connect:")
+    print("\nUnused (\(unused.count), \(mb(unused.reduce(0) { $0 + $1.bytes })) together):")
     for p in unused { print("    \(p.id)  \(mb(p.bytes))") }
+}
+
+// MARK: Archiving
+
+let prefixes = (env["ARCHIVE"] ?? "").split(separator: " ").map(String.init)
+if !prefixes.isEmpty {
+    let toArchive = unused.filter { p in prefixes.contains { p.id.hasPrefix($0) } }
+    guard !toArchive.isEmpty else {
+        print("\nNothing to archive: no unused pack starts with \(prefixes.joined(separator: " or ")).")
+        exit(missing.isEmpty ? 0 : 1)
+    }
     print("""
 
-    How to archive (the API can't): App Store Connect → Apps → Tileroam → Background Assets (asset
-    packs), open each pack above and archive it. Archiving affects every app version at once, so
-    only archive packs that no released app version still uses.
+    Archive these \(toArchive.count) packs? Archiving removes all their versions from App Store Connect, \
+    for every app version, including TestFlight builds. Only archive packs that no app version in \
+    TestFlight or on the App Store still uses.
+    """)
+    for p in toArchive { print("    \(p.id)") }
+    print("\nType \"archive\" to continue: ", terminator: "")
+    guard readLine()?.trimmingCharacters(in: .whitespaces) == "archive" else {
+        print("Nothing archived.")
+        exit(1)
+    }
+    // All requests at once, without waiting for the answers: App Store Connect archives slowly and
+    // often answers with a timeout or a 500 while the archive still goes through (it emails each
+    // one). Each request gets 30 seconds to be delivered; whatever it answers is ignored. Run the
+    // check again afterwards: packs still unused weren't archived, and the same command retries them.
+    let auth = "Bearer \(try token())"
+    await withTaskGroup(of: Void.self) { group in
+        for p in toArchive {
+            group.addTask {
+                var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(p.resourceID)")!)
+                request.httpMethod = "PATCH"
+                request.timeoutInterval = 30
+                request.setValue(auth, forHTTPHeaderField: "Authorization")
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.httpBody = try? JSONSerialization.data(withJSONObject: [
+                    "data": ["type": "backgroundAssets", "id": p.resourceID, "attributes": ["archived": true]],
+                ])
+                _ = try? await URLSession.shared.data(for: request)
+            }
+        }
+    }
+    print("""
+
+    Sent \(toArchive.count) archive requests. App Store Connect archives them in its own time (you get an \
+    email for each). Check later with the same command without ARCHIVE: archived packs no longer \
+    show as unused. Run the archive command again for any that are left.
+    """)
+    exit(0)
+} else if !unused.isEmpty {
+    print("""
+
+    To archive some of them, name their prefix, for example:
+        ARCHIVE="regions-" Tools/clean_asset_packs.sh
+    Archiving removes all versions of a pack, for every app version at once, so only archive packs
+    that no app version in TestFlight or on the App Store still uses.
     """)
 }
 exit(missing.isEmpty ? 0 : 1)

@@ -1,8 +1,14 @@
 #!/bin/zsh
 # Compares Tileroam's asset packs in App Store Connect with what the current app needs:
 #   - missing: needed by the app but not in App Store Connect (upload with Tools/upload_asset_packs.sh)
-#   - unused:  in App Store Connect but no longer needed (archive them on the App Store Connect
-#              website; Apple's API can list asset packs but not delete or archive them)
+#   - unused:  in App Store Connect but no longer needed
+#
+# With ARCHIVE it archives unused packs whose IDs start with the given prefixes, after you confirm
+# by typing "archive":
+#   ARCHIVE="regions-" Tools/clean_asset_packs.sh
+#   ARCHIVE="routing-benelux-" Tools/clean_asset_packs.sh
+# "Unused" is decided by the checkout you run it in (Country.all, Resources/routing-*.json), so run it
+# on the branch that matches the app versions in use.
 #
 #   ASC_KEY_ID=<KeyID> ASC_ISSUER_ID=<IssuerID> Tools/clean_asset_packs.sh
 #   OFFLINE=1 Tools/clean_asset_packs.sh     # only list what the app needs (no API key)

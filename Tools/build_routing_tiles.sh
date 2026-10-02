@@ -100,10 +100,17 @@ fi
 
 # 5. Asset packs per 1° area, plus the base pack, and the index the app bundles. Only the areas
 #    within reach of the covered countries (RoutingData.countries, or ROUTING_COUNTRIES).
-rm -rf $STAGING
 # The index goes into the app's resources, except for test builds ("<name>-test").
 INDEX=$ROOT/Tileroam/Resources/routing-$NAME.json
 [[ $NAME == *-test ]] && INDEX=$OUT/routing-$NAME.json
+# Every new build of the same name is the next version of its data (uploaded as new versions of
+# the same pack IDs); a repack keeps the version. ROUTING_VERSION overrides it.
+previous=$( [[ -f $INDEX ]] && python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('version', 1))" $INDEX || echo 0 )
+if [[ -n ${ROUTING_VERSION:-} ]]; then :
+elif [[ -n ${ROUTING_REPACK:-} ]]; then ROUTING_VERSION=$(( previous > 0 ? previous : 1 ))
+else ROUTING_VERSION=$(( previous + 1 )); fi
+export ROUTING_VERSION
+rm -rf $STAGING
 python3 $ROOT/Tools/split_routing_tiles.py $TILES $NAME $STAGING $INDEX
 rm -rf $TILES
 rm -f $ROOT/AssetPacks/build/routing-$NAME.aar(N) $ROOT/AssetPacks/build/routing-$NAME-*.aar(N)

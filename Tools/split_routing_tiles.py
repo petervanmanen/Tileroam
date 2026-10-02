@@ -12,6 +12,11 @@ links to them in one tile directory. All packs come from one build, so their roa
 
 The index lists every pack with its area, size and files; the app bundles it.
 
+Versions: every build is one version of the routing data (ROUTING_VERSION, set by
+build_routing_tiles.sh). The index records it, and each pack carries it in the file
+"version/<pack ID>", so the app can tell packs of different versions apart: their tiles don't
+connect. See docs/ROUTING.md, "Versions".
+
 Only tiles within reach of the covered countries are packed (see routing_area_filter.py): the
 countries in ROUTING_COUNTRIES (for example "NL BE LU DE"), by default those in
 RoutingData.countries in Tileroam/Planning/RoutingData.swift.
@@ -91,10 +96,16 @@ for root, _, files in os.walk(tiles):
         except OSError:
             shutil.copy2(os.path.join(tiles, path), target)
 
-for entry in packs.values():
+version = int(os.environ.get("ROUTING_VERSION", "1"))
+for pack, entry in packs.items():
     entry["files"].sort()
+    marker = os.path.join(staging, pack, "version", pack)
+    os.makedirs(os.path.dirname(marker), exist_ok=True)
+    with open(marker, "w") as f:
+        f.write(str(version))
 index = {
     "name": name,
+    "version": version,
     "base": f"routing-{name}-base",
     "areas": sorted(({"pack": p, **{k: v for k, v in e.items()}} for p, e in packs.items() if "lat" in e),
                     key=lambda a: (a["lat"], a["lon"])),
@@ -104,4 +115,4 @@ index = {
 with open(index_path, "w") as f:
     json.dump(index, f, separators=(",", ":"))
 print(f"Left out {len(skipped)} tiles beyond reach of {' '.join(sorted(countries))}")
-print(f"{len(index['areas'])} area packs + base pack; index {os.path.getsize(index_path) / 1000:.0f} KB")
+print(f"Version {version}: {len(index['areas'])} area packs + base pack; index {os.path.getsize(index_path) / 1000:.0f} KB")

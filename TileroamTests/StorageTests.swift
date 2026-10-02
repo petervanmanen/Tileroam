@@ -106,3 +106,70 @@ struct RecentStartTests {
         #expect(RecentStarts.load(defaults) == [utrecht])
     }
 }
+
+struct RoutingVersionTests {
+    @Test func decidesWhenToReplaceTheData() {
+        // Fresh device, packs of the index's version.
+        #expect(RoutingData.versionCheck(packs: [2, 2], linked: nil, indexVersion: 2) == .consistent(2))
+        // Packs from before versions existed (version 1), on a version-1 index.
+        #expect(RoutingData.versionCheck(packs: [1], linked: 1, indexVersion: 1) == .consistent(1))
+        // New data uploaded, app not updated yet: newer packs alone are fine...
+        #expect(RoutingData.versionCheck(packs: [2], linked: nil, indexVersion: 1) == .consistent(2))
+        // ...but not next to older links: replace everything.
+        #expect(RoutingData.versionCheck(packs: [2], linked: 1, indexVersion: 1) == .refresh)
+        #expect(RoutingData.versionCheck(packs: [1, 2], linked: nil, indexVersion: 1) == .refresh)
+        // App updated to a newer index while the device still has older data.
+        #expect(RoutingData.versionCheck(packs: [1], linked: 1, indexVersion: 2) == .refresh)
+    }
+
+    @Test func indexWithoutVersionIsVersionOne() throws {
+        let old = #"{"name":"t","base":"routing-t-base","areas":[],"baseFiles":[],"baseBytes":0}"#
+        #expect(try JSONDecoder().decode(RoutingIndex.self, from: Data(old.utf8)).version == 1)
+        let new = #"{"name":"t","version":3,"base":"routing-t-base","areas":[],"baseFiles":[],"baseBytes":0}"#
+        #expect(try JSONDecoder().decode(RoutingIndex.self, from: Data(new.utf8)).version == 3)
+    }
+}
+
+@Suite(.serialized)
+struct RoutingVersionLinkTests {
+    /// Staged packs as Tools/split_routing_tiles.py writes them (the simulator's -RoutingPacksDir),
+    /// with the given versions (nil: no version file, as before versions existed).
+    private func stage(base: Int?, area: Int?) throws -> (RoutingIndex, URL) {
+        let root = FileManager.default.temporaryDirectory.appending(path: "versions-\(UUID())")
+        let index = RoutingIndex(name: "version-test", version: 2, base: "routing-version-test-base",
+                                 areas: [.init(pack: "routing-version-test-n52e005", lat: 52, lon: 5, bytes: 1, files: ["1/051/305.gph"])],
+                                 baseFiles: ["0/003/195.gph"], baseBytes: 1)
+        for (pack, file, version) in [(index.base, index.baseFiles[0], base), (index.areas[0].pack, index.areas[0].files[0], area)] {
+            let tile = root.appending(path: "\(pack)/\(file)")
+            try FileManager.default.createDirectory(at: tile.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try Data([1]).write(to: tile)
+            if let version {
+                let marker = root.appending(path: "\(pack)/version/\(pack)")
+                try FileManager.default.createDirectory(at: marker.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try String(version).write(to: marker, atomically: true, encoding: .utf8)
+            }
+        }
+        try? FileManager.default.removeItem(at: RoutingData.tileDirectory(index))
+        UserDefaults.standard.set(root.path(percentEncoded: false), forKey: "RoutingPacksDir")
+        return (index, root)
+    }
+
+    @Test func linksPacksOfOneVersion() async throws {
+        let (index, root) = try stage(base: 2, area: 2)
+        defer { UserDefaults.standard.removeObject(forKey: "RoutingPacksDir"); try? FileManager.default.removeItem(at: root) }
+        let (dir, replaced) = try await RoutingData.tileDirectory(for: index.areas, index: index)
+        #expect(!replaced)
+        #expect(FileManager.default.fileExists(atPath: dir.appending(path: "1/051/305.gph").path(percentEncoded: false)))
+        #expect(RoutingData.linkedVersion(index) == 2)
+    }
+
+    @Test func refusesMixedVersions() async throws {
+        // A version-2 base next to an area from before versions existed: they don't connect, and
+        // here (staged packs can't be updated) they stay mixed, so planning must not use them.
+        let (index, root) = try stage(base: 2, area: nil)
+        defer { UserDefaults.standard.removeObject(forKey: "RoutingPacksDir"); try? FileManager.default.removeItem(at: root) }
+        await #expect(throws: RoutingError.self) {
+            _ = try await RoutingData.tileDirectory(for: index.areas, index: index)
+        }
+    }
+}
