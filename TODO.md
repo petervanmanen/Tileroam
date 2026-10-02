@@ -15,10 +15,7 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
   - Show the start on the map with its own pin. Remember recent starting points.
   - `PlanStore.plan(with:)` now always uses `CurrentLocation`; `plan(from:with:)` already takes any start.
 - ~~Municipalities and postcodes only where route maps exist~~: done on `feature/benelux-areas` (phase 1). The boundary packs of the 19 dropped countries are still in App Store Connect; they're removed with the cleanup script (phase 2).
-- **Script to remove asset packs from App Store Connect** that the app no longer uses, for example the boundary packs of dropped countries and the routing packs of old builds.
-  - Lists the packs in App Store Connect and compares them with what the current app version needs (the boundary countries and the routing index).
-  - Asks before removing anything.
-  - Transporter has no remove mode (only upload, status and list), so this needs the App Store Connect API with the existing API key. Check first which calls Apple offers for asset packs, and that a pack still used by an older app version on users' devices isn't removed too early.
+- ~~Script to remove asset packs from App Store Connect~~: done as `Tools/clean_asset_packs.sh` (phase 2). Apple's API can't delete or archive packs, so the script lists missing and unused packs and archiving happens on the website. Archiving the 19 dropped boundary packs (`regions-DE`, `regions-FR`, …) is skipped for now: the app doesn't request them, so they do no harm.
 - **Storage in Settings:** a "Storage" screen showing what Tileroam keeps on the device and letting users remove downloaded map data.
   - Per downloaded routing area (for example "Utrecht area, 52°N 5°E, 52 MB") and per country's boundaries, with sizes and a remove action: `AssetPackManager.remove(assetPackWithID:)`, plus clearing the matching links in `Application Support/Routing/tiles-<build>`.
   - The activity caches, also removable (they're rebuilt from the files).
@@ -35,10 +32,7 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
 ## Before release
 - **Asset pack count:** the 36 routing packs are uploaded (2 October 2026), 58 packs in total with the boundaries. Confirm that App Store Connect accepts them for the version under review; if not, combine routing areas.
 - **Merge `feature/valhalla-routing`** into `main` after testing on a device via TestFlight: plan near home, across a border, and offline in an area downloaded before.
-- **Strava webhook:** in the Cloudflare Worker, add the KV binding `EVENTS` and the secrets `STRAVA_VERIFY_TOKEN` and `EVENTS_SECRET` (`/events` still answered "not_configured"). Then register the webhook:
-  ```bash
-  backend/strava-auth/subscribe.sh create
-  ```
+- ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.
 - **App Store Connect, App Privacy:** add *Identifiers → User ID*, and remove *Precise Location* (route planning no longer sends it); see `docs/appstore/app-privacy.md`.
 - **Strava demo account** for App Review, filled in in `docs/appstore/review-notes.md`.
 - **Update screenshots, privacy statements and texts** after the routing, Strava webhook and country changes:
