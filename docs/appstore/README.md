@@ -86,7 +86,8 @@ ASC_KEY_ID=<KeyID> ASC_ISSUER_ID=<IssuerID> Tools/clean_asset_packs.sh
 - **Missing packs:** listed first, to upload; the script then exits with an error.
 - **Unused packs:** listed with their sizes, to archive.
 - **Without an API key:** `OFFLINE=1` only lists what the app needs.
-- **Archiving is manual.** Apple's App Store Connect API can create, upload and read asset packs, but not delete or archive them (the `archived` attribute is read-only). So archive unused packs on the App Store Connect website, under the app's asset packs.
+- **Archiving:** `ARCHIVE="<prefix> …" Tools/clean_asset_packs.sh` archives the unused packs whose IDs start with those prefixes, through the API (`PATCH /v1/backgroundAssets/{id}`, `archived: true`), after you type `archive` to confirm. For example `ARCHIVE="regions-"` for the dropped boundary countries. Apple's API can't delete packs; archiving is the only way to remove them.
+- **Run it on the right branch:** "unused" means not needed by the checkout you run it in. On a branch with an older routing index, the newer routing packs would count as unused.
 - **Archiving affects every app version at once,** because packs aren't tied to an app version. Only archive what no released version still uses.
 
 ## 4. Archive and upload
