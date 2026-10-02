@@ -19,11 +19,11 @@ Apple's rules:
 
 ## How it works
 - **The tour:** the app plays it itself with the Debug-only `-PreviewTour YES`, in `runPreviewTour()` in `Tileroam/Views/ContentView.swift`:
-  1. Tiles (3.5 s).
-  2. Towns (3 s).
-  3. Postcodes (3 s).
-  4. Route planning: selects 4 tiles, a municipality and a postcode at 0.5 s each (`PlanStore.planDemoRoute(with:pace:)`), plans, and shows the route for 4 s.
-  5. Statistics (4.5 s).
+  1. Tiles (3 s).
+  2. Towns (2.5 s).
+  3. Postcodes (2.5 s).
+  4. Route planning: sets the starting point (Utrecht Centrum, green flag), selects 4 tiles, a municipality and a postcode at 0.4 s each (`PlanStore.planDemoRoute(with:pace:)`), plans, and shows the route for 3.5 s.
+  5. Statistics (4 s).
 
   It prints `PREVIEW_TOUR_START <unix time>` and `PREVIEW_TOUR_END <unix time>`.
 - **`Tools/record_app_preview.sh <device> <out.mov> <width> <height> <focus zoom>`:**
@@ -58,5 +58,7 @@ Apple's rules:
 - **Strip carriage returns:** `simctl launch --console-pty` output ends lines with `\r`, which breaks shell arithmetic. The script uses `tr -d '\r'`.
 - **Duration varies:** route planning (Valhalla on the device; needs `AssetPacks/build/routing/routing-benelux.tar`, see docs/ROUTING.md) takes a little longer the first time, so the length varies by a few seconds. The script caps at 30 s and fails if the result is under 15 s. If Statistics gets cut off, shorten the waits in `runPreviewTour()`.
 - **Blank start:** if the first frames show the map without tiles, raise the 6 s wait before `PREVIEW_TOUR_START`.
+- **Route behind Statistics:** right after planning ends, the route can stay visible behind the Statistics sheet for a few seconds. That's MapKit redrawing slowly in the simulator, not a bug; it's gone after a few seconds.
+- **Planning is slower on the iPad simulator** (about 8 s against 4 s on the iPhone), so the iPad video is the one closest to 30 s.
 - **Contact sheet times:** make them fit the video's length; asking for a frame past the end crashes AVAssetImageGenerator.
 - **Captions** (text over the video) aren't done here; that needs a video editor such as iMovie.

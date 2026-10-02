@@ -418,19 +418,19 @@ extension ContentView {
         _ = await store.loadedRegions()
         try? await Task.sleep(for: .seconds(6)) // map tiles and overlays finish drawing
         print("PREVIEW_TOUR_START \(Date.now.timeIntervalSince1970)")
-        try? await Task.sleep(for: .seconds(3.5))
+        try? await Task.sleep(for: .seconds(3))
         mode = .gemeenten
-        try? await Task.sleep(for: .seconds(3))
+        try? await Task.sleep(for: .seconds(2.5))
         mode = .postcodes
-        try? await Task.sleep(for: .seconds(3))
+        try? await Task.sleep(for: .seconds(2.5))
         mode = .squares
         plan.isPlanning = true
         try? await Task.sleep(for: .seconds(1))
-        await plan.planDemoRoute(with: store, pace: .milliseconds(500))
-        try? await Task.sleep(for: .seconds(4))
+        await plan.planDemoRoute(with: store, pace: .milliseconds(400))
+        try? await Task.sleep(for: .seconds(3.5))
         plan.isPlanning = false
         showStatistics = true
-        try? await Task.sleep(for: .seconds(4.5))
+        try? await Task.sleep(for: .seconds(4))
         print("PREVIEW_TOUR_END \(Date.now.timeIntervalSince1970)")
     }
 }
