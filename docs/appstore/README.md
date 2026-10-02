@@ -78,6 +78,17 @@ xcrun ba-serve serve AssetPacks/build/*.aar --host <your-mac>.local
 - On the device, point Developer settings → Background Assets (development overrides) to the server's URL.
 - In the simulator, the Debug-only launch argument `-RegionsDir <repo>/AssetPacks/Regions` skips downloading and reads the files directly.
 
+### Checking and cleaning up asset packs
+```bash
+ASC_KEY_ID=<KeyID> ASC_ISSUER_ID=<IssuerID> Tools/clean_asset_packs.sh
+```
+- **What it does:** compares the asset packs in App Store Connect with what the current app needs: the boundary countries in `Country.all` and the routing areas in `Tileroam/Resources/routing-*.json`.
+- **Missing packs:** listed first, to upload; the script then exits with an error.
+- **Unused packs:** listed with their sizes, to archive.
+- **Without an API key:** `OFFLINE=1` only lists what the app needs.
+- **Archiving is manual.** Apple's App Store Connect API can create, upload and read asset packs, but not delete or archive them (the `archived` attribute is read-only). So archive unused packs on the App Store Connect website, under the app's asset packs.
+- **Archiving affects every app version at once,** because packs aren't tied to an app version. Only archive what no released version still uses.
+
 ## 4. Archive and upload
 From the command line, this does the same as the Xcode steps below. The second command signs for distribution and uploads to App Store Connect:
 ```bash
