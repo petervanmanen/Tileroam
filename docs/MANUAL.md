@@ -67,15 +67,20 @@ Like Towns, but for postcode areas. Available for:
 
 1. Tap the **route** button in the header to enter planning mode.
 2. Tap unvisited tiles, municipalities or postcodes to select them. You can mix types, using the tabs to switch between them.
-3. Tap **Plan Route**. Tileroam plans a cycling round trip from your current location past all selected items, and shows:
+3. Choose where to start (optional). The route starts and ends at your current location, unless you choose a different **starting point**:
+   - tap **Start: My Location** in the panel to search for an address or place, or pick a recent starting point;
+   - or long-press the map to start there. Drag the green flag to move it.
+
+   This lets you plan tonight for tomorrow's ride from home, or from a station or car park. Tileroam remembers your last five starting points on this device.
+4. Tap **Plan Route**. Tileroam plans a cycling round trip from the starting point past all selected items, and shows:
    - the distance;
    - the estimated time;
    - which new tiles, municipalities and postcodes the route would add.
-4. Tap **Share GPX** to send the route to your bike computer or another app, or **Save to Folder** to keep it in Tileroam's "Routes" folder.
+5. Tap **Share GPX** to send the route to your bike computer or another app, or **Save to Folder** to keep it in Tileroam's "Routes" folder.
 
 You can also **open an existing GPX file** to see which new tiles and areas it would collect.
 
-Route planning works in **the Netherlands, Belgium and Luxembourg**: your location and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data for that area, typically a few to 60 MB. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
+Route planning works in **the Netherlands, Belgium and Luxembourg**: the starting point and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data for that area, typically a few to 60 MB. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
 
 ## Statistics
 

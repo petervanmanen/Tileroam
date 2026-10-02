@@ -6,6 +6,7 @@ struct PlanPanel: View {
     @Environment(PlanStore.self) private var plan
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     let onOpenGPX: () -> Void
+    @State private var showStartPicker = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -38,12 +39,42 @@ struct PlanPanel: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .sheet(isPresented: $showStartPicker) {
+            StartPicker()
+        }
+        #if DEBUG
+        // Screenshots: -ShowStartPicker YES opens the starting point picker.
+        .onAppear { if UserDefaults.standard.bool(forKey: "ShowStartPicker") { showStartPicker = true } }
+        #endif
+    }
+
+    /// "Start: My Location"; opens the starting point picker.
+    private var startButton: some View {
+        Button {
+            showStartPicker = true
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: plan.start == nil ? "location.fill" : "flag.fill")
+                    .foregroundStyle(plan.start == nil ? Color.accentColor : .green)
+                if let start = plan.start {
+                    Text("Start: \(start.name)").lineLimit(1)
+                } else {
+                    Text("Start: My Location")
+                }
+                Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.tertiary)
+            }
+            .font(.subheadline)
+        }
+        .buttonStyle(.plain)
+        .disabled(plan.isWorking)
+        .accessibilityHint("Choose where the route starts and ends")
     }
 
     private var selectionContent: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(plan.selectionSummary).font(.headline)
-            Text("Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at your location.")
+            startButton
+            Text("Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             HStack {
@@ -88,6 +119,9 @@ struct PlanPanel: View {
                 Label("Not reached: \(route.missed.formatted(.list(type: .and)))", systemImage: "exclamationmark.triangle")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+            }
+            if route.source == .planned {
+                startButton
             }
             if plan.routeIsOutdated {
                 Text("Selection changed – plan again to include it.")

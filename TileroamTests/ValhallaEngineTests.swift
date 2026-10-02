@@ -59,4 +59,25 @@ struct ValhallaEngineTests {
         let r = try await router.route([Self.luxembourg, Self.bertrange])
         #expect((6000...9000).contains(r.distance))
     }
+
+    @Test func plansARoundTripFromAChosenStart() async throws {
+        // A chosen starting point (Bertrange) instead of the current location: the round trip
+        // begins and ends there and passes the selected tile in Luxembourg City.
+        useTileExtract()
+        let start = StartPoint(name: "Bertrange", Self.bertrange)
+        let key = try #require(TileGrid.key(lat: Self.luxembourg.lat, lon: Self.luxembourg.lon, zoom: .explorer))
+        let target = try #require(TargetGeometry(.tile(.explorer, key), regions: nil))
+        let router = ValhallaRouter()
+        try await router.prepare(around: [start.point] + target.candidates(), margin: 15_000)
+        let route = try await RoutePlanner.planRoute(
+            start: start.point, targets: [target], client: router,
+            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],
+                                      visitedPostcodes: [], regions: nil) },
+            progress: { _ in })
+        let first = try #require(route.coordinates.first), last = try #require(route.coordinates.last)
+        #expect(Geo.distance(first, start.point) < 300)
+        #expect(Geo.distance(last, start.point) < 300)
+        #expect(route.missed.isEmpty)
+        #expect((8_000...25_000).contains(route.distance))
+    }
 }

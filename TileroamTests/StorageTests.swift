@@ -79,3 +79,30 @@ struct RoutingStorageTests {
         #expect(RoutingData.isBaseDownloaded(index))
     }
 }
+
+struct RecentStartTests {
+    private let utrecht = StartPoint(name: "Utrecht Centraal", lat: 52.0894, lon: 5.1101)
+
+    @Test func newestFirstWithoutDuplicates() {
+        let nearby = StartPoint(name: "Jaarbeursplein", lat: 52.0893, lon: 5.1095) // about 40 m away
+        let arnhem = StartPoint(name: "Arnhem", lat: 51.9851, lon: 5.8987)
+        var list = RecentStarts.adding(utrecht, to: [])
+        list = RecentStarts.adding(arnhem, to: list)
+        list = RecentStarts.adding(nearby, to: list)
+        #expect(list.map(\.name) == ["Jaarbeursplein", "Arnhem"])
+    }
+
+    @Test func keepsTheLastFive() {
+        var list = [StartPoint]()
+        for i in 0..<8 { list = RecentStarts.adding(StartPoint(name: "\(i)", lat: 52 + Double(i) * 0.1, lon: 5), to: list) }
+        #expect(list.map(\.name) == ["7", "6", "5", "4", "3"])
+    }
+
+    @Test func savesAndLoads() throws {
+        let defaults = try #require(UserDefaults(suiteName: "RecentStartTests"))
+        defer { defaults.removePersistentDomain(forName: "RecentStartTests") }
+        #expect(RecentStarts.load(defaults).isEmpty)
+        RecentStarts.save([utrecht], defaults)
+        #expect(RecentStarts.load(defaults) == [utrecht])
+    }
+}
