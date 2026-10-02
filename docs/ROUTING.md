@@ -99,6 +99,11 @@ Example: adding Germany.
    - In `RoutingData.swift`: add the country codes to `RoutingData.countries`, and set `build` to `"west"`. The app then bundles `Resources/routing-west.json`; remove the old index file.
    - Update the text of `RoutingError.outsideRegion` in `Tileroam/Planning/Routing.swift`, and its translations in the string catalog.
    - Update `docs/MANUAL.md`, `docs/appstore/review-notes.md` and this document.
+   - Regenerate the App Store's Routing App Coverage File and upload it on the next version page:
+     ```bash
+     <venv with shapely>/bin/python Tools/build_routing_coverage.py NL BE LU DE
+     ```
+     It writes `docs/appstore/routing-coverage.geojson`, following Apple's rules: at most 20 polygons of at most 20 points, closed, no holes. It's checked to contain every municipality of those countries.
 5. **Test** in the simulator with `-RoutingPacksDir …/packs-west`: plan a route that crosses the new border.
 6. **Upload** the new packs (`Tools/upload_asset_packs.sh routing-west`), then ship the app version that uses them. Keep the old packs in App Store Connect until no supported app version uses them any more.
 

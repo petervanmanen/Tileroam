@@ -11,7 +11,7 @@ Everything needed for App Store Connect is in this folder:
 | [screenshots/iphone-6.9](screenshots/iphone-6.9) | iPhone screenshots, 1320 × 2868 (6.9″ display, if App Store Connect asks for that size) |
 | [screenshots/ipad-13](screenshots/ipad-13) | iPad screenshots, 2064 × 2752 (13″ display) |
 | [previews/iphone-6.5.mov](previews/iphone-6.5.mov), [previews/ipad-13.mov](previews/ipad-13.mov) | App previews (videos), 886 × 1920 and 1200 × 1600, H.264, 30 fps, about 24 s, no sound |
-| [routing-coverage.geojson](routing-coverage.geojson) | Routing App Coverage File (optional; only if App Store Connect asks): one MultiPolygon of 5 rectangles around the 22 countries |
+| [routing-coverage.geojson](routing-coverage.geojson) | Routing App Coverage File: where route planning works (the Netherlands, Belgium, Luxembourg). One MultiPolygon of 8 polygons, at most 17 points each, about 7 km around the borders. Made by `Tools/build_routing_coverage.py`. |
 | [check_metadata.py](check_metadata.py) | Checks the texts against App Store Connect's character limits |
 
 Public pages the App Store links to:
