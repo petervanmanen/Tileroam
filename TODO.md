@@ -22,6 +22,7 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
   - `ARCHIVE="routing-benelux-"`: the 36 old routing packs, only once every TestFlight and App Store build in use has the `west` index.
 
   Together that frees 54 of the 200.
+- ~~Routing data versions~~: done on `feature/routing-versions`. The build name stays `west` for good; refreshes and new countries are new versions of the same pack IDs (docs/ROUTING.md, "Versions"), so the 200-pack limit isn't hit.
 - **Possible improvement:** the base pack (Valhalla's level-0 main roads, 36 MB) comes with every first plan. Splitting it per 4° tile would make a first plan about 30 MB smaller.
 - **Test routing on a device** via TestFlight: plan near home, across a border, from a chosen starting point, and offline in an area downloaded before. (`feature/valhalla-routing` is already in `main`.)
 - ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.

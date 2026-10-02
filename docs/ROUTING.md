@@ -77,7 +77,30 @@ ASC_KEY_ID=<KeyID> ASC_ISSUER_ID=<IssuerID> Tools/upload_asset_packs.sh routing-
 
 This uploads all 92 packs of the build (base first, with a `[n/92]` counter). If the upload stops halfway, `Tools/upload_asset_packs.sh --resume routing-west` uploads only the packs App Store Connect doesn't have yet. Don't use `--resume` after rebuilding an existing build: then every pack needs its new version. The upload works with the App Store Connect API key in `~/.appstoreconnect/private_keys/` and Transporter. The packs then have to be available to the builds that use it: TestFlight right away, and the App Store together with the version under review. The GitHub *Asset packs* workflow only handles the boundary packs; routing data is built and uploaded from a Mac, because it needs the large downloads.
 
-Refresh the data every few months, because OpenStreetMap changes. Run the build again, then upload **all** packs of the build and ship the new index with the next app version: tiles of different builds don't connect. Rebuilding can change which areas exist (rarely, for border or coast areas). An area that's new in the index but not yet uploaded would make planning there fail, so upload before releasing the app with the new index.
+Refresh the data every few months, because OpenStreetMap changes: run the same build again (same name), upload **all** its packs, and ship the new index with the next app version. That makes a new **version** of the data; see below.
+
+## Versions
+
+**Keep the build name `west`, for good.** Adding a country or refreshing the data is a new version of the same build, uploaded as new versions of the same pack IDs. A new build name would need a complete second set of packs next to the old one until old app versions are gone, and Apple's limit of 200 asset packs per app doesn't leave room for that (`west` alone is 92). The name is internal; it doesn't have to match the countries.
+
+**Why versions matter:** tiles of different builds don't connect, because Valhalla numbers its graph per build. Once new versions are uploaded, the system hands out the new version for every pack a device downloads from then on, also to app versions with the old index. Without a check, a device could link old and new packs together and get broken routes.
+
+**How it works:**
+- **The version number:**
+  - `Tools/build_routing_tiles.sh` raises it by one per build, starting from the bundled index (`"version"` in `Resources/routing-west.json`; an index without it is version 1).
+  - A repack (`ROUTING_REPACK=1`) keeps it; `ROUTING_VERSION=<n>` overrides it.
+- **In each pack:** `Tools/split_routing_tiles.py` writes the version into the index and into every pack, as the file `version/<pack ID>`. The packs of version 1 (the first `west` upload, 2 October 2026) have no such file and count as version 1.
+- **On the device:** the tile directory remembers the version of its links (`Application Support/Routing/tiles-west/.version`).
+- **Before linking** (`RoutingData.tileDirectory(for:index:)`), the app compares the needed packs' versions, the linked version and the index's version (`RoutingData.versionCheck`):
+  - **All the same, and not older than the index:** use them.
+  - **Mixed, or older than the index:** remove every pack of the build from the device and the tile directory, then download the needed packs again in their latest version (`requireLatestVersion: true`). The router forgets what it loaded. If the versions are still mixed (an upload in progress), planning says to try again later.
+- **An app version with an older index** on newer packs: it plans with the new packs, as long as they all have one version, but links only the tiles its own index lists. Tiles that are new in the newer build stay unused until the app updates. Fine for refreshes; for a new country, the old app doesn't allow planning there anyway (`RoutingData.countries`).
+
+**The order for a new version:**
+1. Build (the version goes up by one) and test.
+2. Upload **all** packs (`Tools/upload_asset_packs.sh routing-west`, without `--resume`: every pack needs its new version). From then on, devices get the new version for anything they download.
+3. Release the app version with the new index. On its first plan, a device replaces older data in one go.
+4. Areas that are new in a version (a new country) are new pack IDs, so the pack count only grows by those.
 
 ## Testing in the simulator
 
@@ -95,9 +118,9 @@ Refresh the data every few months, because OpenStreetMap changes. Run the build 
 
 Germany was added this way (October 2026). For the next country:
 
-1. **Choose the build.** Countries whose routes should cross each other's borders must be in **one** build. A neighbour of the current countries joins build `west`; a rebuild under a new name is only needed when the old packs must stay usable (see step 6). Because the data is split per 1° area, a bigger build doesn't make downloads bigger: a plan still only fetches its own areas.
+1. **Use build `west`.** Countries whose routes should cross each other's borders must be in **one** build, and `west` keeps its name (see "Versions"): the new country makes a new version of it. Because the data is split per 1° area, a bigger build doesn't make downloads bigger: a plan still only fetches its own areas.
 2. **Check the limits first:**
-   - **Asset packs:** Apple allows **200 asset packs per app** ([limits](https://developer.apple.com/help/app-store-connect/reference/app-uploads/apple-hosted-asset-pack-size-limits/)), counting every pack in App Store Connect, including retired builds until they're archived. With `west` (92), the old `benelux` packs (36) and the boundary packs (22), that's 150. Expect one pack per 1° area within reach of the countries.
+   - **Asset packs:** Apple allows **200 asset packs per app** ([limits](https://developer.apple.com/help/app-store-connect/reference/app-uploads/apple-hosted-asset-pack-size-limits/)), counting every pack in App Store Connect until it's archived. With `west` (92), the old `benelux` packs (36, to archive) and the boundary packs (22), that's 150. A new country only adds its own new areas (Austria: about 15).
    - **Disk and time:** see "Building the routing data" above.
 3. **Boundaries:** the country needs municipality boundaries in Tileroam first:
    - `Tools/build_regions.py` for its `AssetPacks/Regions/<CC>-*.fmr`, plus its entry in `regions.json`;
@@ -106,7 +129,7 @@ Germany was added this way (October 2026). For the next country:
    - upload its boundary pack (`Tools/upload_asset_packs.sh <CC>`), unless it's already in App Store Connect (as `regions-DE` was).
 4. **The app:**
    - Add the country code to `RoutingData.countries` (the build reads it too, for the reach filter).
-   - If the build name changes: set `RoutingData.build`, remove the old `Resources/routing-<old>.json`, and add the old name to `RoutingData.retiredBuilds`, so devices remove the old packs.
+   - Don't change `RoutingData.build`. (`RoutingData.retiredBuilds` removes the packs of the one earlier build, `benelux`, from devices.)
    - Texts naming the countries: `RoutingError.outsideRegion` (`Tileroam/Planning/Routing.swift`), the introduction (`IntroView`), and their translations in the string catalog. The starting point search region is `PlaceSearch.region` (`StartPoint.swift`).
    - The tests that list the countries (`GeoTests`, `CountryTests`).
    - Docs: the READMEs, `docs/MANUAL.md`, `SUPPORT.md`, the App Store texts and review notes, `DATA-LICENSES.md` and this document.
@@ -120,7 +143,7 @@ Germany was added this way (October 2026). For the next country:
    ```
    - `WestRoutingTests` in `TileroamTests/ValhallaEngineTests.swift` routes Kerkrade → Aachen across the border on the new tile extract. Add a route across the new border there.
    - In the simulator: `-RoutingPacksDir <repo>/AssetPacks/build/routing/packs-west -RegionsDir <repo>/AssetPacks/Regions -PlanDemo YES -PlanDemoStart "50.8687,6.0835"` plans the demo route from any start, here on the Dutch–German border in Kerkrade.
-6. **Upload** the packs (`Tools/upload_asset_packs.sh routing-west`) **before** releasing the app version with the new index. Packs of a retired build stay in App Store Connect until no supported app version uses them; `Tools/clean_asset_packs.sh` then lists them as unused; `ARCHIVE="routing-<old>-" Tools/clean_asset_packs.sh` archives them.
+6. **Upload all** packs (`Tools/upload_asset_packs.sh routing-west`, without `--resume`) **before** releasing the app version with the new index, as in "Versions".
 
 ## Regenerating `valhalla.json`
 

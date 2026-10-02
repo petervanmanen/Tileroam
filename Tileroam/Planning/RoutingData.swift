@@ -50,12 +50,31 @@ enum RoutingData {
     }
 
     /// Downloads the given area packs (plus the base pack) where needed and links their tiles into
-    /// one directory for Valhalla.
-    static func tileDirectory(for areas: [RoutingIndex.Area], index: RoutingIndex) async throws -> URL {
+    /// one directory for Valhalla. `replaced` says the data already on the device was thrown away
+    /// because it came from another version of the build (see `versionCheck`).
+    static func tileDirectory(for areas: [RoutingIndex.Area], index: RoutingIndex) async throws -> (dir: URL, replaced: Bool) {
         let dir = tileDirectory(index)
         let packs = [(index.base, index.baseFiles)] + areas.map { ($0.pack, $0.files) }
+        var sources = [String: (String) -> URL]()
+        for (pack, _) in packs { sources[pack] = try await packFolder(pack) }
+        var replaced = false
+        switch versionCheck(packs: packs.map { packVersion($0.0, in: sources[$0.0]!) },
+                            linked: linkedVersion(index), indexVersion: index.version) {
+        case .consistent:
+            break
+        case .refresh:
+            // Mixed versions don't connect: start over with the latest version of every pack.
+            await removeEverything(index)
+            replaced = true
+            for (pack, _) in packs { sources[pack] = try await packFolder(pack, latest: true) }
+            let versions = Set(packs.map { packVersion($0.0, in: sources[$0.0]!) })
+            guard versions.count == 1 else {
+                throw RoutingError.dataUnavailable("the route planning data is being updated; try again later")
+            }
+        }
+        let version = packVersion(index.base, in: sources[index.base]!)
         for (pack, files) in packs {
-            let source = try await packFolder(pack)
+            let source = sources[pack]!
             for file in files {
                 let link = dir.appending(path: file)
                 let target = source(file)
@@ -68,16 +87,92 @@ enum RoutingData {
                 try FileManager.default.createSymbolicLink(at: link, withDestinationURL: target)
             }
         }
+        try? String(version).write(to: dir.appending(path: versionFile), atomically: true, encoding: .utf8)
         // The links are recreated from the packs when needed: keep them out of backups.
         var values = URLResourceValues()
         values.isExcludedFromBackup = true
         var excluded = dir
         try? excluded.setResourceValues(values)
-        return dir
+        return (dir, replaced)
     }
 
-    /// Makes an asset pack available and returns where each of its files is.
-    private static func packFolder(_ pack: String) async throws -> (String) -> URL {
+    // MARK: Versions
+
+    /// Every build is one version of the routing data. Tiles of different versions don't connect
+    /// (Valhalla numbers its graph per build), so the packs linked together must all have the same
+    /// version. A refresh or a new country uploads new versions of the same pack IDs, and the
+    /// system then hands out the new version for any pack downloaded after that, so a device can
+    /// end up with old and new packs side by side. `versionCheck` catches that.
+    ///
+    /// The version is in the index (`version`) and in each pack, as the file `version/<pack ID>`
+    /// (written by Tools/split_routing_tiles.py). Packs and indexes from before versions existed
+    /// count as version 1. The tile directory remembers the version of its links (`versionFile`).
+    enum VersionCheck: Equatable {
+        /// All the same, and not older than the app's index: use them.
+        case consistent(Int)
+        /// Mixed, or older than the app's index: replace them with the latest versions.
+        case refresh
+    }
+
+    static func versionCheck(packs: [Int], linked: Int?, indexVersion: Int) -> VersionCheck {
+        let all = packs + (linked.map { [$0] } ?? [])
+        guard let newest = all.max() else { return .consistent(indexVersion) }
+        if all.contains(where: { $0 != newest }) || newest < indexVersion { return .refresh }
+        return .consistent(newest)
+    }
+
+    private static let versionFile = ".version"
+
+    /// The version of the links in the tile directory; nil when there are none yet. Links made
+    /// before versions existed are version 1.
+    static func linkedVersion(_ index: RoutingIndex) -> Int? {
+        let dir = tileDirectory(index)
+        if let text = try? String(contentsOf: dir.appending(path: versionFile), encoding: .utf8) {
+            return Int(text.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        let hasLinks = (try? FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)))?
+            .contains { $0 != versionFile } ?? false
+        return hasLinks ? 1 : nil
+    }
+
+    /// The version a downloaded pack belongs to.
+    private static func packVersion(_ pack: String, in source: (String) -> URL) -> Int {
+        guard let text = try? String(contentsOf: source("version/\(pack)"), encoding: .utf8) else { return 1 }
+        return Int(text.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 1
+    }
+
+    /// Removes every pack of the build from the device, and the tile directory.
+    private static func removeEverything(_ index: RoutingIndex) async {
+        try? FileManager.default.removeItem(at: tileDirectory(index))
+        #if DEBUG
+        if UserDefaults.standard.string(forKey: "RoutingPacksDir") != nil { return }
+        #endif
+        for id in possiblePackIDs(index.name, index: index) {
+            if #available(iOS 26.4, *), !AssetPackManager.shared.assetPackIsAvailableLocally(withID: id) { continue }
+            try? await AssetPackManager.shared.remove(assetPackWithID: id)
+        }
+    }
+
+    /// Every pack ID a build may have had: its base and all 1° areas from 40°N 5°W to 61°N 30°E
+    /// (an older version may have had areas the current index doesn't list). Without iOS 26.4's
+    /// local check, only the index's own packs, to keep the number of remove calls down.
+    private static func possiblePackIDs(_ build: String, index: RoutingIndex?) -> [String] {
+        guard #available(iOS 26.4, *) else {
+            return index.map { [$0.base] + $0.areas.map(\.pack) } ?? []
+        }
+        var ids = ["routing-\(build)-base"]
+        for lat in 40...60 {
+            for lon in -5...30 {
+                ids.append("routing-\(build)-n\(String(format: "%02d", lat))\(lon < 0 ? "w" : "e")\(String(format: "%03d", abs(lon)))")
+            }
+        }
+        return ids
+    }
+
+    /// Makes an asset pack available and returns where each of its files is. With `latest`, an
+    /// older version on the device is updated first (from iOS 26.4; before that, a removed pack
+    /// downloads in its latest version anyway).
+    private static func packFolder(_ pack: String, latest: Bool = false) async throws -> (String) -> URL {
         #if DEBUG
         // Simulator: -RoutingPacksDir <repo>/AssetPacks/build/routing/packs-benelux.
         if let dir = UserDefaults.standard.string(forKey: "RoutingPacksDir") {
@@ -89,7 +184,7 @@ enum RoutingData {
         do {
             let assetPack = try await manager.assetPack(withID: pack)
             if #available(iOS 26.4, *) {
-                try await manager.ensureLocalAvailability(of: assetPack, requireLatestVersion: false)
+                try await manager.ensureLocalAvailability(of: assetPack, requireLatestVersion: latest)
             } else {
                 try await manager.ensureLocalAvailability(of: assetPack)
             }
@@ -161,11 +256,7 @@ enum RoutingData {
             let dir = URL.applicationSupportDirectory.appending(path: "Routing/tiles-\(build)", directoryHint: .isDirectory)
             try? FileManager.default.removeItem(at: dir)
             guard #available(iOS 26.4, *) else { continue }
-            var ids = ["routing-\(build)-base"]
-            for lat in 45...56 {
-                for lon in 0...16 { ids.append(String(format: "routing-%@-n%02de%03d", build, lat, lon)) }
-            }
-            for id in ids where AssetPackManager.shared.assetPackIsAvailableLocally(withID: id) {
+            for id in possiblePackIDs(build, index: nil) where AssetPackManager.shared.assetPackIsAvailableLocally(withID: id) {
                 try? await AssetPackManager.shared.remove(assetPackWithID: id)
             }
         }
@@ -213,9 +304,33 @@ struct RoutingIndex: Decodable, Sendable {
     }
 
     let name: String
+    /// The version of the build's data (see `RoutingData.VersionCheck`); 1 for indexes from before
+    /// versions existed.
+    let version: Int
     /// The pack with the level-0 (main road) tiles, needed by every plan.
     let base: String
     let areas: [Area]
     let baseFiles: [String]
     let baseBytes: Int
+
+    private enum CodingKeys: String, CodingKey { case name, version, base, areas, baseFiles, baseBytes }
+
+    init(name: String, version: Int = 1, base: String, areas: [Area], baseFiles: [String], baseBytes: Int) {
+        self.name = name
+        self.version = version
+        self.base = base
+        self.areas = areas
+        self.baseFiles = baseFiles
+        self.baseBytes = baseBytes
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        name = try c.decode(String.self, forKey: .name)
+        version = try c.decodeIfPresent(Int.self, forKey: .version) ?? 1
+        base = try c.decode(String.self, forKey: .base)
+        areas = try c.decode([Area].self, forKey: .areas)
+        baseFiles = try c.decode([String].self, forKey: .baseFiles)
+        baseBytes = try c.decode(Int.self, forKey: .baseBytes)
+    }
 }
