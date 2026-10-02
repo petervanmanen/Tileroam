@@ -88,3 +88,22 @@ enum StravaImport {
         return points
     }
 }
+
+/// What a batch of Strava webhook events asks for.
+struct StravaEventChanges: Equatable {
+    /// The athlete revoked Tileroam's access.
+    var revoked = false
+    /// Activities deleted on Strava: their copies must go. (Private activities stay: Tileroam has
+    /// the athlete's permission to read them.)
+    var removedActivities = Set<Int>()
+
+    init(_ events: [StravaEvent]) {
+        for event in events {
+            switch event.type {
+            case "deauthorized": revoked = true
+            case "deleted": if let id = event.activity { removedActivities.insert(id) }
+            default: break // "created": the regular sync fetches it
+            }
+        }
+    }
+}

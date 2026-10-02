@@ -5705,6 +5705,34 @@
         }
       }
     },
+    "Strava access was revoked. Tileroam removed the activities it saved from Strava.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De toegang tot Strava is ingetrokken. Tileroam heeft de activiteiten verwijderd die het van Strava had bewaard."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’accès à Strava a été révoqué. Tileroam a supprimé les activités enregistrées depuis Strava."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se revocó el acceso a Strava. Tileroam eliminó las actividades que había guardado de Strava."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Zugriff auf Strava wurde widerrufen. Tileroam hat die von Strava gespeicherten Aktivitäten gelöscht."
+          }
+        }
+      }
+    },
     "Strava activities are removed from this device. You can also delete the .fit files Tileroam saved from Strava, in all its folders; files from other apps are never touched.": {
       "localizations": {
         "nl": {

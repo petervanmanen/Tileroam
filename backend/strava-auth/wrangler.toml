@@ -1,3 +1,9 @@
 name = "tileroam-strava-auth"
 main = "worker.js"
 compatibility_date = "2026-09-01"
+
+# Webhook event queue. Create it with `npx wrangler kv namespace create EVENTS` (or in the
+# dashboard: Storage & Databases → KV) and put its id here.
+[[kv_namespaces]]
+binding = "EVENTS"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"

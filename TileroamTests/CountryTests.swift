@@ -97,3 +97,37 @@ struct StravaFilesTests {
         #expect(left == ["2026-05-01-HealthFit-Strava.fit", "notes.txt"])
     }
 }
+
+struct StravaEventTests {
+    @Test func decodesTheTokenServiceEvents() throws {
+        let json = #"{"events":[{"type":"deleted","time":1790900001,"activity":999},{"type":"deauthorized","time":1790900000}]}"#
+        struct Response: Decodable { let events: [StravaEvent] }
+        let events = try JSONDecoder().decode(Response.self, from: Data(json.utf8)).events
+        #expect(events == [StravaEvent(type: "deleted", time: 1790900001, activity: 999),
+                           StravaEvent(type: "deauthorized", time: 1790900000, activity: nil)])
+    }
+
+    @Test func changesFromEvents() {
+        let changes = StravaEventChanges([
+            StravaEvent(type: "created", time: 1, activity: 10),
+            StravaEvent(type: "deleted", time: 2, activity: 11),
+            StravaEvent(type: "deleted", time: 3, activity: 12),
+            StravaEvent(type: "private", time: 4, activity: 13), // older Worker: ignored
+        ])
+        #expect(!changes.revoked)
+        #expect(changes.removedActivities == [11, 12])
+        #expect(StravaEventChanges([StravaEvent(type: "deauthorized", time: 5, activity: nil)]).revoked)
+    }
+
+    @Test func deletesOnlyFilesOfDeletedActivities() throws {
+        let folder = FileManager.default.temporaryDirectory.appending(path: "strava-events-\(UUID())")
+        let strava = folder.appending(path: StravaExport.subfolder)
+        try FileManager.default.createDirectory(at: strava, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        for name in ["2026-05-01-Ride-Strava-12.fit", "2026-05-02-Ride-Strava-123.fit", ".2026-05-03-Ride-Strava-45.fit.icloud"] {
+            try Data([1]).write(to: strava.appending(path: name))
+        }
+        #expect(StravaExport.deleteOwnFiles(in: folder, activities: [12, 45]) == 2)
+        #expect(try FileManager.default.contentsOfDirectory(atPath: strava.path(percentEncoded: false)) == ["2026-05-02-Ride-Strava-123.fit"])
+    }
+}

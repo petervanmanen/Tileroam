@@ -477,6 +477,8 @@ final class ActivityStore {
         guard let strava else { return }
         do {
             let tokens = try await strava.completeLogin(callback: callback)
+            // Only events after this login matter (an old "revoked" must not undo it).
+            UserDefaults.standard.set(Int(Date.now.timeIntervalSince1970), forKey: Self.eventsSinceKey(tokens.athleteID))
             stravaAthlete = tokens.athleteName
             stravaAthleteID = tokens.athleteID
             stravaError = nil
@@ -532,6 +534,38 @@ final class ActivityStore {
     /// Set after `deleteStravaFiles()`, for the confirmation in Settings.
     private(set) var stravaFilesDeleted: Int?
 
+    // MARK: Strava webhook events
+
+    private static func eventsSinceKey(_ athleteID: Int) -> String { "stravaEventsSince-\(athleteID)" }
+
+    /// Handles the webhook events the token service queued since the last time: access revoked
+    /// (forget everything and delete the saved files), activities deleted on Strava (delete their
+    /// copies). Returns false when the connection is gone.
+    private func applyStravaEvents(_ strava: StravaClient, athleteID: Int) async -> Bool {
+        let sinceKey = Self.eventsSinceKey(athleteID)
+        guard let events = try? await strava.events(since: UserDefaults.standard.integer(forKey: sinceKey)),
+              let last = events.map(\.time).max() else { return true }
+        UserDefaults.standard.set(last, forKey: sinceKey)
+        let change = StravaEventChanges(events)
+        if change.revoked {
+            forgetStrava()
+            await deleteStravaFiles()
+            stravaError = String(localized: "Strava access was revoked. Tileroam removed the activities it saved from Strava.")
+            return false
+        }
+        guard !change.removedActivities.isEmpty else { return true }
+        let removed = change.removedActivities
+        stravaActivities.removeAll { StravaImport.stravaID(of: $0).map(removed.contains) ?? false }
+        saveStrava(athleteID)
+        let folders = stravaFileFolders
+        _ = await Task.detached(priority: .utility) {
+            folders.reduce(0) { $0 + StravaExport.deleteOwnFiles(in: $1, activities: removed) }
+        }.value
+        recompute()
+        await refresh()
+        return true
+    }
+
     /// Removes the Strava connection and its cached activities from this device.
     private func forgetStrava() {
         stravaTask?.cancel()
@@ -558,6 +592,7 @@ final class ActivityStore {
     private func runStravaSync() async {
         guard let strava, let athleteID = stravaAthleteID else { return }
         stravaError = nil
+        guard await applyStravaEvents(strava, athleteID: athleteID) else { return }
 
         while !Task.isCancelled {
             do {

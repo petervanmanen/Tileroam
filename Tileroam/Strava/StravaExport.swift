@@ -100,13 +100,13 @@ enum StravaExport {
         }.map { dir.appending(path: $0) }
     }
 
-    /// Deletes the files Tileroam saved from Strava in `folder/Strava` (never other apps' files).
-    /// Returns the number of files deleted.
-    static func deleteOwnFiles(in folder: URL) -> Int {
+    /// Deletes the files Tileroam saved from Strava in `folder/Strava` (never other apps' files),
+    /// or only those of the given Strava activities. Returns the number of files deleted.
+    static func deleteOwnFiles(in folder: URL, activities: Set<Int>? = nil) -> Int {
         let access = folder.startAccessingSecurityScopedResource()
         defer { if access { folder.stopAccessingSecurityScopedResource() } }
         var deleted = 0
-        for url in ownFiles(in: folder) {
+        for url in ownFiles(in: folder) where activities.map({ ids in ids.contains { url.lastPathComponent.contains("-Strava-\($0).fit") } }) ?? true {
             var coordinationError: NSError?
             NSFileCoordinator().coordinate(writingItemAt: url, options: .forDeleting, error: &coordinationError) { url in
                 if (try? FileManager.default.removeItem(at: url)) != nil { deleted += 1 }

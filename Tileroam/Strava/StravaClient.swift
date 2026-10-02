@@ -6,6 +6,8 @@ struct StravaTokens: Codable, Sendable {
     var expiresAt: TimeInterval
     var athleteID: Int
     var athleteName: String
+    /// Lets the app read this athlete's webhook events from the token service (see `events(since:)`).
+    var eventsKey: String?
 
     private static let account = "stravaTokens"
 
@@ -20,6 +22,16 @@ struct StravaTokens: Codable, Sendable {
     static func delete() {
         Keychain.delete(account: account)
     }
+}
+
+/// A Strava webhook event, queued by the token service: access revoked, or an activity created
+/// or deleted.
+struct StravaEvent: Decodable, Sendable, Equatable {
+    let type: String
+    /// Unix time of the event.
+    let time: Int
+    /// The activity, for activity events.
+    let activity: Int?
 }
 
 /// Full-resolution streams of one activity.
@@ -124,7 +136,8 @@ actor StravaClient {
         let response = try await tokenRequest(["code": code, "grant_type": "authorization_code"])
         let name = [response.athlete?.firstname, response.athlete?.lastname].compactMap { $0 }.joined(separator: " ")
         let t = StravaTokens(accessToken: response.accessToken, refreshToken: response.refreshToken,
-                             expiresAt: response.expiresAt, athleteID: response.athlete?.id ?? 0, athleteName: name)
+                             expiresAt: response.expiresAt, athleteID: response.athlete?.id ?? 0, athleteName: name,
+                             eventsKey: response.tileroamEventsKey)
         t.save()
         tokens = t
         return t
@@ -152,6 +165,7 @@ actor StravaClient {
         let refreshToken: String
         let expiresAt: TimeInterval
         let athlete: Athlete?
+        let tileroamEventsKey: String?
     }
 
     /// Exchanges a code or refresh token through the token service, which adds the Client Secret.
@@ -174,6 +188,35 @@ actor StravaClient {
         t.save()
         tokens = t
         return t.accessToken
+    }
+
+    // MARK: Webhook events
+
+    /// The athlete's webhook events after `since` (Unix time), oldest first. Empty when the token
+    /// service doesn't keep events (an older Worker).
+    func events(since: Int) async throws -> [StravaEvent] {
+        guard var t = tokens else { throw StravaError.notConnected }
+        let base = config.tokenServiceURL.deletingLastPathComponent()
+        if t.eventsKey == nil {
+            // Logged in before the token service handed out events keys: ask for one.
+            struct KeyResponse: Decodable { let key: String }
+            var request = URLRequest(url: base.appending(path: "events-key"))
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(try await accessToken())", forHTTPHeaderField: "Authorization")
+            guard let (data, _) = try? await send(request),
+                  let key = try? decoder.decode(KeyResponse.self, from: data).key else { return [] }
+            t = tokens ?? t
+            t.eventsKey = key
+            t.save()
+            tokens = t
+        }
+        var c = URLComponents(url: base.appending(path: "events"), resolvingAgainstBaseURL: false)!
+        c.queryItems = [URLQueryItem(name: "athlete", value: String(t.athleteID)),
+                        URLQueryItem(name: "key", value: t.eventsKey),
+                        URLQueryItem(name: "since", value: String(since))]
+        struct EventsResponse: Decodable { let events: [StravaEvent] }
+        guard let (data, _) = try? await send(URLRequest(url: c.url!)) else { return [] }
+        return try decoder.decode(EventsResponse.self, from: data).events
     }
 
     // MARK: API
@@ -247,7 +290,7 @@ actor StravaClient {
     private static func logError(request: URLRequest, response: HTTPURLResponse, body: String) {
         #if DEBUG
         var url = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)!
-        url.queryItems = url.queryItems?.filter { !["code", "refresh_token"].contains($0.name) }
+        url.queryItems = url.queryItems?.filter { !["code", "refresh_token", "key"].contains($0.name) }
         let headers = response.allHeaderFields.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n")
         let text = "\(Date.now)\n\(request.httpMethod ?? "GET") \(url.string ?? "")\nstatus \(response.statusCode)\n\n\(headers)\n\n\(body)\n"
         try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
