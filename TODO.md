@@ -16,6 +16,12 @@
   - The activity caches, also removable (they're rebuilt from the files).
   - Removed data downloads again the next time it's needed.
   - Show this in the user guide too.
+- **Large map downloads only on Wi-Fi:** routing areas and boundaries above 25 MB in total are downloaded only on Wi-Fi.
+  - Before downloading, check the connection with `NWPathMonitor`. Mobile data and personal hotspots count as `isExpensive`; Low Data Mode counts as `isConstrained`.
+  - On mobile data with more than 25 MB to download, don't start. Say "Map data for this area (73 MB) downloads on Wi-Fi", with a "Download Anyway" button.
+  - Add a setting to allow large downloads over mobile data.
+  - Check how Apple's Background Assets already handle mobile data for on-demand packs, so the app doesn't contradict the system.
+  - Also applies to boundary downloads (France is about 10 MB, so mostly routing).
 - **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release
