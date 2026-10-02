@@ -67,7 +67,7 @@ El inicio de sesión se hace con la **app de Strava** (un toque en *Authorize*) 
 
 1. Crea una aplicación de API en [strava.com/settings/api](https://www.strava.com/settings/api) con `localhost` como *Authorization Callback Domain*.
 2. Despliega el servicio de tokens como se describe en [`backend/strava-auth/README.md`](backend/strava-auth/README.md).
-3. Copia `StravaConfig.example.plist` a `Tileroam/StravaConfig.plist` y rellena `ClientID` y `TokenServiceURL` (la URL del Worker terminada en `/token`). Ninguno de los dos valores es secreto; el archivo está en `.gitignore` porque es tu propia configuración.
+3. Copia `StravaConfig.example.plist` a `Tileroam/StravaConfig.plist` y rellena `ClientID`. No es secreto; el archivo está en `.gitignore` porque es tu propia configuración. La dirección del servicio de tokens es `StravaServiceURL` en `Tileroam/Servers.plist`, el único archivo con los servidores de la app (también las teselas de planificación); pon ahí la URL de tu Worker.
 4. Compila y ejecuta, y toca *Connect with Strava*.
 
 El Client Secret solo se guarda en el servicio de tokens, nunca en la app. Strava forma parte de las compilaciones Debug y Release mediante la condición de compilación `STRAVA`; quítala de *Active Compilation Conditions* para compilar sin Strava. Para otros usuarios, Strava debe aumentar primero el límite de deportistas de tu aplicación (uno por defecto).

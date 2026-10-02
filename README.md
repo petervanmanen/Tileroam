@@ -67,7 +67,7 @@ Login goes through the **Strava app** (one tap on *Authorize*) or, without the S
 
 1. Create an API application at [strava.com/settings/api](https://www.strava.com/settings/api) with *Authorization Callback Domain* `localhost`.
 2. Deploy the token service as described in [`backend/strava-auth/README.md`](backend/strava-auth/README.md).
-3. Copy `StravaConfig.example.plist` to `Tileroam/StravaConfig.plist` and fill in `ClientID` and `TokenServiceURL` (the Worker URL ending in `/token`). Neither value is secret; the file is in `.gitignore` because it is your own configuration.
+3. Copy `StravaConfig.example.plist` to `Tileroam/StravaConfig.plist` and fill in `ClientID`. It isn't secret; the file is in `.gitignore` because it is your own configuration. The token service's address is `StravaServiceURL` in `Tileroam/Servers.plist`, the one file with the app's servers (also the route planning tiles); put your Worker's URL there.
 4. Build and run, then tap *Connect with Strava*.
 
 The Client Secret is only stored in the token service, never in the app. Strava is part of both Debug and Release builds through the `STRAVA` compilation condition; remove it from *Active Compilation Conditions* to build without Strava. For other users, Strava must first raise your application's athlete limit (one athlete by default).

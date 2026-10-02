@@ -11,7 +11,8 @@ enum RoutingData {
     /// data is a new version of it (docs/ROUTING.md, "Versions").
     static let build = "west"
     /// Where the tiles are: `<server>/<build>/v<version>/<tile>.gph.gz` (Tools/upload_routing_r2.sh).
-    static let server = URL(string: "https://tiles.petervanmanen.nl")!
+    /// Set in Servers.plist.
+    static var server: URL { Servers.routingTiles }
 
     /// Whether `p` lies in a country the routing data covers.
     static func covers(_ p: GeoPoint) -> Bool {

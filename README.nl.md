@@ -67,7 +67,7 @@ Inloggen gaat via de **Strava-app** (één tik op *Authorize*) of, zonder Strava
 
 1. Maak een API-applicatie op [strava.com/settings/api](https://www.strava.com/settings/api) met als *Authorization Callback Domain* `localhost`.
 2. Zet de tokenservice live zoals beschreven in [`backend/strava-auth/README.md`](backend/strava-auth/README.md).
-3. Kopieer `StravaConfig.example.plist` naar `Tileroam/StravaConfig.plist` en vul `ClientID` en `TokenServiceURL` in (de Worker-URL eindigend op `/token`). Geen van beide is geheim; het bestand staat in `.gitignore` omdat het je eigen configuratie is.
+3. Kopieer `StravaConfig.example.plist` naar `Tileroam/StravaConfig.plist` en vul `ClientID` in. Die is niet geheim; het bestand staat in `.gitignore` omdat het je eigen configuratie is. Het adres van de tokenservice is `StravaServiceURL` in `Tileroam/Servers.plist`, het ene bestand met de servers van de app (ook de tegels voor routeplanning); zet daar de URL van je Worker.
 4. Bouw en start de app en tik op *Connect with Strava*.
 
 Het Client Secret staat alleen in de tokenservice, nooit in de app. Strava zit in Debug- en Release-builds via de compilatievoorwaarde `STRAVA`; haal die weg uit *Active Compilation Conditions* om zonder Strava te bouwen. Voor andere gebruikers moet Strava eerst de sporterlimiet van je applicatie verhogen (standaard één sporter).

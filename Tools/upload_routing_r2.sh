@@ -16,7 +16,7 @@
 #   R2_ACCESS_KEY_ID      the token's Access Key ID
 #   R2_SECRET_ACCESS_KEY  the token's Secret Access Key
 #   R2_BUCKET             the bucket (default: tileroam-routing)
-#   R2_PUBLIC_URL         optional: the bucket's public URL (as in RoutingData.server), to check
+#   R2_PUBLIC_URL         optional: the bucket's public URL (RoutingTilesURL in Tileroam/Servers.plist), to check
 #                         that a tile downloads afterwards
 # Nothing is written to disk: rclone reads these from the environment.
 set -euo pipefail

@@ -17,9 +17,10 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
 
 ## Before release
 - **Routing data on Cloudflare R2** (branch `feature/r2-routing`, docs/ROUTING.md): the app downloads Valhalla's own tiles around a plan (25–75 MB instead of 100–300 MB) instead of 1° asset packs. Steps for you:
-  - Create the bucket `tileroam-routing` with a custom domain (set it as `RoutingData.server`; now `https://tiles.petervanmanen.nl`) and an R2 API token; see docs/ROUTING.md, "One-time setup".
+  - Create the bucket `tileroam-routing` with a custom domain (`tiles.petervanmanen.nl`, set as `RoutingTilesURL` in `Tileroam/Servers.plist`) and an R2 API token; see docs/ROUTING.md, "One-time setup".
   - Upload: `Tools/upload_routing_r2.sh west` (1,179 tiles, 2.2 GB), before releasing the app with this change.
   - Keep the bucket without access logs (the privacy texts say it keeps none).
+- **Strava Worker on `tileroam.petervanmanen.nl`** (`StravaServiceURL` in `Tileroam/Servers.plist`): add it as the Worker's custom domain (backend/strava-auth/README.md, step 7) before releasing a build with this change. Keep the `workers.dev` address enabled: older builds use it, and the Strava webhook (subscription 375082) is registered to it.
 - **Archive unused asset packs** with `Tools/clean_asset_packs.sh`, once no TestFlight build uses them: `ARCHIVE="routing-"` for the `routing-west-*` packs (and any `routing-benelux-*` left), and `ARCHIVE="regions-"` for the boundaries of the dropped countries. The app needs only `regions-NL`, `-BE`, `-LU` and `-DE`.
 - **Test routing on a device** via TestFlight: plan near home, across a border, from a chosen starting point, and offline in an area downloaded before. (`feature/valhalla-routing` is already in `main`.)
 - ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.

@@ -30,7 +30,7 @@ Endpoints:
    - `STRAVA_CLIENT_SECRET`: your Strava Client Secret (type **Secret**).
    - `STRAVA_VERIFY_TOKEN`: any random string, for example from `openssl rand -hex 16` (type **Secret**).
    - `EVENTS_SECRET`: a long random string, for example from `openssl rand -hex 32` (type **Secret**). Changing it later invalidates the events keys; the app then fetches a new one.
-7. Copy the Worker URL, for example `https://tileroam-strava-auth.<your-subdomain>.workers.dev`. In the app project, put that URL followed by `/token` in `Tileroam/StravaConfig.plist` as `TokenServiceURL` (see `StravaConfig.example.plist`).
+7. **Give the Worker its own domain:** Workers & Pages → the Worker → Settings → Domains & Routes → Add → Custom domain, for example `tileroam.petervanmanen.nl` (the domain's DNS must be on Cloudflare). Put that URL, without a path, in `Tileroam/Servers.plist` as `StravaServiceURL`; the app adds `/token`, `/events-key` and `/events`. Keep the `workers.dev` address enabled while app versions that use it are around.
 8. **Register the webhook with Strava** (once per Strava application). From the repository folder:
    ```bash
    STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> STRAVA_VERIFY_TOKEN=<same as step 6> WORKER_URL=https://tileroam-strava-auth.<your-subdomain>.workers.dev backend/strava-auth/subscribe.sh create

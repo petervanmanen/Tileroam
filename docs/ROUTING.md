@@ -20,7 +20,7 @@ Most of it is level 2, the local roads and paths of the 0.25° tiles around the 
 |---|---|---|
 | Valhalla engine | Swift package [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), pinned to **0.6.3** in the Xcode project | Valhalla **3.6.3** compiled for iOS. Tileroam uses its `route` action with the `bicycle` costing. |
 | Engine settings | `Tileroam/Resources/valhalla.json` | Valhalla's configuration, made with `valhalla_build_config` of the same version. At runtime `RoutingData.writeConfig` fills in the tile directory. The bicycle limit is raised to 60 locations, for 50 stops. |
-| Routing data | Cloudflare R2: `<server>/west/v<version>/<tile>.gph.gz`, for example `west/v1/2/000/791/223.gph.gz` | Valhalla's tiles as they are: level 0 (4°, main roads), level 1 (1°, through roads) and level 2 (0.25°, all local roads and paths), each gzipped and served with `Content-Encoding: gzip`. `RoutingData.server` is the bucket's public URL. |
+| Routing data | Cloudflare R2: `<server>/west/v<version>/<tile>.gph.gz`, for example `west/v1/2/000/791/223.gph.gz` | Valhalla's tiles as they are: level 0 (4°, main roads), level 1 (1°, through roads) and level 2 (0.25°, all local roads and paths), each gzipped and served with `Content-Encoding: gzip`. The bucket's public URL is `RoutingTilesURL` in `Tileroam/Servers.plist`. |
 | Index | `Tileroam/Resources/routing-west.json` (bundled, committed) | The build's name and version, and every tile with its compressed and uncompressed size. Written by `Tools/pack_routing_tiles.py`. |
 | Downloading | `RoutingData.tiles(around:margin:in:)`, `RoutingData.download(_:index:)` | Takes the tiles of every level that overlap the bounding box of the start and the selected items, widened by 15 km, downloads the missing ones (six at a time, over HTTPS) and decompresses them into `Application Support/Routing/west-v<version>`. Each tile's size is checked against the index. If Valhalla still finds no route (a detour off the edge), the planner retries once with 60 km of room. |
 | Wi-Fi rule | `MapDataDownloads` | Downloads over 25 MB wait for Wi-Fi, unless the user allows mobile data. |
@@ -46,7 +46,7 @@ brew install python@3.12 osmium-tool rclone
 
 In Cloudflare (once):
 1. **R2 → Create bucket:** `tileroam-routing`.
-2. **Public access:** the bucket's Settings → Custom Domains → connect a domain, for example `tiles.petervanmanen.nl` (the domain's DNS must be on Cloudflare). That URL goes into `RoutingData.server`. The `r2.dev` address works for testing but is rate-limited; don't ship it.
+2. **Public access:** the bucket's Settings → Custom Domains → connect the domain `tiles.petervanmanen.nl` (the domain's DNS must be on Cloudflare). That URL goes into `Tileroam/Servers.plist` as `RoutingTilesURL`. The `r2.dev` address works for testing but is rate-limited; don't ship it.
 3. **R2 → Manage API tokens → Create API token:** *Object Read & Write*, only for that bucket. Keep its Access Key ID and Secret Access Key yourself; the upload script reads them from environment variables.
 
 R2 charges nothing for downloads (egress) and has 10 GB of storage free; Tileroam's data is about 2.2 GB per version.
@@ -115,7 +115,7 @@ The app removes the asset-pack routing data of earlier TestFlight versions from 
 
 - **The app, like production:** launch the Debug build with `-RoutingServer file://<repo>/AssetPacks/build/routing/r2/`. The app then downloads the tiles from the build folder instead of R2, decompresses them and plans exactly as on a device.
 - **The app, simplest:** `-RoutingTar <repo>/AssetPacks/build/routing/routing-west.tar` uses the one file with all tiles. The screenshot and preview scripts use this.
-- **Without either,** the app downloads from `RoutingData.server`.
+- **Without either,** the app downloads from `RoutingTilesURL` in `Tileroam/Servers.plist`.
 - **Engine tests:** `TileroamTests/ValhallaEngineTests.swift` runs Valhalla in the simulator on a small Luxembourg-only build: once from its tile extract, and once by downloading its tiles as in production. Make it with:
   ```bash
   ROUTING_COUNTRIES=LU Tools/build_routing_tiles.sh lu-test luxembourg

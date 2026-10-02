@@ -67,7 +67,7 @@ La connexion passe par l’**app Strava** (un toucher sur *Authorize*) ou, sans 
 
 1. Créez une application API sur [strava.com/settings/api](https://www.strava.com/settings/api) avec `localhost` comme *Authorization Callback Domain*.
 2. Déployez le service de jetons comme décrit dans [`backend/strava-auth/README.md`](backend/strava-auth/README.md).
-3. Copiez `StravaConfig.example.plist` vers `Tileroam/StravaConfig.plist` et renseignez `ClientID` et `TokenServiceURL` (l’URL du Worker se terminant par `/token`). Aucune des deux valeurs n’est secrète ; le fichier est dans `.gitignore` car c’est votre propre configuration.
+3. Copiez `StravaConfig.example.plist` vers `Tileroam/StravaConfig.plist` et renseignez `ClientID`. Il n’est pas secret ; le fichier est dans `.gitignore` parce que c’est votre propre configuration. L’adresse du service de jetons est `StravaServiceURL` dans `Tileroam/Servers.plist`, le fichier unique des serveurs de l’app (aussi les tuiles de planification) ; mettez-y l’URL de votre Worker.
 4. Compilez et lancez l’app, puis touchez *Connect with Strava*.
 
 Le Client Secret n’est stocké que dans le service de jetons, jamais dans l’app. Strava fait partie des builds Debug et Release grâce à la condition de compilation `STRAVA` ; retirez-la des *Active Compilation Conditions* pour compiler sans Strava. Pour d’autres utilisateurs, Strava doit d’abord augmenter la limite d’athlètes de votre application (un seul par défaut).
