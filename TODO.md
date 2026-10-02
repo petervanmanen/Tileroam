@@ -33,7 +33,17 @@
   ```
 - **App Store Connect, App Privacy:** add *Identifiers → User ID*, and remove *Precise Location* (route planning no longer sends it); see `docs/appstore/app-privacy.md`.
 - **Strava demo account** for App Review, filled in in `docs/appstore/review-notes.md`.
-- **Screenshots and app preview:** check whether they need refreshing after the routing changes (status texts while planning).
+- **Update screenshots, privacy statements and texts** after the routing, Strava webhook and country changes:
+  - **Screenshots and app previews:** retake them with the skills (`app-store-screenshots`, `app-store-previews`) once the app is final.
+  - **Privacy:**
+    - Re-read `PRIVACY.md` against the final app: on-device routing, area downloads from Apple, the Strava event queue.
+    - Fill in App Privacy in App Store Connect from `docs/appstore/app-privacy.md`.
+    - Check `Tileroam/PrivacyInfo.xcprivacy`.
+  - **READMEs:**
+    - The Dutch, French, Spanish and German READMEs still describe OSRM/FOSSGIS route planning, and all five say "Planning/ … (OSRM)" in the project structure.
+    - The privacy sections of all five still say "no server" (the Worker now keeps Strava events).
+  - **App Store texts** (`docs/appstore/metadata-*.md`): route planning works in the Netherlands, Belgium and Luxembourg only and runs on the device. Also adjust the "22 countries" wording if the boundaries are limited to the routing countries.
+  - **User guide, support page and review notes:** a final check against the app.
 
 ## Check
 - **Strava API terms:** data deletion via the webhook queue, rate limits granted for the app.
