@@ -131,7 +131,7 @@ In Settings → Strava, tap **Connect with Strava**. Tileroam first loads your a
 
 Strava limits how many requests apps may make, so a large history can take a while. The sync continues by itself.
 
-Each activity is saved as a .fit file in the "Strava" subfolder of your save folder. You can disconnect at any time in Settings.
+Each activity is saved as a .fit file in the "Strava" subfolder of your save folder. You can disconnect at any time in Settings. You then choose whether to also delete the .fit files Tileroam saved from Strava; files from other apps are never touched.
 
 ## Privacy
 

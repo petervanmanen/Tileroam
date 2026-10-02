@@ -6,6 +6,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.webAuthenticationSession) private var webAuthenticationSession
     @State private var confirmDisconnect = false
+    @State private var confirmDeleteStravaFiles = false
+    @State private var stravaFileCount = 0
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     let onChooseFolder: (PickerPurpose) -> Void
     let onShowIntro: () -> Void
@@ -199,6 +201,14 @@ extension SettingsView {
                     Button("Disconnect Strava", role: .destructive) { confirmDisconnect = true }
                 } else {
                     StravaConnectButton()
+                    if stravaFileCount > 0 {
+                        Button("Delete Files Saved from Strava (\(stravaFileCount))", role: .destructive) {
+                            confirmDeleteStravaFiles = true
+                        }
+                    }
+                }
+                if let deleted = store.stravaFilesDeleted {
+                    Text("Deleted \(deleted) files saved from Strava.").font(.footnote)
                 }
                 if let error = store.stravaError {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
@@ -219,10 +229,32 @@ extension SettingsView {
                 Text("Strava activities are saved as .fit files in the save folder's “\(StravaExport.subfolder)” subfolder. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.")
             }
         }
+        .task(id: store.isStravaConnected) { stravaFileCount = await store.countStravaFiles() }
         .confirmationDialog("Disconnect Strava?", isPresented: $confirmDisconnect, titleVisibility: .visible) {
-            Button("Disconnect", role: .destructive) { Task { await store.disconnectStrava() } }
+            Button("Disconnect and Delete Strava Files", role: .destructive) {
+                Task {
+                    await store.disconnectStrava(deleteFiles: true)
+                    stravaFileCount = await store.countStravaFiles()
+                }
+            }
+            Button("Disconnect, Keep Files") {
+                Task {
+                    await store.disconnectStrava(deleteFiles: false)
+                    stravaFileCount = await store.countStravaFiles()
+                }
+            }
         } message: {
-            Text("Strava activities are removed from the map. Files already saved to your folder are kept.")
+            Text("Strava activities are removed from this device. You can also delete the .fit files Tileroam saved from Strava, in all its folders; files from other apps are never touched.")
+        }
+        .confirmationDialog("Delete files saved from Strava?", isPresented: $confirmDeleteStravaFiles, titleVisibility: .visible) {
+            Button("Delete \(stravaFileCount) Files", role: .destructive) {
+                Task {
+                    await store.deleteStravaFiles()
+                    stravaFileCount = await store.countStravaFiles()
+                }
+            }
+        } message: {
+            Text("Only the .fit files Tileroam saved from Strava are deleted; files from other apps are kept.")
         }
     }
     #endif

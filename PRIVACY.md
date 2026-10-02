@@ -35,7 +35,7 @@ Maps are shown with Apple MapKit. Apple receives the map areas that are displaye
 If you connect Strava, Tileroam downloads your activities from Strava to your device and saves them as .fit files in your save folder.
 - **Login:** a small token service (a Cloudflare Worker) exchanges the login code for access tokens, so the app's Strava secret is not in the app. It stores and logs nothing.
 - **Tokens:** your Strava tokens are kept in the iOS Keychain on your device.
-- **Disconnecting:** you can disconnect in Settings at any time.
+- **Disconnecting:** you can disconnect in Settings at any time. Tileroam then removes the connection and its copy of your Strava activities from the device, and offers to delete the .fit files it saved from Strava. The same happens when you revoke Tileroam's access on Strava's website; the files can then be deleted in Settings → Strava.
 
 Strava's handling of your data is covered by [Strava's privacy policy](https://www.strava.com/legal/privacy).
 

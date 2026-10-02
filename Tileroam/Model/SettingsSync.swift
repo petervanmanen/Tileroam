@@ -1,5 +1,15 @@
 import Foundation
 
+/// A key-value store: UserDefaults or iCloud's NSUbiquitousKeyValueStore (and, in tests, two
+/// separate UserDefaults).
+protocol KeyValueStore: AnyObject {
+    func object(forKey key: String) -> Any?
+    func set(_ value: Any?, forKey key: String)
+}
+
+extension UserDefaults: KeyValueStore {}
+extension NSUbiquitousKeyValueStore: KeyValueStore {}
+
 /// Keeps a few settings the same on all the user's devices through iCloud's key-value store.
 /// UserDefaults stays the source the app reads (`@AppStorage`); changes are copied to iCloud,
 /// and changes from other devices are copied back.
@@ -29,20 +39,30 @@ enum SettingsSync {
         push()
     }
 
-    private static func pull(_ changed: [String]) {
-        let cloud = NSUbiquitousKeyValueStore.default, defaults = UserDefaults.standard
+    /// Copies changed synced keys from iCloud to this device. Returns the keys that changed here.
+    @discardableResult
+    static func pull(_ changed: [String], from cloud: KeyValueStore = NSUbiquitousKeyValueStore.default,
+                     to local: KeyValueStore = UserDefaults.standard) -> [String] {
+        var applied = [String]()
         for key in changed where keys.contains(key) {
-            guard let value = cloud.object(forKey: key), !same(value, defaults.object(forKey: key)) else { continue }
-            defaults.set(value, forKey: key)
+            guard let value = cloud.object(forKey: key), !same(value, local.object(forKey: key)) else { continue }
+            local.set(value, forKey: key)
+            applied.append(key)
         }
+        return applied
     }
 
-    private static func push() {
-        let cloud = NSUbiquitousKeyValueStore.default, defaults = UserDefaults.standard
+    /// Copies this device's synced settings to iCloud when they differ. Returns the keys written.
+    @discardableResult
+    static func push(from local: KeyValueStore = UserDefaults.standard,
+                     to cloud: KeyValueStore = NSUbiquitousKeyValueStore.default) -> [String] {
+        var written = [String]()
         for key in keys {
-            guard let value = defaults.object(forKey: key), !same(value, cloud.object(forKey: key)) else { continue }
+            guard let value = local.object(forKey: key), !same(value, cloud.object(forKey: key)) else { continue }
             cloud.set(value, forKey: key)
+            written.append(key)
         }
+        return written
     }
 
     private static func same(_ a: Any, _ b: Any?) -> Bool {

@@ -88,6 +88,33 @@ enum StravaExport {
         return moved
     }
 
+    /// Names of the files Tileroam saved from Strava in `folder/Strava` (iCloud placeholders included).
+    static func ownFiles(in folder: URL) -> [URL] {
+        let access = folder.startAccessingSecurityScopedResource()
+        defer { if access { folder.stopAccessingSecurityScopedResource() } }
+        let dir = folder.appending(path: subfolder, directoryHint: .isDirectory)
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false))) ?? []
+        return names.filter { name in
+            let real = name.hasPrefix(".") && name.hasSuffix(".icloud") ? String(name.dropFirst().dropLast(7)) : name
+            return isOwnFile(real)
+        }.map { dir.appending(path: $0) }
+    }
+
+    /// Deletes the files Tileroam saved from Strava in `folder/Strava` (never other apps' files).
+    /// Returns the number of files deleted.
+    static func deleteOwnFiles(in folder: URL) -> Int {
+        let access = folder.startAccessingSecurityScopedResource()
+        defer { if access { folder.stopAccessingSecurityScopedResource() } }
+        var deleted = 0
+        for url in ownFiles(in: folder) {
+            var coordinationError: NSError?
+            NSFileCoordinator().coordinate(writingItemAt: url, options: .forDeleting, error: &coordinationError) { url in
+                if (try? FileManager.default.removeItem(at: url)) != nil { deleted += 1 }
+            }
+        }
+        return deleted
+    }
+
     /// Writes the file and returns its name.
     static func write(_ activity: Activity, stream: StravaStream?, to folder: URL) throws -> String {
         let name = fileName(for: activity)

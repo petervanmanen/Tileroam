@@ -140,29 +140,32 @@ final class ActivityStore {
         if let saved = UserDefaults.standard.stringArray(forKey: Self.countriesKey) {
             enabledCountries = Set(saved)
         }
-        if enabledCountries.isEmpty {
-            let region = Locale.current.region?.identifier ?? "NL"
-            enabledCountries = [Country.named(region) != nil ? region : "NL"]
-        }
         // Countries follow the activities: drop any without visits after the first count
         // (earlier versions let the user switch countries on by hand).
         pruneCountriesAfterCount = true
         detectCountries(load: false)
+        if enabledCountries.isEmpty {
+            // No activities yet: show the phone's region.
+            let region = Locale.current.region?.identifier ?? "NL"
+            enabledCountries = [Country.named(region) != nil ? region : "NL"]
+        }
     }
 
-    /// Switches on countries whose bounding box contains new activities. Bounding boxes overlap
-    /// (Monaco lies within France's, southern Netherlands within Belgium's), so countries
-    /// without visits are dropped again after the next count.
+    /// Switches on the countries new activities pass through, using the bundled outlines (or,
+    /// without them, bounding boxes). Countries found near a border without a visited
+    /// municipality are dropped again after the next count.
     private func detectCountries(load: Bool = true) {
+        let new = (folderActivities + stravaActivities).filter { !countryScannedIDs.contains($0.id) && $0.isVirtual != true }
+        countryScannedIDs.formUnion(new.map(\.id))
+        let tracks = new.map { $0.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) } }
         var found = Set<String>()
-        for a in folderActivities + stravaActivities where !countryScannedIDs.contains(a.id) && a.isVirtual != true {
-            countryScannedIDs.insert(a.id)
-            let coordinates = a.coordinates
-            guard !coordinates.isEmpty else { continue }
-            let samples = stride(from: 0, to: coordinates.count, by: max(1, coordinates.count / 8)).map { coordinates[$0] }
-            for c in samples + [coordinates[coordinates.count - 1]] {
-                let p = GeoPoint(lat: c.latitude, lon: c.longitude)
-                for country in Country.all where country.contains(p) { found.insert(country.code) }
+        if let outlines = CountryOutlines.bundled {
+            found = outlines.countries(visitedBy: tracks)
+        } else {
+            for track in tracks {
+                for p in track.enumerated().filter({ $0.offset % max(1, track.count / 8) == 0 }).map(\.element) {
+                    for country in Country.all where country.contains(p) { found.insert(country.code) }
+                }
             }
         }
         let updated = enabledCountries.union(found)
@@ -181,11 +184,8 @@ final class ActivityStore {
         guard pruneCountriesAfterCount, let regions,
               Set(regions.countries) == enabledCountries.subtracting(regionsFailed) else { return }
         pruneCountriesAfterCount = false
-        let visited = Set(visitedMunicipalities.map { String($0.prefix { $0 != ":" }) })
-        // Failed countries stay: without their boundaries we can't tell whether they were visited.
-        let keep = enabledCountries.filter { visited.contains($0) || regionsFailed.contains($0) }
-        guard !keep.isEmpty else { return } // no visits yet: keep the current choice
-        guard keep != enabledCountries else { return }
+        guard let keep = CountrySelection.pruned(enabled: enabledCountries, visitedMunicipalities: visitedMunicipalities,
+                                                 failed: regionsFailed) else { return }
         enabledCountries = keep
         UserDefaults.standard.set(Array(keep).sorted(), forKey: Self.countriesKey)
         loadRegions()
@@ -492,10 +492,51 @@ final class ActivityStore {
         stravaError = message
     }
 
-    func disconnectStrava() async {
+    /// Disconnects Strava and forgets its data; with `deleteFiles`, also deletes the .fit files
+    /// Tileroam saved from Strava (see `deleteStravaFiles()`).
+    func disconnectStrava(deleteFiles: Bool) async {
+        await strava?.disconnect()
+        forgetStrava()
+        if deleteFiles { await deleteStravaFiles() }
+    }
+
+    /// Folders where Tileroam may have saved Strava activities: the save folder, its iCloud
+    /// folder and its internal storage.
+    private var stravaFileFolders: [URL] {
+        var folders = [FolderAccess.saveFolder()]
+        for url in [FolderAccess.iCloudFolder, FolderAccess.internalFolder].compactMap({ $0 })
+        where !folders.contains(where: { $0.standardizedFileURL == url.standardizedFileURL }) {
+            folders.append(url)
+        }
+        return folders
+    }
+
+    /// Number of .fit files Tileroam saved from Strava that still exist.
+    func countStravaFiles() async -> Int {
+        let folders = stravaFileFolders
+        return await Task.detached(priority: .userInitiated) {
+            folders.reduce(0) { $0 + StravaExport.ownFiles(in: $1).count }
+        }.value
+    }
+
+    /// Deletes the .fit files Tileroam saved from Strava, in all its folders, and re-imports.
+    func deleteStravaFiles() async {
+        let folders = stravaFileFolders
+        let deleted = await Task.detached(priority: .userInitiated) {
+            folders.reduce(0) { $0 + StravaExport.deleteOwnFiles(in: $1) }
+        }.value
+        stravaFilesDeleted = deleted
+        await refresh()
+    }
+
+    /// Set after `deleteStravaFiles()`, for the confirmation in Settings.
+    private(set) var stravaFilesDeleted: Int?
+
+    /// Removes the Strava connection and its cached activities from this device.
+    private func forgetStrava() {
         stravaTask?.cancel()
         stravaTask = nil
-        await strava?.disconnect()
+        StravaTokens.delete()
         TrackCache.clear(.strava)
         stravaActivities = []
         stravaAthlete = nil
@@ -531,7 +572,8 @@ final class ActivityStore {
                 stravaStatus = String(localized: "Strava limit reached – continuing at \(until.formatted(date: .omitted, time: .shortened))")
                 try? await Task.sleep(for: .seconds(max(1, until.timeIntervalSinceNow)))
             } catch StravaError.unauthorized {
-                stravaStatus = nil
+                // Access was revoked (in Strava's settings): forget the connection and its data.
+                forgetStrava()
                 stravaError = StravaError.unauthorized.localizedDescription
                 return
             } catch {

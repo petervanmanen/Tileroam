@@ -2257,30 +2257,246 @@
         }
       }
     },
-    "Disconnect": {
+    "Delete %lld Files": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Delete %lld File"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Delete %lld Files"
+                }
+              }
+            }
+          }
+        },
+        "nl": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Verwijder %lld bestand"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Verwijder %lld bestanden"
+                }
+              }
+            }
+          }
+        },
+        "fr": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Supprimer %lld fichier"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Supprimer %lld fichiers"
+                }
+              }
+            }
+          }
+        },
+        "es": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Eliminar %lld archivo"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Eliminar %lld archivos"
+                }
+              }
+            }
+          }
+        },
+        "de": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld Datei löschen"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld Dateien löschen"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Delete Files Saved from Strava (%lld)": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ontkoppel"
+            "value": "Verwijder bestanden van Strava (%lld)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Déconnecter"
+            "value": "Supprimer les fichiers de Strava (%lld)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Desconectar"
+            "value": "Eliminar archivos de Strava (%lld)"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trennen"
+            "value": "Dateien von Strava löschen (%lld)"
+          }
+        }
+      }
+    },
+    "Delete files saved from Strava?": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestanden van Strava verwijderen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer les fichiers enregistrés depuis Strava ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar los archivos guardados de Strava?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von Strava gespeicherte Dateien löschen?"
+          }
+        }
+      }
+    },
+    "Deleted %lld files saved from Strava.": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Deleted %lld file saved from Strava."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Deleted %lld files saved from Strava."
+                }
+              }
+            }
+          }
+        },
+        "nl": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld bestand van Strava verwijderd."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld bestanden van Strava verwijderd."
+                }
+              }
+            }
+          }
+        },
+        "fr": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fichier de Strava supprimé."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fichiers de Strava supprimés."
+                }
+              }
+            }
+          }
+        },
+        "es": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld archivo de Strava eliminado."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld archivos de Strava eliminados."
+                }
+              }
+            }
+          }
+        },
+        "de": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld Datei von Strava gelöscht."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld Dateien von Strava gelöscht."
+                }
+              }
+            }
           }
         }
       }
@@ -2337,6 +2553,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Strava trennen?"
+          }
+        }
+      }
+    },
+    "Disconnect and Delete Strava Files": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ontkoppel en verwijder Strava-bestanden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déconnecter et supprimer les fichiers Strava"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desconectar y eliminar archivos de Strava"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trennen und Strava-Dateien löschen"
+          }
+        }
+      }
+    },
+    "Disconnect, Keep Files": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ontkoppel, bewaar bestanden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déconnecter, garder les fichiers"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desconectar, conservar archivos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trennen, Dateien behalten"
           }
         }
       }
@@ -3861,6 +4133,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auf meinem iPhone"
+          }
+        }
+      }
+    },
+    "Only the .fit files Tileroam saved from Strava are deleted; files from other apps are kept.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alleen de .fit-bestanden die Tileroam van Strava heeft bewaard worden verwijderd; bestanden van andere apps blijven staan."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seuls les fichiers .fit que Tileroam a enregistrés depuis Strava sont supprimés ; les fichiers des autres apps sont conservés."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo se eliminan los archivos .fit que Tileroam guardó de Strava; los de otras apps se conservan."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur die .fit-Dateien, die Tileroam von Strava gespeichert hat, werden gelöscht; Dateien anderer Apps bleiben erhalten."
           }
         }
       }
@@ -5405,30 +5705,30 @@
         }
       }
     },
-    "Strava activities are removed from the map. Files already saved to your folder are kept.": {
+    "Strava activities are removed from this device. You can also delete the .fit files Tileroam saved from Strava, in all its folders; files from other apps are never touched.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strava-activiteiten verdwijnen van de kaart. Bestanden die al in je map staan, blijven bewaard."
+            "value": "Strava-activiteiten worden van dit apparaat verwijderd. Je kunt ook de .fit-bestanden verwijderen die Tileroam van Strava heeft bewaard, in al zijn mappen; bestanden van andere apps blijven altijd staan."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les activités Strava sont retirées de la carte. Les fichiers déjà enregistrés dans votre dossier sont conservés."
+            "value": "Les activités Strava sont supprimées de cet appareil. Vous pouvez aussi supprimer les fichiers .fit que Tileroam a enregistrés depuis Strava, dans tous ses dossiers ; les fichiers des autres apps ne sont jamais touchés."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Las actividades de Strava se quitan del mapa. Los archivos ya guardados en tu carpeta se conservan."
+            "value": "Las actividades de Strava se eliminan de este dispositivo. También puedes eliminar los archivos .fit que Tileroam guardó de Strava, en todas sus carpetas; los archivos de otras apps nunca se tocan."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strava-Aktivitäten werden von der Karte entfernt. Bereits gespeicherte Dateien bleiben erhalten."
+            "value": "Strava-Aktivitäten werden von diesem Gerät entfernt. Du kannst auch die .fit-Dateien löschen, die Tileroam von Strava gespeichert hat, in all seinen Ordnern; Dateien anderer Apps bleiben unberührt."
           }
         }
       }

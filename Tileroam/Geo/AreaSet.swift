@@ -30,7 +30,7 @@ struct Area: Sendable, Identifiable {
         return false
     }
 
-    private static func ringContains(_ ring: [GeoPoint], _ p: GeoPoint) -> Bool {
+    static func ringContains(_ ring: [GeoPoint], _ p: GeoPoint) -> Bool {
         var inside = false
         var j = ring.count - 1
         for i in 0..<ring.count {
