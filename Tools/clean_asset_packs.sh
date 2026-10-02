@@ -6,16 +6,16 @@
 # With ARCHIVE it archives unused packs whose IDs start with the given prefixes, after you confirm
 # by typing "archive":
 #   ARCHIVE="regions-" Tools/clean_asset_packs.sh
-#   ARCHIVE="routing-benelux-" Tools/clean_asset_packs.sh
-# "Unused" is decided by the checkout you run it in (Country.all, Resources/routing-*.json), so run it
+#   ARCHIVE="routing-" Tools/clean_asset_packs.sh   # the routing packs from before R2
+# "Unused" is decided by the checkout you run it in (Country.all), so run it
 # on the branch that matches the app versions in use.
 #
 #   ASC_KEY_ID=<KeyID> ASC_ISSUER_ID=<IssuerID> Tools/clean_asset_packs.sh
 #   OFFLINE=1 Tools/clean_asset_packs.sh     # only list what the app needs (no API key)
 #
 # Uses the same API key as the upload script: ~/.appstoreconnect/private_keys/AuthKey_<KeyID>.p8,
-# or its contents in ASC_KEY_P8. What the app needs comes from Country.all (boundaries) and the
-# bundled routing indexes (Tileroam/Resources/routing-*.json). Exits with 1 when packs are missing.
+# or its contents in ASC_KEY_P8. What the app needs comes from Country.all (boundaries); routing
+# data is on Cloudflare R2, not in asset packs. Exits with 1 when packs are missing.
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}

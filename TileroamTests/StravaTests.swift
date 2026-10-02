@@ -155,3 +155,11 @@ struct StravaLoginTests {
         }
     }
 }
+
+struct ServersTests {
+    @Test func serversComeFromServersPlist() {
+        #expect(Servers.routingTiles.absoluteString == "https://tiles.petervanmanen.nl")
+        #expect(Servers.stravaService.absoluteString == "https://tileroam.petervanmanen.nl")
+        #expect(RoutingData.server == Servers.routingTiles)
+    }
+}

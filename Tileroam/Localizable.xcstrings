@@ -1501,34 +1501,6 @@
         }
       }
     },
-    "Areas of about 70 × 110 km, downloaded when you plan a route there. Swipe left to remove one; it downloads again the next time you plan there.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gebieden van ongeveer 70 × 110 km, gedownload als je er een route plant. Veeg naar links om er een te verwijderen; het wordt opnieuw gedownload als je er weer plant."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zones d'environ 70 × 110 km, téléchargées quand vous y planifiez un parcours. Balayez vers la gauche pour en supprimer une ; elle sera retéléchargée la prochaine fois."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonas de unos 70 × 110 km, descargadas cuando planificas una ruta allí. Desliza a la izquierda para eliminar una; se vuelve a descargar la próxima vez que planifiques allí."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gebiete von etwa 70 × 110 km, geladen, wenn du dort eine Route planst. Nach links wischen zum Entfernen; beim nächsten Planen dort wird es erneut geladen."
-          }
-        }
-      }
-    },
     "Cancel": {
       "localizations": {
         "nl": {
@@ -3597,6 +3569,34 @@
         }
       }
     },
+    "Main roads": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoofdwegen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routes principales"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carreteras principales"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hauptstraßen"
+          }
+        }
+      }
+    },
     "Map": {
       "localizations": {
         "nl": {
@@ -3677,6 +3677,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kartendaten für dieses Gebiet (%@) werden über WLAN geladen."
+          }
+        }
+      }
+    },
+    "Map data is downloaded for the surroundings of each route you plan, and listed here per area of about 70 × 110 km. Swipe left to remove one; it downloads again the next time you plan there.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens worden gedownload voor de omgeving van elke route die je plant, en staan hier per gebied van ongeveer 70 × 110 km. Veeg naar links om er een te verwijderen; het wordt opnieuw gedownload als je er weer plant."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données cartographiques sont téléchargées pour les environs de chaque parcours planifié, et listées ici par zone d'environ 70 × 110 km. Balayez vers la gauche pour en supprimer une ; elle sera retéléchargée la prochaine fois."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los datos de mapa se descargan para los alrededores de cada ruta que planificas, y aparecen aquí por zonas de unos 70 × 110 km. Desliza a la izquierda para eliminar una; se vuelve a descargar la próxima vez que planifiques allí."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten werden für die Umgebung jeder geplanten Route geladen und hier pro Gebiet von etwa 70 × 110 km aufgeführt. Nach links wischen zum Entfernen; beim nächsten Planen dort wird es erneut geladen."
           }
         }
       }
@@ -6037,6 +6065,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Als GPX teilen oder ein vorhandenes GPX öffnen, um zu sehen, was es bringt"
+          }
+        }
+      }
+    },
+    "Shared by all areas": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gedeeld door alle gebieden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Communes à toutes les zones"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartidas por todas las zonas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von allen Gebieten genutzt"
           }
         }
       }

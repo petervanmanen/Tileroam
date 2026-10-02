@@ -13,18 +13,15 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
 - ~~Script to remove asset packs from App Store Connect~~: done as `Tools/clean_asset_packs.sh` (phase 2). It lists missing and unused packs, and archives unused ones through the API with `ARCHIVE="<prefix>"`.
 - ~~Storage in Settings~~: done on `feature/storage` (phase 3). Settings → Storage lists the downloaded routing areas (named after a nearby town, with size; swipe or "Remove All" to delete), the boundaries per country (info only, they reload automatically) and the activity cache with "Clear Cache & Re-import".
 - ~~Large map downloads only on Wi-Fi~~: done on `feature/storage` (phase 3). Above 25 MB, routing areas wait for Wi-Fi (`NWPathMonitor`: not expensive, not constrained), with "Download Anyway" and a setting "Download Map Data over Mobile Data". Background Assets has no mobile-data policy for on-demand packs, so the rule lives in the app. Boundary packs are under 1 MB, so they're left out of the rule.
-- **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
+- **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload them to R2 and open a pull request with the new `Tileroam/Resources/routing-west.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release
-- **Germany** (branch `feature/germany`): routing build `west` (NL, BE, LU, DE), 92 packs. Upload them with `Tools/upload_asset_packs.sh routing-west` before releasing the app version that bundles `routing-west.json`. App Store Connect allows Tileroam 100 asset packs (not the documented 200): `west` (92) + 4 boundary packs = 96, after archiving `routing-benelux-*` (36) and the 18 unused boundary packs.
-- **Archive unused packs** with `Tools/clean_asset_packs.sh` on `feature/germany` or later:
-  - `ARCHIVE="regions-"`: the 18 boundary packs of the dropped countries (no build since phase 1 uses them);
-  - `ARCHIVE="routing-benelux-"`: the 36 old routing packs, only once every TestFlight and App Store build in use has the `west` index.
-
-  Together that frees 54 of the 200.
-- ~~Routing data versions~~: done on `feature/routing-versions`. The build name stays `west` for good; refreshes and new countries are new versions of the same pack IDs (docs/ROUTING.md, "Versions"), so there's never a second full set of packs.
-- **Before adding another country:** bigger routing areas (2° × 1° or 2° × 2°, or merge small border and coast areas), to stay under 100 asset packs (docs/ROUTING.md, "Adding countries").
-- **Possible improvement:** the base pack (Valhalla's level-0 main roads, 36 MB) comes with every first plan. Splitting it per 4° tile would make a first plan about 30 MB smaller.
+- **Routing data on Cloudflare R2** (branch `feature/r2-routing`, docs/ROUTING.md): the app downloads Valhalla's own tiles around a plan (25–75 MB instead of 100–300 MB) instead of 1° asset packs. Steps for you:
+  - Create the bucket `tileroam-routing` with a custom domain (`tiles.petervanmanen.nl`, set as `RoutingTilesURL` in `Tileroam/Servers.plist`) and an R2 API token; see docs/ROUTING.md, "One-time setup".
+  - Upload: `Tools/upload_routing_r2.sh west` (1,179 tiles, 2.2 GB), before releasing the app with this change.
+  - Keep the bucket without access logs (the privacy texts say it keeps none).
+- **Strava Worker on `tileroam.petervanmanen.nl`** (`StravaServiceURL` in `Tileroam/Servers.plist`): add it as the Worker's custom domain (backend/strava-auth/README.md, step 7) before releasing a build with this change. Keep the `workers.dev` address enabled: older builds use it, and the Strava webhook (subscription 375082) is registered to it.
+- **Archive unused asset packs** with `Tools/clean_asset_packs.sh`, once no TestFlight build uses them: `ARCHIVE="routing-"` for the `routing-west-*` packs (and any `routing-benelux-*` left), and `ARCHIVE="regions-"` for the boundaries of the dropped countries. The app needs only `regions-NL`, `-BE`, `-LU` and `-DE`.
 - **Test routing on a device** via TestFlight: plan near home, across a border, from a chosen starting point, and offline in an area downloaded before. (`feature/valhalla-routing` is already in `main`.)
 - ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.
 - **App Store Connect, App Privacy:** add *Identifiers → User ID*, and remove *Precise Location* (route planning no longer sends it); see `docs/appstore/app-privacy.md`.

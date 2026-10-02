@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The servers the app talks to (read by Tileroam/Model/Servers.swift). Change them here only. -->
+	<!-- Route planning map data: the public URL of the Cloudflare R2 bucket (docs/ROUTING.md). -->
+	<key>RoutingTilesURL</key>
+	<string>https://tiles.petervanmanen.nl</string>
+	<!-- Strava token service and event queue: the Cloudflare Worker in backend/strava-auth. -->
+	<key>StravaServiceURL</key>
+	<string>https://tileroam.petervanmanen.nl</string>
+</dict>
+</plist>

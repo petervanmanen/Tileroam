@@ -15,7 +15,7 @@ HOW TO TRY IT WITHOUT YOUR OWN FILES
    a. Tap the route button in the header.
    b. Tap "Start: My Location" in the panel at the bottom and search for "Utrecht Centraal". Or long-press the map near the sample rides; a green flag marks the start.
    c. Tap a few white (unvisited) tiles near the flag, then tap "Plan Route".
-   The first plan downloads the map data for that area (Apple-hosted asset packs, about 100–300 MB), which takes a moment. Downloads over 25 MB wait for Wi-Fi; on mobile data, tap "Download Anyway". Settings → Storage shows the downloaded map data and can remove it.
+   The first plan downloads the map data for that area (about 25–75 MB around the plan), which takes a moment. Downloads over 25 MB wait for Wi-Fi; on mobile data, tap "Download Anyway". Settings → Storage shows the downloaded map data and can remove it.
 6. Widgets: "Tiles Around You" and "Eddington Number" can be added from the Home Screen widget gallery.
 
 The sample rides can be removed in Settings → Import Folders → Remove Sample Rides.

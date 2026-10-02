@@ -4,7 +4,7 @@
 
 Tileroam is an iPhone and iPad app that shows which map tiles, municipalities and postcodes you have visited, based on your own activity files. It is built so that your data stays with you.
 
-**Short version:** Tileroam has no accounts, no analytics, no advertising and no tracking. The developer does not receive your activities or your location. The only thing the developer's server keeps is a short-lived list of Strava events (your Strava athlete number and the numbers of deleted activities, for at most 30 days) if you connect Strava; see below.
+**Short version:** Tileroam has no accounts, no analytics, no advertising and no tracking. The developer does not receive your activities or your location. Route planning downloads map data around the area you plan in from the developer's storage at Cloudflare, which keeps no logs. The only thing the developer's server keeps is a short-lived list of Strava events (your Strava athlete number and the numbers of deleted activities, for at most 30 days) if you connect Strava; see below.
 
 ## What Tileroam uses, and where it goes
 
@@ -17,7 +17,7 @@ Your location is used to:
 - show the tiles around you in the "Tiles Around You" widget;
 - start planned routes from where you are, unless you choose another starting point.
 
-Your location stays on your device. The widget reads it from a container that only Tileroam and its widget can open. Route planning also runs entirely on your device, with OpenStreetMap routing data that Tileroam downloads from Apple; your route, its start and its stops are not sent anywhere.
+Your location stays on your device. The widget reads it from a container that only Tileroam and its widget can open. Route planning also runs entirely on your device, with OpenStreetMap map data that Tileroam downloads for the area around a plan (see "Map data downloads"); your route, its start and its stops are not sent anywhere.
 
 You can turn off location access at any time in the Settings app. Tileroam keeps working without it.
 
@@ -28,7 +28,10 @@ You can start a planned route somewhere other than your location:
 - **Recent starting points:** your last five are kept on your device only. Swipe one away in the list to remove it.
 
 ### Map data downloads
-Municipality and postcode boundaries and the route planning map data are downloaded from Apple's servers (App Store asset packs) when they are first needed. Apple handles these downloads like app downloads. You can see and remove the route planning map data in Settings → Storage.
+- **Municipality and postcode boundaries** are downloaded from Apple's servers (App Store asset packs) when they are first needed. Apple handles these downloads like app downloads.
+- **Route planning map data** is downloaded from the developer's storage at Cloudflare (Cloudflare R2), in small pieces of about 25 × 25 km, for the area around a route you plan. Like any download, such a request reveals your IP address and which map pieces are fetched, and so roughly the area you plan in. The storage keeps no access logs, and the developer doesn't record or receive these requests. Cloudflare's handling is covered by [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
+
+You can see and remove the route planning map data in Settings → Storage.
 
 ### iCloud
 If you are signed in to iCloud, Tileroam stores two things in your own iCloud account, so all your devices have them:

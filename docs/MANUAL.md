@@ -71,7 +71,7 @@ Like Towns, but for postcode areas. Available for Belgium, Germany and the Nethe
 
 You can also **open an existing GPX file** to see which new tiles and areas it would collect.
 
-Route planning works in **the Netherlands, Belgium, Luxembourg and Germany**: the starting point and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data for that area, typically 100 MB, or up to 300 MB where several areas meet. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
+Route planning works in **the Netherlands, Belgium, Luxembourg and Germany**: the starting point and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data around it, typically 25 to 75 MB. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
 
 ## Statistics
 

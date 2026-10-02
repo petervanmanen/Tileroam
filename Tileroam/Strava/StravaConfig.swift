@@ -3,8 +3,8 @@ import Foundation
 /// Settings of the Strava API application.
 ///
 /// `StravaConfig.plist` (not in version control; see `StravaConfig.example.plist`) holds the
-/// Client ID, which is not secret, and the URL of the token service (`backend/strava-auth`).
-/// The Client Secret lives only in that service, never in the app.
+/// Client ID, which is not secret. The token service (`backend/strava-auth`) is in
+/// `Servers.plist`. The Client Secret lives only in that service, never in the app.
 struct StravaConfig: Sendable {
     let clientID: String
     /// Exchanges login codes and refresh tokens (the Cloudflare Worker).
@@ -17,9 +17,8 @@ struct StravaConfig: Sendable {
     static let bundled: StravaConfig? = {
         guard FeatureFlags.strava else { return nil }
         let config = plist("StravaConfig")
-        guard let id = string(config["ClientID"]), Int(id) != nil,
-              let service = string(config["TokenServiceURL"]).flatMap(URL.init(string:)) else { return nil }
-        return StravaConfig(clientID: id, tokenServiceURL: service)
+        guard let id = string(config["ClientID"]), Int(id) != nil else { return nil }
+        return StravaConfig(clientID: id, tokenServiceURL: Servers.stravaService.appending(path: "token"))
     }()
 
     private static func plist(_ name: String) -> [String: Any] {

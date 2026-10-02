@@ -24,59 +24,113 @@ struct MapDataDownloadTests {
     }
 }
 
+
 @Suite(.serialized)
-struct RoutingStorageTests {
-    /// A tiny index with two areas, its "downloaded" files in a temporary folder.
-    private func fixture() throws -> (RoutingIndex, URL) {
-        let index = RoutingIndex(
-            name: "storage-test", base: "routing-storage-test-base",
-            areas: [
-                .init(pack: "routing-storage-test-n52e005", lat: 52, lon: 5, bytes: 100_000_000, files: ["2/000/001/001.gph"]),
-                .init(pack: "routing-storage-test-n51e005", lat: 51, lon: 5, bytes: 50_000_000, files: ["2/000/001/002.gph"]),
-            ],
-            baseFiles: ["0/000/001.gph"], baseBytes: 10_000_000)
-        let packs = FileManager.default.temporaryDirectory.appending(path: "storage-test-\(UUID())")
-        for file in index.baseFiles + index.areas.flatMap(\.files) {
-            let url = packs.appending(path: file)
-            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try Data([1]).write(to: url)
+struct RoutingDownloadTests {
+    /// A tiny build on a local "server" (a folder, reached through a file:// URL as -RoutingServer
+    /// does in the simulator), laid out as Tools/pack_routing_tiles.py and the R2 upload make it.
+    private func server(version: Int = 1, gzip: Bool = true) throws -> (RoutingIndex, URL) {
+        let root = FileManager.default.temporaryDirectory.appending(path: "r2-\(UUID())", directoryHint: .isDirectory)
+        // Level 2 tile 818663 lies at 52°N 5.75°E; level 1 tile 51305 at 52°N 5°E; level 0 tile 3196
+        // covers 50–54°N 4–8°E.
+        let contents: [(String, Data)] = [("2/000/818/663", Data(repeating: 2, count: 3000)),
+                                          ("1/051/305", Data(repeating: 1, count: 2000)),
+                                          ("0/003/196", Data(repeating: 0, count: 1000))]
+        var tiles = [RoutingIndex.Tile]()
+        for (path, raw) in contents {
+            let file = root.appending(path: "download-test/v\(version)/\(path).gph.gz")
+            try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+            let packed = gzip ? try Self.gzip(raw) : raw
+            try packed.write(to: file)
+            tiles.append(.init(path: path, bytes: packed.count, rawBytes: raw.count))
         }
-        try? FileManager.default.removeItem(at: RoutingData.tileDirectory(index))
-        return (index, packs)
+        let index = RoutingIndex(name: "download-test", version: version, tiles: tiles)
+        RoutingData.removeAll(index)
+        return (index, root)
     }
 
-    /// Links a pack's files into the tile directory, as RoutingData.tileDirectory does after a download.
-    private func link(_ files: [String], from packs: URL, index: RoutingIndex) throws {
-        for file in files {
-            let link = RoutingData.tileDirectory(index).appending(path: file)
-            try FileManager.default.createDirectory(at: link.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try FileManager.default.createSymbolicLink(at: link, withDestinationURL: packs.appending(path: file))
-        }
+    /// A gzip file as Python's gzip.compress makes it: header, raw deflate, CRC and size.
+    static func gzip(_ data: Data) throws -> Data {
+        let deflated = try (data as NSData).compressed(using: .zlib) as Data
+        var out = Data([0x1F, 0x8B, 8, 0, 0, 0, 0, 0, 2, 255])
+        out.append(deflated)
+        out.append(contentsOf: [0, 0, 0, 0]) // CRC (not checked)
+        var size = UInt32(data.count).littleEndian
+        out.append(Data(bytes: &size, count: 4))
+        return out
     }
 
-    @Test func downloadedAreasAndRemoval() async throws {
-        UserDefaults.standard.removeObject(forKey: "RoutingPacksDir")
-        let (index, packs) = try fixture()
-        defer { try? FileManager.default.removeItem(at: packs) }
-        let utrecht = index.areas[0], eindhoven = index.areas[1]
+    private func cleanUp(_ root: URL, _ index: RoutingIndex) {
+        RoutingData.removeAll(index)
+        try? FileManager.default.removeItem(at: root)
+    }
 
-        // Nothing downloaded: both areas and the base count (at 40%, compressed).
-        #expect(!RoutingData.isDownloaded(utrecht, index: index))
-        #expect(RoutingData.downloadBytes(for: [utrecht], index: index) == 44_000_000)
+    @Test func tileGeometry() {
+        let t = RoutingIndex.Tile(path: "2/000/818/663", bytes: 1, rawBytes: 1)
+        #expect(t.level == 2 && t.size == 0.25 && t.lat == 52 && t.lon == 5.75)
+        let base = RoutingIndex.Tile(path: "0/003/196", bytes: 1, rawBytes: 1)
+        #expect(base.level == 0 && base.lat == 50 && base.lon == 4)
+    }
 
-        // After "downloading" Utrecht and the base, only Eindhoven is left.
-        try link(utrecht.files + index.baseFiles, from: packs, index: index)
-        #expect(RoutingData.isDownloaded(utrecht, index: index))
-        #expect(RoutingData.isBaseDownloaded(index))
-        #expect(RoutingData.downloadBytes(for: [utrecht], index: index) == 0)
-        #expect(RoutingData.downloadBytes(for: [utrecht, eindhoven], index: index) == 20_000_000)
+    @Test func picksTheTilesAroundAPlan() throws {
+        let (index, root) = try server()
+        defer { cleanUp(root, index) }
+        // Near Amersfoort (52.15°N 5.4°E): the level-1 and level-0 tiles, not the level-2 tile at 5.75°E.
+        let near = RoutingData.tiles(around: [GeoPoint(lat: 52.15, lon: 5.4)], margin: 5_000, in: index)
+        #expect(Set(near.map(\.path)) == ["1/051/305", "0/003/196"])
+        let wide = RoutingData.tiles(around: [GeoPoint(lat: 52.15, lon: 5.4)], margin: 30_000, in: index)
+        #expect(wide.count == 3)
+    }
 
-        // Removing Utrecht removes its links (the pack removal is skipped in this test).
-        UserDefaults.standard.set(packs.path(percentEncoded: false), forKey: "RoutingPacksDir")
-        await RoutingData.remove([utrecht], includingBase: false, index: index)
-        UserDefaults.standard.removeObject(forKey: "RoutingPacksDir")
-        #expect(!RoutingData.isDownloaded(utrecht, index: index))
-        #expect(RoutingData.isBaseDownloaded(index))
+    @Test func downloadsDecompressesAndRemoves() async throws {
+        let (index, root) = try server()
+        defer { cleanUp(root, index) }
+        #expect(RoutingData.downloadBytes(for: index.tiles, index: index) == index.tiles.reduce(0) { $0 + $1.bytes })
+
+        let dir = try await RoutingData.download(index.tiles, index: index, from: root)
+        let tile = try Data(contentsOf: dir.appending(path: "2/000/818/663.gph"))
+        #expect(tile == Data(repeating: 2, count: 3000))
+        #expect(RoutingData.downloadBytes(for: index.tiles, index: index) == 0)
+        #expect(RoutingData.downloadedTiles(index).count == 3)
+
+        RoutingData.remove([index.tiles[0]], index: index)
+        #expect(RoutingData.downloadedTiles(index).count == 2)
+        RoutingData.removeAll(index)
+        #expect(RoutingData.downloadedTiles(index).isEmpty)
+    }
+
+    @Test func refusesDamagedTiles() async throws {
+        let (index, root) = try server()
+        defer { cleanUp(root, index) }
+        try Self.gzip(Data(repeating: 9, count: 10)).write(to: root.appending(path: "download-test/v1/1/051/305.gph.gz"))
+        await #expect(throws: RoutingError.self) { _ = try await RoutingData.download(index.tiles, index: index, from: root) }
+    }
+
+    @Test func aNewVersionReplacesTheOldTiles() async throws {
+        let (v1, root1) = try server(version: 1)
+        _ = try await RoutingData.download(v1.tiles, index: v1, from: root1)
+        #expect(RoutingData.downloadedTiles(v1).count == 3)
+        cleanUp(root1, v1)
+        let (v1again, root2) = try server(version: 1)
+        _ = try await RoutingData.download(v1again.tiles, index: v1again, from: root2)
+        let (v2, root3) = try server(version: 2)
+        defer { cleanUp(root2, v1again); cleanUp(root3, v2) }
+        _ = try await RoutingData.download([v2.tiles[0]], index: v2, from: root3)
+        #expect(RoutingData.downloadedTiles(v2).count == 1)
+        #expect(RoutingData.downloadedTiles(v1again).isEmpty) // its folder was removed
+    }
+
+    @Test func indexDecodes() throws {
+        let json = #"{"name":"west","version":2,"tiles":[["2/000/818/663",1200,3000]]}"#
+        let index = try JSONDecoder().decode(RoutingIndex.self, from: Data(json.utf8))
+        #expect(index.version == 2 && index.tiles == [.init(path: "2/000/818/663", bytes: 1200, rawBytes: 3000)])
+    }
+
+    @Test func gunzipsPythonsGzip() throws {
+        // gzip.compress(b"tileroam", mtime=0)
+        let python = Data([0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x2b, 0xc9, 0xcc, 0x49, 0x2d,
+                           0xca, 0x4f, 0xcc, 0x05, 0x00, 0x20, 0xdd, 0xaa, 0xb0, 0x08, 0x00, 0x00, 0x00])
+        #expect(try Gzip.decompress(python) == Data("tileroam".utf8))
     }
 }
 
@@ -104,72 +158,5 @@ struct RecentStartTests {
         #expect(RecentStarts.load(defaults).isEmpty)
         RecentStarts.save([utrecht], defaults)
         #expect(RecentStarts.load(defaults) == [utrecht])
-    }
-}
-
-struct RoutingVersionTests {
-    @Test func decidesWhenToReplaceTheData() {
-        // Fresh device, packs of the index's version.
-        #expect(RoutingData.versionCheck(packs: [2, 2], linked: nil, indexVersion: 2) == .consistent(2))
-        // Packs from before versions existed (version 1), on a version-1 index.
-        #expect(RoutingData.versionCheck(packs: [1], linked: 1, indexVersion: 1) == .consistent(1))
-        // New data uploaded, app not updated yet: newer packs alone are fine...
-        #expect(RoutingData.versionCheck(packs: [2], linked: nil, indexVersion: 1) == .consistent(2))
-        // ...but not next to older links: replace everything.
-        #expect(RoutingData.versionCheck(packs: [2], linked: 1, indexVersion: 1) == .refresh)
-        #expect(RoutingData.versionCheck(packs: [1, 2], linked: nil, indexVersion: 1) == .refresh)
-        // App updated to a newer index while the device still has older data.
-        #expect(RoutingData.versionCheck(packs: [1], linked: 1, indexVersion: 2) == .refresh)
-    }
-
-    @Test func indexWithoutVersionIsVersionOne() throws {
-        let old = #"{"name":"t","base":"routing-t-base","areas":[],"baseFiles":[],"baseBytes":0}"#
-        #expect(try JSONDecoder().decode(RoutingIndex.self, from: Data(old.utf8)).version == 1)
-        let new = #"{"name":"t","version":3,"base":"routing-t-base","areas":[],"baseFiles":[],"baseBytes":0}"#
-        #expect(try JSONDecoder().decode(RoutingIndex.self, from: Data(new.utf8)).version == 3)
-    }
-}
-
-@Suite(.serialized)
-struct RoutingVersionLinkTests {
-    /// Staged packs as Tools/split_routing_tiles.py writes them (the simulator's -RoutingPacksDir),
-    /// with the given versions (nil: no version file, as before versions existed).
-    private func stage(base: Int?, area: Int?) throws -> (RoutingIndex, URL) {
-        let root = FileManager.default.temporaryDirectory.appending(path: "versions-\(UUID())")
-        let index = RoutingIndex(name: "version-test", version: 2, base: "routing-version-test-base",
-                                 areas: [.init(pack: "routing-version-test-n52e005", lat: 52, lon: 5, bytes: 1, files: ["1/051/305.gph"])],
-                                 baseFiles: ["0/003/195.gph"], baseBytes: 1)
-        for (pack, file, version) in [(index.base, index.baseFiles[0], base), (index.areas[0].pack, index.areas[0].files[0], area)] {
-            let tile = root.appending(path: "\(pack)/\(file)")
-            try FileManager.default.createDirectory(at: tile.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try Data([1]).write(to: tile)
-            if let version {
-                let marker = root.appending(path: "\(pack)/version/\(pack)")
-                try FileManager.default.createDirectory(at: marker.deletingLastPathComponent(), withIntermediateDirectories: true)
-                try String(version).write(to: marker, atomically: true, encoding: .utf8)
-            }
-        }
-        try? FileManager.default.removeItem(at: RoutingData.tileDirectory(index))
-        UserDefaults.standard.set(root.path(percentEncoded: false), forKey: "RoutingPacksDir")
-        return (index, root)
-    }
-
-    @Test func linksPacksOfOneVersion() async throws {
-        let (index, root) = try stage(base: 2, area: 2)
-        defer { UserDefaults.standard.removeObject(forKey: "RoutingPacksDir"); try? FileManager.default.removeItem(at: root) }
-        let (dir, replaced) = try await RoutingData.tileDirectory(for: index.areas, index: index)
-        #expect(!replaced)
-        #expect(FileManager.default.fileExists(atPath: dir.appending(path: "1/051/305.gph").path(percentEncoded: false)))
-        #expect(RoutingData.linkedVersion(index) == 2)
-    }
-
-    @Test func refusesMixedVersions() async throws {
-        // A version-2 base next to an area from before versions existed: they don't connect, and
-        // here (staged packs can't be updated) they stay mixed, so planning must not use them.
-        let (index, root) = try stage(base: 2, area: nil)
-        defer { UserDefaults.standard.removeObject(forKey: "RoutingPacksDir"); try? FileManager.default.removeItem(at: root) }
-        await #expect(throws: RoutingError.self) {
-            _ = try await RoutingData.tileDirectory(for: index.areas, index: index)
-        }
     }
 }

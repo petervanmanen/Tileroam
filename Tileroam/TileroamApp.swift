@@ -8,7 +8,7 @@ struct TileroamApp: App {
     init() {
         SettingsSync.start()
         _ = NetworkMonitor.shared // start watching the network early, for map downloads
-        Task.detached(priority: .background) { await RoutingData.removeRetiredBuilds() }
+        Task.detached(priority: .background) { await RoutingData.removeAssetPackData() }
     }
 
     var body: some Scene {

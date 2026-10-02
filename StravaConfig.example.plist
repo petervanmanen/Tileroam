@@ -2,11 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Copy to Tileroam/StravaConfig.plist. Neither value is secret. -->
+	<!-- Copy to Tileroam/StravaConfig.plist. Not secret. The token service's address is in
+	     Tileroam/Servers.plist (StravaServiceURL). -->
 	<key>ClientID</key>
-	<string></string>
-	<!-- URL of the token service in backend/strava-auth, ending in /token -->
-	<key>TokenServiceURL</key>
 	<string></string>
 </dict>
 </plist>

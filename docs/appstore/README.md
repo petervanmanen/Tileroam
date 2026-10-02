@@ -42,7 +42,7 @@ Public pages the App Store links to:
 1. Raise the **build number**: Xcode → target Tileroam → General → Build, which is `CURRENT_PROJECT_VERSION`.
    - Keep it the same for the app and the widget target.
    - Change **Version** (`MARKETING_VERSION`) only for a new release.
-2. Check that `Tileroam/StravaConfig.plist` exists, with `ClientID` and `TokenServiceURL`. It's not in Git. Without it, Strava doesn't appear in the build.
+2. Check that `Tileroam/StravaConfig.plist` exists, with `ClientID`. It's not in Git. Without it, Strava doesn't appear in the build. The server addresses are in `Tileroam/Servers.plist`, which is in Git.
 3. Run the tests: Product → Test, or
    ```bash
    xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 18 Pro'

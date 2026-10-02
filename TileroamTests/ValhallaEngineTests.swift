@@ -3,8 +3,8 @@ import Testing
 @testable import Tileroam
 
 /// Runs Valhalla in the simulator on the Luxembourg test build that
-/// `Tools/build_routing_tiles.sh lu-test luxembourg` writes to AssetPacks/build/routing (not in Git,
-/// so these tests are skipped where it is missing).
+/// `ROUTING_COUNTRIES=LU Tools/build_routing_tiles.sh lu-test luxembourg` writes to
+/// AssetPacks/build/routing (not in Git, so these tests are skipped where it is missing).
 private let routingBuild: URL? = {
     let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
     let dir = root.appending(path: "AssetPacks/build/routing", directoryHint: .isDirectory)
@@ -17,7 +17,7 @@ struct ValhallaEngineTests {
     static let bertrange = GeoPoint(lat: 49.6111, lon: 6.0500)
 
     private func useTileExtract() {
-        UserDefaults.standard.removeObject(forKey: "RoutingPacksDir")
+        UserDefaults.standard.removeObject(forKey: "RoutingServer")
         UserDefaults.standard.set(routingBuild!.appending(path: "routing-lu-test.tar").path(percentEncoded: false), forKey: "RoutingTar")
     }
 
@@ -39,25 +39,26 @@ struct ValhallaEngineTests {
         #expect(Set(order) == [0, 1, 2, 3])
     }
 
-    @Test func routesFromAreaPacks() async throws {
-        // The production path: only the needed 1° area packs, linked into a tile directory.
+    @Test func routesFromDownloadedTiles() async throws {
+        // The production path: only the tiles around the plan, downloaded (here from the local copy
+        // of what goes to R2, AssetPacks/build/routing/r2) and decompressed into a tile directory.
         UserDefaults.standard.removeObject(forKey: "RoutingTar")
-        UserDefaults.standard.set(routingBuild!.appending(path: "packs-lu-test").path(percentEncoded: false), forKey: "RoutingPacksDir")
-        defer { UserDefaults.standard.removeObject(forKey: "RoutingPacksDir") }
+        UserDefaults.standard.set(routingBuild!.appending(path: "r2", directoryHint: .isDirectory).absoluteString, forKey: "RoutingServer")
+        defer { UserDefaults.standard.removeObject(forKey: "RoutingServer") }
         let index = try JSONDecoder().decode(RoutingIndex.self,
                                              from: Data(contentsOf: routingBuild!.appending(path: "routing-lu-test.json")))
+        RoutingData.removeAll(index)
 
-        let areas = RoutingData.packs(around: [Self.luxembourg, Self.bertrange], margin: 15_000, in: index)
-        // Bertrange is at 6.05°E, so 15 km of room for detours reaches the area west of 6°E too.
-        #expect(areas.map(\.pack) == ["routing-lu-test-n49e005", "routing-lu-test-n49e006"])
-        #expect(RoutingData.packs(around: [GeoPoint(lat: 49.6, lon: 6.5)], margin: 5_000, in: index).map(\.pack)
-                == ["routing-lu-test-n49e006"])
-        #expect(RoutingData.packs(around: [Self.luxembourg], margin: 60_000, in: index).count == 4)
+        let tiles = RoutingData.tiles(around: [Self.luxembourg, Self.bertrange], margin: 15_000, in: index)
+        #expect(Set(tiles.map(\.level)) == [0, 1, 2])
+        #expect(tiles.count < index.tiles.count / 2) // only the surroundings
 
         let router = ValhallaRouter()
         try await router.prepare(around: [Self.luxembourg, Self.bertrange], margin: 15_000, index: index)
         let r = try await router.route([Self.luxembourg, Self.bertrange])
         #expect((6000...9000).contains(r.distance))
+        #expect(RoutingData.downloadedTiles(index).count == tiles.count)
+        RoutingData.removeAll(index)
     }
 
     @Test func plansARoundTripFromAChosenStart() async throws {
@@ -93,7 +94,7 @@ private let westBuild: URL? = {
 @Suite(.serialized, .enabled(if: westBuild != nil))
 struct WestRoutingTests {
     @Test func routesAcrossTheGermanBorder() async throws {
-        UserDefaults.standard.removeObject(forKey: "RoutingPacksDir")
+        UserDefaults.standard.removeObject(forKey: "RoutingServer")
         UserDefaults.standard.set(westBuild!.path(percentEncoded: false), forKey: "RoutingTar")
         defer { UserDefaults.standard.removeObject(forKey: "RoutingTar") }
         let kerkrade = GeoPoint(lat: 50.8657, lon: 6.0628), aachen = GeoPoint(lat: 50.7753, lon: 6.0839)
