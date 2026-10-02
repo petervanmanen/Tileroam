@@ -15,7 +15,7 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
   - Show the start on the map with its own pin. Remember recent starting points.
   - `PlanStore.plan(with:)` now always uses `CurrentLocation`; `plan(from:with:)` already takes any start.
 - ~~Municipalities and postcodes only where route maps exist~~: done on `feature/benelux-areas` (phase 1). The boundary packs of the 19 dropped countries are still in App Store Connect; they're removed with the cleanup script (phase 2).
-- ~~Script to remove asset packs from App Store Connect~~: done as `Tools/clean_asset_packs.sh` (phase 2). Apple's API can't delete or archive packs, so the script lists missing and unused packs and archiving happens on the website. **(you)** Run it and archive the 19 dropped boundary packs (`regions-DE`, `regions-FR`, …).
+- ~~Script to remove asset packs from App Store Connect~~: done as `Tools/clean_asset_packs.sh` (phase 2). Apple's API can't delete or archive packs, so the script lists missing and unused packs and archiving happens on the website. Archiving the 19 dropped boundary packs (`regions-DE`, `regions-FR`, …) is skipped for now: the app doesn't request them, so they do no harm.
 - **Storage in Settings:** a "Storage" screen showing what Tileroam keeps on the device and letting users remove downloaded map data.
   - Per downloaded routing area (for example "Utrecht area, 52°N 5°E, 52 MB") and per country's boundaries, with sizes and a remove action: `AssetPackManager.remove(assetPackWithID:)`, plus clearing the matching links in `Application Support/Routing/tiles-<build>`.
   - The activity caches, also removable (they're rebuilt from the files).
