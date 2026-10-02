@@ -75,7 +75,7 @@ Like Towns, but for postcode areas. Available for:
 
 You can also **open an existing GPX file** to see which new tiles and areas it would collect.
 
-Route planning uses the public OpenStreetMap routing service (FOSSGIS). Your start point and the selected stops are sent to it to calculate the route.
+Route planning works in **the Netherlands, Belgium and Luxembourg**: your location and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data for that area, typically a few to 60 MB; Wi-Fi is best. After that, planning in that area also works offline, and nothing is sent anywhere.
 
 ## Statistics
 

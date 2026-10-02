@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AA0000000000000000000090 /* TileroamWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000032 /* TileroamWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA0000000000000000000091 /* TileroamAssets.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000033 /* TileroamAssets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA0000000000000000000092 /* Valhalla in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000A1 /* Valhalla */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0000000000000000000092 /* Valhalla in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +202,9 @@
 				AA0000000000000000000040 /* Tileroam */,
 			);
 			name = Tileroam;
+			packageProductDependencies = (
+				AA00000000000000000000A1 /* Valhalla */,
+			);
 			productName = Tileroam;
 			productReference = AA0000000000000000000030 /* Tileroam.app */;
 			productType = "com.apple.product-type.application";
@@ -303,6 +308,9 @@
 			);
 			mainGroup = AA0000000000000000000002;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AA00000000000000000000A0 /* XCRemoteSwiftPackageReference "valhalla-mobile" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AA0000000000000000000003 /* Products */;
 			projectDirPath = "";
@@ -456,7 +464,7 @@
 				INFOPLIST_FILE = Tileroam/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tileroam;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. To plan a route, your start point and stops are sent to the OpenStreetMap routing service.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. Routes are calculated on your device.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -488,7 +496,7 @@
 				INFOPLIST_FILE = Tileroam/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tileroam;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. To plan a route, your start point and stops are sent to the OpenStreetMap routing service.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. Routes are calculated on your device.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -682,6 +690,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA00000000000000000000A0 /* XCRemoteSwiftPackageReference "valhalla-mobile" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Rallista/valhalla-mobile.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.6.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA00000000000000000000A1 /* Valhalla */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA00000000000000000000A0 /* XCRemoteSwiftPackageReference "valhalla-mobile" */;
+			productName = Valhalla;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA0000000000000000000001 /* Project object */;
 }

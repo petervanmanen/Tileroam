@@ -6,31 +6,31 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. To plan a route, your start point and stops are sent to the OpenStreetMap routing service."
+            "value": "Tileroam uses your location to show where you are on the map and to plan cycling routes from there. Routes are calculated on your device."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam gebruikt je locatie om te tonen waar je bent en om fietsroutes vanaf daar te plannen. Voor een route worden je startpunt en stops naar de routeplanner van OpenStreetMap gestuurd."
+            "value": "Tileroam gebruikt je locatie om te tonen waar je bent en om fietsroutes vanaf daar te plannen. Routes worden op je apparaat berekend."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam utilise votre position pour l’afficher sur la carte et planifier des parcours à vélo depuis celle-ci. Pour planifier, votre point de départ et vos étapes sont envoyés au service d’itinéraires OpenStreetMap."
+            "value": "Tileroam utilise votre position pour l’afficher sur la carte et planifier des parcours à vélo depuis celle-ci. Les parcours sont calculés sur votre appareil."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam usa tu ubicación para mostrar dónde estás y planificar rutas en bici desde allí. Para planificar, tu punto de partida y paradas se envían al servicio de rutas de OpenStreetMap."
+            "value": "Tileroam usa tu ubicación para mostrar dónde estás y planificar rutas en bici desde allí. Las rutas se calculan en tu dispositivo."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam nutzt deinen Standort, um ihn auf der Karte zu zeigen und Radrouten ab dort zu planen. Zum Planen werden Start und Stopps an den Routingdienst von OpenStreetMap gesendet."
+            "value": "Tileroam nutzt deinen Standort, um ihn auf der Karte zu zeigen und Radrouten ab dort zu planen. Routen werden auf deinem Gerät berechnet."
           }
         }
       },

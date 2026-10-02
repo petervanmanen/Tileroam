@@ -27,7 +27,7 @@ xcrun simctl privacy "$D" grant location-always $BID
 C=$(xcrun simctl get_app_container "$D" $BID data)
 mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
-ARGS=(-RegionsDir $ROOT/AssetPacks/Regions -hasSeenIntro YES -AppleLanguages "(en)" -AppleLocale en_GB
+ARGS=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-benelux.tar -hasSeenIntro YES -AppleLanguages "(en)" -AppleLocale en_GB
       -tileZoom 14 -FocusZoom $FOCUS)
 
 # Warm-up launch: import the rides and fill the caches, so the recorded launch is quick.

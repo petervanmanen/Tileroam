@@ -337,7 +337,7 @@ private struct SourcesView: View {
         (Country.named("IS")!.name, "© Náttúrufræðistofnun Íslands (CC BY 4.0) – sveitarfélög"),
         ("Liechtenstein, Monaco, San Marino", "© OpenStreetMap contributors (ODbL) via geoBoundaries"),
         ("Andorra, Vatican City", "geoBoundaries"),
-        (String(localized: "Route planning"), "Route planning © OpenStreetMap contributors (ODbL), routing by OSRM / FOSSGIS"),
+        (String(localized: "Route planning"), "© OpenStreetMap contributors (ODbL), via Geofabrik; routing by Valhalla (MIT) on the device"),
     ] + (FeatureFlags.strava ? [("Strava", String(localized: "Activity data from Strava when connected"))] : [])
 
     var body: some View {

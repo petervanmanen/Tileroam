@@ -62,7 +62,8 @@ The seven shots are:
 | `-RegionsDir <repo>/AssetPacks/Regions` | Reads municipality and postcode boundaries from the repo instead of asset packs. Without it, the Towns and Postcodes tabs are empty in the simulator. |
 | `-mapMode squares\|activities\|gemeenten\|postcodes` | Opens on that tab |
 | `-FocusZoom 9` | Zooms the map out one step (default 10); the Towns shot uses one less |
-| `-PlanDemo YES` | Selects tiles near Utrecht and plans a route. Calls the public OSRM server, so it needs internet. |
+| `-PlanDemo YES` | Selects tiles near Utrecht and plans a route, on the device with Valhalla |
+| `-RoutingTar <repo>/AssetPacks/build/routing/routing-benelux.tar` | Routing data for the plan shot. Build it first with `Tools/build_routing_tiles.sh benelux netherlands belgium luxembourg` (see docs/ROUTING.md). |
 | `-ShowStatistics YES` / `-ShowSettings YES` | Opens that screen at launch |
 | `-hasSeenIntro NO` | Shows the introduction |
 

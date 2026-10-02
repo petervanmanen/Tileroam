@@ -93,7 +93,7 @@ Strava allows about 100 requests per 15 minutes and 1,000 per day. The activity 
 - **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for zoom 17 tiles spread across Europe.
 - **Duplicates**: activities of the same kind that overlap in time are merged (`Import/ActivityMerge.swift`); the copy with the best GPS and the longest distance is kept.
 - **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 33 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
-- **Route planning** uses the public [OSRM](https://project-osrm.org) cycling router of [openstreetmap.de](https://routing.openstreetmap.de). It finds the best visiting order, then picks, inside each target, the point that keeps the detour shortest.
+- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium and Luxembourg. The tiles come as Apple-hosted asset packs per 1° × 1° area, so a plan downloads only its own area (about 60 MB around Utrecht instead of 480 MB for everything). The visiting order comes from Valhalla's cycling-time matrix (`TripSolver`); then, inside each target, the planner picks the point that keeps the detour shortest. How to build the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Region data
 
@@ -127,7 +127,7 @@ The script documents where each source file comes from. It reprojects to WGS84, 
 | Iceland | Náttúrufræðistofnun Íslands (CC BY 4.0) |
 | Microstates | geoBoundaries / © OpenStreetMap contributors (ODbL) |
 
-Route planning: © OpenStreetMap contributors (ODbL), routing by OSRM / FOSSGIS.
+Route planning: © OpenStreetMap contributors (ODbL), routing by Valhalla on the device.
 
 ## Documentation
 
@@ -137,7 +137,7 @@ Route planning: © OpenStreetMap contributors (ODbL), routing by OSRM / FOSSGIS.
 
 ## Privacy
 
-Tileroam has no server and no analytics. Your activities, tiles and statistics stay on your device and in the iCloud folders you choose. Strava tokens are stored in the Keychain. The Strava login code and token refreshes pass through the token service (Cloudflare Worker), which stores and logs nothing. When you plan a route, the start point and stops are sent to the OSRM routing service of openstreetmap.de.
+Tileroam has no server and no analytics. Your activities, tiles and statistics stay on your device and in the iCloud folders you choose. Strava tokens are stored in the Keychain. The Strava login code and token refreshes pass through the token service (Cloudflare Worker), which stores and logs nothing. Route planning runs on the device; nothing is sent.
 
 ## Project structure
 
@@ -167,7 +167,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 - Postcode boundaries are not open data in Austria, Luxembourg, Ireland, Portugal, Italy, Norway, Sweden and Iceland.
 - French postcode zones are calculated outlines around addresses and can overlap.
 - The UK postcode districts (2018) and Spanish postcodes (around 2015) are older datasets.
-- Route planning depends on the public OSRM server, which is a free community service without guarantees.
+- Route planning covers the Netherlands, Belgium and Luxembourg only (see docs/ROUTING.md to add countries).
 
 ## Privacy
 

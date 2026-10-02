@@ -6,16 +6,7 @@ These answers match `Tileroam/PrivacyInfo.xcprivacy` and [PRIVACY.md](../../PRIV
 https://github.com/petervanmanen/Tileroam/blob/main/PRIVACY.md
 
 ## Do you or your third-party partners collect data from this app?
-**Yes.** Two things leave the device: the location used for route planning (to a third party), and, for users who connect Strava, the Strava athlete ID in the developer's event queue.
-
-### Data type: Location → Precise Location
-| Question | Answer |
-|---|---|
-| Collected for | **App Functionality** only |
-| Linked to the user's identity? | **No** |
-| Used for tracking? | **No** |
-
-Why: when the user taps *Plan Route*, the start point (current location) and the selected stops are sent to the OpenStreetMap routing service (routing.openstreetmap.de, FOSSGIS e.V.) to calculate the route. No account or identifier is sent with it.
+**Yes, only for users who connect Strava:** their Strava athlete ID in the developer's event queue. Everything else stays on the device. Route planning runs on the device with downloaded OpenStreetMap data, so the location isn't collected.
 
 ### Data type: Identifiers → User ID
 | Question | Answer |
@@ -36,7 +27,7 @@ The app reads them to delete its copies of deleted activities, or everything whe
 - **Contact info, Health & Fitness, Financial info, Contacts, User content, Browsing / Search history, Identifiers other than User ID, Purchases, Usage data, Diagnostics, Sensitive info, Other data:** not collected.
   - Activity files are processed on the device and stored in the user's own iCloud. Apple holds that data for the user; the developer has no access, so it does not count as collected.
   - Strava activities go directly from Strava to the device. The token service forwards the login and refresh requests to Strava without storing tokens; it keeps only the event queue described above.
-- **Coarse Location:** not collected. Only precise location is used, as above.
+- **Location (precise and coarse):** not collected. It is used on the device only: the map, route planning (Valhalla on the device) and the widget.
 
 ## Tracking
 Tileroam does not track users. There's no App Tracking Transparency prompt, no advertising identifier and no third-party SDKs.
