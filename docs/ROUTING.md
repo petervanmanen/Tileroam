@@ -120,7 +120,7 @@ Germany was added this way (October 2026). For the next country:
    ```
    - `WestRoutingTests` in `TileroamTests/ValhallaEngineTests.swift` routes Kerkrade → Aachen across the border on the new tile extract. Add a route across the new border there.
    - In the simulator: `-RoutingPacksDir <repo>/AssetPacks/build/routing/packs-west -RegionsDir <repo>/AssetPacks/Regions -PlanDemo YES -PlanDemoStart "50.8687,6.0835"` plans the demo route from any start, here on the Dutch–German border in Kerkrade.
-6. **Upload** the packs (`Tools/upload_asset_packs.sh routing-west`) **before** releasing the app version with the new index. Packs of a retired build stay in App Store Connect until no supported app version uses them; `Tools/clean_asset_packs.sh` then lists them as unused, to archive on the website.
+6. **Upload** the packs (`Tools/upload_asset_packs.sh routing-west`) **before** releasing the app version with the new index. Packs of a retired build stay in App Store Connect until no supported app version uses them; `Tools/clean_asset_packs.sh` then lists them as unused; `ARCHIVE="routing-<old>-" Tools/clean_asset_packs.sh` archives them.
 
 ## Regenerating `valhalla.json`
 
