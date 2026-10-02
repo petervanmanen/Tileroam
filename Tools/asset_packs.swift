@@ -70,21 +70,41 @@ func token() throws -> String {
     return input + "." + base64URL(signature)
 }
 
-/// App Store Connect can be slow (archiving a pack took over a minute): a long timeout, and up to
-/// three tries when the connection times out or drops.
-func send(_ request: URLRequest) async throws -> (Data, Int) {
+/// App Store Connect can be slow and flaky when archiving (a request took over a minute; others
+/// answered 500): a long timeout, and up to four tries, with growing pauses, when the connection
+/// times out or drops or the server answers with a 5xx error.
+func send(_ request: URLRequest, tries: Int = 4) async throws -> (Data, Int) {
     var request = request
     request.timeoutInterval = 300
     var attempt = 0
     while true {
         attempt += 1
+        let pause = Duration.seconds(15 * attempt)
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            return (data, (response as? HTTPURLResponse)?.statusCode ?? 0)
-        } catch let error as URLError where attempt < 3 && [.timedOut, .networkConnectionLost].contains(error.code) {
-            FileHandle.standardError.write(Data("  \(error.localizedDescription) Trying again…\n".utf8))
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            if (500...599).contains(status), attempt < tries {
+                FileHandle.standardError.write(Data("  App Store Connect answered \(status); trying again in \(pause)…\n".utf8))
+                try await Task.sleep(for: pause)
+                continue
+            }
+            return (data, status)
+        } catch let error as URLError where attempt < tries && [.timedOut, .networkConnectionLost].contains(error.code) {
+            FileHandle.standardError.write(Data("  \(error.localizedDescription) Trying again in \(pause)…\n".utf8))
+            try await Task.sleep(for: pause)
         }
     }
+}
+
+/// Whether App Store Connect now has the pack archived (an archive that answered with an error
+/// may have gone through anyway).
+func isArchived(_ resourceID: String, auth: String) async -> Bool {
+    var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(resourceID)")!)
+    request.setValue(auth, forHTTPHeaderField: "Authorization")
+    guard let (data, status) = try? await send(request, tries: 2), status == 200,
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          let attributes = (json["data"] as? [String: Any])?["attributes"] as? [String: Any] else { return false }
+    return attributes["archived"] as? Bool ?? false
 }
 
 struct Pack {
@@ -188,23 +208,28 @@ if !prefixes.isEmpty {
         request.httpBody = try JSONSerialization.data(withJSONObject: [
             "data": ["type": "backgroundAssets", "id": p.resourceID, "attributes": ["archived": true]],
         ])
-        let data: Data, status: Int
+        let progress = "[\(n + 1)/\(toArchive.count)]"
+        var problem: String?
         do {
-            (data, status) = try await send(request)
+            let (data, status) = try await send(request)
+            if status != 200 {
+                problem = "App Store Connect answered \(status): " + String(decoding: data, as: UTF8.self)
+                    .replacingOccurrences(of: "\n", with: " ").prefix(200)
+            }
         } catch {
-            // It may still have been archived; the next run only lists what's left.
-            failed.append(p.id)
-            print("[\(n + 1)/\(toArchive.count)] \(p.id): \(error.localizedDescription)")
-            if failed.count == 3 { print("Stopping after 3 failures. Run it again to continue with what's left."); break }
-            continue
+            problem = error.localizedDescription
         }
-        if status == 200 {
-            print("[\(n + 1)/\(toArchive.count)] Archived \(p.id)")
+        if problem == nil {
+            print("\(progress) Archived \(p.id)")
+        } else if await isArchived(p.resourceID, auth: auth) {
+            print("\(progress) Archived \(p.id) (after an error)")
         } else {
             failed.append(p.id)
-            print("[\(n + 1)/\(toArchive.count)] \(p.id): App Store Connect answered \(status): \(String(decoding: data, as: UTF8.self).prefix(300))")
-            if failed.count == 3 { print("Stopping after 3 failures. Run it again to continue with what's left."); break }
+            print("\(progress) Not archived: \(p.id). \(problem!)")
         }
+    }
+    if !failed.isEmpty {
+        print("\n\(failed.count) not archived. Run the same command again later for those; App Store Connect's archiving is sometimes unavailable.")
     }
     exit(failed.isEmpty ? 0 : 1)
 } else if !unused.isEmpty {
