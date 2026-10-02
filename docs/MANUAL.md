@@ -93,29 +93,7 @@ Add Tileroam widgets to your Home Screen. Touch and hold the Home Screen, tap **
 
 ## Countries
 
-Municipalities and postcodes are available for 22 countries:
-- Andorra
-- Austria
-- Belgium
-- Denmark
-- Finland
-- France
-- Germany
-- Iceland
-- Ireland
-- Italy
-- Liechtenstein
-- Luxembourg
-- Monaco
-- the Netherlands
-- Norway
-- Portugal
-- San Marino
-- Spain
-- Sweden
-- Switzerland
-- the United Kingdom
-- Vatican City
+Municipalities and postcodes are available for **the Netherlands, Belgium and Luxembourg**, the same countries as route planning. Postcodes exist for the Netherlands and Belgium. Tiles, routes and statistics work everywhere.
 
 A country is counted as soon as you have an activity there; there is nothing to set up. The municipality and postcode boundaries of a country are downloaded the first time you have an activity there, so the app itself stays small. This needs an internet connection once per country.
 

@@ -18,7 +18,7 @@ ONTDEK TEGELS
 De kaart is verdeeld in vakjes. Elk vakje waar je doorheen komt, wordt groen. Kies zoom 14-tegels (ongeveer 1,5 km) of zoom 17-squadratinhos (ongeveer 190 m). Tileroam toont je totaal, je grootste vierkant (max square) en je cluster.
 
 GEMEENTEN EN POSTCODES
-Zie welke gemeenten en postcodegebieden je hebt bezocht, in 22 Europese landen, van Nederland, België en Duitsland tot Frankrijk, Spanje, Italië, het Verenigd Koninkrijk en Scandinavië.
+Zie welke gemeenten en postcodegebieden je hebt bezocht in Nederland, België en Luxemburg.
 
 PLAN ROUTES NAAR NIEUWE TEGELS
 Tik op de tegels, gemeenten of postcodes die je wilt verzamelen. Tileroam plant een fietsrondje vanaf waar je bent en laat precies zien wat het oplevert. Exporteer als GPX voor je fietscomputer, of open een GPX om te zien wat een route brengt.

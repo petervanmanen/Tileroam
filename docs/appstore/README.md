@@ -53,7 +53,7 @@ Public pages the App Store links to:
    ```
 
 ## 3. Asset packs (municipality and postcode boundaries)
-The boundaries aren't in the app. Each country is an Apple-hosted asset pack (`regions-NL`, `regions-FR`, …, 22 in total, about 30 MB together). The app downloads a pack on demand the first time the user has an activity in that country.
+The boundaries aren't in the app. Each country is an Apple-hosted asset pack: `regions-NL`, `regions-BE` and `regions-LU`, about 1.5 MB together. The app downloads a pack on demand the first time the user has an activity in that country.
 
 1. Build the packs:
    ```bash
@@ -61,7 +61,7 @@ The boundaries aren't in the app. Each country is an Apple-hosted asset pack (`r
    ```
    This writes `AssetPacks/build/regions-<CC>.aar`.
 2. Upload them to App Store Connect. Use the **Transporter** app (sign in, then drag the `.aar` files in), or the App Store Connect API.
-   - Upload all 22 the first time.
+   - Upload all three the first time.
    - After that, only upload the packs whose boundaries changed.
    - **Scripted:** `Tools/upload_asset_packs.sh` (all countries) or `Tools/upload_asset_packs.sh NL BE` builds and uploads with `iTMSTransporter`, using the API key in `~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8` and the environment variables `ASC_KEY_ID` and `ASC_ISSUER_ID`.
    - The script needs Transporter: the Mac App Store app, or Apple's standalone installer. Xcode's own `iTMSTransporter` is only a stub.

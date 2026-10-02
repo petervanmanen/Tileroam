@@ -12,34 +12,14 @@ attribution and follow the license of each source.
 | `NL-*` | CBS / Kadaster via PDOK (gemeenten 2025, postcode4 2024) | CC BY 4.0 | © CBS, Kadaster |
 | `BE-municipalities` | NGI-IGN via Opendatasoft | NGI open data licence | © NGI-IGN |
 | `BE-postcodes` | bpost / NGI-IGN via Opendatasoft | custom, see source | © bpost, NGI-IGN |
-| `DE-municipalities` | BKG VG250 via Opendatasoft | dl-de/by-2-0 | © GeoBasis-DE / BKG |
-| `DE-postcodes` | OpenStreetMap (tdudek/de-plz-geojson) | **ODbL 1.0** | © OpenStreetMap contributors |
-| `FR-municipalities` | IGN Admin Express / INSEE via Opendatasoft | Licence Ouverte 2.0 | © IGN, INSEE |
-| `FR-postcodes` | adresse.data.gouv.fr, calculated postcode zones | Licence Ouverte 2.0 | © Etalab, BAN |
-| `ES-municipalities` | IGN via Opendatasoft | CC BY 4.0 | © IGN España |
-| `ES-postcodes` | CNIG (inigoflores/ds-codigos-postales) | CC BY 4.0 | © CNIG, Correos |
-| `PT-municipalities` | DGT CAOP via Opendatasoft | Public domain | Direção-Geral do Território |
-| `IT-municipalities` | ISTAT via Opendatasoft | CC BY 3.0 | © ISTAT |
-| `CH-*` | swisstopo via Opendatasoft | opendata.swiss (see source) | © swisstopo |
-| `AT-municipalities` | Statistik Austria | CC BY 4.0 | © Statistik Austria |
 | `LU-municipalities` | data.public.lu | CC0 | ACT Luxembourg |
-| `GB-municipalities` | ONS local authority districts via Opendatasoft | OGL v3.0 | Contains OS data © Crown copyright and database right; © ONS |
-| `GB-postcodes` | GB postcode districts (figshare 6050105) | CC BY 4.0 | Contains OS data © Crown copyright; Royal Mail data © Royal Mail copyright; ONS |
-| `IE-municipalities` | Tailte Éireann, Local Authorities 2024 | CC BY 4.0 | © Tailte Éireann |
-| `DK-*` | DAGI (Neogeografen/dagi) | Danish free data licence | © SDFI / Klimadatastyrelsen |
-| `NO-municipalities` | Kartverket (robhop/fylker-og-kommuner) | CC BY 4.0 | © Kartverket |
-| `SE-municipalities` | OpenStreetMap (Overpass, admin_level 7) | **ODbL 1.0** | © OpenStreetMap contributors |
-| `FI-*` | Statistics Finland (2025) | CC BY 4.0 | © Tilastokeskus / Statistics Finland |
-| `IS-municipalities` | Náttúrufræðistofnun Íslands (IS 50V) | CC BY 4.0 | © Náttúrufræðistofnun Íslands |
-| `LI-`, `MC-`, `SM-municipalities` | geoBoundaries (OpenStreetMap) | **ODbL 1.0** | © OpenStreetMap contributors, geoBoundaries |
-| `AD-`, `VA-municipalities` | geoBoundaries | Public domain / see source | geoBoundaries |
 | `regions.json` | Generated manifest | as above | – |
 
 Files derived from OpenStreetMap (**ODbL 1.0**) are made available under the
 [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/). Anyone
 may reuse them under the same license.
 
-The routing data (`routing-<name>.tar` asset packs, Valhalla tiles made by
+The routing data (`routing-<name>-<area>` asset packs, Valhalla tiles made by
 `Tools/build_routing_tiles.sh` from Geofabrik's OpenStreetMap extracts) is a
 Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
 contributors. The script and the extracts it names are the complete recipe to

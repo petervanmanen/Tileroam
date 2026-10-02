@@ -18,7 +18,7 @@ EXPLORE TILES
 The map is divided into squares. Every square you pass through turns green. Choose zoom 14 explorer tiles (about 1.5 km) or zoom 17 squadratinhos (about 190 m). Tileroam shows your total, your max square (the largest fully visited block) and your cluster.
 
 MUNICIPALITIES AND POSTCODES
-See which municipalities and postcode areas you have visited, in 22 European countries, from the Netherlands, Belgium and Germany to France, Spain, Italy, the United Kingdom and the Nordics.
+See which municipalities and postcode areas you have visited in the Netherlands, Belgium and Luxembourg.
 
 PLAN ROUTES TO NEW TILES
 Tap the tiles, municipalities or postcodes you want to collect. Tileroam plans a cycling round trip from where you are and shows exactly what it will add. Export it as GPX for your bike computer, or open a GPX to see what a route would bring.

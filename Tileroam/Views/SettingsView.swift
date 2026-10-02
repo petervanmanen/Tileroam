@@ -320,23 +320,7 @@ private struct SourcesView: View {
     private let sources: [(String, String)] = [
         (Country.named("NL")!.name, "© CBS, Kadaster (CC BY 4.0) – gemeenten 2025, postcode4 2024 via PDOK"),
         (Country.named("BE")!.name, "© NGI-IGN, bpost – municipalities and postal codes via Opendatasoft"),
-        (Country.named("DE")!.name, "© GeoBasis-DE / BKG (dl-de/by-2-0) – Gemeinden; postcodes © OpenStreetMap contributors (ODbL)"),
-        (Country.named("FR")!.name, "© IGN, INSEE (Licence Ouverte 2.0) – communes; codes postaux © Etalab / BAN (Licence Ouverte 2.0)"),
-        (Country.named("ES")!.name, "© IGN España, CNIG, Correos (CC BY 4.0)"),
-        (Country.named("CH")!.name, "© swisstopo – Gemeinden and Ortschaftenverzeichnis (opendata.swiss)"),
-        (Country.named("AT")!.name, "© Statistik Austria (CC BY 4.0)"),
         (Country.named("LU")!.name, "© ACT Luxembourg (CC0)"),
-        (Country.named("GB")!.name, "Contains OS data © Crown copyright and database right; ONS (OGL v3.0); Royal Mail data © Royal Mail copyright; postcode districts CC BY 4.0"),
-        (Country.named("IE")!.name, "© Tailte Éireann (CC BY 4.0)"),
-        (Country.named("PT")!.name, "© Direção-Geral do Território – CAOP concelhos (public domain)"),
-        (Country.named("IT")!.name, "© ISTAT (CC BY 3.0) – comuni"),
-        (Country.named("DK")!.name, "© SDFI / Klimadatastyrelsen – DAGI kommuner and postnumre (free data)"),
-        (Country.named("NO")!.name, "© Kartverket (CC BY 4.0) – kommuner 2024"),
-        (Country.named("SE")!.name, "© OpenStreetMap contributors (ODbL) – kommuner"),
-        (Country.named("FI")!.name, "© Statistics Finland (CC BY 4.0) – municipalities and postal code areas 2025"),
-        (Country.named("IS")!.name, "© Náttúrufræðistofnun Íslands (CC BY 4.0) – sveitarfélög"),
-        ("Liechtenstein, Monaco, San Marino", "© OpenStreetMap contributors (ODbL) via geoBoundaries"),
-        ("Andorra, Vatican City", "geoBoundaries"),
         (String(localized: "Route planning"), "© OpenStreetMap contributors (ODbL), via Geofabrik; routing by Valhalla (MIT) on the device"),
     ] + (FeatureFlags.strava ? [("Strava", String(localized: "Activity data from Strava when connected"))] : [])
 
