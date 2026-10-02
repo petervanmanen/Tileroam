@@ -2,6 +2,15 @@
 
 ## Features
 - **Apple Maps can hand cycling directions to Tileroam (routing app).** Declare `MKDirectionsApplicationSupportedModes` (bike) in Info.plist and handle the incoming `MKDirections.Request`: plan a cycling route from Maps' start to destination with Valhalla on the device, show it on the map, and offer it as GPX. Then upload `docs/appstore/routing-coverage.geojson` as the Routing App Coverage File; App Store Connect only uses it for routing apps. About half a day.
+- **Municipalities and postcodes only where route maps exist** (now the Netherlands, Belgium and Luxembourg). Keeps the app consistent and the asset packs few.
+  - Limit `Country.all` and the region files to the routing countries.
+  - Rebuild `Tileroam/Resources/countries.fmr` (`Tools/build_country_outlines.py`) and the boundary packs.
+  - Update the statistics, the texts that mention 22 countries (App Store description, user guide, READMEs, introduction, review notes) and the screenshots.
+  - Decide what users with activities elsewhere see: tiles still work everywhere, municipalities and postcodes only in the routing countries.
+- **Script to remove asset packs from App Store Connect** that the app no longer uses, for example the boundary packs of dropped countries and the routing packs of old builds.
+  - Lists the packs in App Store Connect and compares them with what the current app version needs (the boundary countries and the routing index).
+  - Asks before removing anything.
+  - Transporter has no remove mode (only upload, status and list), so this needs the App Store Connect API with the existing API key. Check first which calls Apple offers for asset packs, and that a pack still used by an older app version on users' devices isn't removed too early.
 - **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release
