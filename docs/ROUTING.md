@@ -81,7 +81,7 @@ Refresh the data every few months, because OpenStreetMap changes: run the same b
 
 ## Versions
 
-**Keep the build name `west`, for good.** Adding a country or refreshing the data is a new version of the same build, uploaded as new versions of the same pack IDs. A new build name would need a complete second set of packs next to the old one until old app versions are gone, and Apple's limit of 200 asset packs per app doesn't leave room for that (`west` alone is 92). The name is internal; it doesn't have to match the countries.
+**Keep the build name `west`, for good.** Adding a country or refreshing the data is a new version of the same build, uploaded as new versions of the same pack IDs. A new build name would need a complete second set of packs next to the old one until old app versions are gone, and Apple's limit of 100 asset packs per app doesn't leave room for that (`west` alone is 92). The name is internal; it doesn't have to match the countries.
 
 **Why versions matter:** tiles of different builds don't connect, because Valhalla numbers its graph per build. Once new versions are uploaded, the system hands out the new version for every pack a device downloads from then on, also to app versions with the old index. Without a check, a device could link old and new packs together and get broken routes.
 
@@ -120,7 +120,7 @@ Germany was added this way (October 2026). For the next country:
 
 1. **Use build `west`.** Countries whose routes should cross each other's borders must be in **one** build, and `west` keeps its name (see "Versions"): the new country makes a new version of it. Because the data is split per 1° area, a bigger build doesn't make downloads bigger: a plan still only fetches its own areas.
 2. **Check the limits first:**
-   - **Asset packs:** Apple allows **200 asset packs per app** ([limits](https://developer.apple.com/help/app-store-connect/reference/app-uploads/apple-hosted-asset-pack-size-limits/)), counting every pack in App Store Connect until it's archived. With `west` (92), the old `benelux` packs (36, to archive) and the boundary packs (22), that's 150. A new country only adds its own new areas (Austria: about 15).
+   - **Asset packs:** App Store Connect refused uploads beyond **100 asset packs** for Tileroam (October 2026), although [Apple's limits page](https://developer.apple.com/help/app-store-connect/reference/app-uploads/apple-hosted-asset-pack-size-limits/) says 200. Archived packs don't count. Tileroam uses 96: `west` (92) and the boundary packs of the four countries. **A new country doesn't fit as it is** (Austria would add about 15 areas). First make the packs bigger: for example 2° × 1° or 2° × 2° areas in `split_routing_tiles.py`, or merging the many small border and coast areas into their neighbours. The app reads which areas exist from the index, so it would need `RoutingIndex.Area` to carry a width and height instead of the fixed 1°.
    - **Disk and time:** see "Building the routing data" above.
 3. **Boundaries:** the country needs municipality boundaries in Tileroam first:
    - `Tools/build_regions.py` for its `AssetPacks/Regions/<CC>-*.fmr`, plus its entry in `regions.json`;

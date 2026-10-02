@@ -16,13 +16,14 @@ The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). 
 - **GitHub workflow for the routing data** (optional): build the Valhalla tiles on a runner, upload the area packs and open a pull request with the new `Tileroam/Resources/routing-benelux.json`. For now the routing data is built and uploaded from a Mac (docs/ROUTING.md).
 
 ## Before release
-- **Germany** (branch `feature/germany`): routing build `west` (NL, BE, LU, DE), 92 packs. Upload them with `Tools/upload_asset_packs.sh routing-west` before releasing the app version that bundles `routing-west.json`. Asset packs: 58 + 92 = 150 of Apple's 200.
+- **Germany** (branch `feature/germany`): routing build `west` (NL, BE, LU, DE), 92 packs. Upload them with `Tools/upload_asset_packs.sh routing-west` before releasing the app version that bundles `routing-west.json`. App Store Connect allows Tileroam 100 asset packs (not the documented 200): `west` (92) + 4 boundary packs = 96, after archiving `routing-benelux-*` (36) and the 18 unused boundary packs.
 - **Archive unused packs** with `Tools/clean_asset_packs.sh` on `feature/germany` or later:
   - `ARCHIVE="regions-"`: the 18 boundary packs of the dropped countries (no build since phase 1 uses them);
   - `ARCHIVE="routing-benelux-"`: the 36 old routing packs, only once every TestFlight and App Store build in use has the `west` index.
 
   Together that frees 54 of the 200.
-- ~~Routing data versions~~: done on `feature/routing-versions`. The build name stays `west` for good; refreshes and new countries are new versions of the same pack IDs (docs/ROUTING.md, "Versions"), so the 200-pack limit isn't hit.
+- ~~Routing data versions~~: done on `feature/routing-versions`. The build name stays `west` for good; refreshes and new countries are new versions of the same pack IDs (docs/ROUTING.md, "Versions"), so there's never a second full set of packs.
+- **Before adding another country:** bigger routing areas (2° × 1° or 2° × 2°, or merge small border and coast areas), to stay under 100 asset packs (docs/ROUTING.md, "Adding countries").
 - **Possible improvement:** the base pack (Valhalla's level-0 main roads, 36 MB) comes with every first plan. Splitting it per 4° tile would make a first plan about 30 MB smaller.
 - **Test routing on a device** via TestFlight: plan near home, across a border, from a chosen starting point, and offline in an area downloaded before. (`feature/valhalla-routing` is already in `main`.)
 - ~~Strava webhook~~: done (2 October 2026). Worker configured (KV binding `EVENTS`, `EVENTS_SECRET`, `STRAVA_VERIFY_TOKEN`), Strava subscription 375082. Optional: set `STRAVA_SUBSCRIPTION_ID` = 375082 in the Worker.
