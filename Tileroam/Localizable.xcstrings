@@ -1837,6 +1837,34 @@
         }
       }
     },
+    "Choose where the route starts and ends": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies waar de route begint en eindigt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir où le parcours commence et se termine"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige dónde empieza y termina la ruta"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle, wo die Route beginnt und endet"
+          }
+        }
+      }
+    },
     "Clear": {
       "localizations": {
         "nl": {
@@ -4165,6 +4193,34 @@
         }
       }
     },
+    "My Location": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mijn locatie"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ma position"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi ubicación"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mein Standort"
+          }
+        }
+      }
+    },
     "New: %@": {
       "localizations": {
         "nl": {
@@ -4669,6 +4725,34 @@
         }
       }
     },
+    "Or long-press the map to start there. You can drag the green flag to move it.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Of houd de kaart ingedrukt om daar te starten. Sleep de groene vlag om hem te verplaatsen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ou touchez longuement la carte pour partir de là. Faites glisser le drapeau vert pour le déplacer."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O mantén pulsado el mapa para empezar allí. Arrastra la bandera verde para moverla."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oder halte die Karte gedrückt, um dort zu starten. Ziehe die grüne Flagge, um sie zu verschieben."
+          }
+        }
+      }
+    },
     "Other": {
       "localizations": {
         "nl": {
@@ -4977,6 +5061,34 @@
         }
       }
     },
+    "Recent": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récents"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recientes"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuletzt verwendet"
+          }
+        }
+      }
+    },
     "Remove": {
       "localizations": {
         "nl": {
@@ -5257,30 +5369,30 @@
         }
       }
     },
-    "Route planning is available in the Netherlands, Belgium and Luxembourg. Your location and all selected items must be there.": {
+    "Route planning is available in the Netherlands, Belgium and Luxembourg. The starting point and all selected items must be there.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Routeplanning is beschikbaar in Nederland, België en Luxemburg. Je locatie en alle geselecteerde onderdelen moeten daar liggen."
+            "value": "Routeplanning is beschikbaar in Nederland, België en Luxemburg. Het startpunt en alle geselecteerde onderdelen moeten daar liggen."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La planification d’itinéraires est disponible aux Pays-Bas, en Belgique et au Luxembourg. Votre position et tous les éléments sélectionnés doivent s’y trouver."
+            "value": "La planification d’itinéraires est disponible aux Pays-Bas, en Belgique et au Luxembourg. Le point de départ et tous les éléments sélectionnés doivent s’y trouver."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La planificación de rutas está disponible en los Países Bajos, Bélgica y Luxemburgo. Tu ubicación y todos los elementos seleccionados deben estar allí."
+            "value": "La planificación de rutas está disponible en los Países Bajos, Bélgica y Luxemburgo. El punto de partida y todos los elementos seleccionados deben estar allí."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Routenplanung ist in den Niederlanden, Belgien und Luxemburg verfügbar. Dein Standort und alle ausgewählten Elemente müssen dort liegen."
+            "value": "Die Routenplanung ist in den Niederlanden, Belgien und Luxemburg verfügbar. Der Startpunkt und alle ausgewählten Elemente müssen dort liegen."
           }
         }
       }
@@ -5673,6 +5785,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ordner wird durchsucht…"
+          }
+        }
+      }
+    },
+    "Search for an address or place": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoek een adres of plaats"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher une adresse ou un lieu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar una dirección o lugar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresse oder Ort suchen"
           }
         }
       }
@@ -6093,6 +6233,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Squadratinhos (17)"
+          }
+        }
+      }
+    },
+    "Start: %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Départ : %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicio: %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start: %@"
+          }
+        }
+      }
+    },
+    "Start: My Location": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start: mijn locatie"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Départ : ma position"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicio: mi ubicación"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start: mein Standort"
+          }
+        }
+      }
+    },
+    "Starting Point": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startpunt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point de départ"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punto de partida"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startpunkt"
           }
         }
       }
@@ -6685,30 +6909,30 @@
         }
       }
     },
-    "Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at your location.": {
+    "Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route begint en eindigt op je locatie."
+            "value": "Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route begint en eindigt bij het startpunt; houd de kaart ingedrukt om daar te starten."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours part de votre position et y revient."
+            "value": "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours part du point de départ et y revient ; touchez longuement la carte pour partir de là."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta empieza y termina en tu ubicación."
+            "value": "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta empieza y termina en el punto de partida; mantén pulsado el mapa para empezar allí."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet an deinem Standort."
+            "value": "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet am Startpunkt; halte die Karte gedrückt, um dort zu starten."
           }
         }
       }
@@ -6821,6 +7045,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dieses Jahr (%@)"
+          }
+        }
+      }
+    },
+    "This place couldn't be found. Try another search.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze plaats is niet gevonden. Probeer een andere zoekopdracht."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ce lieu est introuvable. Essayez une autre recherche."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró este lugar. Prueba otra búsqueda."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieser Ort wurde nicht gefunden. Versuche eine andere Suche."
           }
         }
       }

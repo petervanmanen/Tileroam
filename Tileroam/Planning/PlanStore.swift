@@ -24,6 +24,10 @@ final class PlanStore {
     private(set) var gpxURL: URL?
     /// Incremented whenever the map needs to redraw planning overlays.
     private(set) var version = 0
+    /// Where the round trip starts and ends; nil is the current location.
+    private(set) var start: StartPoint?
+    /// The last starting points chosen, newest first.
+    private(set) var recentStarts = RecentStarts.load()
 
     private let router = ValhallaRouter()
     private let location = CurrentLocation()
@@ -82,6 +86,27 @@ final class PlanStore {
         version += 1
     }
 
+    // MARK: Starting point
+
+    /// Starts from `start`, or from the current location when nil. `remember` adds it to the recent
+    /// starting points.
+    func setStart(_ start: StartPoint?, remember: Bool = true) {
+        self.start = start
+        if let start, remember {
+            recentStarts = RecentStarts.adding(start, to: recentStarts)
+            RecentStarts.save(recentStarts)
+        }
+        error = start.map { RoutingData.covers($0.point) } == false ? RoutingError.outsideRegion.localizedDescription : nil
+        waitingForWiFi = nil
+        if route?.source == .planned { routeIsOutdated = true }
+        version += 1
+    }
+
+    func removeRecentStart(_ start: StartPoint) {
+        recentStarts.removeAll { $0 == start }
+        RecentStarts.save(recentStarts)
+    }
+
     // MARK: Planning
 
     func plan(with store: ActivityStore) async {
@@ -96,10 +121,15 @@ final class PlanStore {
             allowMobileDataOnce = false
         }
         do {
-            status = String(localized: "Finding your location…")
-            let here = try await location.get().coordinate
-            let start = GeoPoint(lat: here.latitude, lon: here.longitude)
-            try await plan(from: start, with: store)
+            let from: GeoPoint
+            if let start {
+                from = start.point
+            } else {
+                status = String(localized: "Finding your location…")
+                let here = try await location.get().coordinate
+                from = GeoPoint(lat: here.latitude, lon: here.longitude)
+            }
+            try await plan(from: from, with: store)
         } catch RoutingError.waitingForWiFi(let bytes) {
             waitingForWiFi = bytes
             self.error = RoutingError.waitingForWiFi(bytes: bytes).localizedDescription
@@ -172,8 +202,16 @@ final class PlanStore {
 
     #if DEBUG
     /// Simulator check without tapping: -PlanDemo YES plans a route near Utrecht,
-    /// -PlanGPX /path/file.gpx imports a GPX.
+    /// -PlanGPX /path/file.gpx imports a GPX, -PlanStart "52.09,5.12" opens planning from that start.
     func runDebugDemo(with store: ActivityStore) async {
+        if let text = UserDefaults.standard.string(forKey: "PlanStart") {
+            let parts = text.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+            if parts.count == 2 {
+                isPlanning = true
+                let point = GeoPoint(lat: parts[0], lon: parts[1])
+                setStart(await StartPoint.dropped(at: point), remember: false)
+            }
+        }
         if let path = UserDefaults.standard.string(forKey: "PlanGPX") {
             isPlanning = true
             await importGPX(URL(filePath: path), with: store)

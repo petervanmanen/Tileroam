@@ -101,6 +101,8 @@ struct ActivityMapView: UIViewRepresentable {
                                         span: MKCoordinateSpan(latitudeDelta: 3.4, longitudeDelta: 3.4))
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         map.addGestureRecognizer(tap)
+        let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
+        map.addGestureRecognizer(longPress)
         return map
     }
 
@@ -251,6 +253,13 @@ struct ActivityMapView: UIViewRepresentable {
                                level: .aboveRoads)
             }
 
+            if planning, let start = plan.start {
+                let pin = StartAnnotation()
+                pin.coordinate = CLLocationCoordinate2D(latitude: start.lat, longitude: start.lon)
+                pin.title = start.name
+                map.addAnnotation(pin)
+            }
+
             if planning, let route = plan.route {
                 hasFocused = true // don't move away from the route
                 showRoute(route, on: map)
@@ -334,8 +343,23 @@ struct ActivityMapView: UIViewRepresentable {
             }
         }
 
+        /// The chosen starting point; drag it to move the start.
+        final class StartAnnotation: MKPointAnnotation {}
+
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             guard !(annotation is MKUserLocation) else { return nil }
+            if annotation is StartAnnotation {
+                let view = mapView.dequeueReusableAnnotationView(withIdentifier: "start") as? MKMarkerAnnotationView
+                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "start")
+                view.annotation = annotation
+                view.glyphImage = UIImage(systemName: "flag.fill")
+                view.markerTintColor = .systemGreen
+                view.titleVisibility = .adaptive
+                view.canShowCallout = false
+                view.isDraggable = true
+                view.displayPriority = .required
+                return view
+            }
             let view = mapView.dequeueReusableAnnotationView(withIdentifier: "stop") as? MKMarkerAnnotationView
                 ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "stop")
             view.annotation = annotation
@@ -376,6 +400,31 @@ struct ActivityMapView: UIViewRepresentable {
                 return AreaRenderer(overlay: areas)
             default:
                 return MKOverlayRenderer(overlay: overlay)
+            }
+        }
+
+        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView,
+                     didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+            guard newState == .ending, let pin = view.annotation as? StartAnnotation else { return }
+            setStart(at: GeoPoint(lat: pin.coordinate.latitude, lon: pin.coordinate.longitude))
+        }
+
+        /// Planning mode: long-press the map to start the round trip there.
+        @objc func handleLongPress(_ recognizer: UILongPressGestureRecognizer) {
+            guard recognizer.state == .began, parent.plan.isPlanning, !parent.plan.isWorking,
+                  let map = recognizer.view as? MKMapView else { return }
+            let c = map.convert(recognizer.location(in: map), toCoordinateFrom: map)
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            setStart(at: GeoPoint(lat: c.latitude, lon: c.longitude))
+        }
+
+        private func setStart(at point: GeoPoint) {
+            let plan = parent.plan
+            // Show the pin right away; the place name follows.
+            plan.setStart(StartPoint(name: StartPoint.coordinateName(point), point), remember: false)
+            Task {
+                let named = await StartPoint.dropped(at: point)
+                if plan.start?.point == point { plan.setStart(named) }
             }
         }
 
