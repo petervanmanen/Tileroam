@@ -25,29 +25,13 @@ struct Country: Identifiable, Hashable, Sendable {
         (minLat...maxLat).contains(p.lat) && (minLon...maxLon).contains(p.lon)
     }
 
+    /// The countries with municipality and postcode boundaries: those route planning covers
+    /// (`RoutingData.countries`). Tiles, routes and statistics work everywhere. The data of more
+    /// countries can be built with Tools/build_regions.py (see docs/ROUTING.md, Adding countries).
     static let all: [Country] = [
         Country(code: "NL", minLat: 50.7, maxLat: 53.7, minLon: 3.3, maxLon: 7.3, hasPostcodes: true),
         Country(code: "BE", minLat: 49.4, maxLat: 51.6, minLon: 2.5, maxLon: 6.5, hasPostcodes: true),
         Country(code: "LU", minLat: 49.4, maxLat: 50.2, minLon: 5.7, maxLon: 6.6, hasPostcodes: false),
-        Country(code: "DE", minLat: 47.2, maxLat: 55.1, minLon: 5.8, maxLon: 15.1, hasPostcodes: true),
-        Country(code: "FR", minLat: 41.3, maxLat: 51.2, minLon: -5.2, maxLon: 9.6, hasPostcodes: true),
-        Country(code: "ES", minLat: 27.6, maxLat: 43.9, minLon: -18.2, maxLon: 4.4, hasPostcodes: true),
-        Country(code: "CH", minLat: 45.8, maxLat: 47.9, minLon: 5.9, maxLon: 10.6, hasPostcodes: true),
-        Country(code: "AT", minLat: 46.3, maxLat: 49.1, minLon: 9.5, maxLon: 17.2, hasPostcodes: false),
-        Country(code: "GB", minLat: 49.8, maxLat: 60.9, minLon: -8.7, maxLon: 1.8, hasPostcodes: true),
-        Country(code: "IE", minLat: 51.4, maxLat: 55.5, minLon: -10.7, maxLon: -5.9, hasPostcodes: false),
-        Country(code: "PT", minLat: 36.9, maxLat: 42.2, minLon: -9.6, maxLon: -6.1, hasPostcodes: false),
-        Country(code: "IT", minLat: 35.4, maxLat: 47.1, minLon: 6.6, maxLon: 18.6, hasPostcodes: false),
-        Country(code: "LI", minLat: 47.04, maxLat: 47.28, minLon: 9.47, maxLon: 9.64, hasPostcodes: false),
-        Country(code: "MC", minLat: 43.72, maxLat: 43.76, minLon: 7.40, maxLon: 7.44, hasPostcodes: false),
-        Country(code: "AD", minLat: 42.42, maxLat: 42.66, minLon: 1.40, maxLon: 1.79, hasPostcodes: false),
-        Country(code: "SM", minLat: 43.89, maxLat: 44.0, minLon: 12.40, maxLon: 12.52, hasPostcodes: false),
-        Country(code: "VA", minLat: 41.90, maxLat: 41.91, minLon: 12.44, maxLon: 12.46, hasPostcodes: false),
-        Country(code: "DK", minLat: 54.5, maxLat: 57.8, minLon: 8.0, maxLon: 15.2, hasPostcodes: true),
-        Country(code: "NO", minLat: 57.9, maxLat: 71.3, minLon: 4.5, maxLon: 31.2, hasPostcodes: false),
-        Country(code: "SE", minLat: 55.3, maxLat: 69.1, minLon: 10.9, maxLon: 24.2, hasPostcodes: false),
-        Country(code: "FI", minLat: 59.7, maxLat: 70.1, minLon: 20.5, maxLon: 31.6, hasPostcodes: true),
-        Country(code: "IS", minLat: 63.2, maxLat: 66.6, minLon: -24.6, maxLon: -13.4, hasPostcodes: false),
     ]
 
     /// Sorted by name in the current language, for lists.

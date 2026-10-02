@@ -63,7 +63,7 @@ struct GeoTests {
         return try Data(contentsOf: root.appending(path: "AssetPacks/Regions/\(country)-\(kind.rawValue).fmr"))
     }
 
-    static let regions = RegionData.load(countries: ["NL", "BE", "DE"], read: read)
+    static let regions = RegionData.load(countries: ["NL", "BE", "LU"], read: read)
 
     @Test func regionFilesDecode() throws {
         for country in Country.all {
@@ -82,8 +82,8 @@ struct GeoTests {
         #expect(m.area(at: GeoPoint(lat: 52.3731, lon: 4.8926))?.code == "NL:GM0363") // Amsterdam
         #expect(m.area(at: GeoPoint(lat: 52.0907, lon: 5.1214))?.name == "Utrecht")
         #expect(m.area(at: GeoPoint(lat: 50.8466, lon: 4.3528))?.country == "BE") // Brussels
-        #expect(m.area(at: GeoPoint(lat: 52.5163, lon: 13.3777))?.name.contains("Berlin") == true)
-        #expect(m.area(at: GeoPoint(lat: 48.85, lon: 2.35)) == nil) // France not loaded
+        #expect(m.area(at: GeoPoint(lat: 49.6116, lon: 6.1319))?.name == "Luxembourg")
+        #expect(m.area(at: GeoPoint(lat: 52.5163, lon: 13.3777)) == nil) // Berlin: Germany isn't covered
     }
 
     @Test func postcodeLookup() {
@@ -91,39 +91,12 @@ struct GeoTests {
         #expect(p.countByCountry()["NL"] == 4071)
         #expect(p.area(at: GeoPoint(lat: 52.0907, lon: 5.1214))?.code == "NL:3512") // Utrecht Dom
         #expect(p.area(at: GeoPoint(lat: 52.3731, lon: 4.8926))?.localCode == "1012") // Amsterdam Dam
-        #expect(p.area(at: GeoPoint(lat: 52.5163, lon: 13.3777))?.localCode == "10117") // Brandenburger Tor
+        #expect(p.area(at: GeoPoint(lat: 50.8466, lon: 4.3528))?.country == "BE") // Brussels
     }
 
-    @Test func otherCountries() {
-        let r = RegionData.load(countries: ["FR", "ES", "GB", "IE", "CH", "AT", "LU"], read: Self.read)
-        #expect(r.municipalities.area(at: GeoPoint(lat: 48.8584, lon: 2.2945))?.name == "Paris")
-        #expect(r.municipalities.area(at: GeoPoint(lat: 40.4168, lon: -3.7038))?.name == "Madrid")
-        #expect(r.municipalities.area(at: GeoPoint(lat: 53.3498, lon: -6.2603))?.country == "IE")
-        #expect(r.municipalities.area(at: GeoPoint(lat: 51.5007, lon: -0.1246))?.name == "Westminster")
-        #expect(r.municipalities.area(at: GeoPoint(lat: 47.3769, lon: 8.5417))?.name == "Zürich")
-        #expect(r.municipalities.area(at: GeoPoint(lat: 48.2082, lon: 16.3738))?.name == "Wien")
-        #expect(r.municipalities.area(at: GeoPoint(lat: 49.6116, lon: 6.1319))?.name == "Luxembourg")
-        #expect(r.postcodes.area(at: GeoPoint(lat: 51.5007, lon: -0.1246))?.localCode == "SW1A")
-        #expect(r.postcodes.area(at: GeoPoint(lat: 47.3769, lon: 8.5417))?.localCode.hasPrefix("80") == true)
-    }
-
-    @Test func westernAndNordicCountries() {
-        let r = RegionData.load(countries: ["PT", "IT", "DK", "NO", "SE", "FI", "IS", "LI", "MC", "AD", "SM", "VA"], read: Self.read)
-        let m = r.municipalities
-        #expect(m.area(at: GeoPoint(lat: 41.8902, lon: 12.4922))?.name == "Roma") // Colosseum
-        #expect(m.area(at: GeoPoint(lat: 41.9029, lon: 12.4534))?.country == "VA") // St. Peter's
-        #expect(m.area(at: GeoPoint(lat: 38.7139, lon: -9.1394))?.name == "Lisboa")
-        #expect(m.area(at: GeoPoint(lat: 55.6761, lon: 12.5683))?.name == "København")
-        #expect(m.area(at: GeoPoint(lat: 59.9139, lon: 10.7522))?.name == "Oslo")
-        #expect(m.area(at: GeoPoint(lat: 59.3293, lon: 18.0686))?.name == "Stockholm")
-        #expect(m.area(at: GeoPoint(lat: 60.1699, lon: 24.9384))?.name == "Helsinki")
-        #expect(m.area(at: GeoPoint(lat: 64.1466, lon: -21.9426))?.name == "Reykjavíkurborg")
-        #expect(m.area(at: GeoPoint(lat: 47.1410, lon: 9.5209))?.name == "Vaduz")
-        #expect(m.area(at: GeoPoint(lat: 43.7384, lon: 7.4246))?.country == "MC")
-        #expect(m.area(at: GeoPoint(lat: 42.5063, lon: 1.5218))?.country == "AD")
-        #expect(m.area(at: GeoPoint(lat: 43.9356, lon: 12.4473))?.country == "SM")
-        #expect(r.postcodes.area(at: GeoPoint(lat: 55.6761, lon: 12.5683))?.localCode.hasPrefix("1") == true)
-        #expect(r.postcodes.area(at: GeoPoint(lat: 60.1699, lon: 24.9384))?.localCode == "00100")
+    @Test func onlyBeneluxCountries() {
+        #expect(Country.all.map(\.code) == ["NL", "BE", "LU"])
+        #expect(Set(Country.all.map(\.code)) == RoutingData.countries) // the same as route planning
     }
 
     @Test func mapFocusPicksDensestArea() {

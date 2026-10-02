@@ -10,7 +10,7 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 
 - **Tegels**: kaarttegels op zoom 14 (~1,5 km, zoals bij VeloViewer, StatsHunters en [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) en *squadratinho's* op zoom 17 (~190 m, zoals bij Squadrats). Beide worden altijd geteld; jij kiest welke de kaart toont. Inclusief je **max. vierkant** en **grootste cluster**.
 - **Routes**: al je activiteiten op één kaart, gekleurd per sport.
-- **Gemeenten en postcodes** in 22 Europese landen, met bezocht/totaal per land.
+- **Gemeenten en postcodes** in Nederland, België en Luxemburg, met bezocht/totaal per land.
 - **Routeplanning**: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit vanaf je locatie langs al die plekken. Deel hem als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
 - **Strava**: importeer je volledige geschiedenis met gps. Activiteiten worden ook als standaard `.fit`-bestanden bewaard in een map naar keuze.
 - **Dubbele activiteiten samengevoegd**: dezelfde training die door meerdere apparaten of apps is vastgelegd (horloge, Zwift, Strava, HealthFit) telt één keer.
@@ -47,21 +47,6 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 | Nederland | 342 gemeenten | 4.071 (PC4) |
 | België | 565 | 1.150 |
 | Luxemburg | 100 communes | – |
-| Duitsland | 10.949 Gemeinden | 8.173 PLZ |
-| Frankrijk | 34.888 communes | 6.158 (benaderde zones) |
-| Spanje | 8.223 municipios | 10.874 |
-| Portugal | 308 concelhos | – |
-| Italië | 7.904 comuni | – |
-| Zwitserland | 2.128 Gemeinden | 3.181 PLZ |
-| Oostenrijk | 2.092 Gemeinden | – |
-| Liechtenstein, Monaco, Andorra, San Marino, Vaticaanstad | 11 / 1 / 7 / 9 / 1 | – |
-| Verenigd Koninkrijk | 361 local authorities | 2.836 postcodedistricten |
-| Ierland | 31 local authorities | – |
-| Denemarken | 98 kommuner | 592 |
-| Noorwegen | 357 kommuner | – |
-| Zweden | 290 kommuner | – |
-| Finland | 308 kunnat | 3.026 |
-| IJsland | 61 sveitarfélög | – |
 
 Postcodes zijn alleen opgenomen waar de grenzen als open data beschikbaar zijn. Landen worden automatisch ingeschakeld op basis van je activiteiten; je kunt dit aanpassen in Instellingen.
 
@@ -110,22 +95,7 @@ Het script beschrijft waar elk bronbestand vandaan komt. Het herprojecteert naar
 |---|---|
 | Nederland | CBS / Kadaster via PDOK (CC BY 4.0) |
 | België | NGI-IGN, bpost via Opendatasoft (postcodelicentie: zie bron) |
-| Duitsland | BKG (dl-de/by-2-0); postcodes © OpenStreetMap-bijdragers (ODbL) |
-| Frankrijk | IGN, INSEE; postcodezones Etalab / BAN (Licence Ouverte 2.0) |
-| Spanje | IGN, CNIG, Correos (CC BY 4.0) |
-| Portugal | Direção-Geral do Território (publiek domein) |
-| Italië | ISTAT (CC BY 3.0) |
-| Zwitserland | swisstopo (opendata.swiss) |
-| Oostenrijk | Statistik Austria (CC BY 4.0) |
 | Luxemburg | ACT (CC0) |
-| Verenigd Koninkrijk | ONS, OS (OGL v3.0); postcodedistricten (CC BY 4.0) |
-| Ierland | Tailte Éireann (CC BY 4.0) |
-| Denemarken | SDFI / Klimadatastyrelsen DAGI |
-| Noorwegen | Kartverket (CC BY 4.0) |
-| Zweden | © OpenStreetMap-bijdragers (ODbL) |
-| Finland | Statistics Finland (CC BY 4.0) |
-| IJsland | Náttúrufræðistofnun Íslands (CC BY 4.0) |
-| Microstaten | geoBoundaries / © OpenStreetMap-bijdragers (ODbL) |
 
 Routeplanning: © OpenStreetMap-bijdragers (ODbL), routering door OSRM / FOSSGIS.
 

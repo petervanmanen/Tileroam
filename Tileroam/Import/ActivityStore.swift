@@ -138,7 +138,8 @@ final class ActivityStore {
 
     private func chooseInitialCountries() {
         if let saved = UserDefaults.standard.stringArray(forKey: Self.countriesKey) {
-            enabledCountries = Set(saved)
+            // Earlier versions had more countries; their boundaries are no longer available.
+            enabledCountries = Set(saved).filter { Country.named($0) != nil }
         }
         // Countries follow the activities: drop any without visits after the first count
         // (earlier versions let the user switch countries on by hand).

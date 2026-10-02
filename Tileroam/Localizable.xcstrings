@@ -3801,30 +3801,30 @@
         }
       }
     },
-    "Municipalities and postcodes in 22 European countries": {
+    "Municipalities and postcodes in the Netherlands, Belgium and Luxembourg": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemeenten en postcodes in 22 Europese landen"
+            "value": "Gemeenten en postcodes in Nederland, België en Luxemburg"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Communes et codes postaux dans 22 pays européens"
+            "value": "Communes et codes postaux aux Pays-Bas, en Belgique et au Luxembourg"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Municipios y códigos postales en 22 países europeos"
+            "value": "Municipios y códigos postales en los Países Bajos, Bélgica y Luxemburgo"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gemeinden und Postleitzahlen in 22 europäischen Ländern"
+            "value": "Gemeinden und Postleitzahlen in den Niederlanden, Belgien und Luxemburg"
           }
         }
       }

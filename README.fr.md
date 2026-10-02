@@ -10,7 +10,7 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 
 - **Tuiles** : tuiles de carte au zoom 14 (~1,5 km, comme sur VeloViewer, StatsHunters et [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) et *squadratinhos* au zoom 17 (~190 m, comme sur Squadrats). Les deux sont toujours comptés ; vous choisissez celui que la carte affiche. Avec votre **carré max** et votre **plus grand cluster**.
 - **Parcours** : toutes vos activités sur une seule carte, colorées par sport.
-- **Communes et codes postaux** dans 22 pays européens, avec visités/total par pays.
+- **Communes et codes postaux** aux Pays-Bas, en Belgique et au Luxembourg, avec visités/total par pays.
 - **Planification d’itinéraire** : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte depuis votre position en passant par tous. Partagez-la en **GPX** ou enregistrez-la dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
 - **Strava** : importez tout votre historique avec le GPS. Les activités sont aussi enregistrées en fichiers `.fit` standard dans le dossier de votre choix.
 - **Doublons fusionnés** : une même séance enregistrée par plusieurs appareils ou apps (montre, Zwift, Strava, HealthFit) ne compte qu’une fois.
@@ -47,21 +47,6 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 | Pays-Bas | 342 gemeenten | 4 071 (PC4) |
 | Belgique | 565 | 1 150 |
 | Luxembourg | 100 communes | – |
-| Allemagne | 10 949 Gemeinden | 8 173 PLZ |
-| France | 34 888 communes | 6 158 (zones approximatives) |
-| Espagne | 8 223 municipios | 10 874 |
-| Portugal | 308 concelhos | – |
-| Italie | 7 904 comuni | – |
-| Suisse | 2 128 Gemeinden | 3 181 NPA |
-| Autriche | 2 092 Gemeinden | – |
-| Liechtenstein, Monaco, Andorre, Saint-Marin, Vatican | 11 / 1 / 7 / 9 / 1 | – |
-| Royaume-Uni | 361 local authorities | 2 836 postcode districts |
-| Irlande | 31 local authorities | – |
-| Danemark | 98 kommuner | 592 |
-| Norvège | 357 kommuner | – |
-| Suède | 290 kommuner | – |
-| Finlande | 308 kunnat | 3 026 |
-| Islande | 61 sveitarfélög | – |
 
 Les codes postaux ne sont inclus que là où leurs limites sont publiées en données ouvertes. Les pays s’activent automatiquement selon vos activités ; vous pouvez les modifier dans Réglages.
 
@@ -110,22 +95,7 @@ Le script indique l’origine de chaque fichier source. Il reprojette en WGS84, 
 |---|---|
 | Pays-Bas | CBS / Kadaster via PDOK (CC BY 4.0) |
 | Belgique | NGI-IGN, bpost via Opendatasoft (licence des codes postaux : voir la source) |
-| Allemagne | BKG (dl-de/by-2-0) ; codes postaux © contributeurs OpenStreetMap (ODbL) |
-| France | IGN, INSEE ; zones de codes postaux Etalab / BAN (Licence Ouverte 2.0) |
-| Espagne | IGN, CNIG, Correos (CC BY 4.0) |
-| Portugal | Direção-Geral do Território (domaine public) |
-| Italie | ISTAT (CC BY 3.0) |
-| Suisse | swisstopo (opendata.swiss) |
-| Autriche | Statistik Austria (CC BY 4.0) |
 | Luxembourg | ACT (CC0) |
-| Royaume-Uni | ONS, OS (OGL v3.0) ; postcode districts (CC BY 4.0) |
-| Irlande | Tailte Éireann (CC BY 4.0) |
-| Danemark | SDFI / Klimadatastyrelsen DAGI |
-| Norvège | Kartverket (CC BY 4.0) |
-| Suède | © contributeurs OpenStreetMap (ODbL) |
-| Finlande | Statistics Finland (CC BY 4.0) |
-| Islande | Náttúrufræðistofnun Íslands (CC BY 4.0) |
-| Micro-États | geoBoundaries / © contributeurs OpenStreetMap (ODbL) |
 
 Planification : © contributeurs OpenStreetMap (ODbL), itinéraires par OSRM / FOSSGIS.
 

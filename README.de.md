@@ -10,7 +10,7 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 
 - **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) und *Squadratinhos* auf Zoom 17 (~190 m, wie bei Squadrats). Beide werden immer gezählt; du wählst, welche die Karte zeigt. Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
 - **Routen**: alle deine Aktivitäten auf einer Karte, nach Sportart eingefärbt.
-- **Gemeinden und Postleitzahlen** in 22 europäischen Ländern, mit besucht/gesamt pro Land.
+- **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien und Luxemburg, mit besucht/gesamt pro Land.
 - **Routenplanung**: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, und Tileroam plant die kürzeste Radrundfahrt ab deinem Standort durch alle diese Orte. Teile sie als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch ein vorhandenes GPX öffnen, um zu sehen, welche neuen Orte es bringen würde.
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
 - **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
@@ -47,21 +47,6 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 | Niederlande | 342 gemeenten | 4.071 (PC4) |
 | Belgien | 565 | 1.150 |
 | Luxemburg | 100 communes | – |
-| Deutschland | 10.949 Gemeinden | 8.173 PLZ |
-| Frankreich | 34.888 communes | 6.158 (angenäherte Zonen) |
-| Spanien | 8.223 municipios | 10.874 |
-| Portugal | 308 concelhos | – |
-| Italien | 7.904 comuni | – |
-| Schweiz | 2.128 Gemeinden | 3.181 PLZ |
-| Österreich | 2.092 Gemeinden | – |
-| Liechtenstein, Monaco, Andorra, San Marino, Vatikanstadt | 11 / 1 / 7 / 9 / 1 | – |
-| Vereinigtes Königreich | 361 Local Authorities | 2.836 Postcode Districts |
-| Irland | 31 Local Authorities | – |
-| Dänemark | 98 kommuner | 592 |
-| Norwegen | 357 kommuner | – |
-| Schweden | 290 kommuner | – |
-| Finnland | 308 kunnat | 3.026 |
-| Island | 61 sveitarfélög | – |
 
 Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Länder werden anhand deiner Aktivitäten automatisch aktiviert; du kannst sie in den Einstellungen ändern.
 
@@ -110,22 +95,7 @@ Das Skript dokumentiert, woher jede Quelldatei stammt. Es projiziert nach WGS84 
 |---|---|
 | Niederlande | CBS / Kadaster über PDOK (CC BY 4.0) |
 | Belgien | NGI-IGN, bpost über Opendatasoft (Postleitzahl-Lizenz: siehe Quelle) |
-| Deutschland | BKG (dl-de/by-2-0); Postleitzahlen © OpenStreetMap-Mitwirkende (ODbL) |
-| Frankreich | IGN, INSEE; Postleitzahlzonen Etalab / BAN (Licence Ouverte 2.0) |
-| Spanien | IGN, CNIG, Correos (CC BY 4.0) |
-| Portugal | Direção-Geral do Território (gemeinfrei) |
-| Italien | ISTAT (CC BY 3.0) |
-| Schweiz | swisstopo (opendata.swiss) |
-| Österreich | Statistik Austria (CC BY 4.0) |
 | Luxemburg | ACT (CC0) |
-| Vereinigtes Königreich | ONS, OS (OGL v3.0); Postcode Districts (CC BY 4.0) |
-| Irland | Tailte Éireann (CC BY 4.0) |
-| Dänemark | SDFI / Klimadatastyrelsen DAGI |
-| Norwegen | Kartverket (CC BY 4.0) |
-| Schweden | © OpenStreetMap-Mitwirkende (ODbL) |
-| Finnland | Statistics Finland (CC BY 4.0) |
-| Island | Náttúrufræðistofnun Íslands (CC BY 4.0) |
-| Kleinstaaten | geoBoundaries / © OpenStreetMap-Mitwirkende (ODbL) |
 
 Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch OSRM / FOSSGIS.
 

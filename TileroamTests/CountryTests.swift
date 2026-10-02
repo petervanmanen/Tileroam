@@ -9,21 +9,20 @@ struct CountryOutlinesTests {
         #expect(outlines.country(at: GeoPoint(lat: 52.0907, lon: 5.1214)) == "NL") // Utrecht
         #expect(outlines.country(at: GeoPoint(lat: 50.8514, lon: 5.6910)) == "NL") // Maastricht
         #expect(outlines.country(at: GeoPoint(lat: 50.6326, lon: 5.5797)) == "BE") // Liège
-        #expect(outlines.country(at: GeoPoint(lat: 50.7753, lon: 6.0839)) == "DE") // Aachen
-        #expect(outlines.country(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == "FR") // Paris
-        #expect(outlines.country(at: GeoPoint(lat: 47.1410, lon: 9.5209)) == "LI") // Vaduz
-        #expect(outlines.country(at: GeoPoint(lat: 64.1466, lon: -21.9426)) == "IS") // Reykjavík
-        #expect(outlines.country(at: GeoPoint(lat: 28.1235, lon: -15.4363)) == "ES") // Las Palmas
+        #expect(outlines.country(at: GeoPoint(lat: 49.6116, lon: 6.1319)) == "LU") // Luxembourg
+        #expect(outlines.country(at: GeoPoint(lat: 53.0600, lon: 4.8000)) == "NL") // Texel
     }
 
     @Test func pointsOutsideSupportedCountries() {
         #expect(outlines.country(at: GeoPoint(lat: 53.5, lon: 3.0)) == nil) // North Sea
         #expect(outlines.country(at: GeoPoint(lat: 50.0755, lon: 14.4378)) == nil) // Prague
+        #expect(outlines.country(at: GeoPoint(lat: 50.7753, lon: 6.0839)) == nil) // Aachen: Germany isn't covered
+        #expect(outlines.country(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == nil) // Paris
     }
 
     @Test func tracksNearBordersOnlyCountTheirCountries() {
-        // Rides around Maastricht and Utrecht: the bounding boxes of Belgium and Germany contain
-        // these points, the outlines don't.
+        // Rides around Maastricht and Utrecht: Belgium's bounding box contains these points, its
+        // outline doesn't.
         let tracks = [
             [GeoPoint(lat: 50.8514, lon: 5.6910), GeoPoint(lat: 50.87, lon: 5.70)],
             [GeoPoint(lat: 52.0907, lon: 5.1214), GeoPoint(lat: 52.10, lon: 5.15)],
