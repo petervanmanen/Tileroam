@@ -96,17 +96,6 @@ func send(_ request: URLRequest, tries: Int = 4) async throws -> (Data, Int) {
     }
 }
 
-/// Whether App Store Connect now has the pack archived (an archive that answered with an error
-/// may have gone through anyway).
-func isArchived(_ resourceID: String, auth: String) async -> Bool {
-    var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(resourceID)")!)
-    request.setValue(auth, forHTTPHeaderField: "Authorization")
-    guard let (data, status) = try? await send(request, tries: 2), status == 200,
-          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-          let attributes = (json["data"] as? [String: Any])?["attributes"] as? [String: Any] else { return false }
-    return attributes["archived"] as? Bool ?? false
-}
-
 struct Pack {
     /// App Store Connect's resource ID (for PATCH).
     let resourceID: String
@@ -198,40 +187,33 @@ if !prefixes.isEmpty {
         print("Nothing archived.")
         exit(1)
     }
-    var failed = [String]()
-    for (n, p) in toArchive.enumerated() {
-        let auth = "Bearer \(try token())" // fresh for every pack: a slow run can outlast a token
-        var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(p.resourceID)")!)
-        request.httpMethod = "PATCH"
-        request.setValue(auth, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: [
-            "data": ["type": "backgroundAssets", "id": p.resourceID, "attributes": ["archived": true]],
-        ])
-        let progress = "[\(n + 1)/\(toArchive.count)]"
-        var problem: String?
-        do {
-            let (data, status) = try await send(request)
-            if status != 200 {
-                problem = "App Store Connect answered \(status): " + String(decoding: data, as: UTF8.self)
-                    .replacingOccurrences(of: "\n", with: " ").prefix(200)
+    // All requests at once, without waiting for the answers: App Store Connect archives slowly and
+    // often answers with a timeout or a 500 while the archive still goes through (it emails each
+    // one). Each request gets 30 seconds to be delivered; whatever it answers is ignored. Run the
+    // check again afterwards: packs still unused weren't archived, and the same command retries them.
+    let auth = "Bearer \(try token())"
+    await withTaskGroup(of: Void.self) { group in
+        for p in toArchive {
+            group.addTask {
+                var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(p.resourceID)")!)
+                request.httpMethod = "PATCH"
+                request.timeoutInterval = 30
+                request.setValue(auth, forHTTPHeaderField: "Authorization")
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.httpBody = try? JSONSerialization.data(withJSONObject: [
+                    "data": ["type": "backgroundAssets", "id": p.resourceID, "attributes": ["archived": true]],
+                ])
+                _ = try? await URLSession.shared.data(for: request)
             }
-        } catch {
-            problem = error.localizedDescription
-        }
-        if problem == nil {
-            print("\(progress) Archived \(p.id)")
-        } else if await isArchived(p.resourceID, auth: auth) {
-            print("\(progress) Archived \(p.id) (after an error)")
-        } else {
-            failed.append(p.id)
-            print("\(progress) Not archived: \(p.id). \(problem!)")
         }
     }
-    if !failed.isEmpty {
-        print("\n\(failed.count) not archived. Run the same command again later for those; App Store Connect's archiving is sometimes unavailable.")
-    }
-    exit(failed.isEmpty ? 0 : 1)
+    print("""
+
+    Sent \(toArchive.count) archive requests. App Store Connect archives them in its own time (you get an \
+    email for each). Check later with the same command without ARCHIVE: archived packs no longer \
+    show as unused. Run the archive command again for any that are left.
+    """)
+    exit(0)
 } else if !unused.isEmpty {
     print("""
 
