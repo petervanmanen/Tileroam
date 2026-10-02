@@ -6,7 +6,7 @@ Based on `TODO.md` and the decisions of 2 October 2026:
   - the Wi-Fi rule for large downloads;
   - the Storage screen;
   - choosing a starting point, without saved places (map and search, plus recent starts);
-  - the Apple Maps routing app.
+  - ~~the Apple Maps routing app~~ (skipped, after 1.0).
 - **Unused asset packs:** removed with a reusable cleanup script, built first.
 
 Each phase gets its own branch and a pull request into `main`, and ends with tests and a TestFlight build. You install it from TestFlight via Actions → TestFlight → Run workflow on the branch. Estimates are working time on my side; your steps are marked **(you)**.
@@ -73,7 +73,9 @@ Branch `feature/start-point`.
 4. `PlanStore`: the start is part of the plan instead of always `CurrentLocation`. The demo, screenshots and preview keep working.
 5. **Tests:** planning with a fixed start (engine test on the Luxembourg build), and saving recent starts.
 
-## Phase 5: Apple Maps routing app (½–1 day)
+## Phase 5: Apple Maps routing app (½–1 day): skipped for 1.0
+Skipped on 2 October 2026; it stays in TODO.md for a later version. Until then, don't upload the Routing App Coverage File: App Store Connect only accepts it for routing apps.
+
 Branch `feature/routing-app`.
 1. **Info.plist:** `MKDirectionsApplicationSupportedModes` = bike.
 2. **Receiving requests:** handle Maps' directions request via the scene's URL handling (`MKDirections.Request(contentsOf:)`).

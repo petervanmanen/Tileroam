@@ -99,7 +99,7 @@ Example: adding Germany.
    - In `RoutingData.swift`: add the country codes to `RoutingData.countries`, and set `build` to `"west"`. The app then bundles `Resources/routing-west.json`; remove the old index file.
    - Update the text of `RoutingError.outsideRegion` in `Tileroam/Planning/Routing.swift`, and its translations in the string catalog.
    - Update `docs/MANUAL.md`, `docs/appstore/review-notes.md` and this document.
-   - Regenerate the App Store's Routing App Coverage File and upload it on the next version page:
+   - Regenerate the App Store's Routing App Coverage File, and upload it on the next version page once Tileroam is an Apple Maps routing app (not in 1.0):
      ```bash
      <venv with shapely>/bin/python Tools/build_routing_coverage.py NL BE LU DE
      ```
