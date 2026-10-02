@@ -1,9 +1,15 @@
 # To do
 
+The plan and order for version 1.0 are in [docs/PLAN-1.0.md](docs/PLAN-1.0.md). Decisions of 2 October 2026:
+- **In 1.0:** all features below except the GitHub routing workflow.
+- **Countries:** tiles everywhere, municipalities and postcodes only in the routing countries.
+- **Starting points:** no saved places.
+- **Cleanup:** script first.
+
 ## Features
 - **Apple Maps can hand cycling directions to Tileroam (routing app).** Declare `MKDirectionsApplicationSupportedModes` (bike) in Info.plist and handle the incoming `MKDirections.Request`: plan a cycling route from Maps' start to destination with Valhalla on the device, show it on the map, and offer it as GPX. Then upload `docs/appstore/routing-coverage.geojson` as the Routing App Coverage File; App Store Connect only uses it for routing apps. About half a day.
 - **Choose a different starting point for route planning,** instead of always the current location. For example, plan from home tonight for tomorrow's ride, or from a station or car park.
-  - In planning mode: "Start: My Location", which can be changed by long-pressing the map, searching an address or place (`MKLocalSearch`), or picking a saved place such as Home.
+  - In planning mode: "Start: My Location", which can be changed by long-pressing the map or searching an address or place (`MKLocalSearch`). No saved places; recent starting points are remembered.
   - The route still makes a round trip back to that start.
   - The start must lie in the routing countries; the area download follows the chosen start.
   - Show the start on the map with its own pin. Remember recent starting points.
@@ -12,7 +18,7 @@
   - Limit `Country.all` and the region files to the routing countries.
   - Rebuild `Tileroam/Resources/countries.fmr` (`Tools/build_country_outlines.py`) and the boundary packs.
   - Update the statistics, the texts that mention 22 countries (App Store description, user guide, READMEs, introduction, review notes) and the screenshots.
-  - Decide what users with activities elsewhere see: tiles still work everywhere, municipalities and postcodes only in the routing countries.
+  - Decided: tiles, routes and statistics everywhere; municipalities and postcodes only in the routing countries.
 - **Script to remove asset packs from App Store Connect** that the app no longer uses, for example the boundary packs of dropped countries and the routing packs of old builds.
   - Lists the packs in App Store Connect and compares them with what the current app version needs (the boundary countries and the routing index).
   - Asks before removing anything.
