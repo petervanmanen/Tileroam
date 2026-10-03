@@ -13,7 +13,7 @@ If a file won't import, mention where it came from (for example Garmin, Wahoo or
 ## Frequently asked questions
 
 **My activities don't show up.**
-- Open Settings → Import Folders. Check that the folder is listed and that it has no warning.
+- Imported files are copied once: new files in that folder don't appear by themselves. Import them in Settings → Activities → Import .fit Files.
 - Tileroam only reads .fit files; it doesn't read .gpx or .tcx for activities.
 - Files that could not be read are listed under "Could not read".
 - Files in iCloud Drive that aren't downloaded to the device yet are downloaded when Tileroam reads them. That can take a moment on a slow connection.
@@ -31,7 +31,7 @@ Strava limits how many requests an app may make every 15 minutes and every day. 
 
 **How do I get my data on my iPad too?**
 - Sign in to iCloud with the same Apple Account on both devices, with iCloud Drive on.
-- Tileroam keeps its files in iCloud Drive › Tileroam, and both devices read them.
+- Keep Settings → Activities → Sync with iCloud on. Tileroam keeps its activities and routes in iCloud Drive › Tileroam, without duplicates, and a new device shows them without importing or connecting Strava.
 - Strava is connected separately on each device. You only need to connect it on one device; its downloads reach the other through iCloud.
 
 **Route planning says the area isn't supported.**
@@ -44,12 +44,15 @@ The first plan in an area downloads its map data. Downloads over 25 MB wait for 
 See Settings → Storage. You can remove downloaded route planning areas there; they download again when you plan a route in that area.
 
 **Where are my planned routes?**
-In the "Routes" subfolder of your save folder. By default that is iCloud Drive › Tileroam › Routes. Open it in the Files app.
+In On My iPhone › Tileroam › Routes, and with iCloud sync in iCloud Drive › Tileroam › Routes. Open them in the Files app.
 
 **How do I remove the sample rides?**
-Settings → Import Folders → Remove Sample Rides.
+Settings → Activities → Remove Sample Rides.
+
+**How do I delete an activity?**
+In Activities (the list button on the map), swipe left on it and tap Delete. It's removed on this device and from iCloud, not from Strava or from where you imported it.
 
 **How do I delete my data?**
 - Deleting the app removes everything it stored on the device.
-- Files in iCloud Drive › Tileroam can be deleted with the Files app.
+- Files in iCloud Drive › Tileroam can be deleted with the Files app. With iCloud sync on, delete activities in Tileroam itself, so your other devices don't send them back.
 - See the [privacy policy](PRIVACY.md).

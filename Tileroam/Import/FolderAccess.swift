@@ -112,34 +112,7 @@ enum FolderAccess {
         return url
     }
 
-    /// Where downloaded activities and planned routes are saved: the chosen save folder, else
-    /// Tileroam's iCloud Drive folder, else the app's internal storage.
-    static func saveFolder() -> URL {
-        resolve(.export) ?? iCloudFolder ?? internalFolder
-    }
-
-    /// Where files go when no save folder is chosen, as the Files app shows it.
-    static var defaultSaveLocation: String {
-        iCloudFolder != nil ? iCloudLocation : internalLocation
-    }
-
-    /// Folders that are always read: the internal Import folder and, when available, the
-    /// iCloud folder (which has the activities saved on the user's other devices).
-    static var builtInFolders: [ImportFolder] {
-        [.internalFolder] + (iCloudFolder != nil ? [.iCloudDrive] : [])
-    }
-
-    /// Where "Import .fit Files…" copies files to: iCloud, so other devices get them too.
-    static var importTarget: URL {
-        guard let iCloudFolder else { return internalImportFolder }
-        let url = iCloudFolder.appending(path: "Import", directoryHint: .isDirectory)
-        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
-        return url
-    }
-
-    static var hasChosenSaveFolder: Bool { resolve(.export) != nil }
-
-    /// Go back to saving in the app's internal storage.
+    /// Forgets the save folder of earlier versions (copied into the library; `Library.migrate`).
     static func clearSaveFolder() {
         UserDefaults.standard.removeObject(forKey: Slot.export.bookmarkKey)
         UserDefaults.standard.removeObject(forKey: Slot.export.nameKey)
@@ -201,30 +174,11 @@ enum FolderAccess {
         if let data = try? JSONEncoder().encode(folders) { UserDefaults.standard.set(data, forKey: importFoldersKey) }
     }
 
-    /// Adds a folder (ignoring one that is already in the list) and returns it.
-    @discardableResult
-    static func addImportFolder(_ url: URL) throws -> ImportFolder {
-        let didAccess = url.startAccessingSecurityScopedResource()
-        defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
-        var folders = importFolders()
-        let path = url.standardizedFileURL.path(percentEncoded: false)
-        if let existing = folders.first(where: { resolve($0)?.standardizedFileURL.path(percentEncoded: false) == path }) {
-            return existing
-        }
-        let bookmark = try url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
-        let folder = ImportFolder(id: folders.isEmpty ? ImportFolder.legacyID : UUID().uuidString,
-                                  name: url.lastPathComponent, bookmark: bookmark)
-        folders.append(folder)
-        saveImportFolders(folders)
-        return folder
-    }
-
-    static func removeImportFolder(id: String) {
-        saveImportFolders(importFolders().filter { $0.id != id })
-        if id == ImportFolder.legacyID {
-            UserDefaults.standard.removeObject(forKey: Slot.source.bookmarkKey)
-            UserDefaults.standard.removeObject(forKey: Slot.source.nameKey)
-        }
+    /// Forgets all watched folders (they were copied into the library; `Library.migrate`).
+    static func clearImportFolders() {
+        UserDefaults.standard.removeObject(forKey: importFoldersKey)
+        UserDefaults.standard.removeObject(forKey: Slot.source.bookmarkKey)
+        UserDefaults.standard.removeObject(forKey: Slot.source.nameKey)
     }
 
     static func resolve(_ folder: ImportFolder) -> URL? {

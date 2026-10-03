@@ -5,7 +5,11 @@ enum StravaImport {
     static func id(for stravaID: Int) -> String { "strava:\(stravaID)" }
 
     static func stravaID(of activity: Activity) -> Int? {
-        activity.id.hasPrefix("strava:") ? Int(activity.id.dropFirst("strava:".count)) : nil
+        stravaID(fromID: activity.id)
+    }
+
+    static func stravaID(fromID id: String) -> Int? {
+        id.hasPrefix("strava:") ? Int(id.dropFirst("strava:".count)) : nil
     }
 
     /// Zwift, Rouvy and other virtual or trainer activities: no real places.

@@ -4,6 +4,7 @@ import SwiftUI
 /// power (from a power meter) or else average speed.
 struct ActivitiesView: View {
     @Environment(ActivityStore.self) private var store
+    @State private var toDelete: Activity?
 
     /// Months, newest first, each with its activities newest first. Activities without a date
     /// come last.
@@ -31,7 +32,12 @@ struct ActivitiesView: View {
         List {
             ForEach(months, id: \.title) { month in
                 Section {
-                    ForEach(month.activities) { ActivityRow(activity: $0) }
+                    ForEach(month.activities) { activity in
+                        ActivityRow(activity: activity)
+                            .swipeActions {
+                                Button("Delete", role: .destructive) { toDelete = activity }
+                            }
+                    }
                 } header: {
                     Text(month.title)
                 }
@@ -45,6 +51,15 @@ struct ActivitiesView: View {
         }
         .navigationTitle("Activities")
         .navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog(toDelete.map { String(localized: "Delete “\($0.name)”?") } ?? "",
+                            isPresented: Binding(get: { toDelete != nil }, set: { if !$0 { toDelete = nil } }),
+                            titleVisibility: .visible, presenting: toDelete) { activity in
+            Button("Delete Activity", role: .destructive) {
+                Task { await store.delete(activity) }
+            }
+        } message: { _ in
+            Text("It's deleted from Tileroam on this device and from iCloud, so your other devices remove it too. It stays on Strava and wherever you imported it from.")
+        }
     }
 }
 

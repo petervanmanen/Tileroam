@@ -21,39 +21,39 @@ final class ActivityStore {
     /// Incremented whenever the map data changes.
     private(set) var version = 0
 
-    // Folder source
+    // Files: the app's library (Library.activitiesFolder) and the sample rides
     private(set) var folderActivities: [Activity] = []
-    /// The folders with .fit files, with their state for the UI.
-    private(set) var importFolders: [ImportFolderStatus] = []
     private(set) var isImporting = false
     private(set) var progress: (done: Int, total: Int) = (0, 0)
     private(set) var failedFiles: [String] = []
-
-    struct ImportFolderStatus: Identifiable, Equatable {
-        let id: String
-        var name: String
-        var location: String?
-        /// Set when the folder can't be read or contains no .fit files.
-        var problem: String?
-    }
-
-    var hasImportFolders: Bool { !importFolders.isEmpty }
-
-    /// First folder problem, for the card on the map.
-    var problem: String? { importFolders.compactMap(\.problem).first }
-
-    func activityCount(inFolder id: String) -> Int {
-        guard let folder = (FolderAccess.importFolders() + [.internalFolder, .iCloudDrive]).first(where: { $0.id == id }) else { return 0 }
-        return folderActivities.count { folder.owns($0.id) }
-    }
+    /// What the last import, migration or deletion did, for Settings.
+    private(set) var libraryMessage: String?
+    /// For each listed activity, the ids of all its copies (the same workout from several
+    /// sources), so deleting it deletes them all.
+    private(set) var copies: [String: [String]] = [:]
 
     /// Tileroam's iCloud Drive folder is available (signed in, iCloud Drive on).
     private(set) var isICloudAvailable = false
+    /// iCloud already has activities: a further device shows them instead of asking how to add
+    /// activities.
+    private(set) var iCloudHasActivities = false
 
-    // The app's own folder for downloaded activities
-    private(set) var exportFolderName: String?
-    private(set) var exportFolderLocation: String?
-    private(set) var exportMessage: String?
+    /// Settings → "Sync with iCloud" (on by default). Turning it off keeps the copies in iCloud.
+    var isICloudSyncOn: Bool {
+        get { syncSetting }
+        set {
+            syncSetting = newValue
+            UserDefaults.standard.set(newValue, forKey: Library.syncSettingKey)
+            if newValue { Task { await refresh() } }
+        }
+    }
+    private var syncSetting = Library.isSyncOn
+
+    /// Number of activity files in the library on this device.
+    var libraryFileCount: Int { folderActivities.count { $0.id.hasPrefix(Self.libraryPrefix) } }
+
+    static let libraryPrefix = "lib|"
+    static let samplePrefix = "sample|"
 
     // Strava source
     let stravaConfig = StravaConfig.bundled
@@ -224,13 +224,7 @@ final class ActivityStore {
     }
 
     init() {
-        exportFolderName = FolderAccess.savedFolderName(.export)
-        exportFolderLocation = FolderAccess.resolve(.export).map(FolderAccess.displayLocation)
-        updateFolderStatuses()
         folderActivities = TrackCache.load(folder: Self.folderCacheKey)
-        if folderActivities.isEmpty, let legacy = FolderAccess.savedFolderName() {
-            folderActivities = TrackCache.load(folder: legacy) // cache of the single-folder version
-        }
 
         if let stravaConfig {
             strava = StravaClient(config: stravaConfig)
@@ -253,114 +247,128 @@ final class ActivityStore {
         await refresh()
     }
 
-    // MARK: Folders
+    // MARK: Library
 
-    private static let folderCacheKey = "folders"
+    /// The cache of parsed library files (older caches, keyed by folder, are read again once).
+    private static let folderCacheKey = "library"
 
-    private func updateFolderStatuses() {
-        let problems = Dictionary(importFolders.map { ($0.id, $0.problem) }, uniquingKeysWith: { a, _ in a })
-        importFolders = FolderAccess.importFolders().map { folder in
-            ImportFolderStatus(id: folder.id, name: folder.name,
-                               location: FolderAccess.resolve(folder).map(FolderAccess.displayLocation),
-                               problem: problems[folder.id] ?? nil)
-        }
-    }
-
-    private func setProblem(_ problem: String?, for id: String) {
-        if let i = importFolders.firstIndex(where: { $0.id == id }) { importFolders[i].problem = problem }
-    }
-
-    /// Adds one or more folders with .fit files and imports them.
-    func addFolders(_ urls: [URL]) async {
-        for url in urls {
-            do {
-                try FolderAccess.addImportFolder(url)
-            } catch {
-                failedFiles.append(String(localized: "Could not access “\(url.lastPathComponent)”: \(error.localizedDescription)"))
-            }
-        }
-        updateFolderStatuses()
-        await refresh()
-    }
-
-    func removeFolder(id: String) {
-        guard let folder = FolderAccess.importFolders().first(where: { $0.id == id }) else { return }
-        FolderAccess.removeImportFolder(id: id)
-        folderActivities.removeAll { folder.owns($0.id) }
-        TrackCache.save(folderActivities, folder: Self.folderCacheKey)
-        updateFolderStatuses()
-        recompute()
-    }
-
-    /// Copies individual .fit files into the Import folder (in iCloud when available) and imports them.
+    /// Copies .fit files (or the .fit files in folders) into the library once, and imports them.
+    /// The originals aren't watched afterwards.
     func importFiles(_ urls: [URL]) async {
-        await updateICloud()
-        let target = FolderAccess.importTarget
-        let failed = await Task.detached(priority: .userInitiated) {
-            var failed = [String]()
-            for url in urls {
-                let didAccess = url.startAccessingSecurityScopedResource()
-                defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
-                do {
-                    let data = try FolderAccess.read(url)
-                    try data.write(to: target.appending(path: url.lastPathComponent), options: .atomic)
-                } catch {
-                    failed.append(String(localized: "Could not read “\(url.lastPathComponent)”: \(error.localizedDescription)"))
-                }
-            }
-            return failed
-        }.value
+        let result = await Task.detached(priority: .userInitiated) { Library.importOnce(urls) }.value
         await refresh()
-        failedFiles += failed
+        failedFiles += result.failed
+        libraryMessage = result.added.isEmpty ? nil : String(localized: "Imported \(result.added.count) .fit files.")
     }
 
-    /// Imports new and changed files from all folders.
+    /// Brings in what other devices added (iCloud), reads new and changed files, removes
+    /// duplicate files and sends this device's files to iCloud.
     func refresh() async {
         guard !isImporting else { return }
         isImporting = true
         progress = (0, 0)
         defer { isImporting = false }
         await updateICloud()
-        // The internal Import folder ("On My iPhone › Tileroam › Import") and the iCloud folder
-        // are always read too.
-        let folders = FolderAccess.importFolders() + FolderAccess.builtInFolders
-        updateFolderStatuses()
-
-        var all = [Activity]()
-        var failed = [String]()
-        for folder in folders {
-            setProblem(nil, for: folder.id)
-            let previous = folderActivities.filter { folder.owns($0.id) }
-            guard let url = FolderAccess.resolve(folder) else {
-                setProblem(String(localized: "Could not access “\(folder.name)”: \(String(localized: "Choose it again in Settings."))"), for: folder.id)
-                all += previous
-                continue
-            }
-            let existing = Dictionary(previous.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
-            var result: [Activity]?
-            for await event in Importer.run(folder: url, existing: existing, activityID: { folder.activityID(for: $0) }) {
-                switch event {
-                case .started(let found, let toParse):
-                    progress = (0, toParse)
-                    if found == 0, !folder.isBuiltIn {
-                        setProblem(String(localized: "No .fit files found in “\(folder.name)”. Choose the folder that contains your .fit files."), for: folder.id)
-                    }
-                case .folderUnreadable(let message):
-                    setProblem(String(localized: "Could not read “\(folder.name)”: \(message)"), for: folder.id)
-                case .progress(let done, let total):
-                    progress = (done, total)
-                case .finished(let activities, let failedPaths):
-                    result = activities
-                    failed += failedPaths
-                }
-            }
-            all += result ?? previous // keep what we had if the folder couldn't be read
+        if !Library.isMigrated { await migrate() }
+        let sync = syncSetting && isICloudAvailable
+        if sync {
+            await Task.detached(priority: .userInitiated) {
+                Library.pull { done, total in Task { @MainActor [weak self] in self?.progress = (done, total) } }
+            }.value
         }
-        folderActivities = all.sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
+
+        var failed = [String]()
+        var library = await parse(Library.activitiesFolder, prefix: Self.libraryPrefix, failed: &failed)
+        let samples = hasSampleRides ? await parse(FolderAccess.sampleRidesFolder, prefix: Self.samplePrefix, failed: &failed) : []
+        library = await removeDuplicateFiles(library)
+        folderActivities = (library + samples).sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
         failedFiles = failed
         recompute()
         TrackCache.save(folderActivities, folder: Self.folderCacheKey)
+        if sync { await Task.detached(priority: .utility) { Library.push() }.value }
         if regions != nil { backfillDerived() }
+    }
+
+    /// Reads the .fit files of a folder; unchanged files come from the cache.
+    private func parse(_ folder: URL, prefix: String, failed: inout [String]) async -> [Activity] {
+        let previous = folderActivities.filter { $0.id.hasPrefix(prefix) }
+        let existing = Dictionary(previous.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        var result: [Activity]?
+        for await event in Importer.run(folder: folder, existing: existing, activityID: { prefix + $0 }) {
+            switch event {
+            case .started(_, let toParse): progress = (0, toParse)
+            case .folderUnreadable(let message): failed.append(message)
+            case .progress(let done, let total): progress = (done, total)
+            case .finished(let activities, let failedPaths):
+                result = activities
+                failed += failedPaths
+            }
+        }
+        return result ?? previous
+    }
+
+    /// Keeps one file per workout: the same ride recorded by a watch and saved from Strava, or
+    /// imported twice. The best copy stays (see `ActivityMerge.preferredFile`); the others are
+    /// deleted here and in iCloud.
+    private func removeDuplicateFiles(_ library: [Activity]) async -> [Activity] {
+        var keep = [Activity](), drop = [String]()
+        for group in ActivityMerge.groups(library) {
+            let best = ActivityMerge.preferredFile(group)
+            keep.append(best)
+            drop += group.filter { $0.id != best.id }.map { String($0.id.dropFirst(Self.libraryPrefix.count)) }
+        }
+        if !drop.isEmpty {
+            await Task.detached(priority: .utility) { Library.delete(names: drop) }.value
+        }
+        return keep
+    }
+
+    /// Once per device: copies the files earlier versions read or saved into the library (no
+    /// downloads from Strava again), then forgets the watched folders and the save folder.
+    private func migrate() async {
+        let folders = FolderAccess.importFolders().filter { !$0.isBuiltIn }.compactMap(FolderAccess.resolve)
+        let saveFolder = FolderAccess.resolve(.export)
+        let result = await Task.detached(priority: .userInitiated) {
+            Library.migrate(importFolders: folders, saveFolder: saveFolder) { done, total in
+                Task { @MainActor [weak self] in self?.progress = (done, total) }
+            }
+        }.value
+        FolderAccess.clearImportFolders()
+        FolderAccess.clearSaveFolder()
+        UserDefaults.standard.set(true, forKey: Library.migratedKey)
+        failedFiles += result.failed
+        if result.files > 0 {
+            libraryMessage = String(localized: "Tileroam now keeps its own copy of your \(result.files) .fit files. The folders they came from aren't watched any more; import new files in Settings.")
+        }
+    }
+
+    /// Deletes an activity, with all its copies, from this device and iCloud. It isn't deleted
+    /// from Strava or from where it was imported from; a deleted Strava activity isn't downloaded
+    /// again.
+    func delete(_ activity: Activity) async {
+        let ids = Set(copies[activity.id] ?? [activity.id])
+        var names = [String](), stravaIDs = [Int](), samples = [String]()
+        for id in ids {
+            if id.hasPrefix(Self.libraryPrefix) {
+                names.append(String(id.dropFirst(Self.libraryPrefix.count)))
+            } else if id.hasPrefix(Self.samplePrefix) {
+                samples.append(String(id.dropFirst(Self.samplePrefix.count)))
+            } else if let stravaID = StravaImport.stravaID(fromID: id) {
+                stravaIDs.append(stravaID)
+                if let file = stravaActivities.first(where: { $0.id == id })?.exportedFile { names.append(file) }
+            }
+        }
+        Deletions.add(stravaIDs: stravaIDs)
+        folderActivities.removeAll { ids.contains($0.id) }
+        stravaActivities.removeAll { ids.contains($0.id) }
+        if let athleteID = stravaAthleteID { saveStrava(athleteID) }
+        TrackCache.save(folderActivities, folder: Self.folderCacheKey)
+        recompute()
+        let sampleFolder = FolderAccess.sampleRidesFolder
+        await Task.detached(priority: .userInitiated) {
+            Library.delete(names: names)
+            for path in samples { try? FileManager.default.removeItem(at: sampleFolder.appending(path: path)) }
+        }.value
     }
 
     func clearCache() async {
@@ -368,53 +376,6 @@ final class ActivityStore {
         folderActivities = []
         recompute()
         await refresh()
-    }
-
-    // MARK: Save folder
-
-    func selectExportFolder(_ url: URL) async {
-        do {
-            try FolderAccess.save(url, as: .export)
-        } catch {
-            exportMessage = String(localized: "Could not access “\(url.lastPathComponent)”: \(error.localizedDescription)")
-            return
-        }
-        exportFolderName = url.lastPathComponent
-        exportFolderLocation = FolderAccess.displayLocation(url)
-        exportMessage = nil
-
-        // Move files saved earlier in the app's own storage (internal or iCloud; in early
-        // versions, the first import folder) to the new save folder.
-        let ownStorage = [FolderAccess.internalFolder] + [FolderAccess.iCloudFolder].compactMap { $0 }
-        let sources = ownStorage + FolderAccess.importFolders().filter { !$0.isBuiltIn }.prefix(1).compactMap(FolderAccess.resolve)
-        if let new = FolderAccess.resolve(.export) {
-            do {
-                let moved = try await Task.detached(priority: .userInitiated) {
-                    var moved = 0
-                    for old in sources {
-                        moved += try StravaExport.moveExports(from: old, to: new)
-                    }
-                    for old in ownStorage {
-                        moved += try StravaExport.moveExports(from: old, to: new, subfolder: "Routes",
-                                                              isOwn: { $0.hasSuffix("-Tileroam.gpx") })
-                    }
-                    return moved
-                }.value
-                if moved > 0 { exportMessage = String(localized: "Moved \(moved) earlier saved files to “\(url.lastPathComponent)”.") }
-            } catch {
-                exportMessage = String(localized: "Could not move earlier saved files: \(error.localizedDescription)")
-            }
-        }
-        syncStrava()
-    }
-
-    /// Save in Tileroam's own folder again (iCloud Drive, or internal storage without iCloud).
-    /// Files already in the chosen folder stay there.
-    func useDefaultSaveFolder() {
-        FolderAccess.clearSaveFolder()
-        exportFolderName = nil
-        exportFolderLocation = nil
-        exportMessage = nil
     }
 
     // MARK: Sample rides
@@ -436,35 +397,21 @@ final class ActivityStore {
     func removeSampleRides() async {
         try? FileManager.default.removeItem(at: FolderAccess.sampleRidesFolder)
         hasSampleRides = false
+        folderActivities.removeAll { $0.id.hasPrefix(Self.samplePrefix) }
+        recompute()
         await refresh()
     }
 
     // MARK: iCloud
 
-    private static let movedToICloudKey = "movedToICloud"
-
-    /// Looks up the iCloud folder; the first time it is available, moves what the app saved in
-    /// its internal storage there so the user's other devices get it.
+    /// Looks up the iCloud folder, and whether it already has activities.
     private func updateICloud() async {
-        let folder = await Task.detached(priority: .userInitiated) { FolderAccess.updateICloudFolder() }.value
-        isICloudAvailable = folder != nil
-        guard let folder, !UserDefaults.standard.bool(forKey: Self.movedToICloudKey) else { return }
-        UserDefaults.standard.set(true, forKey: Self.movedToICloudKey)
-        let saveHere = !FolderAccess.hasChosenSaveFolder
-        let moved = await Task.detached(priority: .userInitiated) {
-            let local = FolderAccess.internalFolder
-            var moved = (try? StravaExport.moveExports(from: local, to: folder, subfolder: "Import",
-                                                       isOwn: { $0.lowercased().hasSuffix(".fit") })) ?? 0
-            if saveHere {
-                moved += (try? StravaExport.moveExports(from: local, to: folder)) ?? 0
-                moved += (try? StravaExport.moveExports(from: local, to: folder, subfolder: "Routes",
-                                                        isOwn: { $0.hasSuffix("-Tileroam.gpx") })) ?? 0
-            }
-            return moved
+        let (folder, hasActivities) = await Task.detached(priority: .userInitiated) {
+            let folder = FolderAccess.updateICloudFolder()
+            return (folder, folder != nil && Library.cloudHasActivities)
         }.value
-        if moved > 0 {
-            exportMessage = String(localized: "Moved \(moved) files to \(FolderAccess.iCloudLocation).")
-        }
+        isICloudAvailable = folder != nil
+        iCloudHasActivities = hasActivities
     }
 
     // MARK: Strava
@@ -503,30 +450,17 @@ final class ActivityStore {
         if deleteFiles { await deleteStravaFiles() }
     }
 
-    /// Folders where Tileroam may have saved Strava activities: the save folder, its iCloud
-    /// folder and its internal storage.
-    private var stravaFileFolders: [URL] {
-        var folders = [FolderAccess.saveFolder()]
-        for url in [FolderAccess.iCloudFolder, FolderAccess.internalFolder].compactMap({ $0 })
-        where !folders.contains(where: { $0.standardizedFileURL == url.standardizedFileURL }) {
-            folders.append(url)
-        }
-        return folders
-    }
-
-    /// Number of .fit files Tileroam saved from Strava that still exist.
+    /// Number of .fit files Tileroam saved from Strava in the library.
     func countStravaFiles() async -> Int {
-        let folders = stravaFileFolders
-        return await Task.detached(priority: .userInitiated) {
-            folders.reduce(0) { $0 + StravaExport.ownFiles(in: $1).count }
-        }.value
+        await Task.detached(priority: .userInitiated) { StravaExport.ownFiles().count }.value
     }
 
-    /// Deletes the .fit files Tileroam saved from Strava, in all its folders, and re-imports.
+    /// Deletes the .fit files Tileroam saved from Strava, here and in iCloud, and re-reads.
     func deleteStravaFiles() async {
-        let folders = stravaFileFolders
         let deleted = await Task.detached(priority: .userInitiated) {
-            folders.reduce(0) { $0 + StravaExport.deleteOwnFiles(in: $1) }
+            let names = StravaExport.ownFiles()
+            Library.delete(names: names)
+            return names.count
         }.value
         stravaFilesDeleted = deleted
         await refresh()
@@ -558,9 +492,8 @@ final class ActivityStore {
         let removed = change.removedActivities
         stravaActivities.removeAll { StravaImport.stravaID(of: $0).map(removed.contains) ?? false }
         saveStrava(athleteID)
-        let folders = stravaFileFolders
-        _ = await Task.detached(priority: .utility) {
-            folders.reduce(0) { $0 + StravaExport.deleteOwnFiles(in: $1, activities: removed) }
+        await Task.detached(priority: .utility) {
+            Library.delete(names: StravaExport.ownFiles(of: removed))
         }.value
         recompute()
         await refresh()
@@ -600,6 +533,7 @@ final class ActivityStore {
                 try await fetchStravaList(strava)
                 try await fetchStravaDetails(strava)
                 stravaStatus = nil
+                await refresh() // read the saved files and send them to iCloud
                 return
             } catch StravaError.rateLimited(let until) {
                 saveStrava(athleteID)
@@ -655,8 +589,9 @@ final class ActivityStore {
                     if let id = stravaAthleteID { saveStrava(id) }
                 }
             }
+            let deleted = Deletions.stravaIDs()
             let new = await Task.detached(priority: .userInitiated) {
-                summaries.map(StravaImport.activity(from:))
+                summaries.filter { !deleted.contains($0.id) }.map(StravaImport.activity(from:))
             }.value.filter { !known.contains($0.id) }
             if !new.isEmpty {
                 stravaActivities += new
@@ -683,8 +618,6 @@ final class ActivityStore {
     /// Strava activity as a .fit file in the folder's "Strava" subfolder. Activities that the
     /// folder already has (same start time) are skipped to save API calls and avoid duplicates.
     private func fetchStravaDetails(_ strava: StravaClient) async throws {
-        // The chosen save folder, or the app's internal storage; never an import folder.
-        let folder = FolderAccess.saveFolder()
         let inFolderWithGPS = ActivityMerge.Index(folderActivities.filter { !$0.trackData.isEmpty })
         let inFolder = ActivityMerge.Index(folderActivities)
 
@@ -701,7 +634,7 @@ final class ActivityStore {
         for (n, index) in noGPS.enumerated() {
             if Task.isCancelled { return }
             stravaStatus = String(localized: "Saving Strava activities to folder: \(n) of \(noGPS.count)")
-            await export(index, stream: nil, to: folder)
+            await export(index, stream: nil)
         }
 
         let queue = stravaActivities
@@ -721,7 +654,7 @@ final class ActivityStore {
             }.value
             guard let index = stravaActivities.firstIndex(where: { $0.id == activity.id }) else { continue }
             stravaActivities[index] = updated
-            await export(index, stream: stream, to: folder)
+            await export(index, stream: stream)
             if (done + 1) % 25 == 0 {
                 recompute()
                 if let id = stravaAthleteID { saveStrava(id) }
@@ -729,17 +662,17 @@ final class ActivityStore {
         }
     }
 
-    private func export(_ index: Int, stream: StravaStream?, to folder: URL) async {
+    private func export(_ index: Int, stream: StravaStream?) async {
         let activity = stravaActivities[index]
         do {
             let name = try await Task.detached(priority: .utility) {
-                try StravaExport.write(activity, stream: stream, to: folder)
+                try StravaExport.write(activity, stream: stream)
             }.value
             if let i = stravaActivities.firstIndex(where: { $0.id == activity.id }) {
                 stravaActivities[i].exportedFile = name
             }
         } catch {
-            stravaError = String(localized: "Could not save to folder: \(error.localizedDescription)")
+            stravaError = String(localized: "Could not save the activity: \(error.localizedDescription)")
         }
     }
 
@@ -800,7 +733,9 @@ final class ActivityStore {
     // MARK: Derived data
 
     private func recompute() {
-        activities = ActivityMerge.merge(folderActivities + stravaActivities)
+        let groups = ActivityMerge.groups(folderActivities + stravaActivities)
+        activities = groups.map(ActivityMerge.best(of:))
+        copies = Dictionary(zip(activities.map(\.id), groups.map { $0.map(\.id) }), uniquingKeysWith: { a, _ in a })
         var tiles14 = Set<Int64>()
         var tiles17 = Set<Int64>()
         var municipalities = Set<String>()

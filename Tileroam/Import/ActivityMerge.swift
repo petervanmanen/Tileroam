@@ -10,6 +10,11 @@ enum ActivityMerge {
     static let tolerance: TimeInterval = 120
 
     static func merge(_ activities: [Activity]) -> [Activity] {
+        groups(activities).map(best(of:))
+    }
+
+    /// The copies of each workout (undated activities each on their own), in start order.
+    static func groups(_ activities: [Activity]) -> [[Activity]] {
         var undated = [Activity]()
         var dated = [(start: Date, activity: Activity)]()
         for a in activities {
@@ -31,7 +36,20 @@ enum ActivityMerge {
                 open.append(clusters.count - 1)
             }
         }
-        return clusters.map { best(of: $0.members) } + undated
+        return clusters.map(\.members) + undated.map { [$0] }
+    }
+
+    /// The file to keep of several copies of one workout in the library: best GPS, then the
+    /// original recording over a file Tileroam made from Strava (which has no power), then one
+    /// with power, then the longest distance.
+    static func preferredFile(_ copies: [Activity]) -> Activity {
+        copies.max { a, b in
+            func rank(_ x: Activity) -> (Int, Int, Int, Double) {
+                let name = x.id.split(separator: "|").last.map(String.init) ?? x.id
+                return (x.quality, StravaExport.isOwnFile(name) ? 0 : 1, x.averagePower == nil ? 0 : 1, x.distance)
+            }
+            return rank(a) < rank(b)
+        }!
     }
 
     /// Best GPS first, then the longest distance (some copies of indoor rides have 0 km).

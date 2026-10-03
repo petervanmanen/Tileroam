@@ -13,12 +13,13 @@ When you first open Tileroam, a short introduction explains the main features. A
 
 | Option | What it does |
 |---|---|
-| **Choose Folder…** | Pick a folder with .fit files, for example in iCloud Drive where HealthFit, RunGap or your bike computer's app saves them. Tileroam reads the folder and its subfolders, and checks it for new files every time you open the app. |
-| **Import .fit Files…** | Pick individual .fit files. They are copied into Tileroam's own folder. |
-| **Connect with Strava** | Sign in with Strava to download your activities. They are saved as .fit files in Tileroam's folder. |
-| **Try with Sample Rides** | Loads 24 example rides around Utrecht, so you can explore the app first. You can remove them in Settings → Import Folders. |
+| **Import .fit Files…** | Pick .fit files, or a whole folder, for example where HealthFit, RunGap or your bike computer's app saves them. Tileroam copies them once into its own storage; the folder isn't watched afterwards, so import again to add new files. |
+| **Connect with Strava** | Sign in with Strava to download your activities. They are saved as .fit files in Tileroam. |
+| **Try with Sample Rides** | Loads 24 example rides around Utrecht, so you can explore the app first. You can remove them in Settings → Activities. |
 
-You can add several folders and use Strava at the same time. If the same activity appears in more than one place, Tileroam counts it once.
+You can import files and use Strava at the same time. If the same activity comes from more than one place, Tileroam keeps it once.
+
+On a further iPhone or iPad with the same iCloud account, there's nothing to set up: Tileroam shows the activities from iCloud (see "Your devices and iCloud").
 
 ### Where do .fit files come from?
 - **Garmin, Wahoo, Hammerhead and other bike computers:** they record .fit files. Their apps, or tools like HealthFit and RunGap, can save these files to iCloud Drive automatically.
@@ -113,9 +114,13 @@ Settings → Storage shows what Tileroam keeps on your device:
 
 ## Your devices and iCloud
 
-If you are signed in to iCloud with iCloud Drive on, Tileroam keeps its files in **iCloud Drive › Tileroam**. That includes planned routes, Strava downloads and imported files. Every device signed in to the same Apple Account sees the same activities. The tile size and map style are also kept in sync.
+Tileroam keeps every activity and planned route in its own storage on the device: **On My iPhone › Tileroam › Activities** and **› Routes**.
 
-You can choose a different save folder in Settings → Save Folder. Without iCloud, files are kept on the device, in **On My iPhone › Tileroam**. You can open both locations in the Files app.
+With **Settings → Activities → Sync with iCloud** on (the default when you're signed in to iCloud with iCloud Drive on), they're also kept in **iCloud Drive › Tileroam**, without duplicates. Your other devices with the same Apple Account then have the same activities, also on a new device without importing anything or connecting Strava again. The tile size and map style are kept in sync too. Turning sync off keeps both copies; the device then stops reading and writing iCloud.
+
+**Deleting an activity:** in Activities, swipe left on it and tap **Delete**. It's deleted on this device and from iCloud, so your other devices remove it too. It stays on Strava and wherever you imported it from; a deleted Strava activity isn't downloaded again.
+
+**Updating from an earlier version:** Tileroam copies the files it used to read (from the folders you had chosen, its folder in iCloud Drive and your save folder) into its own storage once. Nothing is downloaded from Strava again, and the original files stay where they are. The folders you had chosen aren't watched afterwards.
 
 ## Strava
 
@@ -123,7 +128,7 @@ In Settings → Strava, tap **Connect with Strava**. Tileroam first loads your a
 
 Strava limits how many requests apps may make, so a large history can take a while. The sync continues by itself.
 
-Each activity is saved as a .fit file in the "Strava" subfolder of your save folder. You can disconnect at any time in Settings. You then choose whether to also delete the .fit files Tileroam saved from Strava; files from other apps are never touched.
+Each activity is saved as a .fit file in Tileroam's activities (and iCloud, with sync on). You can disconnect at any time in Settings. You then choose whether to also delete the .fit files Tileroam saved from Strava; files from other apps are never touched.
 
 ## Privacy
 

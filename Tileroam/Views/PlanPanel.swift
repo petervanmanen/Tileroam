@@ -143,11 +143,7 @@ struct PlanPanel: View {
                 Button {
                     Task { await plan.saveToFolder() }
                 } label: {
-                    if let folder = store.exportFolderName {
-                        Label("Save to \(folder)", systemImage: "folder")
-                    } else {
-                        Label("Save to Folder", systemImage: "folder")
-                    }
+                    Label("Save Route", systemImage: "folder")
                 }
                 .buttonStyle(.bordered)
                 if plan.routeIsOutdated {

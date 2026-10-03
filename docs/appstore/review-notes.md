@@ -18,7 +18,7 @@ HOW TO TRY IT WITHOUT YOUR OWN FILES
    The first plan downloads the map data for that area (about 25–75 MB around the plan), which takes a moment. Downloads over 25 MB wait for Wi-Fi; on mobile data, tap "Download Anyway". Settings → Storage shows the downloaded map data and can remove it.
 6. Widgets: "Tiles Around You" and "Eddington Number" can be added from the Home Screen widget gallery.
 
-The sample rides can be removed in Settings → Import Folders → Remove Sample Rides.
+The sample rides can be removed in Settings → Activities → Remove Sample Rides.
 
 STRAVA
 Tileroam can import activities from Strava (Settings → Strava → Connect with Strava). Use this Strava demo account:
@@ -31,7 +31,7 @@ LOCATION
 Location is used to show the user on the map, to start planned routes from there (unless the user chooses another starting point), and in the "Tiles Around You" widget. Route planning runs on the device (Valhalla with OpenStreetMap data), so the location never leaves the device.
 
 ICLOUD
-With iCloud Drive on, files are kept in "iCloud Drive › Tileroam" so the user's other devices see the same activities. Without iCloud, the app works the same with on-device storage.
+Activities are kept in the app. With iCloud Drive on (Settings → Activities → Sync with iCloud), they're also kept in "iCloud Drive › Tileroam" so the user's other devices see the same activities. Without iCloud, the app works the same with on-device storage.
 
 No account, sign-in, purchase or subscription is needed.
 

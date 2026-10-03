@@ -17,99 +17,28 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    if let name = store.exportFolderName {
-                        LabeledContent("Selected", value: name)
-                        if let location = store.exportFolderLocation {
-                            Text(location)
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                    } else {
-                        LabeledContent("Selected", value: store.isICloudAvailable ? "iCloud Drive" : String(localized: "Internal storage"))
-                        Text(FolderAccess.defaultSaveLocation)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                    // Shown off while iCloud isn't available (the setting itself stays as it is).
+                    Toggle(isOn: Binding(get: { store.isICloudAvailable && store.isICloudSyncOn },
+                                         set: { store.isICloudSyncOn = $0 })) {
+                        Label("Sync with iCloud", systemImage: "icloud")
                     }
-                    if let message = store.exportMessage {
-                        Text(message).font(.footnote)
-                    }
-                    Button("Choose Save Folder…") { onChooseFolder(.export) }
-                    if store.exportFolderName != nil {
-                        if store.isICloudAvailable {
-                            Button("Use iCloud Drive") { store.useDefaultSaveFolder() }
-                        } else {
-                            Button("Use Internal Storage") { store.useDefaultSaveFolder() }
-                        }
-                    }
-                } header: {
-                    Text("Save Folder")
-                } footer: {
-                    if FeatureFlags.strava {
-                        Text("Tileroam saves planned routes and downloaded activities here, in “Routes” and “\(StravaExport.subfolder)” subfolders. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.")
-                    } else {
-                        Text("Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.")
-                    }
-                }
-
-                Section {
-                    ForEach(store.importFolders) { folder in
-                        VStack(alignment: .leading, spacing: 3) {
-                            HStack {
-                                Label(folder.name, systemImage: "folder")
-                                Spacer()
-                                Text("\(store.activityCount(inFolder: folder.id)) activities")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-                            if let location = folder.location {
-                                Text(location).font(.caption).foregroundStyle(.secondary)
-                            }
-                            if let problem = folder.problem {
-                                Label(problem, systemImage: "exclamationmark.triangle.fill")
-                                    .font(.caption)
-                                    .symbolRenderingMode(.multicolor)
-                            }
-                        }
-                        .swipeActions {
-                            Button("Remove", role: .destructive) { store.removeFolder(id: folder.id) }
-                        }
-                    }
-                    if store.isICloudAvailable {
-                        VStack(alignment: .leading, spacing: 3) {
-                            HStack {
-                                Label("iCloud Drive", systemImage: "icloud")
-                                Spacer()
-                                Text("\(store.activityCount(inFolder: FolderAccess.ImportFolder.iCloudID)) activities")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Text(FolderAccess.iCloudLocation)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    VStack(alignment: .leading, spacing: 3) {
-                        HStack {
-                            Label("Internal storage", systemImage: "iphone")
-                            Spacer()
-                            Text("\(store.activityCount(inFolder: FolderAccess.ImportFolder.internalID)) activities")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        Text("\(FolderAccess.internalLocation) › Import")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    Button("Add Folder…") { onChooseFolder(.source) }
+                    .disabled(!store.isICloudAvailable)
+                    LabeledContent("Activity files", value: "\(store.libraryFileCount)")
+                    Button("Import .fit Files…") { onChooseFolder(.fitFiles) }
                     if store.hasSampleRides {
                         Button("Remove Sample Rides", role: .destructive) { Task { await store.removeSampleRides() } }
                     }
-                    Button("Rescan Now") { Task { await store.refresh() } }
-                        .disabled(store.isImporting)
+                    if let message = store.libraryMessage {
+                        Text(message).font(.footnote)
+                    }
                 } header: {
-                    Text("Import Folders")
+                    Text("Activities")
                 } footer: {
-                    Text("Tileroam reads .fit files from these folders and their subfolders, and always from its own folder in iCloud Drive, shared by your devices, and the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.")
+                    if store.isICloudAvailable {
+                        Text("Tileroam keeps your activities and planned routes on this device (\(FolderAccess.internalLocation) › Activities and › Routes). With iCloud sync, they're also in \(FolderAccess.iCloudLocation), without duplicates, so your other devices have them. Turning it off keeps both copies. Imported files are copied once: the folder they came from isn't watched.")
+                    } else {
+                        Text("Tileroam keeps your activities and planned routes on this device (\(FolderAccess.internalLocation) › Activities and › Routes). Sign in to iCloud with iCloud Drive on to share them with your other devices. Imported files are copied once: the folder they came from isn't watched.")
+                    }
                 }
 
                 #if STRAVA
@@ -233,7 +162,7 @@ extension SettingsView {
             PoweredByStrava()
                 .padding(.vertical, 4)
             if store.isStravaConnected {
-                Text("Strava activities are saved as .fit files in the save folder's “\(StravaExport.subfolder)” subfolder. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.")
+                Text("Strava activities are saved as .fit files in Tileroam's activities. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.")
             }
         }
         .task(id: store.isStravaConnected) { stravaFileCount = await store.countStravaFiles() }
