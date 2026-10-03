@@ -22,6 +22,10 @@ struct Activity: Codable, Sendable, Identifiable {
     var municipalities: [String]?
     var postalCodes: [String]?
     var regionsKey: String?
+    /// Climbs ridden uphill (`Climb.id`), for the climbs in `climbsKey`; recomputed when the climbs
+    /// change (see `ClimbData`).
+    var climbs: [String]?
+    var climbsKey: String?
     /// True while the track is only Strava's simplified summary polyline.
     var isSummary: Bool?
     /// Indoor or virtual ride/run (Zwift, Rouvy, …): counts in statistics, but its GPS track

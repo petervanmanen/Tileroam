@@ -263,6 +263,62 @@
         }
       }
     },
+    "%lld climbs": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld montées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Anstiege"
+          }
+        }
+      }
+    },
+    "%lld climbs climbed · %lld on the map": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld klimmen beklommen · %2$lld op de kaart"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld montées gravies · %2$lld sur la carte"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld subidas hechas · %2$lld en el mapa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld Anstiege gefahren · %2$lld auf der Karte"
+          }
+        }
+      }
+    },
     "%lld more rides of at least %lld km to reach %lld": {
       "localizations": {
         "en": {
@@ -1417,6 +1473,34 @@
         }
       }
     },
+    "All Climbs": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les montées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Anstiege"
+          }
+        }
+      }
+    },
     "All Time": {
       "localizations": {
         "nl": {
@@ -1497,6 +1581,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abbrechen"
+          }
+        }
+      }
+    },
+    "Cat 1": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 1"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 1"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 1"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kat. 1"
+          }
+        }
+      }
+    },
+    "Cat 2": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 2"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 2"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 2"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kat. 2"
+          }
+        }
+      }
+    },
+    "Cat 3": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 3"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 3"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 3"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kat. 3"
+          }
+        }
+      }
+    },
+    "Cat 4": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 4"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 4"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cat. 4"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kat. 4"
           }
         }
       }
@@ -1721,6 +1917,258 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cache leeren und neu importieren"
+          }
+        }
+      }
+    },
+    "Climb": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klim"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montée"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subida"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstieg"
+          }
+        }
+      }
+    },
+    "Climb near %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klim bij %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montée près de %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subida cerca de %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstieg bei %@"
+          }
+        }
+      }
+    },
+    "Climbed %lld times, last on %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld keer beklommen, laatst op %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gravie %1$lld fois, la dernière le %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subida %1$lld veces, la última el %2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-mal gefahren, zuletzt am %2$@"
+          }
+        }
+      }
+    },
+    "Climbed (%lld)": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beklommen (%lld)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gravies (%lld)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hechas (%lld)"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gefahren (%lld)"
+          }
+        }
+      }
+    },
+    "Climbs": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstiege"
+          }
+        }
+      }
+    },
+    "Climbs appear once your activities are checked against the climbs of their area, or when you look at the Climbs map.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klimmen verschijnen zodra je activiteiten zijn vergeleken met de klimmen in hun gebied, of als je de kaart Klimmen bekijkt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les montées apparaissent une fois vos activités comparées aux montées de leur zone, ou quand vous regardez la carte Montées."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las subidas aparecen cuando tus actividades se comparan con las subidas de su zona, o al mirar el mapa Subidas."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstiege erscheinen, sobald deine Aktivitäten mit den Anstiegen ihres Gebiets abgeglichen sind, oder wenn du die Karte Anstiege ansiehst."
+          }
+        }
+      }
+    },
+    "Climbs are found from elevation data along the roads; Cat 4 to HC as on Strava, and short steep hills. Gradients of short hills are often lower than signposted.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klimmen worden gevonden uit hoogtegegevens langs de wegen; Cat. 4 tot HC zoals op Strava, en korte steile heuvels. Hellingspercentages van korte heuvels liggen vaak lager dan op de borden."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les montées sont trouvées à partir des données d'altitude le long des routes ; Cat. 4 à HC comme sur Strava, et courtes côtes raides. Les pentes des côtes courtes sont souvent plus faibles qu'indiqué."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las subidas se obtienen de datos de altitud a lo largo de las carreteras; Cat. 4 a HC como en Strava, y repechos cortos. Las pendientes de los repechos cortos suelen ser menores que las señalizadas."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstiege werden aus Höhendaten entlang der Straßen ermittelt; Kat. 4 bis HC wie bei Strava, dazu kurze steile Hügel. Steigungen kurzer Hügel sind oft geringer als ausgeschildert."
+          }
+        }
+      }
+    },
+    "Climbs climbed": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klimmen beklommen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montées gravies"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subidas hechas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstiege gefahren"
+          }
+        }
+      }
+    },
+    "Climbs in the areas where you ride and that you looked at on the map.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klimmen in de gebieden waar je rijdt en die je op de kaart hebt bekeken."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montées des zones où vous roulez et que vous avez regardées sur la carte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subidas de las zonas donde ruedas y que has mirado en el mapa."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstiege in den Gebieten, in denen du fährst und die du auf der Karte angesehen hast."
           }
         }
       }
@@ -2953,6 +3401,34 @@
         }
       }
     },
+    "Elevation and climbs": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoogte en klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitude et montées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitud y subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höhe und Anstiege"
+          }
+        }
+      }
+    },
     "Fetching Strava activities…": {
       "localizations": {
         "nl": {
@@ -3117,6 +3593,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wandern"
+          }
+        }
+      }
+    },
+    "Hill": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heuvel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Côte"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repecho"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hügel"
           }
         }
       }
@@ -4129,6 +4633,62 @@
         }
       }
     },
+    "No Climbs": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune montée"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Anstiege"
+          }
+        }
+      }
+    },
+    "No Climbs Yet": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog geen klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore de montées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Anstiege"
+          }
+        }
+      }
+    },
     "No activities.": {
       "localizations": {
         "nl": {
@@ -4269,6 +4829,34 @@
         }
       }
     },
+    "Not climbed yet": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet beklommen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore gravie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no subida"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht gefahren"
+          }
+        }
+      }
+    },
     "Not connected to Strava.": {
       "localizations": {
         "nl": {
@@ -4349,6 +4937,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nicht besucht"
+          }
+        }
+      }
+    },
+    "Not yet (%lld)": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet (%lld)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore (%lld)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no (%lld)"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht (%lld)"
           }
         }
       }
@@ -5781,6 +6397,34 @@
         }
       }
     },
+    "Show": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toon"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigen"
+          }
+        }
+      }
+    },
     "Show Introduction": {
       "localizations": {
         "nl": {
@@ -6085,6 +6729,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistik"
+          }
+        }
+      }
+    },
+    "Steepest %@ · top at %lld m": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steilste %1$@ · top op %2$lld m"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pente max. %1$@ · sommet à %2$lld m"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máx. %1$@ · cima a %2$lld m"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steilste %1$@ · Gipfel auf %2$lld m"
           }
         }
       }
@@ -7859,6 +8531,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "nichts Neues"
+          }
+        }
+      }
+    },
+    "tab.climbs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Climbs"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subidas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anstiege"
           }
         }
       }

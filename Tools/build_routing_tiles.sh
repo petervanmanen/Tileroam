@@ -24,7 +24,12 @@ export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer
 # 0.6.3, which contains Valhalla 3.6.3): tiles from another version may not load.
 VALHALLA_VERSION=3.6.3
 ROOT=${0:A:h:h}
-OUT=$ROOT/AssetPacks/build/routing
+# ROUTING_WORKDIR puts the build (tens of GB) elsewhere, for example on an external disk formatted
+# for Mac; the index still goes into the app's resources.
+OUT=${ROUTING_WORKDIR:-$ROOT/AssetPacks/build/routing}
+# Elevation tiles (Valhalla's "skadi" layout, N52/N52E005.hgt; Tools/download_elevation.sh): with
+# them, every road gets its gradient, so bicycle routes take hills into account.
+ELEVATION=${ROUTING_ELEVATION:-$ROOT/AssetPacks/build/elevation}
 NAME=${1:?pack name, e.g. benelux}; shift
 (( $# )) || [[ -n ${ROUTING_REPACK:-} ]] || { echo "usage: build_routing_tiles.sh <name> <geofabrik europe extract>…" >&2; exit 1 }
 mkdir -p $OUT/osm
@@ -80,6 +85,7 @@ rm -rf $TILES; mkdir -p $TILES
 # too (about 25% smaller in total).
 python -m valhalla.valhalla_build_config --mjolnir-tile-dir $TILES --mjolnir-tile-extract $TAR \
   --mjolnir-timezone "" --mjolnir-admin "" --mjolnir-traffic-extract "" \
+  --additional-data-elevation "$([[ -d $ELEVATION ]] && echo $ELEVATION)" \
   --mjolnir-include-driving False --mjolnir-include-driveways False --mjolnir-shortcuts False \
   --mjolnir-include-pedestrian ${ROUTING_PEDESTRIAN:-True} \
   --mjolnir-concurrency ${ROUTING_CONCURRENCY:-$(sysctl -n hw.ncpu)} > $OUT/config-$NAME.json 2>/dev/null

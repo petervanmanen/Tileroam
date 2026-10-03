@@ -6,12 +6,15 @@ enum PlanTarget: Hashable, Sendable {
     /// Country-prefixed codes, e.g. "NL:GM0344", "DE:10115".
     case municipality(String)
     case postcode(String)
+    /// `Climb.id`: ridden uphill, bottom to top.
+    case climb(String)
 
     var sortKey: String {
         switch self {
         case .tile(let z, let k): "0\(z.rawValue)-\(k)"
         case .municipality(let c): "1\(c)"
         case .postcode(let c): "2\(c)"
+        case .climb(let id): "3\(id)"
         }
     }
 }
@@ -22,9 +25,12 @@ struct TargetGeometry: Sendable {
     let name: String
     /// Set for municipalities and postcodes.
     let area: Area?
+    /// Set for climbs.
+    let climb: Climb?
 
-    init?(_ target: PlanTarget, regions: RegionData?) {
+    init?(_ target: PlanTarget, regions: RegionData?, climbs: [String: Climb] = [:]) {
         self.target = target
+        climb = if case .climb(let id) = target { climbs[id] } else { nil }
         switch target {
         case .tile(let zoom, let key):
             let c = TileGrid.cell(of: key)
@@ -38,12 +44,32 @@ struct TargetGeometry: Sendable {
             guard let a = regions?.postcodes.area(code: code) else { return nil }
             name = String(localized: "Postcode \(a.postcodeLabel)")
             area = a
+        case .climb:
+            guard let climb else { return nil }
+            name = climb.title
+            area = nil
         }
+    }
+
+    /// For a climb: the points after its bottom that keep the route on the climb up to the top,
+    /// at least every 400 m and at most four (Valhalla takes 60 points per route).
+    var climbVia: [GeoPoint] {
+        guard let climb else { return [] }
+        let points = climb.points
+        let spacing = max(400, climb.length / 4)
+        var out = [GeoPoint](), since = 0.0
+        for (a, b) in zip(points, points.dropFirst()) {
+            since += Geo.distance(a, b)
+            if since >= spacing, out.count < 3 { out.append(b); since = 0 }
+        }
+        if out.last != climb.summit { out.append(climb.summit) }
+        return out
     }
 
     func contains(_ p: GeoPoint) -> Bool {
         switch target {
         case .tile(let zoom, let key): TileGrid.key(lat: p.lat, lon: p.lon, zoom: zoom) == key
+        case .climb: climb.map { Geo.distance($0.bottom, p) < 60 } ?? false
         default: area?.contains(p) ?? false
         }
     }
@@ -51,6 +77,8 @@ struct TargetGeometry: Sendable {
     /// Points spread over the inside of the target. The route passes through one of them.
     func candidates() -> [GeoPoint] {
         switch target {
+        case .climb:
+            return climb.map { [$0.bottom] } ?? []
         case .tile(let zoom, let key):
             let c = TileGrid.cell(of: key)
             let nw = TileGrid.corner(x: c.x, y: c.y, zoom: zoom)

@@ -34,6 +34,22 @@ struct StatisticsView: View {
                 Text("The largest number E such that you covered at least E km on at least E days. Walking includes hikes.")
             }
 
+            if ClimbData.index != nil {
+                Section {
+                    let climbed = store.climbed.keys.compactMap { store.climbs[$0] }
+                    LabeledContent("Climbs climbed", value: store.climbed.count.formatted())
+                    ForEach(Climb.Category.allCases.reversed(), id: \.self) { category in
+                        let count = climbed.count { $0.cat == category }
+                        if count > 0 { LabeledContent(category.title, value: count.formatted()) }
+                    }
+                    NavigationLink("All Climbs") { ClimbsView() }
+                } header: {
+                    Text("Climbs")
+                } footer: {
+                    Text("Climbs are found from elevation data along the roads; Cat 4 to HC as on Strava, and short steep hills. Gradients of short hills are often lower than signposted.")
+                }
+            }
+
             Section {
                 if store.regions == nil {
                     HStack { ProgressView(); Text("Loading municipalities…") }

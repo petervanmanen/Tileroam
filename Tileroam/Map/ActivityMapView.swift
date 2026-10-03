@@ -3,7 +3,7 @@ import MapKit
 import SwiftUI
 
 enum MapMode: String, CaseIterable, Identifiable {
-    case squares, activities, gemeenten, postcodes
+    case squares, activities, gemeenten, postcodes, climbs
 
     var id: Self { self }
 
@@ -13,6 +13,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .activities: String(localized: "Routes")
         case .gemeenten: String(localized: "Municipalities", comment: "Map mode: municipalities (gemeenten, communes, Gemeinden…)")
         case .postcodes: String(localized: "Postcodes")
+        case .climbs: String(localized: "Climbs")
         }
     }
 
@@ -23,6 +24,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .activities: String(localized: "tab.routes", defaultValue: "Routes")
         case .gemeenten: String(localized: "tab.municipalities", defaultValue: "Towns")
         case .postcodes: String(localized: "tab.postcodes", defaultValue: "Postcodes")
+        case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
         }
     }
 
@@ -78,6 +80,7 @@ struct ActivityMapView: UIViewRepresentable {
     /// Passed explicitly so SwiftUI updates the view when the data changes.
     let version: Int
     @Binding var selectedArea: Area?
+    @Binding var selectedClimb: Climb?
     /// Incremented by the "my location" button.
     let locateRequest: Int
     @Binding var isFollowingUser: Bool
@@ -103,6 +106,15 @@ struct ActivityMapView: UIViewRepresentable {
         map.addGestureRecognizer(tap)
         let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
         map.addGestureRecognizer(longPress)
+        #if DEBUG
+        // Screenshots and checks: -MapCenter "50.85,5.85,0.3" (latitude, longitude, span in degrees).
+        let center = (UserDefaults.standard.string(forKey: "MapCenter") ?? "").split(separator: ",").compactMap { Double($0) }
+        if center.count == 3 {
+            map.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: center[0], longitude: center[1]),
+                                            span: MKCoordinateSpan(latitudeDelta: center[2], longitudeDelta: center[2]))
+            context.coordinator.skipFocus()
+        }
+        #endif
         return map
     }
 
@@ -128,6 +140,7 @@ struct ActivityMapView: UIViewRepresentable {
         private var appliedVersion = -1
         private var appliedPlanVersion = -1
         private var appliedTileZoom: TileZoom?
+        private var appliedClimb: String?
         private var appliedStyle: MapStyle?
 
         func applyStyle(_ map: MKMapView) {
@@ -137,6 +150,9 @@ struct ActivityMapView: UIViewRepresentable {
         }
         private var zoomedRouteID: UUID?
         private var hasFocused = false
+
+        /// Keep the map where it was opened (-MapCenter).
+        func skipFocus() { hasFocused = true }
         /// Focused on Apple Park for lack of data; refocus once data arrives.
         private var focusedOnFallback = false
 
@@ -207,10 +223,26 @@ struct ActivityMapView: UIViewRepresentable {
             parent.isFollowingUser = mode != .none
         }
 
+        /// Climbs tab: the climbs of the visible area (downloaded where needed).
+        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+            loadClimbs(mapView)
+        }
+
+        private func loadClimbs(_ map: MKMapView) {
+            guard parent.mode == .climbs else { return }
+            let r = map.region, store = parent.store
+            Task {
+                await store.loadClimbs(minLat: r.center.latitude - r.span.latitudeDelta / 2, maxLat: r.center.latitude + r.span.latitudeDelta / 2,
+                                       minLon: r.center.longitude - r.span.longitudeDelta / 2, maxLon: r.center.longitude + r.span.longitudeDelta / 2)
+            }
+        }
+
         func update(_ map: MKMapView) {
             guard appliedMode != parent.mode || appliedVersion != parent.version || appliedPlanVersion != parent.planVersion
-                || appliedTileZoom != parent.tileZoom else { return }
+                || appliedTileZoom != parent.tileZoom || appliedClimb != parent.selectedClimb?.id else { return }
+            appliedClimb = parent.selectedClimb?.id
             appliedTileZoom = parent.tileZoom
+            if appliedMode != parent.mode, parent.mode == .climbs { loadClimbs(map) }
             appliedMode = parent.mode
             appliedVersion = parent.version
             appliedPlanVersion = parent.planVersion
@@ -251,6 +283,21 @@ struct ActivityMapView: UIViewRepresentable {
                 let highlight = (parent.mode == .gemeenten ? coverage?.newMunicipalities : coverage?.newPostcodes) ?? []
                 map.addOverlay(AreaOverlay(geometry: geometry, visited: visitedCodes, selected: selected, highlight: highlight),
                                level: .aboveRoads)
+            case .climbs:
+                let selected = planning ? plan.selectedClimbs : Set(parent.selectedClimb.map { [$0.id] } ?? [])
+                let onRoute = coverage?.climbs ?? []
+                var groups = [UIColor: [MKPolyline]]()
+                for climb in store.climbs.values {
+                    let color: UIColor = selected.contains(climb.id) || onRoute.contains(climb.id) ? .systemOrange
+                        : store.climbed[climb.id] != nil ? .systemGreen : Self.color(for: climb.cat)
+                    let coords = climb.points.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
+                    groups[color, default: []].append(MKPolyline(coordinates: coords, count: coords.count))
+                }
+                for (color, lines) in groups {
+                    let multi = ClimbLines(lines)
+                    multi.color = color
+                    map.addOverlay(multi, level: .aboveRoads)
+                }
             }
 
             if planning, let start = plan.start {
@@ -287,7 +334,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .activities:
+            case .activities, .climbs:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -371,6 +418,22 @@ struct ActivityMapView: UIViewRepresentable {
             return view
         }
 
+        /// Climbs drawn in one colour.
+        final class ClimbLines: MKMultiPolyline {
+            var color = UIColor.systemRed
+        }
+
+        static func color(for category: Climb.Category) -> UIColor {
+            switch category {
+            case .hill: .systemYellow
+            case .cat4: UIColor(red: 1, green: 0.55, blue: 0.1, alpha: 1)
+            case .cat3: .systemRed
+            case .cat2: UIColor(red: 0.75, green: 0.05, blue: 0.15, alpha: 1)
+            case .cat1: .systemPurple
+            case .hc: .black
+            }
+        }
+
         static func color(for sport: String) -> UIColor {
             switch sport {
             case "Cycling", "E-biking": .systemBlue
@@ -390,6 +453,12 @@ struct ActivityMapView: UIViewRepresentable {
                 r.lineWidth = route.isCasing ? 8 : 5
                 r.lineCap = .round
                 r.lineJoin = .round
+                return r
+            case let climbs as ClimbLines:
+                let r = MKMultiPolylineRenderer(multiPolyline: climbs)
+                r.strokeColor = climbs.color.withAlphaComponent(0.9)
+                r.lineWidth = 4
+                r.lineCap = .round
                 return r
             case let lines as MKMultiPolyline:
                 let r = MKMultiPolylineRenderer(multiPolyline: lines)
@@ -452,14 +521,33 @@ struct ActivityMapView: UIViewRepresentable {
                     if let a = store.postcodeAreas?.area(at: p), !store.visitedPostcodes.contains(a.code) {
                         parent.plan.toggle(.postcode(a.code))
                     }
+                case .climbs:
+                    if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
                 case .activities:
                     break
                 }
                 return
             }
 
+            if parent.mode == .climbs {
+                parent.selectedClimb = nearestClimb(to: p, on: map)
+                return
+            }
             guard let (areas, _) = parent.mode.areas(in: store) else { return }
             parent.selectedArea = areas.area(at: p)
+        }
+
+        /// The climb drawn closest to a tap, within about 25 points on screen.
+        private func nearestClimb(to p: GeoPoint, on map: MKMapView) -> Climb? {
+            let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
+            let limit = 25 * metresPerPoint
+            var best: (Climb, Double)?
+            for climb in parent.store.climbs.values {
+                let points = climb.points
+                guard let near = points.map({ Geo.distance($0, p) }).min(), near <= limit, near < best?.1 ?? .infinity else { continue }
+                best = (climb, near)
+            }
+            return best?.0
         }
     }
 }

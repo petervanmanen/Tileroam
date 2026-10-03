@@ -26,3 +26,16 @@ The routing data (`routing-<name>-<area>` asset packs, Valhalla tiles made by
 Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
 contributors. The script and the extracts it names are the complete recipe to
 rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
+
+## Elevation and climbs
+
+Route planning takes gradients into account, and the climbs are found, with elevation tiles from
+the [Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) open dataset
+(`Tools/download_elevation.sh`). In Europe they are based on:
+
+- **SRTM** (NASA Shuttle Radar Topography Mission): public domain.
+- **EU-DEM**: produced using Copernicus data and information funded by the European Union
+  (Copernicus land monitoring service, free, full and open access).
+
+The climbs themselves (`Tools/build_climbs.py`, served from Cloudflare R2) are derived from
+OpenStreetMap roads (**ODbL 1.0**, © OpenStreetMap contributors) and these elevation data.
