@@ -52,6 +52,29 @@ enum RoutingData {
         }
     }
 
+    /// The tiles a plan needs when its stops are spread out: those within `margin` meters of the
+    /// straight lines between the stops (`path`, in visiting order) or of any of `points` (the
+    /// candidate points inside each target). Unlike the bounding box, this doesn't pull in every
+    /// tile between far-apart targets.
+    static func tiles(along path: [GeoPoint], near points: [GeoPoint], margin: Double, in index: RoutingIndex) -> [RoutingIndex.Tile] {
+        var samples = points
+        for (a, b) in zip(path, path.dropFirst()) {
+            let steps = max(1, Int(Geo.distance(a, b) / 2_000))
+            for k in 0...steps {
+                let f = Double(k) / Double(steps)
+                samples.append(GeoPoint(lat: a.lat + (b.lat - a.lat) * f, lon: a.lon + (b.lon - a.lon) * f))
+            }
+        }
+        guard !samples.isEmpty else { return [] }
+        let dLat = margin / 111_000
+        return index.tiles.filter { t in
+            let dLon = margin / (111_000 * max(cos((t.lat + t.size / 2) * .pi / 180), 0.2))
+            return samples.contains { p in
+                p.lat > t.lat - dLat && p.lat < t.lat + t.size + dLat && p.lon > t.lon - dLon && p.lon < t.lon + t.size + dLon
+            }
+        }
+    }
+
     // MARK: On the device
 
     /// Where the downloaded tiles of this version live. Each version has its own folder, because
@@ -75,22 +98,34 @@ enum RoutingData {
     }
 
     /// Downloads the tiles that aren't on the device yet, six at a time, and returns the tile
-    /// directory for Valhalla.
-    static func download(_ tiles: [RoutingIndex.Tile], index: RoutingIndex, from server: URL = serverURL) async throws -> URL {
+    /// directory for Valhalla. `progress` gets the bytes downloaded so far and the total. Every
+    /// finished tile is kept, so after a failure the next try only fetches what's still missing.
+    static func download(_ tiles: [RoutingIndex.Tile], index: RoutingIndex, from server: URL = serverURL,
+                         session: URLSession = tileSession,
+                         progress: (@Sendable (_ done: Int, _ total: Int) async -> Void)? = nil) async throws -> URL {
         removeOtherVersions(index)
         let dir = tileDirectory(index)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         let missing = tiles.filter { !isDownloaded($0, index: index) }
-        try await withThrowingTaskGroup(of: Void.self) { group in
+        let total = missing.reduce(0) { $0 + $1.bytes }
+        var done = 0
+        try await withThrowingTaskGroup(of: Int.self) { group in
             var next = 0
             func addNext() {
                 guard next < missing.count else { return }
                 let tile = missing[next]
                 next += 1
-                group.addTask { try await fetch(tile, index: index, from: server, into: dir) }
+                group.addTask {
+                    try await fetch(tile, index: index, from: server, session: session, into: dir)
+                    return tile.bytes
+                }
             }
             for _ in 0..<6 { addNext() }
-            while try await group.next() != nil { addNext() }
+            while let bytes = try await group.next() {
+                done += bytes
+                await progress?(done, total)
+                addNext()
+            }
         }
         // Downloaded again when needed: keep them out of backups.
         var values = URLResourceValues()
@@ -109,27 +144,63 @@ enum RoutingData {
         return server
     }
 
-    private static func fetch(_ tile: RoutingIndex.Tile, index: RoutingIndex, from server: URL, into dir: URL) async throws {
+    /// For tile downloads: a request that gets no data for 30 seconds fails (and is retried); a
+    /// tile may take up to 5 minutes on a slow connection.
+    static let tileSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 300
+        config.waitsForConnectivity = false
+        return URLSession(configuration: config)
+    }()
+
+    /// Downloads one tile, trying up to three times when the connection times out or drops, the
+    /// server has a passing problem (5xx, 429) or the tile arrives damaged.
+    private static func fetch(_ tile: RoutingIndex.Tile, index: RoutingIndex, from server: URL, session: URLSession,
+                              into dir: URL) async throws {
         let url = server.appending(path: "\(index.name)/v\(index.version)/\(tile.path).gph.gz")
+        var attempt = 0
+        while true {
+            attempt += 1
+            do {
+                let tiles = try await fetchOnce(tile, url: url, session: session)
+                let file = dir.appending(path: tile.file)
+                try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try tiles.write(to: file, options: .atomic)
+                return
+            } catch let problem as DownloadProblem where problem.isTransient && attempt < 3 {
+                try await Task.sleep(for: .seconds(2 * attempt)) // throws when the plan is stopped
+            } catch let problem as DownloadProblem {
+                throw RoutingError.download(problem)
+            }
+        }
+    }
+
+    private static func fetchOnce(_ tile: RoutingIndex.Tile, url: URL, session: URLSession) async throws -> Data {
         var tiles: Data
         do {
-            let (data, response) = try await URLSession.shared.data(from: url)
+            let (data, response) = try await session.data(from: url)
             if let http = response as? HTTPURLResponse, http.statusCode != 200 {
-                throw RoutingError.dataUnavailable("\(http.statusCode) for \(tile.path)")
+                throw DownloadProblem.server(http.statusCode)
             }
             tiles = data
-        } catch let error as RoutingError {
-            throw error
-        } catch {
-            throw RoutingError.dataUnavailable(error.localizedDescription)
+        } catch let error as URLError {
+            switch error.code {
+            case .cancelled: throw CancellationError()
+            case .notConnectedToInternet, .dataNotAllowed, .internationalRoamingOff: throw DownloadProblem.offline
+            case .timedOut: throw DownloadProblem.timedOut
+            case .fileDoesNotExist: throw DownloadProblem.server(404)
+            default: throw DownloadProblem.connection(error.localizedDescription)
+            }
         }
         // Normally URLSession has already decompressed it (Content-Encoding: gzip); a server or
         // file:// URL that doesn't say so hands over the gzip file itself.
-        if tiles.starts(with: [0x1F, 0x8B]) { tiles = try Gzip.decompress(tiles) }
-        guard tiles.count == tile.rawBytes else { throw RoutingError.dataUnavailable("damaged tile \(tile.path)") }
-        let file = dir.appending(path: tile.file)
-        try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try tiles.write(to: file, options: .atomic)
+        if tiles.starts(with: [0x1F, 0x8B]) {
+            guard let unpacked = try? Gzip.decompress(tiles) else { throw DownloadProblem.damaged }
+            tiles = unpacked
+        }
+        guard tiles.count == tile.rawBytes else { throw DownloadProblem.damaged }
+        return tiles
     }
 
     /// Removes downloaded tiles (Settings → Storage). They download again when a plan needs them.

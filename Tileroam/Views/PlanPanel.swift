@@ -19,6 +19,9 @@ struct PlanPanel: View {
                 HStack(spacing: 8) {
                     ProgressView()
                     Text(status).font(.footnote)
+                    Spacer(minLength: 4)
+                    Button("Stop", role: .cancel) { plan.stopPlanning() }
+                        .font(.footnote)
                 }
             }
             if let error = plan.error {

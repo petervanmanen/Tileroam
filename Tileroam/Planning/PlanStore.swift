@@ -109,17 +109,30 @@ final class PlanStore {
 
     // MARK: Planning
 
+    /// The running plan, so it can be stopped.
+    private var planning: Task<Void, Never>?
+
     func plan(with store: ActivityStore) async {
         guard !selected.isEmpty, !isWorking else { return }
         isWorking = true
         error = nil
         message = nil
         waitingForWiFi = nil
-        defer {
-            isWorking = false
-            status = nil
-            allowMobileDataOnce = false
-        }
+        let task = Task { await runPlan(with: store) }
+        planning = task
+        await task.value
+        planning = nil
+        isWorking = false
+        status = nil
+        allowMobileDataOnce = false
+    }
+
+    /// Stops a plan that's downloading map data or routing; what was downloaded is kept.
+    func stopPlanning() {
+        planning?.cancel()
+    }
+
+    private func runPlan(with store: ActivityStore) async {
         do {
             let from: GeoPoint
             if let start {
@@ -133,8 +146,14 @@ final class PlanStore {
         } catch RoutingError.waitingForWiFi(let bytes) {
             waitingForWiFi = bytes
             self.error = RoutingError.waitingForWiFi(bytes: bytes).localizedDescription
+        } catch is CancellationError {
+            message = String(localized: "Planning stopped. Map data downloaded so far is kept.")
         } catch {
-            self.error = error.localizedDescription
+            if Task.isCancelled {
+                message = String(localized: "Planning stopped. Map data downloaded so far is kept.")
+            } else {
+                self.error = error.localizedDescription
+            }
         }
     }
 
@@ -161,6 +180,10 @@ final class PlanStore {
             throw RoutingError.outsideRegion
         }
         let points = [start] + targets.flatMap { $0.candidates() }
+        // The stops in the order the route will take, to download only the tiles along it.
+        let loop = RoutePlanner.approximateLoop(start: start, targets: targets)
+        let km = Int(RoutePlanner.length(loop) / 1000)
+        guard km <= RoutePlanner.maxLoopKilometers else { throw RoutingError.tooLong(km: km) }
         let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
         let router = self.router
         func attempt() async throws -> PlannedRoute {
@@ -173,23 +196,25 @@ final class PlanStore {
             }.value
         }
 
-        // Only the 1° areas around the plan (with room for detours) are downloaded; if the route
-        // still needs more, try once more with a wider area.
+        // Only the tiles along the route (with room for detours) are downloaded; if the route
+        // still needs more, try once more with a wider corridor.
         var planned: PlannedRoute
         do {
-            try await prepareRouting(around: points, margin: 15_000)
+            try await prepareRouting(along: loop, near: points, margin: 15_000)
             planned = try await attempt()
-        } catch RoutingError.engine {
-            try await prepareRouting(around: points, margin: 60_000)
+        } catch let error as RoutingError where error.widerAreaMayHelp {
+            try Task.checkCancellation()
+            try await prepareRouting(along: loop, near: points, margin: 60_000)
             planned = try await attempt()
         }
+        try Task.checkCancellation()
         show(planned)
     }
 
-    /// Gets the routing data for the area, saying how much has to be downloaded.
-    private func prepareRouting(around points: [GeoPoint], margin: Double) async throws {
+    /// Gets the routing data along the route, showing how much is downloaded.
+    private func prepareRouting(along path: [GeoPoint], near points: [GeoPoint], margin: Double) async throws {
         if let index = RoutingData.index {
-            let bytes = RoutingData.downloadBytes(for: RoutingData.tiles(around: points, margin: margin, in: index), index: index)
+            let bytes = RoutingData.downloadBytes(for: RoutingData.tiles(along: path, near: points, margin: margin, in: index), index: index)
             guard MapDataDownloads.mayDownload(bytes: bytes, allowedOnce: allowMobileDataOnce) else {
                 throw RoutingError.waitingForWiFi(bytes: bytes)
             }
@@ -197,7 +222,14 @@ final class PlanStore {
                 ? String(localized: "Downloading map data for route planning (about \(MapDataDownloads.format(bytes)))…")
                 : String(localized: "Loading the route planning data…")
         }
-        try await router.prepare(around: points, margin: margin)
+        try await router.prepare(along: path, near: points, margin: margin) { [weak self] done, total in
+            await self?.showProgress(done: done, total: total)
+        }
+    }
+
+    private func showProgress(done: Int, total: Int) {
+        guard total > 0 else { return }
+        status = String(localized: "Downloading map data for route planning: \(MapDataDownloads.format(done)) of \(MapDataDownloads.format(total))…")
     }
 
     #if DEBUG

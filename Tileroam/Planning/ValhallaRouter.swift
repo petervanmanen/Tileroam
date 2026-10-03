@@ -19,6 +19,13 @@ actor ValhallaRouter: CyclingRouter {
     /// Makes sure the engine has the tiles within `margin` meters of `points`, downloading them
     /// where needed (the first time in an area this can take a while).
     func prepare(around points: [GeoPoint], margin: Double, index: RoutingIndex? = RoutingData.index) async throws {
+        try await prepare(along: points, near: points, margin: margin, index: index)
+    }
+
+    /// Like `prepare(around:)`, for the tiles along `path` (the stops in visiting order) and near
+    /// `points`; `progress` gets the bytes downloaded and the total.
+    func prepare(along path: [GeoPoint], near points: [GeoPoint], margin: Double, index: RoutingIndex? = RoutingData.index,
+                 progress: (@Sendable (Int, Int) async -> Void)? = nil) async throws {
         #if DEBUG
         // Simulator and tests: one tile extract with everything (-RoutingTar).
         if let path = UserDefaults.standard.string(forKey: "RoutingTar") {
@@ -27,11 +34,11 @@ actor ValhallaRouter: CyclingRouter {
         }
         #endif
         guard let index else { throw RoutingError.dataUnavailable("no routing index") }
-        let tiles = RoutingData.tiles(around: points, margin: margin, in: index)
+        let tiles = RoutingData.tiles(along: path, near: points, margin: margin, in: index)
         guard !tiles.isEmpty else { throw RoutingError.outsideRegion }
         let needed = Set(tiles.map(\.path))
         if engine != nil, needed.isSubset(of: loadedTiles) { return }
-        let dir = try await RoutingData.download(tiles, index: index)
+        let dir = try await RoutingData.download(tiles, index: index, progress: progress)
         loadedTiles.formUnion(needed)
         engine = nil // restart, so Valhalla sees the new tiles
         try start(.directory(dir))

@@ -160,3 +160,135 @@ struct RecentStartTests {
         #expect(RecentStarts.load(defaults) == [utrecht])
     }
 }
+
+/// Answers tile requests from a script: each request takes the next answer.
+final class ScriptedTileServer: URLProtocol, @unchecked Sendable {
+    enum Answer { case data(Data), status(Int), failure(URLError.Code) }
+    nonisolated(unsafe) static var answers = [Answer]()
+    nonisolated(unsafe) static var requests = 0
+    private static let lock = NSLock()
+
+    static func session(_ answers: [Answer]) -> URLSession {
+        lock.withLock { self.answers = answers; requests = 0 }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [ScriptedTileServer.self]
+        return URLSession(configuration: config)
+    }
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func stopLoading() {}
+    override func startLoading() {
+        let answer: Answer = Self.lock.withLock {
+            Self.requests += 1
+            return Self.answers.isEmpty ? .status(500) : Self.answers.removeFirst()
+        }
+        switch answer {
+        case .data(let data):
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!,
+                                cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        case .status(let code):
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: code, httpVersion: nil, headerFields: nil)!,
+                                cacheStoragePolicy: .notAllowed)
+            client?.urlProtocolDidFinishLoading(self)
+        case .failure(let code):
+            client?.urlProtocol(self, didFailWithError: URLError(code))
+        }
+    }
+}
+
+@Suite(.serialized)
+struct ResilientDownloadTests {
+    private let raw = Data(repeating: 7, count: 500)
+    private var index: RoutingIndex {
+        RoutingIndex(name: "resilience-test", version: 1, tiles: [.init(path: "1/051/305", bytes: 100, rawBytes: 500)])
+    }
+    private let server = URL(string: "https://tiles.test")!
+
+    @Test func retriesTimeoutsAndServerErrors() async throws {
+        RoutingData.removeAll(index)
+        defer { RoutingData.removeAll(index) }
+        let session = ScriptedTileServer.session([.failure(.timedOut), .status(503), .data(try RoutingDownloadTests.gzip(raw))])
+        let dir = try await RoutingData.download(index.tiles, index: index, from: server, session: session)
+        #expect(ScriptedTileServer.requests == 3)
+        #expect(try Data(contentsOf: dir.appending(path: "1/051/305.gph")) == raw)
+    }
+
+    @Test func givesUpAfterThreeTries() async throws {
+        RoutingData.removeAll(index)
+        defer { RoutingData.removeAll(index) }
+        let session = ScriptedTileServer.session([.failure(.timedOut), .failure(.timedOut), .failure(.timedOut)])
+        await #expect(throws: RoutingError.download(.timedOut)) {
+            _ = try await RoutingData.download(index.tiles, index: index, from: server, session: session)
+        }
+        #expect(ScriptedTileServer.requests == 3)
+    }
+
+    @Test func doesNotRetryWhatWontChange() async throws {
+        RoutingData.removeAll(index)
+        defer { RoutingData.removeAll(index) }
+        await #expect(throws: RoutingError.download(.server(404))) {
+            _ = try await RoutingData.download(index.tiles, index: index, from: server, session: ScriptedTileServer.session([.status(404)]))
+        }
+        #expect(ScriptedTileServer.requests == 1)
+        await #expect(throws: RoutingError.download(.offline)) {
+            _ = try await RoutingData.download(index.tiles, index: index, from: server,
+                                               session: ScriptedTileServer.session([.failure(.notConnectedToInternet)]))
+        }
+        #expect(ScriptedTileServer.requests == 1)
+    }
+
+    @Test func reportsProgress() async throws {
+        RoutingData.removeAll(index)
+        defer { RoutingData.removeAll(index) }
+        let reports = Reports()
+        _ = try await RoutingData.download(index.tiles, index: index, from: server,
+                                           session: ScriptedTileServer.session([.data(try RoutingDownloadTests.gzip(raw))])) { done, total in
+            await reports.add(done, total)
+        }
+        #expect(await reports.all == [[100, 100]])
+    }
+
+    actor Reports {
+        var all = [[Int]]()
+        func add(_ done: Int, _ total: Int) { all.append([done, total]) }
+    }
+}
+
+struct RoutingCorridorTests {
+    @Test func downloadsAlongTheRouteNotTheWholeBox() {
+        // Two stops 2° apart diagonally; a level-2 tile on the line between them and one in the
+        // far corner of the bounding box.
+        let onLine = RoutingIndex.Tile(path: "2/000/818/663", bytes: 1, rawBytes: 1) // 52°N 5.75°E
+        let corner = RoutingIndex.Tile(path: "2/000/822/978", bytes: 1, rawBytes: 1) // 52.75°N 4.5°E
+        let index = RoutingIndex(name: "corridor", version: 1, tiles: [onLine, corner])
+        #expect(corner.lat > 52.5 && corner.lon < 5) // north-west, away from the line
+        let path = [GeoPoint(lat: 51.0, lon: 4.5), GeoPoint(lat: 53.0, lon: 7.0)]
+        let picked = RoutingData.tiles(along: path, near: path, margin: 15_000, in: index)
+        #expect(picked == [onLine])
+    }
+
+    @Test func tooLongRoundTripsAreCaughtFirst() {
+        let utrecht = GeoPoint(lat: 52.09, lon: 5.12), munich = GeoPoint(lat: 48.14, lon: 11.58)
+        let loop = [utrecht, munich, utrecht]
+        #expect(RoutePlanner.length(loop) / 1000 > Double(RoutePlanner.maxLoopKilometers))
+        #expect(RoutingError.tooLong(km: 1200).localizedDescription.contains("1200") || RoutingError.tooLong(km: 1200).localizedDescription.contains("1.200"))
+    }
+
+    @Test func explainsValhallaErrors() {
+        // Each known Valhalla error gets its own explanation instead of the raw text (in any
+        // language); unknown ones show the raw text.
+        let known = ["Path distance exceeds the max distance limit", "No path could be found for input",
+                     "No suitable edges near location"]
+        let texts = known.map { RoutingError.engine($0).localizedDescription }
+        #expect(Set(texts).count == 3)
+        #expect(zip(known, texts).allSatisfy { !$1.contains($0) })
+        #expect(RoutingError.engine("something new").localizedDescription.contains("something new"))
+        #expect(RoutingError.engine("No path could be found for input").widerAreaMayHelp)
+        #expect(!RoutingError.engine("Path distance exceeds the max distance limit").widerAreaMayHelp)
+        #expect(!RoutingError.engine("No suitable edges near location").widerAreaMayHelp)
+        #expect(!RoutingError.download(.timedOut).widerAreaMayHelp)
+    }
+}
