@@ -1333,6 +1333,34 @@
         }
       }
     },
+    "Add .fit files in Settings, or connect Strava.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg .fit-bestanden toe in Instellingen, of koppel Strava."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez des fichiers .fit dans Réglages, ou connectez Strava."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade archivos .fit en Ajustes o conecta Strava."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Füge in den Einstellungen .fit-Dateien hinzu oder verbinde Strava."
+          }
+        }
+      }
+    },
     "Add Another Folder": {
       "localizations": {
         "nl": {
@@ -3345,6 +3373,34 @@
         }
       }
     },
+    "Indoor": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Binnen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intérieur"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interior"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indoor"
+          }
+        }
+      }
+    },
     "Inline skating": {
       "localizations": {
         "nl": {
@@ -4329,6 +4385,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keine .fit-Dateien in „%@“ gefunden. Wähle den Ordner mit deinen .fit-Dateien."
+          }
+        }
+      }
+    },
+    "No Activities": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen activiteiten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune activité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin actividades"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Aktivitäten"
           }
         }
       }
@@ -7661,6 +7745,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ohne GPS"
+          }
+        }
+      }
+    },
+    "Without date": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonder datum"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans date"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin fecha"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohne Datum"
           }
         }
       }

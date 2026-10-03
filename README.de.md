@@ -10,6 +10,7 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 
 - **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) und *Squadratinhos* auf Zoom 17 (~190 m, wie bei Squadrats). Beide werden immer gezählt; du wählst, welche die Karte zeigt. Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
 - **Routen**: alle deine Aktivitäten auf einer Karte, nach Sportart eingefärbt.
+- **Aktivitäten**: eine Liste aller Aktivitäten, die neuesten zuerst, mit Dauer, Distanz und durchschnittlicher Leistung (mit Powermeter) oder Durchschnittsgeschwindigkeit.
 - **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg und Deutschland, mit besucht/gesamt pro Land.
 - **Routenplanung** in den Niederlanden, Belgien, Luxemburg und Deutschland: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.

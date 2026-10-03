@@ -37,9 +37,23 @@ struct Activity: Codable, Sendable, Identifiable {
         return ["zwift", "rouvy", "mywhoosh", "bkool", "fulgaz", "trainerroad", "wahoo systm", "kinomap",
                 "virtual", "indoor"].contains { n.contains($0) }
     }
-    /// Seconds (Strava only, used when exporting).
+    /// Seconds: from the start to the end, and moving (without pauses).
     var elapsedTime: Double?
     var movingTime: Double?
+    /// Watts, from a power meter (FIT avg_power, Strava average_watts with device_watts).
+    var averagePower: Double?
+    /// Which details the import read (see `Activity.currentDetails`); older cached activities are
+    /// read again to fill in moving time and power.
+    var detailsVersion: Int?
+    static let currentDetails = 2
+
+    /// Moving time if known, otherwise elapsed time.
+    var duration: Double? { (movingTime ?? 0) > 0 ? movingTime : elapsedTime }
+    /// Meters per second over the moving time.
+    var averageSpeed: Double? {
+        guard let duration, duration > 0, distance > 0 else { return nil }
+        return distance / duration
+    }
     /// File name in the folder's "Strava" subfolder once exported.
     var exportedFile: String?
 

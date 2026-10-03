@@ -32,6 +32,7 @@ struct ContentView: View {
     @State private var showPicker = false
     @State private var showSettings = false
     @State private var showStatistics = false
+    @State private var showActivities = false
     @State private var pickerPurpose = PickerPurpose.source
     @State private var pickAfterSettings: PickerPurpose?
     @State private var selectedArea: Area?
@@ -97,6 +98,16 @@ struct ContentView: View {
                     }
                 })
             }
+            .sheet(isPresented: $showActivities) {
+                NavigationStack {
+                    ActivitiesView()
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showActivities = false }
+                            }
+                        }
+                }
+            }
             .sheet(isPresented: $showStatistics) {
                 NavigationStack {
                     StatisticsView()
@@ -120,6 +131,7 @@ struct ContentView: View {
                 // Screenshots: -ShowSettings YES opens Settings on launch.
                 if UserDefaults.standard.bool(forKey: "ShowSettings") { showSettings = true }
                 if UserDefaults.standard.bool(forKey: "ShowStatistics") { showStatistics = true }
+                if UserDefaults.standard.bool(forKey: "ShowActivities") { showActivities = true }
                 #endif
             }
             .task { await store.refreshAll() }
@@ -181,6 +193,13 @@ struct ContentView: View {
                         .background(plan.isPlanning ? Color.purple : Color.clear, in: RoundedRectangle(cornerRadius: 8))
                 }
                 .accessibilityLabel(plan.isPlanning ? Text("Stop route planning") : Text("Plan a route"))
+                Button {
+                    showActivities = true
+                } label: {
+                    Image(systemName: "list.bullet")
+                        .font(.title3)
+                }
+                .accessibilityLabel("Activities")
                 Button {
                     showStatistics = true
                 } label: {

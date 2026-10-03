@@ -9,6 +9,13 @@ struct FITActivityData: Sendable {
     var totalDistance: Double?
     /// Seconds.
     var elapsedTime: Double?
+    /// Seconds of timer time (moving, without pauses).
+    var movingTime: Double?
+    /// Watts, averaged over the timer time of all sessions with power.
+    var averagePower: Double? { powerTime > 0 ? powerTotal / powerTime : nil }
+    /// Sum of average power × timer time, and that timer time, over sessions with power.
+    var powerTotal = 0.0
+    var powerTime = 0.0
     /// FIT sub_sport (e.g. 6 indoor cycling, 58 virtual activity).
     var subSport: UInt8?
     /// FIT manufacturer from file_id (e.g. 260 Zwift).
@@ -149,8 +156,15 @@ enum FITDecoder {
                 if number == 1, value != 0xFF { result.subSport = result.subSport ?? UInt8(truncatingIfNeeded: value) }
             }
         case 18: // session
+            var timer: Double?
+            var power: Double?
             forEachField(def, b, offset) { number, value in
                 switch number {
+                case 8 where value != 0xFFFF_FFFF:
+                    timer = Double(value) / 1000
+                    result.movingTime = (result.movingTime ?? 0) + Double(value) / 1000
+                case 20 where value != 0xFFFF && value > 0:
+                    power = Double(value)
                 case 6 where value != 0xFF:
                     result.subSport = result.subSport ?? UInt8(truncatingIfNeeded: value)
                 case 5 where value != 0xFF:
@@ -163,6 +177,10 @@ enum FITDecoder {
                     result.elapsedTime = (result.elapsedTime ?? 0) + Double(value) / 1000
                 default: break
                 }
+            }
+            if let power, let timer, timer > 0 {
+                result.powerTotal += power * timer
+                result.powerTime += timer
             }
         default:
             break
