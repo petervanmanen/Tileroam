@@ -92,25 +92,6 @@ struct StravaTests {
     }
 }
 
-struct StravaExportMoveTests {
-    @Test func movesOnlyOwnFiles() throws {
-        let root = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
-        let old = root.appending(path: "HealthFit"), new = root.appending(path: "Tileroam")
-        let oldStrava = old.appending(path: "Strava")
-        try FileManager.default.createDirectory(at: oldStrava, withIntermediateDirectories: true)
-        try FileManager.default.createDirectory(at: new, withIntermediateDirectories: true)
-        try Data([1]).write(to: oldStrava.appending(path: "2023-08-10-105956-Rit-Strava-123.fit"))
-        try Data([2]).write(to: oldStrava.appending(path: "2023-08-10-105956-Outdoor Cycling-Strava.fit"))
-        try Data([3]).write(to: old.appending(path: "2023-08-11-Outdoor Cycling-Strava-9.fit"))
-
-        #expect(try StravaExport.moveExports(from: old, to: new) == 1)
-        #expect(FileManager.default.fileExists(atPath: new.appending(path: "Strava/2023-08-10-105956-Rit-Strava-123.fit").path))
-        #expect(FileManager.default.fileExists(atPath: oldStrava.appending(path: "2023-08-10-105956-Outdoor Cycling-Strava.fit").path))
-        #expect(FileManager.default.fileExists(atPath: old.appending(path: "2023-08-11-Outdoor Cycling-Strava-9.fit").path))
-        #expect(!StravaExport.isOwnFile("2018-10-27-125008-Outdoor Running-Strava.fit"))
-    }
-}
-
 struct ImportFolderTests {
     @Test func iCloudLocations() {
         let root = "/private/var/mobile/Library/Mobile Documents"

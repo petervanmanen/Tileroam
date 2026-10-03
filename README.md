@@ -18,7 +18,7 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 - **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
 - **Statistics**: countries and municipalities visited, Eddington numbers for cycling, walking and running, and totals per sport for this year and all time.
 - **Indoor and virtual rides** (Zwift, Rouvy, MyWhoosh, trainer rides) count in the statistics but stay off the map, tiles, municipalities and postcodes.
-- **Storage is optional**: without a chosen folder, Tileroam saves routes and Strava files in its own storage (Files app › On My iPhone › Tileroam) and also reads `.fit` files from its Import folder there.
+- **Your own copy, synced with iCloud**: imported `.fit` files and Strava downloads are kept in the app (Files app › On My iPhone › Tileroam › Activities), and with iCloud sync also in iCloud Drive › Tileroam, without duplicates; a further device needs no setup. Imports are one-time copies. Activities can be deleted in the Activities list.
 - **Settings → Storage** shows the downloaded map data and lets you remove it. Map downloads over 25 MB wait for Wi-Fi unless you allow mobile data.
 - **iPad** layout with a side panel, all orientations and multitasking.
 - Available in **English, Dutch, French, Spanish and German**.
@@ -60,7 +60,7 @@ Requirements: Xcode 27 or later, iOS/iPadOS 26 or later, and a paid Apple Develo
 1. Clone the repository and open `Tileroam.xcodeproj`.
 2. Select the **Tileroam** and **TileroamWidget** targets, and choose your team under *Signing & Capabilities*. Change the bundle identifier (`nl.petervanmanen.Tileroam`) and the App Group (`group.nl.petervanmanen.Tileroam`) to your own.
 3. Optional, for Strava: see below.
-4. Run on your iPhone or iPad. On first launch, choose one or more iCloud Drive folders with your `.fit` files. You can add or remove folders later in *Settings → Import Folders*.
+4. Run on your iPhone or iPad. On first launch, import `.fit` files (or a folder of them), connect Strava or try the sample rides. You can import more later in *Settings → Activities*.
 
 ### Strava (optional)
 
@@ -78,6 +78,7 @@ Strava allows about 100 requests per 15 minutes and 1,000 per day. The activity 
 ## How it works
 
 - **FIT files** are decoded by a small built-in decoder (`FIT/FITDecoder.swift`). Parsed routes, tiles and visited areas are cached, so only new or changed files are read on the next launch.
+- **Storage** (`Import/Library.swift`): every activity and route lives in the app (`Documents/Activities`, `Documents/Routes`). With iCloud sync on, `Library.pull`/`push` mirror them to iCloud Drive › Tileroam, after duplicate files are removed (`ActivityMerge.preferredFile`). Deleted activities are remembered in iCloud's key-value store (`Deletions`), so other devices delete their copy and the Strava sync doesn't bring them back. Earlier versions' folders are copied in once (`Library.migrate`).
 - **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for zoom 17 tiles spread across Europe.
 - **Duplicates**: activities of the same kind that overlap in time are merged (`Import/ActivityMerge.swift`); the copy with the best GPS and the longest distance is kept.
 - **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 6.3 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).

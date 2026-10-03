@@ -81,22 +81,17 @@ struct SettingsSyncTests {
     }
 }
 
+@Suite(.serialized)
 struct StravaFilesTests {
-    @Test func deletesOnlyOwnStravaFiles() throws {
-        let folder = FileManager.default.temporaryDirectory.appending(path: "strava-files-\(UUID())")
-        let strava = folder.appending(path: StravaExport.subfolder)
-        try FileManager.default.createDirectory(at: strava, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: folder) }
-        for name in ["2026-05-01-090000-Morning Ride-Strava-123.fit", // ours
-                     ".2026-05-02-090000-Evening Ride-Strava-456.fit.icloud", // ours, not downloaded
-                     "2026-05-01-HealthFit-Strava.fit", // HealthFit's own export
-                     "notes.txt"] {
-            try Data([1]).write(to: strava.appending(path: name))
-        }
-        #expect(StravaExport.ownFiles(in: folder).count == 2)
-        #expect(StravaExport.deleteOwnFiles(in: folder) == 2)
-        let left = try FileManager.default.contentsOfDirectory(atPath: strava.path(percentEncoded: false)).sorted()
-        #expect(left == ["2026-05-01-HealthFit-Strava.fit", "notes.txt"])
+    @Test func findsOnlyOwnStravaFiles() throws {
+        let marker = UUID().uuidString.prefix(8)
+        let names = ["2026-05-01-090000-Ride \(marker)-Strava-900000123.fit", // ours
+                     ".2026-05-02-090000-Ride \(marker)-Strava-900000456.fit.icloud", // ours, not downloaded
+                     "2026-05-01-HealthFit \(marker)-Strava.fit"] // HealthFit's own export
+        for name in names { try Data([1]).write(to: Library.activitiesFolder.appending(path: name)) }
+        defer { for name in names { try? FileManager.default.removeItem(at: Library.activitiesFolder.appending(path: name)) } }
+        let own = StravaExport.ownFiles().filter { $0.contains(marker) }
+        #expect(own == ["2026-05-01-090000-Ride \(marker)-Strava-900000123.fit", "2026-05-02-090000-Ride \(marker)-Strava-900000456.fit"])
     }
 }
 
@@ -121,15 +116,11 @@ struct StravaEventTests {
         #expect(StravaEventChanges([StravaEvent(type: "deauthorized", time: 5, activity: nil)]).revoked)
     }
 
-    @Test func deletesOnlyFilesOfDeletedActivities() throws {
-        let folder = FileManager.default.temporaryDirectory.appending(path: "strava-events-\(UUID())")
-        let strava = folder.appending(path: StravaExport.subfolder)
-        try FileManager.default.createDirectory(at: strava, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: folder) }
-        for name in ["2026-05-01-Ride-Strava-12.fit", "2026-05-02-Ride-Strava-123.fit", ".2026-05-03-Ride-Strava-45.fit.icloud"] {
-            try Data([1]).write(to: strava.appending(path: name))
-        }
-        #expect(StravaExport.deleteOwnFiles(in: folder, activities: [12, 45]) == 2)
-        #expect(try FileManager.default.contentsOfDirectory(atPath: strava.path(percentEncoded: false)) == ["2026-05-02-Ride-Strava-123.fit"])
+    @Test func findsOnlyFilesOfDeletedActivities() throws {
+        // Strava files in the library, with IDs no real file has; 9000000012 must not match 900000001.
+        let names = ["2026-05-01-Ride-Strava-900000001.fit", "2026-05-02-Ride-Strava-9000000012.fit", "2026-05-03-Ride-Strava-900000045.fit"]
+        for name in names { try Data([1]).write(to: Library.activitiesFolder.appending(path: name)) }
+        defer { for name in names { try? FileManager.default.removeItem(at: Library.activitiesFolder.appending(path: name)) } }
+        #expect(StravaExport.ownFiles(of: [900000001, 900000045]) == [names[0], names[2]])
     }
 }

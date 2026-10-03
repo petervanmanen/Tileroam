@@ -18,7 +18,7 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 - **Widgets**: *Tegels om je heen* (een kaart van de tegels bij jou in de buurt) en *Eddington-getal*, op het beginscherm en toegangsscherm.
 - **Statistieken**: bezochte landen en gemeenten, Eddington-getallen voor fietsen, wandelen en hardlopen, en totalen per sport voor dit jaar en in totaal.
 - **Binnen- en virtuele ritten** (Zwift, Rouvy, MyWhoosh, trainerritten) tellen mee in de statistieken maar blijven van de kaart, tegels, gemeenten en postcodes.
-- **Opslag is optioneel**: zonder gekozen map bewaart Tileroam routes en Strava-bestanden in de eigen opslag (Bestanden-app › Op mijn iPhone › Tileroam) en leest het ook `.fit`-bestanden uit de map Import daar.
+- **Je eigen kopie, gesynchroniseerd met iCloud**: geïmporteerde `.fit`-bestanden en Strava-downloads worden in de app bewaard (Bestanden-app › Op mijn iPhone › Tileroam › Activities), en met iCloud-synchronisatie ook in iCloud Drive › Tileroam, zonder dubbelen; een volgend apparaat hoeft niets in te stellen. Importeren is een eenmalige kopie. Activiteiten kun je verwijderen in de lijst Activiteiten.
 - **Instellingen → Opslag** toont de gedownloade kaartgegevens en laat je ze verwijderen. Kaartdownloads groter dan 25 MB wachten op wifi, tenzij je mobiele data toestaat.
 - **iPad**-weergave met zijpaneel, alle oriëntaties en multitasking.
 - Beschikbaar in het **Engels, Nederlands, Frans, Spaans en Duits**.
@@ -60,7 +60,7 @@ Vereisten: Xcode 27 of nieuwer, iOS/iPadOS 26 of nieuwer, en een betaald Apple D
 1. Clone de repository en open `Tileroam.xcodeproj`.
 2. Kies bij de targets **Tileroam** en **TileroamWidget** je team onder *Signing & Capabilities*. Verander de bundle identifier (`nl.petervanmanen.Tileroam`) en de App Group (`group.nl.petervanmanen.Tileroam`) naar je eigen waarden.
 3. Optioneel, voor Strava: zie hieronder.
-4. Start de app op je iPhone of iPad. Kies bij de eerste start een of meer iCloud Drive-mappen met je `.fit`-bestanden. Je kunt later mappen toevoegen of verwijderen via *Instellingen → Importmappen*.
+4. Start de app op je iPhone of iPad. Importeer bij de eerste start `.fit`-bestanden (of een map ermee), koppel Strava of probeer de voorbeeldritten. Later importeer je meer via *Instellingen → Activiteiten*.
 
 ### Strava (optioneel)
 
@@ -78,6 +78,7 @@ Strava staat ongeveer 100 verzoeken per 15 minuten en 1.000 per dag toe. De acti
 ## Hoe het werkt
 
 - **FIT-bestanden** worden gelezen door een kleine ingebouwde decoder (`FIT/FITDecoder.swift`). Routes, tegels en bezochte gebieden worden bewaard in een cache, zodat bij de volgende start alleen nieuwe of gewijzigde bestanden worden gelezen.
+- **Opslag** (`Import/Library.swift`): elke activiteit en route staat in de app (`Documents/Activities`, `Documents/Routes`). Met iCloud-synchronisatie spiegelen `Library.pull`/`push` ze naar iCloud Drive › Tileroam, nadat dubbele bestanden zijn verwijderd (`ActivityMerge.preferredFile`). Verwijderde activiteiten worden onthouden in de key-value-opslag van iCloud (`Deletions`), zodat andere apparaten hun kopie verwijderen en Strava ze niet terugbrengt. De mappen van eerdere versies worden eenmalig gekopieerd (`Library.migrate`).
 - **Tegels** gebruiken de standaard Web Mercator-tegelformule (`Geo/TileGrid.swift`). Max. vierkant en cluster worden alleen over de bezochte tegels berekend, zodat dat ook snel blijft voor zoom 17-tegels verspreid over Europa.
 - **Dubbelen**: activiteiten van hetzelfde soort die in de tijd overlappen worden samengevoegd (`Import/ActivityMerge.swift`); de kopie met de beste gps en de langste afstand blijft over.
 - **Gemeenten en postcodes** zijn compacte binaire bestanden (`AssetPacks/Regions/*.fmr`, samen 6,3 MB) met een ruimtelijke index voor snelle opzoekingen. Ze zitten niet in de app: elk land is een door Apple gehost asset pack (`regions-NL`, …) dat de app met Background Assets downloadt zodra je er een activiteit hebt. `Tools/build_asset_packs.sh` maakt de packs voor App Store Connect; in de simulator leest `-RegionsDir <repo>/AssetPacks/Regions` ze rechtstreeks.

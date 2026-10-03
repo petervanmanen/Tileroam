@@ -18,7 +18,7 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 - **Widgets**: *Kacheln um dich herum* (eine Karte der Kacheln in deiner Nähe) und *Eddington-Zahl*, auf dem Home-Bildschirm und dem Sperrbildschirm.
 - **Statistik**: besuchte Länder und Gemeinden, Eddington-Zahlen für Radfahren, Gehen und Laufen sowie Summen pro Sportart für dieses Jahr und insgesamt.
 - **Indoor- und virtuelle Fahrten** (Zwift, Rouvy, MyWhoosh, Rollentrainer) zählen in der Statistik, bleiben aber von Karte, Kacheln, Gemeinden und Postleitzahlen fern.
-- **Speicher ist optional**: Ohne gewählten Ordner speichert Tileroam Routen und Strava-Dateien im eigenen Speicher (Dateien-App › Auf meinem iPhone › Tileroam) und liest auch `.fit`-Dateien aus dem Ordner Import dort.
+- **Deine eigene Kopie, mit iCloud synchronisiert**: importierte `.fit`-Dateien und Strava-Downloads bleiben in der App (Dateien-App › Auf meinem iPhone › Tileroam › Activities), mit iCloud-Synchronisierung auch in iCloud Drive › Tileroam, ohne Duplikate; ein weiteres Gerät braucht keine Einrichtung. Importieren ist eine einmalige Kopie. Aktivitäten löschst du in der Liste Aktivitäten.
 - **Einstellungen → Speicher** zeigt die geladenen Kartendaten und lässt dich sie entfernen. Kartendownloads über 25 MB warten auf WLAN, außer du erlaubst mobile Daten.
 - **iPad**-Layout mit Seitenleiste, allen Ausrichtungen und Multitasking.
 - Verfügbar auf **Englisch, Niederländisch, Französisch, Spanisch und Deutsch**.
@@ -60,7 +60,7 @@ Voraussetzungen: Xcode 27 oder neuer, iOS/iPadOS 26 oder neuer und ein kostenpfl
 1. Klone das Repository und öffne `Tileroam.xcodeproj`.
 2. Wähle für die Targets **Tileroam** und **TileroamWidget** dein Team unter *Signing & Capabilities*. Ändere den Bundle Identifier (`nl.petervanmanen.Tileroam`) und die App Group (`group.nl.petervanmanen.Tileroam`) auf deine eigenen.
 3. Optional, für Strava: siehe unten.
-4. Starte die App auf deinem iPhone oder iPad. Wähle beim ersten Start einen oder mehrere iCloud Drive-Ordner mit deinen `.fit`-Dateien. Ordner kannst du später unter *Einstellungen → Importordner* hinzufügen oder entfernen.
+4. Starte die App auf deinem iPhone oder iPad. Importiere beim ersten Start `.fit`-Dateien (oder einen Ordner), verbinde Strava oder probiere die Beispielfahrten. Später importierst du mehr unter *Einstellungen → Aktivitäten*.
 
 ### Strava (optional)
 
@@ -78,6 +78,7 @@ Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitä
 ## So funktioniert es
 
 - **FIT-Dateien** werden von einem kleinen eingebauten Decoder gelesen (`FIT/FITDecoder.swift`). Strecken, Kacheln und besuchte Gebiete werden zwischengespeichert, sodass beim nächsten Start nur neue oder geänderte Dateien gelesen werden.
+- **Speicher** (`Import/Library.swift`): jede Aktivität und Route liegt in der App (`Documents/Activities`, `Documents/Routes`). Mit iCloud-Synchronisierung spiegeln `Library.pull`/`push` sie nach iCloud Drive › Tileroam, nachdem doppelte Dateien entfernt wurden (`ActivityMerge.preferredFile`). Gelöschte Aktivitäten werden im Key-Value-Speicher von iCloud gemerkt (`Deletions`), damit andere Geräte ihre Kopie löschen und Strava sie nicht zurückbringt. Die Ordner früherer Versionen werden einmal kopiert (`Library.migrate`).
 - **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
 - **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
 - **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 6,3 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.

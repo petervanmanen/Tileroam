@@ -85,34 +85,6 @@
         }
       }
     },
-    "%@ › Import": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ › Import"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ › Import"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ › Import"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ › Import"
-          }
-        }
-      }
-    },
     "%lld / %lld": {
       "localizations": {
         "nl": {
@@ -1333,6 +1305,34 @@
         }
       }
     },
+    "Activity files": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activiteitbestanden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fichiers d'activité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivos de actividad"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivitätsdateien"
+          }
+        }
+      }
+    },
     "Add .fit files in Settings, or connect Strava.": {
       "localizations": {
         "nl": {
@@ -1357,62 +1357,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Füge in den Einstellungen .fit-Dateien hinzu oder verbinde Strava."
-          }
-        }
-      }
-    },
-    "Add Another Folder": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nog een map toevoegen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter un autre dossier"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Añadir otra carpeta"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weiteren Ordner hinzufügen"
-          }
-        }
-      }
-    },
-    "Add Folder…": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Map toevoegen…"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter un dossier…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Añadir carpeta…"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ordner hinzufügen…"
           }
         }
       }
@@ -1669,170 +1613,30 @@
         }
       }
     },
-    "Choose Folder…": {
+    "Checking your activities…": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kies map…"
+            "value": "Je activiteiten controleren…"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choisir un dossier…"
+            "value": "Vérification de vos activités…"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Elegir carpeta…"
+            "value": "Comprobando tus actividades…"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ordner wählen…"
-          }
-        }
-      }
-    },
-    "Choose Save Folder…": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies bewaarmap…"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisir le dossier d’enregistrement…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elegir carpeta de guardado…"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Speicherordner wählen…"
-          }
-        }
-      }
-    },
-    "Choose a folder with .fit files or import files to see where you have been.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies een map met .fit-bestanden of importeer bestanden om te zien waar je bent geweest."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez un dossier de fichiers .fit ou importez des fichiers pour voir où vous êtes allé."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige una carpeta con archivos .fit o importa archivos para ver dónde has estado."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle einen Ordner mit .fit-Dateien oder importiere Dateien, um zu sehen, wo du warst."
-          }
-        }
-      }
-    },
-    "Choose a folder with .fit files, import files, or connect Strava to see where you have been.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies een map met .fit-bestanden, importeer bestanden of koppel Strava om te zien waar je bent geweest."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez un dossier de fichiers .fit, importez des fichiers ou connectez Strava pour voir où vous êtes allé."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige una carpeta con archivos .fit, importa archivos o conecta Strava para ver dónde has estado."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle einen Ordner mit .fit-Dateien, importiere Dateien oder verbinde Strava, um zu sehen, wo du warst."
-          }
-        }
-      }
-    },
-    "Choose it again in Settings.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies hem opnieuw in Instellingen."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez-le à nouveau dans Réglages."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vuelve a elegirla en Ajustes."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle ihn in den Einstellungen erneut aus."
-          }
-        }
-      }
-    },
-    "Choose the iCloud Drive folder with your .fit files, for example exports from HealthFit, Garmin or Wahoo. Tileroam reads them in place and picks up new files automatically.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies de iCloud Drive-map met je .fit-bestanden, bijvoorbeeld exports van HealthFit, Garmin of Wahoo. Tileroam leest ze ter plekke en ziet nieuwe bestanden automatisch."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez le dossier iCloud Drive contenant vos fichiers .fit, par exemple des exports HealthFit, Garmin ou Wahoo. Tileroam les lit sur place et détecte automatiquement les nouveaux fichiers."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige la carpeta de iCloud Drive con tus archivos .fit, por ejemplo exportaciones de HealthFit, Garmin o Wahoo. Tileroam los lee donde están y detecta los nuevos automáticamente."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wähle den iCloud Drive-Ordner mit deinen .fit-Dateien, zum Beispiel Exporte aus HealthFit, Garmin oder Wahoo. Tileroam liest sie direkt und erkennt neue Dateien automatisch."
+            "value": "Deine Aktivitäten werden geprüft…"
           }
         }
       }
@@ -2061,62 +1865,6 @@
         }
       }
     },
-    "Could not access “%@”: %@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen toegang tot “%1$@”: %2$@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossible d’accéder à « %1$@ » : %2$@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se pudo acceder a “%1$@”: %2$@"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein Zugriff auf „%1$@“: %2$@"
-          }
-        }
-      }
-    },
-    "Could not move earlier saved files: %@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kan eerder bewaarde bestanden niet verplaatsen: %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossible de déplacer les fichiers enregistrés : %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se pudieron mover los archivos guardados: %@"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Früher gespeicherte Dateien konnten nicht verschoben werden: %@"
-          }
-        }
-      }
-    },
     "Could not read (%lld)": {
       "localizations": {
         "nl": {
@@ -2201,30 +1949,30 @@
         }
       }
     },
-    "Could not save to folder: %@": {
+    "Could not save the activity: %@": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kan niet in map bewaren: %@"
+            "value": "De activiteit kon niet worden bewaard: %@"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Impossible d’enregistrer dans le dossier : %@"
+            "value": "Impossible d'enregistrer l'activité : %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se pudo guardar en la carpeta: %@"
+            "value": "No se pudo guardar la actividad: %@"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Speichern im Ordner fehlgeschlagen: %@"
+            "value": "Die Aktivität konnte nicht gespeichert werden: %@"
           }
         }
       }
@@ -2369,6 +2117,34 @@
         }
       }
     },
+    "Delete": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwijder"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Löschen"
+          }
+        }
+      }
+    },
     "Delete %lld Files": {
       "localizations": {
         "en": {
@@ -2463,6 +2239,34 @@
         }
       }
     },
+    "Delete Activity": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwijder activiteit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l'activité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar actividad"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivität löschen"
+          }
+        }
+      }
+    },
     "Delete Files Saved from Strava (%lld)": {
       "localizations": {
         "nl": {
@@ -2515,6 +2319,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Von Strava gespeicherte Dateien löschen?"
+          }
+        }
+      }
+    },
+    "Delete “%@”?": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” verwijderen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer « %@ » ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar “%@”?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„%@“ löschen?"
           }
         }
       }
@@ -3345,30 +3177,114 @@
         }
       }
     },
-    "Import Folders": {
+    "Import .fit files to see where you have been.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Importmappen"
+            "value": "Importeer .fit-bestanden om te zien waar je bent geweest."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dossiers d’import"
+            "value": "Importez des fichiers .fit pour voir où vous êtes allé."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carpetas de importación"
+            "value": "Importa archivos .fit para ver dónde has estado."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Importordner"
+            "value": "Importiere .fit-Dateien, um zu sehen, wo du warst."
+          }
+        }
+      }
+    },
+    "Import .fit files, or connect Strava, to see where you have been.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importeer .fit-bestanden of koppel Strava om te zien waar je bent geweest."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importez des fichiers .fit ou connectez Strava pour voir où vous êtes allé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importa archivos .fit o conecta Strava para ver dónde has estado."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importiere .fit-Dateien oder verbinde Strava, um zu sehen, wo du warst."
+          }
+        }
+      }
+    },
+    "Import your .fit files, for example exports from HealthFit, Garmin or Wahoo: separate files or a whole folder. Tileroam keeps its own copy, and with iCloud your other devices have them too.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importeer je .fit-bestanden, bijvoorbeeld exports van HealthFit, Garmin of Wahoo: losse bestanden of een hele map. Tileroam bewaart een eigen kopie, en met iCloud hebben je andere apparaten ze ook."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importez vos fichiers .fit, par exemple des exports de HealthFit, Garmin ou Wahoo : des fichiers séparés ou un dossier entier. Tileroam garde sa propre copie, et avec iCloud vos autres appareils les ont aussi."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importa tus archivos .fit, por ejemplo exportaciones de HealthFit, Garmin o Wahoo: archivos sueltos o una carpeta entera. Tileroam guarda su propia copia y, con iCloud, tus otros dispositivos también los tienen."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importiere deine .fit-Dateien, zum Beispiel Exporte aus HealthFit, Garmin oder Wahoo: einzelne Dateien oder einen ganzen Ordner. Tileroam behält eine eigene Kopie, und mit iCloud haben deine anderen Geräte sie auch."
+          }
+        }
+      }
+    },
+    "Imported %lld .fit files.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld .fit-bestanden geïmporteerd."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld fichiers .fit importés."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld archivos .fit importados."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld .fit-Dateien importiert."
           }
         }
       }
@@ -3485,34 +3401,6 @@
         }
       }
     },
-    "Internal storage": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interne opslag"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stockage interne"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Almacenamiento interno"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interner Speicher"
-          }
-        }
-      }
-    },
     "It downloads again the next time you plan a route.": {
       "localizations": {
         "nl": {
@@ -3537,6 +3425,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sie werden beim nächsten Planen einer Route erneut geladen."
+          }
+        }
+      }
+    },
+    "It's deleted from Tileroam on this device and from iCloud, so your other devices remove it too. It stays on Strava and wherever you imported it from.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hij wordt uit Tileroam op dit apparaat en uit iCloud verwijderd, zodat je andere apparaten hem ook verwijderen. Hij blijft op Strava en waar je hem vandaan hebt geïmporteerd."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elle est supprimée de Tileroam sur cet appareil et d'iCloud, donc vos autres appareils la suppriment aussi. Elle reste sur Strava et là d'où vous l'avez importée."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se elimina de Tileroam en este dispositivo y de iCloud, así que tus otros dispositivos también la eliminan. Sigue en Strava y donde la importaste."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie wird aus Tileroam auf diesem Gerät und aus iCloud gelöscht, sodass deine anderen Geräte sie auch entfernen. Sie bleibt auf Strava und dort, woher du sie importiert hast."
           }
         }
       }
@@ -3961,294 +3877,6 @@
         }
       }
     },
-    "Moved %lld earlier saved files to “%@”.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moved %#@n@ to “%2$@”."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg earlier saved file"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg earlier saved files"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ verplaatst naar “%2$@”."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg eerder bewaard bestand"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg eerder bewaarde bestanden"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ déplacé(s) vers « %2$@ »."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg fichier enregistré"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg fichiers enregistrés"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ movido(s) a “%2$@”."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg archivo guardado"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg archivos guardados"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ nach „%2$@“ verschoben."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg früher gespeicherte Datei"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg früher gespeicherte Dateien"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Moved %lld files to %@.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moved %#@n@ to %2$@."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg file"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg files"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ verplaatst naar %2$@."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg bestand"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg bestanden"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ déplacé(s) vers %2$@."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg fichier"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg fichiers"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ movido(s) a %2$@."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg archivo"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg archivos"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ nach %2$@ verschoben."
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg Datei"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg Dateien"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "Municipalities": {
       "localizations": {
         "nl": {
@@ -4469,34 +4097,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Weiter"
-          }
-        }
-      }
-    },
-    "No .fit files found in “%@”. Choose the folder that contains your .fit files.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen .fit-bestanden gevonden in “%@”. Kies de map met je .fit-bestanden."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun fichier .fit trouvé dans « %@ ». Choisissez le dossier qui contient vos fichiers .fit."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se encontraron archivos .fit en “%@”. Elige la carpeta que contiene tus archivos .fit."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine .fit-Dateien in „%@“ gefunden. Wähle den Ordner mit deinen .fit-Dateien."
           }
         }
       }
@@ -4949,30 +4549,30 @@
         }
       }
     },
-    "Optionally connect Strava to download your full history with GPS. Activities are also saved as .fit files in a save folder of your choice, such as iCloud Drive › Tileroam.": {
+    "Optionally connect Strava to download your full history with GPS. Activities are saved as .fit files in Tileroam and, with iCloud, on your other devices.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Koppel desgewenst Strava om je volledige geschiedenis met gps te downloaden. Activiteiten worden ook als .fit-bestand bewaard in een map naar keuze, zoals iCloud Drive › Tileroam."
+            "value": "Koppel desgewenst Strava om je volledige geschiedenis met gps te downloaden. Activiteiten worden als .fit-bestanden in Tileroam bewaard en, met iCloud, op je andere apparaten."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Connectez Strava si vous le souhaitez pour télécharger tout votre historique avec le GPS. Les activités sont aussi enregistrées en fichiers .fit dans le dossier de votre choix, par exemple iCloud Drive › Tileroam."
+            "value": "Connectez éventuellement Strava pour télécharger tout votre historique avec GPS. Les activités sont enregistrées en fichiers .fit dans Tileroam et, avec iCloud, sur vos autres appareils."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Si quieres, conecta Strava para descargar todo tu historial con GPS. Las actividades también se guardan como archivos .fit en la carpeta que elijas, como iCloud Drive › Tileroam."
+            "value": "Si quieres, conecta Strava para descargar todo tu historial con GPS. Las actividades se guardan como archivos .fit en Tileroam y, con iCloud, en tus otros dispositivos."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verbinde optional Strava, um deinen ganzen Verlauf mit GPS zu laden. Aktivitäten werden auch als .fit-Dateien in einem Ordner deiner Wahl gespeichert, etwa iCloud Drive › Tileroam."
+            "value": "Verbinde optional Strava, um deinen ganzen Verlauf mit GPS zu laden. Aktivitäten werden als .fit-Dateien in Tileroam gespeichert und, mit iCloud, auf deinen anderen Geräten."
           }
         }
       }
@@ -5537,34 +5137,6 @@
         }
       }
     },
-    "Rescan Now": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nu opnieuw scannen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Analyser maintenant"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Analizar ahora"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jetzt neu scannen"
-          }
-        }
-      }
-    },
     "Route Planning Map Data": {
       "localizations": {
         "nl": {
@@ -5845,142 +5417,58 @@
         }
       }
     },
-    "Save Folder": {
+    "Save Route": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bewaarmap"
+            "value": "Bewaar route"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dossier d’enregistrement"
+            "value": "Enregistrer le parcours"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carpeta de guardado"
+            "value": "Guardar ruta"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Speicherordner"
+            "value": "Route speichern"
           }
         }
       }
     },
-    "Save folder: %@": {
+    "Saved to %@ › Routes › %@": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bewaarmap: %@"
+            "value": "Bewaard in %1$@ › Routes › %2$@"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dossier d’enregistrement : %@"
+            "value": "Enregistré dans %1$@ › Routes › %2$@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carpeta de guardado: %@"
+            "value": "Guardado en %1$@ › Routes › %2$@"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Speicherordner: %@"
-          }
-        }
-      }
-    },
-    "Save to %@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bewaar in %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistrer dans %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar en %@"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "In %@ speichern"
-          }
-        }
-      }
-    },
-    "Save to Folder": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bewaar in map"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistrer dans le dossier"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar en carpeta"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Im Ordner speichern"
-          }
-        }
-      }
-    },
-    "Saved to %@/Routes/%@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bewaard in %1$@/Routes/%2$@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistré dans %1$@/Routes/%2$@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardado en %1$@/Routes/%2$@"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gespeichert in %1$@/Routes/%2$@"
+            "value": "Gespeichert in %1$@ › Routes › %2$@"
           }
         }
       }
@@ -6037,34 +5525,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Strava-Aktivitäten werden gespeichert: %1$lld von %2$lld"
-          }
-        }
-      }
-    },
-    "Scanning folder…": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Map doorzoeken…"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Analyse du dossier…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Analizando la carpeta…"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ordner wird durchsucht…"
           }
         }
       }
@@ -6149,34 +5609,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wähle beliebig viele Orte, auch gemischt"
-          }
-        }
-      }
-    },
-    "Selected": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gekozen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sélectionné"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleccionada"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ausgewählt"
           }
         }
       }
@@ -6881,30 +6313,30 @@
         }
       }
     },
-    "Strava activities are saved as .fit files in the save folder's “%@” subfolder. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.": {
+    "Strava activities are saved as .fit files in Tileroam's activities. Detailed GPS downloads within Strava's rate limit (about 100 activities per 15 minutes, 1000 per day) and continues automatically.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strava-activiteiten worden als .fit-bestanden bewaard in de submap “%@” van de bewaarmap. Gedetailleerde gps wordt binnen de Strava-limiet gedownload (ongeveer 100 activiteiten per 15 minuten, 1000 per dag) en gaat automatisch verder."
+            "value": "Strava-activiteiten worden als .fit-bestanden bij de activiteiten van Tileroam bewaard. Gedetailleerde gps wordt gedownload binnen de limiet van Strava (ongeveer 100 activiteiten per 15 minuten, 1000 per dag) en gaat automatisch verder."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les activités Strava sont enregistrées en fichiers .fit dans le sous-dossier « %@ » du dossier d’enregistrement. Le GPS détaillé se télécharge dans la limite de Strava (environ 100 activités par 15 minutes, 1000 par jour) et reprend automatiquement."
+            "value": "Les activités Strava sont enregistrées en fichiers .fit avec les activités de Tileroam. Le GPS détaillé se télécharge dans la limite de Strava (environ 100 activités par 15 minutes, 1000 par jour) et continue automatiquement."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Las actividades de Strava se guardan como archivos .fit en la subcarpeta “%@” de la carpeta de guardado. El GPS detallado se descarga dentro del límite de Strava (unas 100 actividades cada 15 minutos, 1000 al día) y continúa automáticamente."
+            "value": "Las actividades de Strava se guardan como archivos .fit con las actividades de Tileroam. El GPS detallado se descarga dentro del límite de Strava (unas 100 actividades cada 15 minutos, 1000 al día) y continúa automáticamente."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strava-Aktivitäten werden als .fit-Dateien im Unterordner „%@“ des Speicherordners gespeichert. Detailliertes GPS wird im Rahmen des Strava-Limits geladen (etwa 100 Aktivitäten pro 15 Minuten, 1000 pro Tag) und läuft automatisch weiter."
+            "value": "Strava-Aktivitäten werden als .fit-Dateien bei den Aktivitäten von Tileroam gespeichert. Detailliertes GPS wird innerhalb des Strava-Limits geladen (etwa 100 Aktivitäten pro 15 Minuten, 1000 pro Tag) und läuft automatisch weiter."
           }
         }
       }
@@ -7161,30 +6593,30 @@
         }
       }
     },
-    "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, countries and folders.": {
+    "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, iCloud sync and imports.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wissel bovenaan de kaart tussen tegels, routes, gemeenten en postcodes. In Instellingen vind je je statistieken, landen en mappen."
+            "value": "Wissel bovenaan de kaart tussen tegels, routes, gemeenten en postcodes. In Instellingen vind je je statistieken, iCloud-synchronisatie en importeren."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passez des tuiles aux parcours, communes et codes postaux en haut de la carte. Réglages contient vos statistiques, pays et dossiers."
+            "value": "Passez des tuiles aux parcours, communes et codes postaux en haut de la carte. Les Réglages contiennent vos statistiques, la synchronisation iCloud et l'import."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cambia entre teselas, rutas, municipios y códigos postales en la parte superior del mapa. En Ajustes están tus estadísticas, países y carpetas."
+            "value": "Cambia entre teselas, rutas, municipios y códigos postales en la parte superior del mapa. En Ajustes están tus estadísticas, la sincronización con iCloud y la importación."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wechsle oben auf der Karte zwischen Kacheln, Routen, Gemeinden und Postleitzahlen. In den Einstellungen findest du Statistiken, Länder und Ordner."
+            "value": "Wechsle oben auf der Karte zwischen Kacheln, Routen, Gemeinden und Postleitzahlen. In den Einstellungen findest du Statistiken, iCloud-Synchronisierung und Import."
           }
         }
       }
@@ -7213,6 +6645,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jetzt synchronisieren"
+          }
+        }
+      }
+    },
+    "Sync with iCloud": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchroniseer met iCloud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchroniser avec iCloud"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizar con iCloud"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit iCloud synchronisieren"
           }
         }
       }
@@ -7609,30 +7069,86 @@
         }
       }
     },
-    "Tileroam reads .fit files from these folders and their subfolders, and always from its own folder in iCloud Drive, shared by your devices, and the Import folder in its own storage (put files there with the Files app or AirDrop). Swipe left on a folder to remove it; its activities disappear from the map, the files themselves are not touched.": {
+    "Tileroam keeps your activities and planned routes on this device (%@ › Activities and › Routes). Sign in to iCloud with iCloud Drive on to share them with your other devices. Imported files are copied once: the folder they came from isn't watched.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam leest .fit-bestanden uit deze mappen en hun submappen, en altijd uit de eigen map in iCloud Drive, die je apparaten delen, en uit de map Import in de eigen opslag (zet bestanden daar met de Bestanden-app of AirDrop). Veeg een map naar links om hem te verwijderen; de activiteiten verdwijnen van de kaart, de bestanden zelf blijven ongemoeid."
+            "value": "Tileroam bewaart je activiteiten en geplande routes op dit apparaat (%@ › Activities en › Routes). Log in bij iCloud met iCloud Drive aan om ze met je andere apparaten te delen. Geïmporteerde bestanden worden één keer gekopieerd: de map waar ze vandaan komen wordt niet gevolgd."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam lit les fichiers .fit de ces dossiers et de leurs sous-dossiers, ainsi que toujours de son dossier iCloud Drive, partagé par vos appareils, et du dossier Import de son propre stockage (déposez-y des fichiers avec l’app Fichiers ou AirDrop). Balayez un dossier vers la gauche pour le retirer ; ses activités disparaissent de la carte, les fichiers ne sont pas modifiés."
+            "value": "Tileroam garde vos activités et parcours planifiés sur cet appareil (%@ › Activities et › Routes). Connectez-vous à iCloud avec iCloud Drive activé pour les partager avec vos autres appareils. Les fichiers importés sont copiés une fois : leur dossier d'origine n'est pas surveillé."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam lee los archivos .fit de estas carpetas y sus subcarpetas, y siempre de su propia carpeta en iCloud Drive, compartida por tus dispositivos, y de la carpeta Import de su propio almacenamiento (pon archivos ahí con la app Archivos o AirDrop). Desliza una carpeta a la izquierda para quitarla; sus actividades desaparecen del mapa, los archivos no se tocan."
+            "value": "Tileroam guarda tus actividades y rutas planificadas en este dispositivo (%@ › Activities y › Routes). Inicia sesión en iCloud con iCloud Drive activado para compartirlas con tus otros dispositivos. Los archivos importados se copian una vez: su carpeta de origen no se vigila."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tileroam liest .fit-Dateien aus diesen Ordnern und ihren Unterordnern und immer aus dem eigenen Ordner in iCloud Drive, den deine Geräte teilen, sowie aus dem Ordner Import im eigenen Speicher (lege Dateien dort mit der Dateien-App oder AirDrop ab). Wische einen Ordner nach links, um ihn zu entfernen; seine Aktivitäten verschwinden von der Karte, die Dateien selbst bleiben unverändert."
+            "value": "Tileroam speichert deine Aktivitäten und geplanten Routen auf diesem Gerät (%@ › Activities und › Routes). Melde dich mit aktiviertem iCloud Drive bei iCloud an, um sie mit deinen anderen Geräten zu teilen. Importierte Dateien werden einmal kopiert: Ihr Ursprungsordner wird nicht überwacht."
+          }
+        }
+      }
+    },
+    "Tileroam keeps your activities and planned routes on this device (%@ › Activities and › Routes). With iCloud sync, they're also in %@, without duplicates, so your other devices have them. Turning it off keeps both copies. Imported files are copied once: the folder they came from isn't watched.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam bewaart je activiteiten en geplande routes op dit apparaat (%1$@ › Activities en › Routes). Met iCloud-synchronisatie staan ze ook in %2$@, zonder dubbelen, zodat je andere apparaten ze hebben. Uitzetten houdt beide kopieën. Geïmporteerde bestanden worden één keer gekopieerd: de map waar ze vandaan komen wordt niet gevolgd."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam garde vos activités et parcours planifiés sur cet appareil (%1$@ › Activities et › Routes). Avec la synchronisation iCloud, ils sont aussi dans %2$@, sans doublons, pour vos autres appareils. La désactiver garde les deux copies. Les fichiers importés sont copiés une fois : leur dossier d'origine n'est pas surveillé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam guarda tus actividades y rutas planificadas en este dispositivo (%1$@ › Activities y › Routes). Con la sincronización de iCloud también están en %2$@, sin duplicados, para tus otros dispositivos. Desactivarla conserva ambas copias. Los archivos importados se copian una vez: su carpeta de origen no se vigila."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam speichert deine Aktivitäten und geplanten Routen auf diesem Gerät (%1$@ › Activities und › Routes). Mit iCloud-Synchronisierung sind sie auch in %2$@, ohne Duplikate, für deine anderen Geräte. Ausschalten behält beide Kopien. Importierte Dateien werden einmal kopiert: Ihr Ursprungsordner wird nicht überwacht."
+          }
+        }
+      }
+    },
+    "Tileroam now keeps its own copy of your %lld .fit files. The folders they came from aren't watched any more; import new files in Settings.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam bewaart nu een eigen kopie van je %lld .fit-bestanden. De mappen waar ze vandaan komen worden niet meer gevolgd; importeer nieuwe bestanden in Instellingen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam garde maintenant sa propre copie de vos %lld fichiers .fit. Leurs dossiers d'origine ne sont plus surveillés ; importez les nouveaux fichiers dans Réglages."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam guarda ahora su propia copia de tus %lld archivos .fit. Sus carpetas de origen ya no se vigilan; importa los archivos nuevos en Ajustes."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tileroam behält jetzt eine eigene Kopie deiner %lld .fit-Dateien. Ihre Ursprungsordner werden nicht mehr überwacht; importiere neue Dateien in den Einstellungen."
           }
         }
       }
@@ -7661,62 +7177,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tileroam-Route"
-          }
-        }
-      }
-    },
-    "Tileroam saves planned routes and downloaded activities here, in “Routes” and “%@” subfolders. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam bewaart geplande routes en gedownloade activiteiten hier, in de submappen “Routes” en “%@”. Zonder gekozen map gaan ze naar de map van Tileroam in iCloud Drive, zodat je andere apparaten ze ook hebben, of naar de eigen opslag van de app als iCloud Drive uit staat."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam enregistre ici les parcours planifiés et les activités téléchargées, dans les sous-dossiers « Routes » et « %@ ». Sans dossier choisi, ils vont dans le dossier Tileroam d’iCloud Drive, pour que vos autres appareils les aient aussi, ou dans le stockage de l’app si iCloud Drive est désactivé."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam guarda aquí las rutas planificadas y las actividades descargadas, en las subcarpetas “Routes” y “%@”. Sin carpeta elegida van a la carpeta de Tileroam en iCloud Drive, para que tus otros dispositivos también las tengan, o al almacenamiento propio de la app si iCloud Drive está desactivado."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam speichert geplante Routen und geladene Aktivitäten hier, in den Unterordnern „Routes“ und „%@“. Ohne gewählten Ordner landen sie im Tileroam-Ordner in iCloud Drive, damit deine anderen Geräte sie auch haben, oder im eigenen Speicher der App, wenn iCloud Drive aus ist."
-          }
-        }
-      }
-    },
-    "Tileroam saves planned routes here, in a “Routes” subfolder. Without a chosen folder they go to Tileroam's folder in iCloud Drive, so your other devices have them too, or to the app's own storage when iCloud Drive is off.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam bewaart geplande routes hier, in een submap “Routes”. Zonder gekozen map gaan ze naar de map van Tileroam in iCloud Drive, zodat je andere apparaten ze ook hebben, of naar de eigen opslag van de app als iCloud Drive uit staat."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam enregistre ici les parcours planifiés, dans un sous-dossier « Routes ». Sans dossier choisi, ils vont dans le dossier Tileroam d’iCloud Drive, pour que vos autres appareils les aient aussi, ou dans le stockage de l’app si iCloud Drive est désactivé."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam guarda aquí las rutas planificadas, en una subcarpeta “Routes”. Sin carpeta elegida van a la carpeta de Tileroam en iCloud Drive, para que tus otros dispositivos también las tengan, o al almacenamiento propio de la app si iCloud Drive está desactivado."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam speichert geplante Routen hier im Unterordner „Routes“. Ohne gewählten Ordner landen sie im Tileroam-Ordner in iCloud Drive, damit deine anderen Geräte sie auch haben, oder im eigenen Speicher der App, wenn iCloud Drive aus ist."
           }
         }
       }
@@ -7917,62 +7377,6 @@
         }
       }
     },
-    "Use Internal Storage": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gebruik interne opslag"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Utiliser le stockage interne"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usar almacenamiento interno"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Internen Speicher verwenden"
-          }
-        }
-      }
-    },
-    "Use iCloud Drive": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gebruik iCloud Drive"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Utiliser iCloud Drive"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usar iCloud Drive"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Drive verwenden"
-          }
-        }
-      }
-    },
     "Visited": {
       "localizations": {
         "nl": {
@@ -8141,30 +7545,30 @@
         }
       }
     },
-    "You can add more folders or change them later in Settings.": {
+    "You can import more later in Settings.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Je kunt later meer mappen toevoegen of ze wijzigen in Instellingen."
+            "value": "Je kunt later meer importeren in Instellingen."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous pourrez ajouter d’autres dossiers ou les modifier plus tard dans Réglages."
+            "value": "Vous pourrez en importer d'autres plus tard dans Réglages."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Puedes añadir más carpetas o cambiarlas más tarde en Ajustes."
+            "value": "Puedes importar más después en Ajustes."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du kannst später weitere Ordner hinzufügen oder sie in den Einstellungen ändern."
+            "value": "Du kannst später in den Einstellungen mehr importieren."
           }
         }
       }
@@ -8319,6 +7723,34 @@
         }
       }
     },
+    "Your activities come from iCloud, from your other devices": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je activiteiten komen uit iCloud, van je andere apparaten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos activités viennent d'iCloud, de vos autres appareils"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus actividades vienen de iCloud, de tus otros dispositivos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Aktivitäten kommen aus iCloud, von deinen anderen Geräten"
+          }
+        }
+      }
+    },
     "Zoom 14": {
       "localizations": {
         "nl": {
@@ -8399,34 +7831,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zoom 17"
-          }
-        }
-      }
-    },
-    "iCloud Drive": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Drive"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Drive"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Drive"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Drive"
           }
         }
       }

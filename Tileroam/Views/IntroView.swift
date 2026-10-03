@@ -7,12 +7,17 @@ struct IntroView: View {
 
     @State private var page = 0
     @State private var showPicker = false
-    @State private var pickerPurpose = PickerPurpose.source
-
     private enum Page: CaseIterable { case welcome, activities, strava, planning, ready }
 
-    /// The Strava page only exists in builds with the Strava feature.
-    private let pages = Page.allCases.filter { $0 != .strava || FeatureFlags.strava }
+    /// The Strava page only exists in builds with the Strava feature. On a further device, where
+    /// iCloud already has the activities, there's nothing to set up: no import or Strava page.
+    private var pages: [Page] {
+        Page.allCases.filter { page in
+            if page == .strava && !FeatureFlags.strava { return false }
+            if store.iCloudHasActivities && store.isICloudSyncOn && (page == .activities || page == .strava) { return false }
+            return true
+        }
+    }
     private var pageCount: Int { pages.count }
 
     var body: some View {
@@ -52,15 +57,12 @@ struct IntroView: View {
         // Opaque on its own: on iPad the full-screen cover can otherwise show the map through it.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground).ignoresSafeArea())
-        .fileImporter(isPresented: $showPicker, allowedContentTypes: pickerPurpose.contentTypes,
-                      allowsMultipleSelection: pickerPurpose.allowsMultipleSelection) { result in
-            guard case .success(let urls) = result, let url = urls.first else { return }
-            switch pickerPurpose {
-            case .export: Task { await store.selectExportFolder(url) }
-            case .fitFiles: Task { await store.importFiles(urls) }
-            default: Task { await store.addFolders(urls) }
-            }
+        .fileImporter(isPresented: $showPicker, allowedContentTypes: PickerPurpose.fitFiles.contentTypes,
+                      allowsMultipleSelection: true) { result in
+            guard case .success(let urls) = result, !urls.isEmpty else { return }
+            Task { await store.importFiles(urls) }
         }
+        .onChange(of: pageCount) { if page >= pageCount { page = pageCount - 1 } }
     }
 
     // MARK: Pages
@@ -81,18 +83,6 @@ struct IntroView: View {
         }
     }
 
-    private var saveFolderButton: some View {
-        Button {
-            pickerPurpose = .export
-            showPicker = true
-        } label: {
-            Label(store.exportFolderName == nil ? String(localized: "Choose Save Folder…")
-                                               : String(localized: "Save folder: \(store.exportFolderName ?? "")"),
-                  systemImage: store.exportFolderName == nil ? "folder.badge.plus" : "checkmark.circle.fill")
-        }
-        .buttonStyle(.bordered)
-    }
-
     private var welcome: some View {
         IntroPage(symbol: "map.fill", color: .green,
                   title: "Welcome to Tileroam",
@@ -101,6 +91,9 @@ struct IntroView: View {
                 feature("square.grid.3x3.fill", "Tiles (zoom 14) and squadratinhos (zoom 17), with your max square and cluster")
                 feature("building.2.fill", "Municipalities and postcodes in the Netherlands, Belgium, Luxembourg and Germany")
                 feature("bicycle", "Your Eddington number, also as a widget")
+                if store.iCloudHasActivities && store.isICloudSyncOn {
+                    feature("icloud.fill", "Your activities come from iCloud, from your other devices")
+                }
             }
         }
     }
@@ -108,29 +101,20 @@ struct IntroView: View {
     private var activities: some View {
         IntroPage(symbol: "folder.fill", color: .blue,
                   title: "Add Your Activities",
-                  text: "Choose the iCloud Drive folder with your .fit files, for example exports from HealthFit, Garmin or Wahoo. Tileroam reads them in place and picks up new files automatically.") {
+                  text: "Import your .fit files, for example exports from HealthFit, Garmin or Wahoo: separate files or a whole folder. Tileroam keeps its own copy, and with iCloud your other devices have them too.") {
             VStack(spacing: 10) {
                 Button {
-                    pickerPurpose = .source
-                    showPicker = true
-                } label: {
-                    Label(store.hasImportFolders ? String(localized: "Add Another Folder") : String(localized: "Choose Folder…"),
-                          systemImage: "folder.badge.plus")
-                }
-                .buttonStyle(.bordered)
-                Button {
-                    pickerPurpose = .fitFiles
                     showPicker = true
                 } label: {
                     Label("Import .fit Files…", systemImage: "doc.badge.plus")
                 }
                 .buttonStyle(.bordered)
-                ForEach(store.importFolders) { folder in
-                    Label(folder.name, systemImage: "checkmark.circle.fill")
+                if store.libraryFileCount > 0 {
+                    Label(String(localized: "\(store.libraryFileCount) activities"), systemImage: "checkmark.circle.fill")
                         .font(.subheadline)
                         .foregroundStyle(.green)
                 }
-                Text("You can add more folders or change them later in Settings.")
+                Text("You can import more later in Settings.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -141,7 +125,7 @@ struct IntroView: View {
     private var strava: some View {
         IntroPage(symbol: "arrow.triangle.2.circlepath", color: .orange,
                   title: "Connect Strava",
-                  text: "Optionally connect Strava to download your full history with GPS. Activities are also saved as .fit files in a save folder of your choice, such as iCloud Drive › Tileroam.") {
+                  text: "Optionally connect Strava to download your full history with GPS. Activities are saved as .fit files in Tileroam and, with iCloud, on your other devices.") {
             VStack(spacing: 10) {
                 if let athlete = store.stravaAthlete {
                     Label(String(localized: "Connected as \(athlete)"), systemImage: "checkmark.circle.fill")
@@ -154,7 +138,6 @@ struct IntroView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                saveFolderButton
                 if let error = store.stravaError {
                     Text(error).font(.footnote).foregroundStyle(.red)
                 }
@@ -171,11 +154,6 @@ struct IntroView: View {
                 feature("hand.tap.fill", "Select as many places as you like, mixed types allowed")
                 feature("arrow.triangle.turn.up.right.diamond.fill", "Routes follow cycle-friendly roads")
                 feature("square.and.arrow.up", "Share as GPX or open an existing GPX to see what it would collect")
-                if !FeatureFlags.strava {
-                    saveFolderButton
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 4)
-                }
             }
         }
     }
@@ -183,7 +161,7 @@ struct IntroView: View {
     private var ready: some View {
         IntroPage(symbol: "checkmark.seal.fill", color: .green,
                   title: "You're All Set",
-                  text: "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, countries and folders.") {
+                  text: "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, iCloud sync and imports.") {
             EmptyView()
         }
     }

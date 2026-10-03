@@ -2,24 +2,19 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 enum PickerPurpose {
-    /// Folder with .fit files to import.
-    case source
-    /// The app's own save folder (e.g. iCloud Drive › Tileroam).
-    case export
     /// A GPX route to check against visited tiles and areas.
     case gpx
-    /// Individual .fit files, copied into the app's internal Import folder.
+    /// .fit files, or folders with .fit files, copied into the library once.
     case fitFiles
 
     var contentTypes: [UTType] {
         switch self {
-        case .source, .export: [.folder]
         case .gpx: [UTType(filenameExtension: "gpx"), .xml].compactMap { $0 }
-        case .fitFiles: [UTType(filenameExtension: "fit") ?? .data, .data]
+        case .fitFiles: [UTType(filenameExtension: "fit") ?? .data, .folder, .data]
         }
     }
 
-    var allowsMultipleSelection: Bool { self == .source || self == .fitFiles }
+    var allowsMultipleSelection: Bool { self == .fitFiles }
 }
 
 struct ContentView: View {
@@ -33,7 +28,7 @@ struct ContentView: View {
     @State private var showSettings = false
     @State private var showStatistics = false
     @State private var showActivities = false
-    @State private var pickerPurpose = PickerPurpose.source
+    @State private var pickerPurpose = PickerPurpose.fitFiles
     @State private var pickAfterSettings: PickerPurpose?
     @State private var selectedArea: Area?
     @State private var locateRequest = 0
@@ -65,7 +60,9 @@ struct ContentView: View {
             .overlay(alignment: .topLeading) { if isWide { sidePanel } }
             .overlay(alignment: .bottomTrailing) { if isWide { mapControls.padding(24) } }
             .overlay {
-                if !store.hasImportFolders && store.activities.isEmpty && !store.isStravaConnected && !store.isImporting {
+                // A further device whose iCloud has activities shows those instead (they load first).
+                if store.activities.isEmpty && !store.isStravaConnected && !store.isImporting
+                    && !(store.iCloudHasActivities && store.isICloudSyncOn) {
                     emptyState
                 }
             }
@@ -73,8 +70,6 @@ struct ContentView: View {
                           allowsMultipleSelection: pickerPurpose.allowsMultipleSelection) { result in
                 guard case .success(let urls) = result, let url = urls.first else { return }
                 switch pickerPurpose {
-                case .source: Task { await store.addFolders(urls) }
-                case .export: Task { await store.selectExportFolder(url) }
                 case .gpx: Task { await plan.importGPX(url, with: store) }
                 case .fitFiles: Task { await store.importFiles(urls) }
                 }
@@ -296,21 +291,6 @@ struct ContentView: View {
                     showPicker = true
                 }
             }
-            if let problem = store.problem, !store.isImporting {
-                VStack(alignment: .leading, spacing: 8) {
-                    Label(problem, systemImage: "exclamationmark.triangle.fill")
-                        .font(.subheadline)
-                        .symbolRenderingMode(.multicolor)
-                    Button("Add Another Folder") {
-                        pickerPurpose = .source
-                        showPicker = true
-                    }
-                        .buttonStyle(.borderedProminent)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-            }
             if let error = store.regionsError, !store.isLoadingRegions {
                 VStack(alignment: .leading, spacing: 8) {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
@@ -332,7 +312,7 @@ struct ContentView: View {
             if store.isImporting, store.progress.total == 0 {
                 HStack(spacing: 8) {
                     ProgressView()
-                    Text("Scanning folder…").font(.footnote)
+                    Text("Checking your activities…").font(.footnote)
                 }
                 .padding(12)
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
@@ -377,25 +357,17 @@ struct ContentView: View {
             Text("Add your activities")
                 .font(.headline)
             if FeatureFlags.strava {
-                Text("Choose a folder with .fit files, import files, or connect Strava to see where you have been.")
+                Text("Import .fit files, or connect Strava, to see where you have been.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             } else {
-                Text("Choose a folder with .fit files or import files to see where you have been.")
+                Text("Import .fit files to see where you have been.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
             VStack(spacing: 10) {
-                Button {
-                    pickerPurpose = .source
-                    showPicker = true
-                } label: {
-                    Label("Choose Folder…", systemImage: "folder.badge.plus")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
                 Button {
                     pickerPurpose = .fitFiles
                     showPicker = true
@@ -403,7 +375,7 @@ struct ContentView: View {
                     Label("Import .fit Files…", systemImage: "doc.badge.plus")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
                 #if STRAVA
                 if store.stravaConfig != nil {
                     StravaConnectButton()

@@ -9,7 +9,7 @@ Tileroam is an iPhone and iPad app that shows which map tiles, municipalities an
 ## What Tileroam uses, and where it goes
 
 ### Activity files (.fit)
-Tileroam reads .fit files from folders you choose, from its own folder in iCloud Drive, and from its storage on your device. It reads them on your device. Tracks, tiles and statistics are calculated and stored only on your device, and in your iCloud account if you use iCloud Drive.
+Tileroam keeps a copy of the .fit files you import or download from Strava in its own storage on your device, and reads them there. Tracks, tiles and statistics are calculated and stored only on your device, and in your iCloud account if you use iCloud Drive.
 
 ### Location
 Your location is used to:
@@ -35,7 +35,8 @@ You can see and remove the route planning map data in Settings → Storage.
 
 ### iCloud
 If you are signed in to iCloud, Tileroam stores two things in your own iCloud account, so all your devices have them:
-- **Files:** planned routes, downloaded activities and imported files, in the "iCloud Drive › Tileroam" folder.
+- **Files:** your activities and planned routes, in the "iCloud Drive › Tileroam" folder, while "Sync with iCloud" is on (Settings → Activities).
+- **Deleted activities:** the names of activity files you deleted and the numbers of deleted Strava activities, in iCloud's key-value store, so your other devices delete them too.
 - **Settings:** a few settings, such as the tile zoom and map style.
 
 This data is stored by Apple under your Apple Account and [Apple's privacy policy](https://www.apple.com/legal/privacy/). The developer has no access to it.
@@ -44,7 +45,7 @@ This data is stored by Apple under your Apple Account and [Apple's privacy polic
 Maps are shown with Apple MapKit. Apple receives the map areas that are displayed, as with any app that shows Apple Maps; see Apple's privacy policy.
 
 ### Strava (optional, where available)
-If you connect Strava, Tileroam downloads your activities from Strava to your device and saves them as .fit files in your save folder.
+If you connect Strava, Tileroam downloads your activities from Strava to your device and saves them as .fit files in Tileroam's own storage (and iCloud, with sync on).
 - **Login:** a small service of the developer (a Cloudflare Worker) exchanges the login code for access tokens, so the app's Strava secret is not in the app. It doesn't store or log the tokens.
 - **Strava events:** Strava tells that service when you revoke Tileroam's access and when you create or delete an activity. The service keeps these events for at most 30 days: your Strava athlete number, the activity number, the kind of event and its time. Nothing else (no names, routes or other activity data). Tileroam reads them when it opens, to delete its copies of activities you deleted on Strava, or everything it saved from Strava when you revoked access. Only your own app can read your events.
 - **Tokens:** your Strava tokens are kept in the iOS Keychain on your device.
