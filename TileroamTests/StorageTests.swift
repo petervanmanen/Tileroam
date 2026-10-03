@@ -274,7 +274,8 @@ struct RoutingCorridorTests {
         let utrecht = GeoPoint(lat: 52.09, lon: 5.12), munich = GeoPoint(lat: 48.14, lon: 11.58)
         let loop = [utrecht, munich, utrecht]
         #expect(RoutePlanner.length(loop) / 1000 > Double(RoutePlanner.maxLoopKilometers))
-        #expect(RoutingError.tooLong(km: 1200).localizedDescription.contains("1200") || RoutingError.tooLong(km: 1200).localizedDescription.contains("1.200"))
+        // The distance as the device formats it ("1200", "1.200" or "1,200", depending on the language).
+        #expect(RoutingError.tooLong(km: 1200).localizedDescription.contains(1200.formatted()))
     }
 
     @Test func explainsValhallaErrors() {

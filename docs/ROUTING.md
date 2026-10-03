@@ -121,7 +121,7 @@ The app removes the asset-pack routing data of earlier TestFlight versions from 
   ```bash
   ROUTING_COUNTRIES=LU Tools/build_routing_tiles.sh lu-test luxembourg
   ```
-  `WestRoutingTests` routes Kerkrade → Aachen across the border on the `west` tile extract. Without these files, the tests are skipped, as on GitHub.
+  `ValhallaEngineTests.routesAcrossTheGermanBorder` routes Kerkrade → Aachen across the border on the `west` tile extract. Without these files, the tests are skipped, as on GitHub.
 - **Downloading:** `RoutingDownloadTests` (in `StorageTests.swift`) checks tile selection, downloading and decompressing, damaged tiles and version folders, against a temporary folder.
 - **The rest:** the decoding and stop-ordering tests (`PlanningTests`) don't need any tiles.
 
@@ -149,7 +149,7 @@ Germany was added in October 2026. For the next country:
    ```bash
    ROUTING_CONCURRENCY=4 Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany <new country>
    ```
-   - Add a route across the new border to `WestRoutingTests`.
+   - Add a route across the new border to `ValhallaEngineTests` (next to `routesAcrossTheGermanBorder`).
    - In the simulator: `-RoutingServer file://<repo>/AssetPacks/build/routing/r2/ -RegionsDir <repo>/AssetPacks/Regions -PlanDemo YES -PlanDemoStart "<lat>,<lon>"` plans the demo route from any start, for example `50.8687,6.0835` on the Dutch–German border in Kerkrade.
 6. **Upload** (`Tools/upload_routing_r2.sh west`) **before** releasing the app version with the new index.
 

@@ -58,7 +58,7 @@ jobs:
             -project Tileroam.xcodeproj -scheme Tileroam \
             -destination 'platform=iOS Simulator,OS=27.0,name=iPhone 18 Pro' \
             -derivedDataPath build/test \
-            2>&1 | tee build-test.log | grep -E "error:|✘|TEST SUCCEEDED|TEST FAILED"
+            2>&1 | tee build-test.log | grep -E "error:|✘|failed on|Expectation failed|TEST SUCCEEDED|TEST FAILED"
 
       - name: Archive
         shell: bash
