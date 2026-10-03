@@ -28,7 +28,8 @@ enum Importer {
                 var activities = [Activity]()
                 var toParse = [FolderAccess.FitFile]()
                 for file in files {
-                    if let cached = existing[activityID(file.relativePath)], cached.cacheKey == file.cacheKey {
+                    if let cached = existing[activityID(file.relativePath)], cached.cacheKey == file.cacheKey,
+                       cached.detailsVersion == Activity.currentDetails {
                         activities.append(cached)
                     } else {
                         toParse.append(file)
@@ -75,6 +76,9 @@ enum Importer {
         var activity = makeActivity(points: fit.points, id: id, cacheKey: cacheKey, name: name,
                                     sport: FITDecoder.sportName(fit.sport), startDate: fit.startTime, distance: fit.totalDistance)
         activity.elapsedTime = fit.elapsedTime
+        activity.movingTime = fit.movingTime
+        activity.averagePower = fit.averagePower
+        activity.detailsVersion = Activity.currentDetails
         activity.isVirtual = fit.isVirtual || Activity.looksVirtual(name: name)
         return activity
     }

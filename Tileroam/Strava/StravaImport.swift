@@ -22,6 +22,8 @@ enum StravaImport {
                                       distance: s.distance, isSummary: !points.isEmpty)
         a.elapsedTime = s.elapsedTime
         a.movingTime = s.movingTime
+        a.averagePower = s.deviceWatts == true ? s.averageWatts : nil
+        a.detailsVersion = Activity.currentDetails
         a.isVirtual = virtual
         return a
     }
@@ -38,6 +40,8 @@ enum StravaImport {
                                       distance: activity.distance, isSummary: false)
         a.elapsedTime = activity.elapsedTime
         a.movingTime = activity.movingTime
+        a.averagePower = activity.averagePower
+        a.detailsVersion = activity.detailsVersion
         a.exportedFile = activity.exportedFile
         a.isVirtual = activity.isVirtual
         return a

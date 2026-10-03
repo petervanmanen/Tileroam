@@ -73,6 +73,16 @@ You can also **open an existing GPX file** to see which new tiles and areas it w
 
 Route planning works in **the Netherlands, Belgium, Luxembourg and Germany**: the starting point and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data around it, typically 25 to 75 MB. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
 
+## Activities
+
+Tap the **list** button in the header to see all your activities, newest first, grouped by month. Each shows:
+- its sport, name, date and time;
+- the duration (moving time when the file or Strava has it, otherwise from start to finish);
+- the distance;
+- the average power, when the activity was recorded with a power meter, or otherwise the average speed.
+
+Indoor and virtual activities are marked "Indoor". The same workout from several sources is listed once.
+
 ## Statistics
 
 Tap the **chart** button for:

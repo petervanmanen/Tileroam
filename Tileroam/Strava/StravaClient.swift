@@ -56,6 +56,9 @@ struct StravaSummary: Decodable, Sendable {
     let distance: Double?
     let elapsedTime: Double?
     let movingTime: Double?
+    /// Watts; Strava estimates it for rides without a power meter (`deviceWatts` false).
+    let averageWatts: Double?
+    let deviceWatts: Bool?
     let trainer: Bool?
     let map: MapInfo?
 }

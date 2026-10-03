@@ -39,6 +39,10 @@ enum ActivityMerge {
         var best = members.max { ($0.quality, $0.distance) < ($1.quality, $1.distance) }!
         // One copy known to be virtual (Strava VirtualRide, Zwift .fit) makes the workout virtual.
         if members.contains(where: { $0.isVirtual == true }) { best.isVirtual = true }
+        // Details another copy may have (a Strava summary has no power; a watch file has).
+        best.averagePower = best.averagePower ?? members.lazy.compactMap(\.averagePower).first
+        best.movingTime = best.movingTime ?? members.lazy.compactMap(\.movingTime).first
+        best.elapsedTime = best.elapsedTime ?? members.lazy.compactMap(\.elapsedTime).first
         return best
     }
 
