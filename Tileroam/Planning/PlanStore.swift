@@ -202,7 +202,7 @@ final class PlanStore {
         do {
             try await prepareRouting(along: loop, near: points, margin: 15_000)
             planned = try await attempt()
-        } catch RoutingError.engine {
+        } catch let error as RoutingError where error.widerAreaMayHelp {
             try Task.checkCancellation()
             try await prepareRouting(along: loop, near: points, margin: 60_000)
             planned = try await attempt()

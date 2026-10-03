@@ -84,6 +84,14 @@ enum RoutingError: LocalizedError, Equatable {
         }
     }
 
+    /// Whether a wider corridor of map data could help: only when no path was found (the route
+    /// may need a detour outside it), not for distance limits or points away from any road.
+    var widerAreaMayHelp: Bool {
+        guard case .engine(let message) = self else { return false }
+        let m = message.lowercased()
+        return !m.contains("exceeds the max distance") && !m.contains("no suitable edges")
+    }
+
     /// Valhalla's messages in words a cyclist understands, for the ones that come up.
     static func explain(_ message: String) -> String {
         let m = message.lowercased()

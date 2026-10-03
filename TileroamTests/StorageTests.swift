@@ -278,8 +278,17 @@ struct RoutingCorridorTests {
     }
 
     @Test func explainsValhallaErrors() {
-        #expect(RoutingError.engine("Path distance exceeds the max distance limit").localizedDescription.contains("too far apart"))
-        #expect(RoutingError.engine("No path could be found for input").localizedDescription.contains("No cycling route"))
+        // Each known Valhalla error gets its own explanation instead of the raw text (in any
+        // language); unknown ones show the raw text.
+        let known = ["Path distance exceeds the max distance limit", "No path could be found for input",
+                     "No suitable edges near location"]
+        let texts = known.map { RoutingError.engine($0).localizedDescription }
+        #expect(Set(texts).count == 3)
+        #expect(zip(known, texts).allSatisfy { !$1.contains($0) })
         #expect(RoutingError.engine("something new").localizedDescription.contains("something new"))
+        #expect(RoutingError.engine("No path could be found for input").widerAreaMayHelp)
+        #expect(!RoutingError.engine("Path distance exceeds the max distance limit").widerAreaMayHelp)
+        #expect(!RoutingError.engine("No suitable edges near location").widerAreaMayHelp)
+        #expect(!RoutingError.download(.timedOut).widerAreaMayHelp)
     }
 }
