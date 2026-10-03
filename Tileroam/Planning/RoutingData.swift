@@ -154,53 +154,14 @@ enum RoutingData {
         return URLSession(configuration: config)
     }()
 
-    /// Downloads one tile, trying up to three times when the connection times out or drops, the
-    /// server has a passing problem (5xx, 429) or the tile arrives damaged.
+    /// Downloads one tile (see `RemoteFile.get`), checking its size against the index.
     private static func fetch(_ tile: RoutingIndex.Tile, index: RoutingIndex, from server: URL, session: URLSession,
                               into dir: URL) async throws {
         let url = server.appending(path: "\(index.name)/v\(index.version)/\(tile.path).gph.gz")
-        var attempt = 0
-        while true {
-            attempt += 1
-            do {
-                let tiles = try await fetchOnce(tile, url: url, session: session)
-                let file = dir.appending(path: tile.file)
-                try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
-                try tiles.write(to: file, options: .atomic)
-                return
-            } catch let problem as DownloadProblem where problem.isTransient && attempt < 3 {
-                try await Task.sleep(for: .seconds(2 * attempt)) // throws when the plan is stopped
-            } catch let problem as DownloadProblem {
-                throw RoutingError.download(problem)
-            }
-        }
-    }
-
-    private static func fetchOnce(_ tile: RoutingIndex.Tile, url: URL, session: URLSession) async throws -> Data {
-        var tiles: Data
-        do {
-            let (data, response) = try await session.data(from: url)
-            if let http = response as? HTTPURLResponse, http.statusCode != 200 {
-                throw DownloadProblem.server(http.statusCode)
-            }
-            tiles = data
-        } catch let error as URLError {
-            switch error.code {
-            case .cancelled: throw CancellationError()
-            case .notConnectedToInternet, .dataNotAllowed, .internationalRoamingOff: throw DownloadProblem.offline
-            case .timedOut: throw DownloadProblem.timedOut
-            case .fileDoesNotExist: throw DownloadProblem.server(404)
-            default: throw DownloadProblem.connection(error.localizedDescription)
-            }
-        }
-        // Normally URLSession has already decompressed it (Content-Encoding: gzip); a server or
-        // file:// URL that doesn't say so hands over the gzip file itself.
-        if tiles.starts(with: [0x1F, 0x8B]) {
-            guard let unpacked = try? Gzip.decompress(tiles) else { throw DownloadProblem.damaged }
-            tiles = unpacked
-        }
-        guard tiles.count == tile.rawBytes else { throw DownloadProblem.damaged }
-        return tiles
+        let tiles = try await RemoteFile.get(url, session: session) { $0.count == tile.rawBytes }
+        let file = dir.appending(path: tile.file)
+        try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try tiles.write(to: file, options: .atomic)
     }
 
     /// Removes downloaded tiles (Settings → Storage). They download again when a plan needs them.
@@ -318,7 +279,54 @@ struct RoutingIndex: Decodable, Sendable {
     let tiles: [Tile]
 }
 
-/// Gzip files (RFC 1952), for tiles a server hands over without decompressing them.
+/// Files from Tileroam's server (Cloudflare R2): map tiles and climbs.
+enum RemoteFile {
+    /// Downloads a gzipped file, trying up to three times when the connection times out or drops,
+    /// the server has a passing problem (5xx, 429) or the file arrives damaged (`isValid` says no).
+    /// Errors are `RoutingError.download`.
+    static func get(_ url: URL, session: URLSession, isValid: @Sendable (Data) -> Bool) async throws -> Data {
+        var attempt = 0
+        while true {
+            attempt += 1
+            do {
+                return try await getOnce(url, session: session, isValid: isValid)
+            } catch let problem as DownloadProblem where problem.isTransient && attempt < 3 {
+                try await Task.sleep(for: .seconds(2 * attempt)) // throws when the plan is stopped
+            } catch let problem as DownloadProblem {
+                throw RoutingError.download(problem)
+            }
+        }
+    }
+
+    private static func getOnce(_ url: URL, session: URLSession, isValid: @Sendable (Data) -> Bool) async throws -> Data {
+        var data: Data
+        do {
+            let (body, response) = try await session.data(from: url)
+            if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+                throw DownloadProblem.server(http.statusCode)
+            }
+            data = body
+        } catch let error as URLError {
+            switch error.code {
+            case .cancelled: throw CancellationError()
+            case .notConnectedToInternet, .dataNotAllowed, .internationalRoamingOff: throw DownloadProblem.offline
+            case .timedOut: throw DownloadProblem.timedOut
+            case .fileDoesNotExist: throw DownloadProblem.server(404)
+            default: throw DownloadProblem.connection(error.localizedDescription)
+            }
+        }
+        // Normally URLSession has already decompressed it (Content-Encoding: gzip); a server or
+        // file:// URL that doesn't say so hands over the gzip file itself.
+        if data.starts(with: [0x1F, 0x8B]) {
+            guard let unpacked = try? Gzip.decompress(data) else { throw DownloadProblem.damaged }
+            data = unpacked
+        }
+        guard isValid(data) else { throw DownloadProblem.damaged }
+        return data
+    }
+}
+
+/// Gzip files (RFC 1952), for files a server hands over without decompressing them.
 enum Gzip {
     static func decompress(_ data: Data) throws -> Data {
         let bytes = [UInt8](data)

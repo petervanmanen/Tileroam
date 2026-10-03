@@ -55,6 +55,13 @@ final class ActivityStore {
     static let libraryPrefix = "lib|"
     static let samplePrefix = "sample|"
 
+    // Climbs (see ClimbData)
+    /// The climbs downloaded so far, by id: around the activities, the map and plans.
+    private(set) var climbs: [String: Climb] = [:]
+    /// For each climbed climb, when (newest first).
+    private(set) var climbed: [String: [Date]] = [:]
+    private var isMatchingClimbs = false
+
     // Strava source
     let stravaConfig = StravaConfig.bundled
     private var strava: StravaClient?
@@ -287,6 +294,7 @@ final class ActivityStore {
         TrackCache.save(folderActivities, folder: Self.folderCacheKey)
         if sync { await Task.detached(priority: .utility) { Library.push() }.value }
         if regions != nil { backfillDerived() }
+        await updateClimbs()
     }
 
     /// Reads the .fit files of a folder; unchanged files come from the cache.
@@ -730,6 +738,63 @@ final class ActivityStore {
         }
     }
 
+    // MARK: Climbs
+
+    /// Downloads the climbs around the activities (areas not on the device yet; small files) and
+    /// finds which each activity climbed. Activities matched with these climbs before are skipped.
+    func updateClimbs() async {
+        guard let index = ClimbData.index, !isMatchingClimbs else { return }
+        isMatchingClimbs = true
+        defer { isMatchingClimbs = false }
+        let key = ClimbData.key(index)
+        let all = folderActivities + stravaActivities
+        var areas = Set<ClimbIndex.Area>()
+        for a in all where a.isOnMap {
+            let points = a.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) }
+            areas.formUnion(ClimbData.areas(around: points, in: index))
+        }
+        guard let loaded = try? await ClimbData.load(Array(areas), index: index) else { return }
+        for climb in loaded { climbs[climb.id] = climb }
+
+        let pending = all.filter { $0.climbsKey != key && $0.isOnMap }
+        guard !pending.isEmpty else { return }
+        let candidates = Array(climbs.values)
+        let found = await Task.detached(priority: .utility) { ClimbMatcher.match(pending, climbs: candidates) }.value
+        func fill(_ a: inout Activity) {
+            guard let ids = found[a.id] else { return }
+            a.climbs = ids
+            a.climbsKey = key
+        }
+        for i in folderActivities.indices { fill(&folderActivities[i]) }
+        for i in stravaActivities.indices { fill(&stravaActivities[i]) }
+        recompute()
+        TrackCache.save(folderActivities, folder: Self.folderCacheKey)
+        if let id = stravaAthleteID { saveStrava(id) }
+    }
+
+    /// The climbs around a route or plan (downloading their areas where needed; none when offline).
+    func climbs(around points: [GeoPoint]) async -> [Climb] {
+        guard let index = ClimbData.index,
+              let loaded = try? await ClimbData.load(ClimbData.areas(around: points, in: index), index: index) else { return [] }
+        for climb in loaded { climbs[climb.id] = climb }
+        return loaded
+    }
+
+    /// Makes sure the climbs of a map area are on the device (the Climbs tab, planning). Large
+    /// areas are left out: the map shows climbs from about 2° wide.
+    func loadClimbs(minLat: Double, maxLat: Double, minLon: Double, maxLon: Double) async {
+        guard let index = ClimbData.index, maxLat - minLat < 3, maxLon - minLon < 4 else { return }
+        let areas = ClimbData.areas(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon, margin: 0, in: index)
+        guard areas.contains(where: { !ClimbData.isDownloaded($0, index: index) }) || climbs.isEmpty,
+              let loaded = try? await ClimbData.load(areas, index: index) else { return }
+        var changed = false
+        for climb in loaded where climbs[climb.id] == nil {
+            climbs[climb.id] = climb
+            changed = true
+        }
+        if changed { version += 1 }
+    }
+
     // MARK: Derived data
 
     private func recompute() {
@@ -746,6 +811,11 @@ final class ActivityStore {
             municipalities.formUnion(a.municipalities ?? [])
             postcodes.formUnion(a.postalCodes ?? [])
         }
+        var climbed = [String: [Date]]()
+        for a in activities {
+            for id in a.climbs ?? [] { climbed[id, default: []].append(a.startDate ?? .distantPast) }
+        }
+        self.climbed = climbed.mapValues { $0.sorted(by: >) }
         self.tiles14 = tiles14
         self.tiles17 = tiles17
         self.visitedMunicipalities = municipalities

@@ -6,6 +6,9 @@ struct RouteCoverage: Sendable, Equatable {
     var newTiles17 = Set<Int64>()
     var newMunicipalities = Set<String>()
     var newPostcodes = Set<String>()
+    /// Climbs the route rides uphill, and those of them not climbed before.
+    var climbs = Set<String>()
+    var newClimbs = Set<String>()
 
     func newTiles(_ zoom: TileZoom) -> Set<Int64> {
         zoom == .explorer ? newTiles14 : newTiles17
@@ -14,12 +17,16 @@ struct RouteCoverage: Sendable, Equatable {
     init() {}
 
     init(route: [GeoPoint], visitedTiles14: Set<Int64>, visitedTiles17: Set<Int64>, visitedMunicipalities: Set<String>,
-         visitedPostcodes: Set<String>, regions: RegionData?) {
+         visitedPostcodes: Set<String>, regions: RegionData?, climbs knownClimbs: [Climb] = [], climbed: Set<String> = []) {
         let dense = Geo.densified(route, spacing: 20, maxGap: 5_000)
         newTiles14 = TileGrid.tiles(for: dense, zoom: .explorer).subtracting(visitedTiles14)
         newTiles17 = TileGrid.tiles(for: dense, zoom: .squadratinho).subtracting(visitedTiles17)
         newMunicipalities = (regions?.municipalities.visited(by: dense) ?? []).subtracting(visitedMunicipalities)
         newPostcodes = (regions?.postcodes.visited(by: dense) ?? []).subtracting(visitedPostcodes)
+        let ride = Activity(id: "route", cacheKey: "", name: "", sport: "Cycling", startDate: nil, distance: 0,
+                            trackData: Activity.encodeTrack(route))
+        climbs = Set(ClimbMatcher.match([ride], climbs: knownClimbs)["route"] ?? [])
+        newClimbs = climbs.subtracting(climbed)
     }
 
     func contains(_ target: PlanTarget) -> Bool {
@@ -27,6 +34,7 @@ struct RouteCoverage: Sendable, Equatable {
         case .tile(let z, let k): newTiles(z).contains(k)
         case .municipality(let c): newMunicipalities.contains(c)
         case .postcode(let c): newPostcodes.contains(c)
+        case .climb(let id): climbs.contains(id)
         }
     }
 
@@ -37,6 +45,7 @@ struct RouteCoverage: Sendable, Equatable {
         if tiles > 0 { parts.append(zoom.countLabel(tiles)) }
         if !newMunicipalities.isEmpty { parts.append(String(localized: "\(newMunicipalities.count) municipalities")) }
         if !newPostcodes.isEmpty { parts.append(String(localized: "\(newPostcodes.count) postcodes")) }
+        if !newClimbs.isEmpty { parts.append(String(localized: "\(newClimbs.count) climbs")) }
         return parts.isEmpty ? String(localized: "nothing new") : parts.joined(separator: " · ")
     }
 }

@@ -10,6 +10,7 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 
 - **Tiles**: zoom 14 map tiles (~1.5 km, as on VeloViewer, StatsHunters and [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) and zoom 17 *squadratinhos* (~190 m, as on Squadrats). Both are always counted; you choose which one the map shows. Includes your **max square** and **max cluster**.
 - **Routes**: all your activities on one map, coloured by sport.
+- **Climbs**: every climb on the roads (Cat 4 to HC like Strava, and short steep hills), found from elevation data; which ones you have climbed, on a map tab and in Statistics, and climbs to include when planning a route. See [docs/CLIMBS.md](docs/CLIMBS.md).
 - **Activities**: a list of all activities, newest first, with duration, distance and average power (with a power meter) or average speed.
 - **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg and Germany, with visited/total per country.
 - **Route planning** in the Netherlands, Belgium, Luxembourg and Germany: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.

@@ -33,6 +33,14 @@ struct PlannedRoute: Sendable {
 /// offers many candidate points and the planner picks the ones that keep the route short.
 enum RoutePlanner {
     static let maxTargets = 50
+    /// Valhalla's limit of points per bicycle route (valhalla.json: max_locations).
+    static let maxLocations = 60
+
+    /// The points a route through these targets sends to Valhalla: the start twice, one per
+    /// target and up to four more per climb (`TargetGeometry.climbVia`).
+    static func locations(_ targets: some Sequence<PlanTarget>) -> Int {
+        targets.reduce(2) { n, t in if case .climb = t { n + 5 } else { n + 1 } }
+    }
     /// The longest round trip planned, as the crow flies along the stops. Valhalla allows more
     /// (valhalla.json: bicycle max_distance 1,000 km), so this check comes first, with a clear
     /// message.
@@ -113,13 +121,20 @@ enum RoutePlanner {
         var route: RoutedPath?
         for attempt in 0..<3 {
             await progress(attempt == 0 ? String(localized: "Planning the cycling route…") : String(localized: "Improving the route…"))
-            let r = try await client.route([start] + waypoints + [start])
+            // Climbs are ridden from their bottom along points up to the top.
+            var points = [start], primary = [Int]()
+            for (i, target) in ordered.enumerated() {
+                primary.append(points.count)
+                points.append(waypoints[i])
+                points += target.climbVia
+            }
+            let r = try await client.route(points + [start])
             route = r
             // Waypoints are snapped to the nearest cycle road; if that moved one out of its
             // target, try the candidate closest to the snapped point that is still inside.
             var changed = false
-            for (i, target) in ordered.enumerated() where i + 1 < r.snapped.count {
-                let snapped = r.snapped[i + 1]
+            for (i, target) in ordered.enumerated() where primary[i] < r.snapped.count && target.climb == nil {
+                let snapped = r.snapped[primary[i]]
                 if !target.contains(snapped) {
                     let inside = target.candidates().filter { $0 != waypoints[i] }
                     if let better = inside.min(by: { Geo.distance($0, snapped) < Geo.distance($1, snapped) }) {

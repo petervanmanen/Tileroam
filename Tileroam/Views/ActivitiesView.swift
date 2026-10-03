@@ -125,3 +125,36 @@ enum ActivityFormat {
                                     numberFormatStyle: .number.precision(.fractionLength(1))))
     }
 }
+
+/// A tapped climb on the map: what it is and when the user climbed it.
+struct ClimbCard: View {
+    let climb: Climb
+    let climbed: [Date]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
+                Image(systemName: climbed.isEmpty ? "mountain.2" : "checkmark.circle.fill")
+                    .foregroundStyle(climbed.isEmpty ? Color.secondary : .green)
+                Text(climb.title).font(.headline).lineLimit(1)
+                Spacer()
+                Text(climb.cat.title)
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(.quaternary, in: Capsule())
+            }
+            Text(climb.details).font(.subheadline.monospacedDigit())
+            Text(String(localized: "Steepest \((climb.max / 100).formatted(.percent.precision(.fractionLength(0)))) · top at \(Int(climb.top)) m"))
+                .font(.footnote).foregroundStyle(.secondary)
+            if let last = climbed.first {
+                Text(String(localized: "Climbed \(climbed.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
+                    .font(.footnote).foregroundStyle(.green)
+            } else {
+                Text("Not climbed yet").font(.footnote).foregroundStyle(.secondary)
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}

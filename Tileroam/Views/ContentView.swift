@@ -31,6 +31,7 @@ struct ContentView: View {
     @State private var pickerPurpose = PickerPurpose.fitFiles
     @State private var pickAfterSettings: PickerPurpose?
     @State private var selectedArea: Area?
+    @State private var selectedClimb: Climb?
     @State private var locateRequest = 0
     @State private var isFollowingUser = false
     @State private var locationDenied = false
@@ -43,7 +44,7 @@ struct ContentView: View {
     private let sidePanelWidth: CGFloat = 380
 
     var body: some View {
-        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea,
+        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb,
                         locateRequest: locateRequest, isFollowingUser: $isFollowingUser, locationDenied: $locationDenied,
                         plan: plan, planVersion: plan.version, leadingInset: isWide ? sidePanelWidth + 32 : 0)
             .ignoresSafeArea()
@@ -137,10 +138,11 @@ struct ContentView: View {
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { Task { await store.refreshAll() } }
             }
-            .onChange(of: mode) { selectedArea = nil }
+            .onChange(of: mode) { selectedArea = nil; selectedClimb = nil }
             .onChange(of: tileZoom, initial: true) { _, zoom in WidgetData.saveTileZoom(zoom.rawValue) }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
+                selectedClimb = nil
                 if planning, mode == .activities { mode = .squares }
             }
     }
@@ -168,10 +170,7 @@ struct ContentView: View {
 
     private var headerContent: some View {
         VStack(spacing: 8) {
-            Picker("Mode", selection: $mode) {
-                ForEach(MapMode.allCases.filter { !plan.isPlanning || $0 != .activities }) { Text($0.tabTitle).tag($0) }
-            }
-            .pickerStyle(.segmented)
+            ModeChips(modes: MapMode.allCases.filter { !plan.isPlanning || $0 != .activities }, selection: $mode)
             HStack(alignment: .center, spacing: 10) {
                 Text(statsText)
                     .font(.footnote.weight(.medium))
@@ -231,6 +230,8 @@ struct ContentView: View {
         case .postcodes:
             guard let areas = store.postcodeAreas else { return String(localized: "Loading postcodes…") }
             return String(localized: "\(store.visitedPostcodes.count) / \(areas.all.count) postcodes visited")
+        case .climbs:
+            return String(localized: "\(store.climbed.count) climbs climbed · \(store.climbs.count) on the map")
         }
     }
 
@@ -336,6 +337,9 @@ struct ContentView: View {
                 .padding(12)
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
             }
+            if !plan.isPlanning, let climb = selectedClimb {
+                ClimbCard(climb: climb, climbed: store.climbed[climb.id] ?? [])
+            }
             if store.isImporting, store.progress.total > 0 {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Importing \(store.progress.done) of \(store.progress.total) activities…")
@@ -426,3 +430,40 @@ extension ContentView {
     }
 }
 #endif
+
+/// The map modes as chips that scroll sideways when they don't fit (five no longer fit a
+/// segmented control on an iPhone).
+private struct ModeChips: View {
+    let modes: [MapMode]
+    @Binding var selection: MapMode
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(modes) { mode in
+                        Button {
+                            withAnimation(.snappy) { selection = mode }
+                        } label: {
+                            Text(mode.tabTitle)
+                                .font(.subheadline.weight(selection == mode ? .semibold : .regular))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .foregroundStyle(selection == mode ? Color.primary : .secondary)
+                                .background(selection == mode ? AnyShapeStyle(.background) : AnyShapeStyle(.clear), in: Capsule())
+                                .shadow(color: .black.opacity(selection == mode ? 0.12 : 0), radius: 2, y: 1)
+                        }
+                        .buttonStyle(.plain)
+                        .id(mode)
+                        .accessibilityAddTraits(selection == mode ? .isSelected : [])
+                    }
+                }
+                .padding(3)
+            }
+            .background(.quaternary.opacity(0.6), in: Capsule())
+            .onChange(of: selection, initial: true) { _, mode in withAnimation { proxy.scrollTo(mode, anchor: .center) } }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Mode")
+        }
+    }
+}

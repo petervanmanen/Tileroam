@@ -84,6 +84,16 @@ Tap the **list** button in the header to see all your activities, newest first, 
 
 Indoor and virtual activities are marked "Indoor". The same workout from several sources is listed once.
 
+## Climbs
+
+The **Climbs** tab shows the climbs on the roads: short steep hills in yellow, Cat 4 to HC in orange, red, purple and black (as on Strava), and the ones you have climbed in green. Tap a climb to see its length, gradient, gain, steepest part and when you climbed it. Climbs are downloaded for the areas you ride and look at, a few hundred kilobytes per area.
+
+A climb counts as climbed when an activity rides almost all of it uphill, from the bottom to the top. **Statistics → Climbs** shows how many you have climbed per category, and **All Climbs** lists them, with the ones you haven't climbed yet in the areas where you ride.
+
+To **ride a climb on a planned route**, select it in planning mode on the Climbs tab: the route rides it uphill. A planned route or an opened GPX also shows which climbs it includes, and which are new.
+
+Climbs are found by Tileroam from elevation data along OpenStreetMap's roads. Short steep hills often come out less steep than signposted, because the elevation data is about 30 m coarse.
+
 ## Statistics
 
 Tap the **chart** button for:

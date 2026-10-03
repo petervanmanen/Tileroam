@@ -31,7 +31,7 @@ INDEX=$ROOT/Tileroam/Resources/routing-$NAME.json
 [[ -f $INDEX ]] || { echo "No index $INDEX; build first: Tools/build_routing_tiles.sh $NAME …" >&2; exit 1 }
 VERSION=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('version', 1))" $INDEX)
 COUNT=$(python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))['tiles']))" $INDEX)
-SOURCE=$ROOT/AssetPacks/build/routing/r2/$NAME/v$VERSION
+SOURCE=${ROUTING_WORKDIR:-$ROOT/AssetPacks/build/routing}/r2/$NAME/v$VERSION
 [[ -d $SOURCE ]] || { echo "No tiles for version $VERSION in $SOURCE; build first" >&2; exit 1 }
 local_count=$(find $SOURCE -name '*.gph.gz' | wc -l | tr -d ' ')
 (( local_count == COUNT )) || { echo "$SOURCE has $local_count tiles, the index $COUNT: build again" >&2; exit 1 }
@@ -52,6 +52,24 @@ rclone copy $SOURCE $DEST --size-only --transfers 16 --checkers 32 --stats 15s -
 uploaded=$(rclone lsf -R --files-only $DEST | grep -c '\.gph\.gz$' || true)
 (( uploaded == COUNT )) || { echo "Only $uploaded of $COUNT tiles are on R2; run again to upload the rest" >&2; exit 1 }
 echo "All $COUNT tiles of version $VERSION are on R2."
+
+# The climbs of the bundled climbs index (Tools/build_climbs.sh), if any.
+CLIMBS=$ROOT/Tileroam/Resources/climbs-$NAME.json
+[[ $NAME == *-test ]] && CLIMBS=${INDEX:h}/climbs-$NAME.json
+if [[ -f $CLIMBS ]]; then
+  CV=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['version'])" $CLIMBS)
+  AREAS=$(python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))['areas']))" $CLIMBS)
+  CSOURCE=${SOURCE:h}/climbs/v$CV
+  [[ -d $CSOURCE ]] || { echo "No climbs for version $CV in $CSOURCE; run Tools/build_climbs.sh $NAME …" >&2; exit 1 }
+  echo "Uploading $AREAS climb areas, version $CV…"
+  rclone copy $CSOURCE r2:$BUCKET/$NAME/climbs/v$CV --size-only --transfers 16 --stats 15s --stats-one-line \
+    --header-upload "Content-Encoding: gzip" \
+    --header-upload "Content-Type: application/json" \
+    --header-upload "Cache-Control: public, max-age=31536000, immutable"
+  up=$(rclone lsf --files-only r2:$BUCKET/$NAME/climbs/v$CV | grep -c '\.json\.gz$' || true)
+  (( up == AREAS )) || { echo "Only $up of $AREAS climb areas are on R2; run again" >&2; exit 1 }
+  echo "All $AREAS climb areas of version $CV are on R2."
+fi
 
 if [[ -n ${R2_PUBLIC_URL:-} ]]; then
   first=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['tiles'][0][0])" $INDEX)

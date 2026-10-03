@@ -44,14 +44,19 @@ final class PlanStore {
         Set(selected.compactMap { if case .postcode(let c) = $0 { c } else { nil } })
     }
 
+    var selectedClimbs: Set<String> {
+        Set(selected.compactMap { if case .climb(let id) = $0 { id } else { nil } })
+    }
+
     var selectionSummary: String {
         let t14 = selectedTiles(.explorer).count, t17 = selectedTiles(.squadratinho).count
-        let m = selectedMunicipalities.count, p = selectedPostcodes.count
+        let m = selectedMunicipalities.count, p = selectedPostcodes.count, c = selectedClimbs.count
         var parts = [String]()
         if t14 > 0 { parts.append(TileZoom.explorer.countLabel(t14)) }
         if t17 > 0 { parts.append(TileZoom.squadratinho.countLabel(t17)) }
         if m > 0 { parts.append(String(localized: "\(m) municipalities")) }
         if p > 0 { parts.append(String(localized: "\(p) postcodes")) }
+        if c > 0 { parts.append(String(localized: "\(c) climbs")) }
         return parts.isEmpty ? String(localized: "Nothing selected") : String(localized: "Selected: \(parts.joined(separator: " · "))")
     }
 
@@ -63,6 +68,10 @@ final class PlanStore {
         } else {
             guard selected.count < RoutePlanner.maxTargets else {
                 error = String(localized: "You can select up to \(RoutePlanner.maxTargets) items per route.")
+                return
+            }
+            guard RoutePlanner.locations(selected.union([target])) <= RoutePlanner.maxLocations else {
+                error = String(localized: "A climb needs more route points than other items. Remove a few items to add it.")
                 return
             }
             selected.insert(target)
@@ -173,7 +182,7 @@ final class PlanStore {
     func plan(from start: GeoPoint, with store: ActivityStore) async throws {
         let regions: RegionData? = await store.loadedRegions()
         let targets = selected.sorted { $0.sortKey < $1.sortKey }
-            .compactMap { TargetGeometry($0, regions: regions) }
+            .compactMap { TargetGeometry($0, regions: regions, climbs: store.climbs) }
         // The routing data covers the Netherlands, Belgium, Luxembourg and Germany.
         guard RoutingData.covers(start),
               targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
@@ -185,13 +194,15 @@ final class PlanStore {
         let km = Int(RoutePlanner.length(loop) / 1000)
         guard km <= RoutePlanner.maxLoopKilometers else { throw RoutingError.tooLong(km: km) }
         let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
+        let climbs = await store.climbs(around: loop), climbed = Set(store.climbed.keys)
         let router = self.router
         func attempt() async throws -> PlannedRoute {
             try await Task.detached(priority: .userInitiated) {
                 try await RoutePlanner.planRoute(
                     start: start, targets: targets, client: router,
                     coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0, visitedTiles17: visited.1,
-                                              visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions) },
+                                              visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions,
+                                              climbs: climbs, climbed: climbed) },
                     progress: { [weak self] in self?.status = $0 })
             }.value
         }
@@ -323,9 +334,11 @@ final class PlanStore {
         let regions: RegionData? = await store.loadedRegions()
         let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
         let points = gpx.points
+        let climbs = await store.climbs(around: points), climbed = Set(store.climbed.keys)
         let coverage = await Task.detached(priority: .userInitiated) {
             RouteCoverage(route: points, visitedTiles14: visited.0, visitedTiles17: visited.1,
-                          visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions)
+                          visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions,
+                          climbs: climbs, climbed: climbed)
         }.value
         let distance = zip(points, points.dropFirst()).reduce(0) { $0 + Geo.distance($1.0, $1.1) }
         let name = gpx.name ?? url.deletingPathExtension().lastPathComponent
