@@ -118,6 +118,17 @@ struct ClimbPlanningTests {
         #expect(route.missed.isEmpty)
     }
 
+    @Test @MainActor func climbsCountAgainstValhallasPointLimit() {
+        let plan = PlanStore()
+        for k in 0..<11 { plan.toggle(.climb("c\(k)")) }
+        #expect(RoutePlanner.locations(plan.selected) == 57)
+        // 57 + 5 > 60: one more climb doesn't fit, a tile does.
+        plan.toggle(.climb("c11"))
+        #expect(plan.selected.count == 11 && plan.error != nil)
+        plan.toggle(.tile(.explorer, 1))
+        #expect(plan.selected.count == 12 && plan.error == nil)
+    }
+
     @Test func climbedBeforeIsNotNew() {
         let ride = (0...25).map { GeoPoint(lat: 50.795 + Double($0) * 0.0009, lon: 5.8001) }
         let coverage = RouteCoverage(route: ride, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],

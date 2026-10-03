@@ -70,6 +70,10 @@ final class PlanStore {
                 error = String(localized: "You can select up to \(RoutePlanner.maxTargets) items per route.")
                 return
             }
+            guard RoutePlanner.locations(selected.union([target])) <= RoutePlanner.maxLocations else {
+                error = String(localized: "A climb needs more route points than other items. Remove a few items to add it.")
+                return
+            }
             selected.insert(target)
         }
         error = nil

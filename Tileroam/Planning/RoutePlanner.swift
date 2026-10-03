@@ -33,6 +33,14 @@ struct PlannedRoute: Sendable {
 /// offers many candidate points and the planner picks the ones that keep the route short.
 enum RoutePlanner {
     static let maxTargets = 50
+    /// Valhalla's limit of points per bicycle route (valhalla.json: max_locations).
+    static let maxLocations = 60
+
+    /// The points a route through these targets sends to Valhalla: the start twice, one per
+    /// target and up to four more per climb (`TargetGeometry.climbVia`).
+    static func locations(_ targets: some Sequence<PlanTarget>) -> Int {
+        targets.reduce(2) { n, t in if case .climb = t { n + 5 } else { n + 1 } }
+    }
     /// The longest round trip planned, as the crow flies along the stops. Valhalla allows more
     /// (valhalla.json: bicycle max_distance 1,000 km), so this check comes first, with a clear
     /// message.

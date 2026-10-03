@@ -1249,6 +1249,34 @@
         }
       }
     },
+    "A climb needs more route points than other items. Remove a few items to add it.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Een klim heeft meer routepunten nodig dan andere onderdelen. Haal er een paar weg om hem toe te voegen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une montée demande plus de points de passage que les autres éléments. Retirez-en quelques-uns pour l’ajouter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una subida necesita más puntos de ruta que otros elementos. Quita algunos para añadirla."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Anstieg braucht mehr Routenpunkte als andere Elemente. Entferne ein paar, um ihn hinzuzufügen."
+          }
+        }
+      }
+    },
     "Activities": {
       "localizations": {
         "nl": {
