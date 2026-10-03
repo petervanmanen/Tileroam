@@ -64,6 +64,19 @@ struct ActivitiesTests {
         #expect(ActivityFormat.duration(2530) == "42:10")
     }
 
+    @Test func stravaPowerOnlyFromAPowerMeter() throws {
+        func summary(_ deviceWatts: Bool) throws -> StravaSummary {
+            let json = #"{"id":1,"name":"Ride","sport_type":"Ride","distance":30000,"elapsed_time":4000,"moving_time":3600,"average_watts":190.5,"device_watts":\#(deviceWatts)}"#
+            let d = JSONDecoder()
+            d.keyDecodingStrategy = .convertFromSnakeCase
+            return try d.decode(StravaSummary.self, from: Data(json.utf8))
+        }
+        let meter = StravaImport.activity(from: try summary(true))
+        #expect(meter.averagePower == 190.5 && meter.movingTime == 3600 && meter.detailsVersion == Activity.currentDetails)
+        let estimate = StravaImport.activity(from: try summary(false))
+        #expect(estimate.averagePower == nil)
+    }
+
     @MainActor
     @Test func newestFirst() throws {
         let old = Activity(id: "old", cacheKey: "", name: "Old", sport: "Cycling", startDate: Date(timeIntervalSince1970: 1_600_000_000), distance: 1, trackData: Data())

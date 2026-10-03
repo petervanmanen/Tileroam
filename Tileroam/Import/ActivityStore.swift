@@ -623,9 +623,11 @@ final class ActivityStore {
 
     /// New activities since the latest known one (everything on the first sync), with summary routes.
     private func fetchStravaList(_ strava: StravaClient) async throws {
-        // Caches from before virtual detection: fetch the whole list once to set the flag.
+        // Caches from before virtual detection, or before moving time and power were kept
+        // (detailsVersion): fetch the whole list once to fill them in.
         let needsVirtualFlags = stravaActivities.contains { $0.isVirtual == nil }
-        let after = needsVirtualFlags ? nil : stravaActivities.compactMap(\.startDate).max()?.addingTimeInterval(-24 * 3600)
+        let needsDetails = stravaActivities.contains { $0.detailsVersion != Activity.currentDetails }
+        let after = needsVirtualFlags || needsDetails ? nil : stravaActivities.compactMap(\.startDate).max()?.addingTimeInterval(-24 * 3600)
         var known = Set(stravaActivities.map(\.id))
         var page = 1
         while !Task.isCancelled {
@@ -640,6 +642,19 @@ final class ActivityStore {
                     if flag { stravaActivities[i].isSummary = false } // no GPS to download for virtual rides
                 }
             }
+            if needsDetails {
+                let details = Dictionary(summaries.map { (StravaImport.id(for: $0.id), $0) }, uniquingKeysWith: { a, _ in a })
+                var changed = false
+                for i in stravaActivities.indices where stravaActivities[i].detailsVersion != Activity.currentDetails {
+                    guard let s = details[stravaActivities[i].id] else { continue }
+                    StravaImport.applyDetails(s, to: &stravaActivities[i])
+                    changed = true
+                }
+                if changed {
+                    recompute()
+                    if let id = stravaAthleteID { saveStrava(id) }
+                }
+            }
             let new = await Task.detached(priority: .userInitiated) {
                 summaries.map(StravaImport.activity(from:))
             }.value.filter { !known.contains($0.id) }
@@ -649,7 +664,17 @@ final class ActivityStore {
                 recompute()
                 if let id = stravaAthleteID { saveStrava(id) }
             }
-            if summaries.count < 200 { break }
+            if summaries.count < 200 {
+                if needsDetails {
+                    // The whole list was read: activities Strava didn't list (deleted there) have no
+                    // details to add; mark them, or every sync would read the whole list again.
+                    for i in stravaActivities.indices where stravaActivities[i].detailsVersion != Activity.currentDetails {
+                        stravaActivities[i].detailsVersion = Activity.currentDetails
+                    }
+                    if let id = stravaAthleteID { saveStrava(id) }
+                }
+                break
+            }
             page += 1
         }
     }

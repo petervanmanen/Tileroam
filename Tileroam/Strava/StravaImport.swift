@@ -20,12 +20,18 @@ enum StravaImport {
         var a = Importer.makeActivity(points: points, id: id(for: s.id), cacheKey: "", name: s.name,
                                       sport: sportName(s.sportType ?? s.type), startDate: s.startDate,
                                       distance: s.distance, isSummary: !points.isEmpty)
+        applyDetails(s, to: &a)
+        a.isVirtual = virtual
+        return a
+    }
+
+    /// Times and power from Strava's summary (power only from a power meter: without one,
+    /// Strava's `average_watts` is an estimate).
+    static func applyDetails(_ s: StravaSummary, to a: inout Activity) {
         a.elapsedTime = s.elapsedTime
         a.movingTime = s.movingTime
         a.averagePower = s.deviceWatts == true ? s.averageWatts : nil
         a.detailsVersion = Activity.currentDetails
-        a.isVirtual = virtual
-        return a
     }
 
     /// Replaces the summary track with full-resolution GPS points.
