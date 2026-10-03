@@ -18,6 +18,41 @@ struct RoutedPath: Sendable {
     var snapped: [GeoPoint]
 }
 
+/// Why downloading map data failed.
+enum DownloadProblem: Error, Equatable, Sendable {
+    case offline
+    case timedOut
+    case connection(String)
+    case server(Int)
+    case damaged
+
+    /// Worth trying again right away.
+    var isTransient: Bool {
+        switch self {
+        case .timedOut, .connection, .damaged: true
+        case .server(let status): status >= 500 || status == 429
+        case .offline: false
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .offline:
+            String(localized: "There's no internet connection, and map data for this area still has to be downloaded. Try again when you're online.")
+        case .timedOut:
+            String(localized: "Downloading the map data timed out. Check your connection and try again; what was downloaded is kept.")
+        case .connection(let message):
+            String(localized: "The map data couldn't be downloaded (\(message)). Try again; what was downloaded is kept.")
+        case .server(404):
+            String(localized: "Map data for this area isn't available yet. Please try again later.")
+        case .server(let status):
+            String(localized: "The map data server had a problem (\(status)). Try again later; what was downloaded is kept.")
+        case .damaged:
+            String(localized: "Map data arrived damaged several times. Try again; what was downloaded is kept.")
+        }
+    }
+}
+
 enum RoutingError: LocalizedError, Equatable {
     /// A point lies outside the countries the routing data covers.
     case outsideRegion
@@ -27,6 +62,10 @@ enum RoutingError: LocalizedError, Equatable {
     case engine(String)
     /// The map data to download is large and the device isn't on Wi-Fi.
     case waitingForWiFi(bytes: Int)
+    /// Downloading map data failed (after retries).
+    case download(DownloadProblem)
+    /// The stops are too far apart to plan one round trip (straight-line kilometers).
+    case tooLong(km: Int)
 
     var errorDescription: String? {
         switch self {
@@ -35,10 +74,29 @@ enum RoutingError: LocalizedError, Equatable {
         case .dataUnavailable(let message):
             String(localized: "The route planning data couldn't be loaded: \(message)")
         case .engine(let message):
-            String(localized: "Route planning failed: \(message)")
+            Self.explain(message)
+        case .download(let problem):
+            problem.description
+        case .tooLong(let km):
+            String(localized: "These items are too far apart for one round trip (about \(km) km as the crow flies; up to \(RoutePlanner.maxLoopKilometers) km is possible). Select fewer or closer items.")
         case .waitingForWiFi(let bytes):
             String(localized: "Map data for this area (\(MapDataDownloads.format(bytes))) downloads on Wi-Fi.")
         }
+    }
+
+    /// Valhalla's messages in words a cyclist understands, for the ones that come up.
+    static func explain(_ message: String) -> String {
+        let m = message.lowercased()
+        if m.contains("exceeds the max distance") {
+            return String(localized: "These items are too far apart for one round trip. Select fewer or closer items.")
+        }
+        if m.contains("no path could be found") || m.contains("no route") {
+            return String(localized: "No cycling route was found between some of the stops, for example across water without a bridge or ferry. Try other items or another starting point.")
+        }
+        if m.contains("no suitable edges") {
+            return String(localized: "The starting point or a selected item isn't near a road or path that can be cycled. Choose another one.")
+        }
+        return String(localized: "Route planning failed: \(message)")
     }
 }
 

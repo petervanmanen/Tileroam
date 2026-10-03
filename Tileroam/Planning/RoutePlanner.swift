@@ -33,6 +33,24 @@ struct PlannedRoute: Sendable {
 /// offers many candidate points and the planner picks the ones that keep the route short.
 enum RoutePlanner {
     static let maxTargets = 50
+    /// The longest round trip planned, as the crow flies along the stops. Valhalla allows more
+    /// (valhalla.json: bicycle max_distance 1,000 km), so this check comes first, with a clear
+    /// message.
+    static let maxLoopKilometers = 500
+
+    /// The round trip's stops in visiting order, start to start, as `plan` will order them: one
+    /// point per target (the candidate nearest the start), ordered on straight-line distances.
+    /// Used before routing, to know which map tiles the route will need and how long it is.
+    static func approximateLoop(start: GeoPoint, targets: [TargetGeometry]) -> [GeoPoint] {
+        let initial = targets.compactMap { $0.candidates().min { Geo.distance($0, start) < Geo.distance($1, start) } }
+        let points = [start] + initial
+        let order = points.count > 2 ? TripSolver.roundTrip(points.map { a in points.map { b in Geo.distance(a, b) } }) : Array(points.indices)
+        return order.map { points[$0] } + [start]
+    }
+
+    static func length(_ path: [GeoPoint]) -> Double {
+        zip(path, path.dropFirst()).reduce(0) { $0 + Geo.distance($1.0, $1.1) }
+    }
 
     /// Targets in visiting order, each with the point the route should pass.
     static func plan(start: GeoPoint, targets: [TargetGeometry], client: any CyclingRouter,

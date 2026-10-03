@@ -2865,6 +2865,62 @@
         }
       }
     },
+    "Downloading map data for route planning: %@ of %@…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens voor routeplanning downloaden: %1$@ van %2$@…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargement des données cartographiques : %1$@ sur %2$@…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargando datos de mapa para planificar: %1$@ de %2$@…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten für die Routenplanung werden geladen: %1$@ von %2$@…"
+          }
+        }
+      }
+    },
+    "Downloading the map data timed out. Check your connection and try again; what was downloaded is kept.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het downloaden van de kaartgegevens duurde te lang. Controleer je verbinding en probeer het opnieuw; wat al gedownload is, blijft bewaard."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le téléchargement des données cartographiques a expiré. Vérifiez votre connexion et réessayez ; ce qui a été téléchargé est conservé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La descarga de los datos de mapa tardó demasiado. Comprueba tu conexión e inténtalo de nuevo; lo ya descargado se conserva."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Laden der Kartendaten hat zu lange gedauert. Prüfe deine Verbindung und versuche es erneut; bereits Geladenes bleibt erhalten."
+          }
+        }
+      }
+    },
     "E-biking": {
       "localizations": {
         "nl": {
@@ -3709,6 +3765,34 @@
         }
       }
     },
+    "Map data arrived damaged several times. Try again; what was downloaded is kept.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens kwamen meerdere keren beschadigd aan. Probeer het opnieuw; wat al gedownload is, blijft bewaard."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données cartographiques sont arrivées endommagées plusieurs fois. Réessayez ; ce qui a été téléchargé est conservé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los datos de mapa llegaron dañados varias veces. Inténtalo de nuevo; lo ya descargado se conserva."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten kamen mehrmals beschädigt an. Versuche es erneut; bereits Geladenes bleibt erhalten."
+          }
+        }
+      }
+    },
     "Map data for this area (%@) downloads on Wi-Fi.": {
       "localizations": {
         "nl": {
@@ -3733,6 +3817,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kartendaten für dieses Gebiet (%@) werden über WLAN geladen."
+          }
+        }
+      }
+    },
+    "Map data for this area isn't available yet. Please try again later.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaartgegevens voor dit gebied zijn nog niet beschikbaar. Probeer het later opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données cartographiques de cette zone ne sont pas encore disponibles. Réessayez plus tard."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los datos de mapa de esta zona aún no están disponibles. Inténtalo más tarde."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartendaten für dieses Gebiet sind noch nicht verfügbar. Versuche es später erneut."
           }
         }
       }
@@ -4473,6 +4585,34 @@
         }
       }
     },
+    "No cycling route was found between some of the stops, for example across water without a bridge or ferry. Try other items or another starting point.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tussen sommige stops is geen fietsroute gevonden, bijvoorbeeld over water zonder brug of pont. Probeer andere onderdelen of een ander startpunt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun itinéraire à vélo n'a été trouvé entre certains arrêts, par exemple au-dessus de l'eau sans pont ni bac. Essayez d'autres éléments ou un autre point de départ."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró una ruta en bici entre algunas paradas, por ejemplo sobre agua sin puente ni ferry. Prueba otros elementos u otro punto de partida."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwischen einigen Stopps wurde keine Radroute gefunden, zum Beispiel über Wasser ohne Brücke oder Fähre. Versuche andere Elemente oder einen anderen Startpunkt."
+          }
+        }
+      }
+    },
     "No municipalities visited yet.": {
       "localizations": {
         "nl": {
@@ -5001,6 +5141,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Route planen"
+          }
+        }
+      }
+    },
+    "Planning stopped. Map data downloaded so far is kept.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plannen gestopt. De gedownloade kaartgegevens blijven bewaard."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planification arrêtée. Les données cartographiques déjà téléchargées sont conservées."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planificación detenida. Los datos de mapa ya descargados se conservan."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planung gestoppt. Bereits geladene Kartendaten bleiben erhalten."
           }
         }
       }
@@ -6489,6 +6657,34 @@
         }
       }
     },
+    "Stop": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrêter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detener"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopp"
+          }
+        }
+      }
+    },
     "Stop following location": {
       "localizations": {
         "nl": {
@@ -7133,6 +7329,62 @@
         }
       }
     },
+    "The map data couldn't be downloaded (%@). Try again; what was downloaded is kept.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De kaartgegevens konden niet worden gedownload (%@). Probeer het opnieuw; wat al gedownload is, blijft bewaard."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les données cartographiques n'ont pas pu être téléchargées (%@). Réessayez ; ce qui a été téléchargé est conservé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron descargar los datos de mapa (%@). Inténtalo de nuevo; lo ya descargado se conserva."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kartendaten konnten nicht geladen werden (%@). Versuche es erneut; bereits Geladenes bleibt erhalten."
+          }
+        }
+      }
+    },
+    "The map data server had a problem (%lld). Try again later; what was downloaded is kept.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De server met kaartgegevens had een probleem (%lld). Probeer het later opnieuw; wat al gedownload is, blijft bewaard."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le serveur de données cartographiques a rencontré un problème (%lld). Réessayez plus tard ; ce qui a été téléchargé est conservé."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor de datos de mapa tuvo un problema (%lld). Inténtalo más tarde; lo ya descargado se conserva."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Kartendaten-Server hatte ein Problem (%lld). Versuche es später erneut; bereits Geladenes bleibt erhalten."
+          }
+        }
+      }
+    },
     "The route planning data couldn't be loaded: %@": {
       "localizations": {
         "nl": {
@@ -7157,6 +7409,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "Die Daten für die Routenplanung konnten nicht geladen werden: %@"
+          }
+        }
+      }
+    },
+    "The starting point or a selected item isn't near a road or path that can be cycled. Choose another one.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het startpunt of een gekozen onderdeel ligt niet bij een weg of pad waarover je kunt fietsen. Kies een ander."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le point de départ ou un élément choisi n'est pas près d'une route ou d'un chemin cyclable. Choisissez-en un autre."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El punto de partida o un elemento elegido no está cerca de una carretera o camino ciclable. Elige otro."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Startpunkt oder ein gewähltes Element liegt nicht an einer befahrbaren Straße oder einem Weg. Wähle ein anderes."
+          }
+        }
+      }
+    },
+    "There's no internet connection, and map data for this area still has to be downloaded. Try again when you're online.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er is geen internetverbinding en de kaartgegevens voor dit gebied moeten nog worden gedownload. Probeer het opnieuw als je online bent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il n'y a pas de connexion Internet, et les données cartographiques de cette zone doivent encore être téléchargées. Réessayez une fois en ligne."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay conexión a internet y aún hay que descargar los datos de mapa de esta zona. Inténtalo de nuevo cuando estés conectado."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es gibt keine Internetverbindung, und die Kartendaten für dieses Gebiet müssen noch geladen werden. Versuche es erneut, wenn du online bist."
+          }
+        }
+      }
+    },
+    "These items are too far apart for one round trip (about %lld km as the crow flies; up to %lld km is possible). Select fewer or closer items.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze onderdelen liggen te ver uit elkaar voor één rondrit (ongeveer %1$lld km hemelsbreed; tot %2$lld km is mogelijk). Kies minder of dichterbij gelegen onderdelen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces éléments sont trop éloignés pour une seule boucle (environ %1$lld km à vol d'oiseau ; jusqu'à %2$lld km possible). Choisissez-en moins ou des plus proches."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estos elementos están demasiado separados para una sola ruta circular (unos %1$lld km en línea recta; se puede hasta %2$lld km). Elige menos o más cercanos."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Elemente liegen für eine Rundtour zu weit auseinander (etwa %1$lld km Luftlinie; bis %2$lld km ist möglich). Wähle weniger oder nähere Elemente."
+          }
+        }
+      }
+    },
+    "These items are too far apart for one round trip. Select fewer or closer items.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze onderdelen liggen te ver uit elkaar voor één rondrit. Kies minder of dichterbij gelegen onderdelen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces éléments sont trop éloignés pour une seule boucle. Choisissez-en moins ou des plus proches."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estos elementos están demasiado separados para una sola ruta circular. Elige menos o más cercanos."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Elemente liegen für eine Rundtour zu weit auseinander. Wähle weniger oder nähere Elemente."
           }
         }
       }
