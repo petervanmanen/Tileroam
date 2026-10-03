@@ -81,19 +81,10 @@ struct ValhallaEngineTests {
         #expect(route.missed.isEmpty)
         #expect((8_000...25_000).contains(route.distance))
     }
-}
 
-/// The production build (Tools/build_routing_tiles.sh west …, not in Git): checks that routes cross
-/// the Dutch–German border, which needs the countries in one build.
-private let westBuild: URL? = {
-    let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
-    let tar = root.appending(path: "AssetPacks/build/routing/routing-west.tar")
-    return FileManager.default.fileExists(atPath: tar.path(percentEncoded: false)) ? tar : nil
-}()
-
-@Suite(.serialized, .enabled(if: westBuild != nil))
-struct WestRoutingTests {
-    @Test func routesAcrossTheGermanBorder() async throws {
+    /// The west build: routes cross the Dutch–German border. In this suite, because both change
+    /// the global RoutingTar/RoutingServer settings and must not run at the same time.
+    @Test(.enabled(if: westBuild != nil)) func routesAcrossTheGermanBorder() async throws {
         UserDefaults.standard.removeObject(forKey: "RoutingServer")
         UserDefaults.standard.set(westBuild!.path(percentEncoded: false), forKey: "RoutingTar")
         defer { UserDefaults.standard.removeObject(forKey: "RoutingTar") }
@@ -105,3 +96,11 @@ struct WestRoutingTests {
         #expect((9_000...20_000).contains(r.distance)) // about 12 km by bike
     }
 }
+
+/// The production build (Tools/build_routing_tiles.sh west …, not in Git): checks that routes cross
+/// the Dutch–German border, which needs the countries in one build.
+private let westBuild: URL? = {
+    let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+    let tar = root.appending(path: "AssetPacks/build/routing/routing-west.tar")
+    return FileManager.default.fileExists(atPath: tar.path(percentEncoded: false)) ? tar : nil
+}()
