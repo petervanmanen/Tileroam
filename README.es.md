@@ -9,7 +9,6 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 ## Funciones
 
 - **Teselas**: teselas de mapa de zoom 14 (~1,5 km, como en VeloViewer, StatsHunters y [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) y *squadratinhos* de zoom 17 (~190 m, como en Squadrats). Siempre se cuentan ambos; tú eliges cuál muestra el mapa. Incluye tu **cuadrado máximo** y tu **mayor clúster**.
-- **Rutas**: todas tus actividades en un mapa, coloreadas por deporte.
 - **Subidas**: todas las subidas de las carreteras (Cat. 4 a HC como en Strava, y repechos cortos), obtenidas de datos de altitud; cuáles has hecho, en una pestaña del mapa y en Estadísticas, y subidas para incluir al planificar una ruta. Ver [docs/CLIMBS.md](docs/CLIMBS.md).
 - **Actividades**: una lista de todas las actividades, de la más reciente a la más antigua, con duración, distancia y potencia media (con medidor de potencia) o velocidad media.
 - **Municipios y códigos postales** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria, con visitados/total por país.

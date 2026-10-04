@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** and **Routes** are always there. **Towns**, **Postcodes** and **Climbs** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes** and **Climbs** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. Choose the tile size in Settings → Tiles:
@@ -41,9 +41,6 @@ The header shows three numbers:
 - **Tiles:** how many tiles you have visited.
 - **Max square:** the largest fully visited square block, outlined in orange.
 - **Cluster:** the number of visited tiles that are surrounded on all four sides by other visited tiles.
-
-### Routes
-All your activities with GPS, drawn on the map.
 
 ### Towns
 The municipalities you have visited are filled in. The header shows how many of the total you have visited. Tap a municipality to see its name.

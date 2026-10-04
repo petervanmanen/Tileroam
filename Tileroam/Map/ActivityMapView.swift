@@ -3,14 +3,15 @@ import MapKit
 import SwiftUI
 
 enum MapMode: String, CaseIterable, Identifiable {
-    case squares, activities, gemeenten, postcodes, climbs
+    // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3; a
+    // stored "activities" no longer decodes, so those users start on Tiles.)
+    case squares, gemeenten, postcodes, climbs
 
     var id: Self { self }
 
     var title: String {
         switch self {
         case .squares: String(localized: "Tiles")
-        case .activities: String(localized: "Routes")
         case .gemeenten: String(localized: "Municipalities", comment: "Map mode: municipalities (gemeenten, communes, Gemeinden…)")
         case .postcodes: String(localized: "Postcodes")
         case .climbs: String(localized: "Climbs")
@@ -21,7 +22,6 @@ enum MapMode: String, CaseIterable, Identifiable {
     var tabTitle: String {
         switch self {
         case .squares: String(localized: "tab.tiles", defaultValue: "Tiles")
-        case .activities: String(localized: "tab.routes", defaultValue: "Routes")
         case .gemeenten: String(localized: "tab.municipalities", defaultValue: "Towns")
         case .postcodes: String(localized: "tab.postcodes", defaultValue: "Postcodes")
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
@@ -39,7 +39,7 @@ enum MapMode: String, CaseIterable, Identifiable {
     }
 }
 
-/// The map modes besides Tiles and Routes are challenges the user turns on (Settings, or the
+/// The map modes besides Tiles are challenges the user turns on (Settings, or the
 /// Challenges menu at the end of the mode bar). All are off by default, so the bar stays short.
 enum Challenges {
     /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
@@ -54,16 +54,10 @@ enum Challenges {
         all.filter(modes.contains).map(\.rawValue).joined(separator: ",")
     }
 
-    /// The modes in the bar: Tiles, Routes (not while planning) and the turned-on challenges.
-    static func visibleModes(_ raw: String, planning: Bool) -> [MapMode] {
+    /// The modes in the bar: Tiles and the turned-on challenges.
+    static func visibleModes(_ raw: String) -> [MapMode] {
         let on = decode(raw)
-        return MapMode.allCases.filter { mode in
-            switch mode {
-            case .squares: true
-            case .activities: !planning
-            default: on.contains(mode)
-            }
-        }
+        return MapMode.allCases.filter { $0 == .squares || on.contains($0) }
     }
 }
 
@@ -188,7 +182,6 @@ struct ActivityMapView: UIViewRepresentable {
         /// Focused on Apple Park for lack of data; refocus once data arrives.
         private var focusedOnFallback = false
 
-        private var trackColors: [ObjectIdentifier: UIColor] = [:]
         private var areaGeometry: [MapMode: AreaGeometry] = [:]
         private var areaGeometryKey: String?
 
@@ -281,7 +274,6 @@ struct ActivityMapView: UIViewRepresentable {
 
             map.removeOverlays(map.overlays)
             map.removeAnnotations(map.annotations.filter { !($0 is MKUserLocation) })
-            trackColors = [:]
             let store = parent.store
             let plan = parent.plan
             let planning = plan.isPlanning
@@ -293,16 +285,6 @@ struct ActivityMapView: UIViewRepresentable {
                 map.addOverlay(TilesOverlay(zoom: zoom, visited: store.tiles(zoom), stats: store.tileStats(zoom),
                                             selected: planning ? plan.selectedTiles(zoom) : [],
                                             highlight: coverage?.newTiles(zoom) ?? []), level: .aboveRoads)
-            case .activities:
-                for (sport, activities) in Dictionary(grouping: store.mapActivities, by: \.sport) {
-                    let lines = activities.map { a in
-                        let coords = a.coordinates
-                        return MKPolyline(coordinates: coords, count: coords.count)
-                    }
-                    let multi = MKMultiPolyline(lines)
-                    trackColors[ObjectIdentifier(multi)] = Self.color(for: sport)
-                    map.addOverlay(multi, level: .aboveRoads)
-                }
             case .gemeenten, .postcodes:
                 guard let (areas, visitedCodes) = parent.mode.areas(in: store) else { break }
                 if areaGeometryKey != store.regions?.key {
@@ -366,7 +348,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .activities, .climbs:
+            case .climbs:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -466,15 +448,6 @@ struct ActivityMapView: UIViewRepresentable {
             }
         }
 
-        static func color(for sport: String) -> UIColor {
-            switch sport {
-            case "Cycling", "E-biking": .systemBlue
-            case "Running": .systemRed
-            case "Walking", "Hiking": .systemGreen
-            default: .systemPurple
-            }
-        }
-
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             switch overlay {
             case let tiles as TilesOverlay:
@@ -491,11 +464,6 @@ struct ActivityMapView: UIViewRepresentable {
                 r.strokeColor = climbs.color.withAlphaComponent(0.9)
                 r.lineWidth = 4
                 r.lineCap = .round
-                return r
-            case let lines as MKMultiPolyline:
-                let r = MKMultiPolylineRenderer(multiPolyline: lines)
-                r.strokeColor = (trackColors[ObjectIdentifier(lines)] ?? .systemPurple).withAlphaComponent(0.6)
-                r.lineWidth = 2
                 return r
             case let areas as AreaOverlay:
                 return AreaRenderer(overlay: areas)
@@ -555,8 +523,6 @@ struct ActivityMapView: UIViewRepresentable {
                     }
                 case .climbs:
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
-                case .activities:
-                    break
                 }
                 return
             }
