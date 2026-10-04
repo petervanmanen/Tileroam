@@ -1,8 +1,8 @@
 import Foundation
 import UIKit
 
-/// A Trappist brewery of the Trappist Challenge (`Resources/trappists.json`, icons
-/// `Resources/Trappists/trappist-<id>.png`). An activity visits it by passing within
+/// A Trappist brewery of the Trappist Challenge. The list and the logos are on Cloudflare R2
+/// (`<server>/Trappist/`, see `TrappistData`). An activity visits a brewery by passing within
 /// `TrappistMatcher.radius` of it.
 struct Trappist: Codable, Sendable, Identifiable, Hashable {
     let id: String
@@ -15,14 +15,55 @@ struct Trappist: Codable, Sendable, Identifiable, Hashable {
     let lon: Double
 
     var point: GeoPoint { GeoPoint(lat: lat, lon: lon) }
-    /// The brewery's logo, black on white.
-    var icon: UIImage? { UIImage(named: "trappist-\(id)") }
+    /// The brewery's logo, black on white, once downloaded.
+    var icon: UIImage? { UIImage(contentsOfFile: TrappistData.iconFile(id).path(percentEncoded: false)) }
+}
 
-    static let all: [Trappist] = {
-        guard let url = Bundle.main.url(forResource: "trappists", withExtension: "json"),
-              let data = try? Data(contentsOf: url) else { return [] }
-        return (try? JSONDecoder().decode([Trappist].self, from: data)) ?? []
-    }()
+/// The Trappist Challenge's data on Cloudflare R2, uploaded with Tools/upload_trappists_r2.sh from
+/// AssetPacks/Trappist: `Trappist/trappists.json` and a logo per brewery, `Trappist/<id>.png`.
+/// The app keeps a copy in `Application Support/Trappist`, checks for a new list at most once a
+/// day, and uses its copy when offline.
+enum TrappistData {
+    static var folder: URL { URL.applicationSupportDirectory.appending(path: "Trappist", directoryHint: .isDirectory) }
+    static func iconFile(_ id: String, in folder: URL = folder) -> URL { folder.appending(path: "\(id).png") }
+    private static let listName = "trappists.json"
+    /// How long a downloaded list is used before checking for a new one.
+    static let maxAge: TimeInterval = 24 * 3600
+
+    /// The list on the device (empty before the first download).
+    static func cached(in folder: URL = folder) -> [Trappist] {
+        (try? Data(contentsOf: folder.appending(path: listName))).flatMap { try? JSONDecoder().decode([Trappist].self, from: $0) } ?? []
+    }
+
+    /// The list, downloaded when the copy on the device is missing or older than `maxAge`, plus
+    /// the logos not on the device yet. Throws when there's no list at all (offline on first use).
+    static func load(from server: URL = RoutingData.serverURL, session: URLSession = RoutingData.tileSession,
+                     into folder: URL = folder, now: Date = .now) async throws -> [Trappist] {
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let listFile = folder.appending(path: listName)
+        let modified = (try? listFile.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        var list = cached(in: folder)
+        if list.isEmpty || modified.map({ now.timeIntervalSince($0) > maxAge }) ?? true {
+            do {
+                let data = try await RemoteFile.get(server.appending(path: "Trappist/\(listName)"), session: session) {
+                    (try? JSONDecoder().decode([Trappist].self, from: $0)) != nil
+                }
+                try data.write(to: listFile, options: .atomic)
+                list = try JSONDecoder().decode([Trappist].self, from: data)
+            } catch where !list.isEmpty {
+                // Offline or a passing problem: keep using the copy on the device.
+            }
+        }
+        for t in list where !FileManager.default.fileExists(atPath: iconFile(t.id, in: folder).path(percentEncoded: false)) {
+            // A missing logo isn't fatal: the badge shows the brewery's initial until it arrives.
+            if let png = try? await RemoteFile.get(server.appending(path: "Trappist/\(t.id).png"), session: session, isValid: {
+                UIImage(data: $0) != nil
+            }) {
+                try? png.write(to: iconFile(t.id, in: folder), options: .atomic)
+            }
+        }
+        return list
+    }
 }
 
 enum TrappistMatcher {

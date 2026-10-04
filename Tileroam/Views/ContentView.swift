@@ -239,7 +239,7 @@ struct ContentView: View {
         case .climbs:
             return String(localized: "\(store.climbed.count) climbs climbed · \(store.climbs.count) on the map")
         case .trappists:
-            return String(localized: "\(store.trappistVisits.count) of \(Trappist.all.count) Trappist breweries visited")
+            return String(localized: "\(store.trappistVisits.count) of \(store.trappists.count) Trappist breweries visited")
         }
     }
 
