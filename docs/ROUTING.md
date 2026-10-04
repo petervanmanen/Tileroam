@@ -4,7 +4,7 @@ Tileroam plans cycling routes on the iPhone or iPad itself, with [Valhalla](http
 
 The routing data comes from [Geofabrik](https://download.geofabrik.de)'s OpenStreetMap extracts. It's built on a Mac into Valhalla tiles, gzipped per tile and put on **Cloudflare R2**, from where the app downloads only the tiles around a plan. (Until October 2026 the tiles came as Apple-hosted asset packs per 1° area; see "Why R2" below.)
 
-Route planning currently covers **the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria**: build `west`, version 2 (with gradients from elevation data), 2,940 tiles, 4.8 GB compressed on R2. Version 1 (NL, BE, LU, DE: 1,179 tiles, 2.2 GB) stays for app versions up to 1.4.
+Route planning currently covers **the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria**: build `west`, version 2 (with gradients from elevation data), 2,940 tiles, 4.8 GB compressed on R2. Version 1 (NL, BE, LU, DE: 1,179 tiles, 2.2 GB, used by app versions 1.1–1.4) was deleted from R2 on 4 October 2026, once testers were on 1.5.
 
 | Example plan (15 km around one point) | Download |
 |---|---|
