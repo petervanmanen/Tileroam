@@ -7,6 +7,9 @@
 # by typing "archive":
 #   ARCHIVE="regions-" Tools/clean_asset_packs.sh
 #   ARCHIVE="routing-" Tools/clean_asset_packs.sh   # the routing packs from before R2
+# With UNARCHIVE=1 it unarchives the archived packs the app needs again (a country that comes
+# back; App Store Connect's website can't do that), then upload them with upload_asset_packs.sh:
+#   UNARCHIVE=1 Tools/clean_asset_packs.sh
 # "Unused" is decided by the checkout you run it in (Country.all), so run it
 # on the branch that matches the app versions in use.
 #
