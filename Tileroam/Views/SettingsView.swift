@@ -72,7 +72,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Challenges")
                 } footer: {
-                    Text("Tiles and Routes are always at the top of the map. Choose which other challenges are there too; the + at the end of that bar does the same. Everything is still counted, also for challenges you don't show.")
+                    Text("Tiles are always at the top of the map. Choose which other challenges are there too; the + at the end of that bar does the same. Everything is still counted, also for challenges you don't show.")
                 }
 
                 Section {

@@ -153,7 +153,6 @@ struct ContentView: View {
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 selectedClimb = nil
-                if planning, mode == .activities { mode = .squares }
             }
     }
 
@@ -180,7 +179,7 @@ struct ContentView: View {
 
     private var headerContent: some View {
         VStack(spacing: 8) {
-            ModeChips(modes: Challenges.visibleModes(challenges, planning: plan.isPlanning), selection: $mode, challenges: $challenges)
+            ModeChips(modes: Challenges.visibleModes(challenges), selection: $mode, challenges: $challenges)
             HStack(alignment: .center, spacing: 10) {
                 Text(statsText)
                     .font(.footnote.weight(.medium))
@@ -229,11 +228,6 @@ struct ContentView: View {
             let s = store.tileStats(tileZoom)
             let count = tileZoom.countLabel(store.tiles(tileZoom).count)
             return String(localized: "\(count) · max square \(s.maxSquare)×\(s.maxSquare) · cluster \(s.maxCluster)")
-        case .activities:
-            let onMap = store.mapActivities.count
-            let e = store.eddingtonCycling
-            return String(localized: "\(onMap) on map · \(store.activities.count - onMap) indoor, virtual or without GPS")
-                + "\n" + String(localized: "Eddington \(e.number) · \(e.daysNeeded) more rides of \(e.number + 1) km to reach \(e.number + 1)")
         case .gemeenten:
             guard let areas = store.municipalityAreas else { return String(localized: "Loading municipalities…") }
             return String(localized: "\(store.visitedMunicipalities.count) / \(areas.all.count) municipalities visited")
