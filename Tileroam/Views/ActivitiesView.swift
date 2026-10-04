@@ -190,3 +190,34 @@ struct TrappistCard: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
+
+struct KlompenpadCard: View {
+    let path: Klompenpad
+    /// Share of the main route walked (0…1).
+    let progress: Double
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                Image(systemName: progress >= KlompenpadMatcher.done ? "checkmark.circle.fill" : "shoeprints.fill")
+                    .foregroundStyle(progress >= KlompenpadMatcher.done ? Color.green : .secondary)
+                Text(path.name).font(.headline).lineLimit(1)
+                Spacer()
+                if let link = path.link {
+                    Link("klompenpaden.nl", destination: link).font(.footnote)
+                }
+            }
+            Text("From \(path.start) · \(path.lengthsText)").font(.subheadline).foregroundStyle(.secondary)
+            ProgressView(value: min(progress, 1))
+                .tint(progress >= KlompenpadMatcher.done ? .green : .orange)
+            Text(progress >= KlompenpadMatcher.done ? String(localized: "Walked")
+                 : progress > 0 ? String(localized: "\(Int((progress * 100).rounded()))% of the route walked")
+                 : String(localized: "Not walked yet"))
+                .font(.footnote)
+                .foregroundStyle(progress >= KlompenpadMatcher.done ? .green : .secondary)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}

@@ -48,7 +48,7 @@ mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
 # All challenges on, so the bar at the top shows every tab.
 COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB
-        -challenges gemeenten,postcodes,climbs,trappists)
+        -challenges gemeenten,postcodes,climbs,trappists,klompenpaden)
 
 # The simulator is slow to launch apps (system libraries load lazily), so the waits are long.
 shot() { # name, wait, args…

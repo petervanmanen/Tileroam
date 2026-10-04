@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="klompenpaden.nl via Jimbo API" xmlns="http://www.topografix.com/GPX/1/1">
+<metadata><name>Reckense Markepad</name><desc>Ontdek het mooie buitengebied van Rekken. Wandelen langs de rand van Nederland waar de rivier de Berkel slingerend het land binnenstroomt, grensovergang Oldenkotte ooit een serieuze barrière vormde en met heimelijke routes om de autoriteiten te omzeilen. Klompen aan, rugzak op en gaan!</desc><link href="https://www.klompenpaden.nl/klompenpaden/Reckense_Markepad/647648ed-4b55-4839-b3fe-2b5d177e6852"><text>klompenpaden.nl</text></link></metadata>
+<wpt lat="52.09811583588895" lon="6.756312847137451"><name>Start Rekken</name></wpt>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0972107" lon="6.7526726"/>
+<trkpt lat="52.0977161" lon="6.7525076"/>
+<trkpt lat="52.0978412" lon="6.7532760"/>
+<trkpt lat="52.0982816" lon="6.7534761"/>
+<trkpt lat="52.0981896" lon="6.7543224"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0978161" lon="6.7555817"/>
+<trkpt lat="52.0978325" lon="6.7556567"/>
+<trkpt lat="52.0978410" lon="6.7556791"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0978161" lon="6.7555817"/>
+<trkpt lat="52.0978040" lon="6.7555340"/>
+<trkpt lat="52.0979613" lon="6.7550619"/>
+<trkpt lat="52.0979833" lon="6.7550018"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0978410" lon="6.7556791"/>
+<trkpt lat="52.0978351" lon="6.7556565"/>
+<trkpt lat="52.0978161" lon="6.7555817"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0978410" lon="6.7556791"/>
+<trkpt lat="52.0978666" lon="6.7557466"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0978666" lon="6.7557466"/>
+<trkpt lat="52.0978525" lon="6.7557230"/>
+<trkpt lat="52.0978410" lon="6.7556791"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0978666" lon="6.7557466"/>
+<trkpt lat="52.0978754" lon="6.7557699"/>
+<trkpt lat="52.0979185" lon="6.7558247"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0979185" lon="6.7558247"/>
+<trkpt lat="52.0978751" lon="6.7557608"/>
+<trkpt lat="52.0978666" lon="6.7557466"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0979185" lon="6.7558247"/>
+<trkpt lat="52.0979501" lon="6.7558649"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0979501" lon="6.7558649"/>
+<trkpt lat="52.0979319" lon="6.7558444"/>
+<trkpt lat="52.0979185" lon="6.7558247"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0979501" lon="6.7558649"/>
+<trkpt lat="52.0979918" lon="6.7559180"/>
+<trkpt lat="52.0980421" lon="6.7559685"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0979833" lon="6.7550018"/>
+<trkpt lat="52.0978074" lon="6.7555421"/>
+<trkpt lat="52.0978161" lon="6.7555817"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0979833" lon="6.7550018"/>
+<trkpt lat="52.0980653" lon="6.7547784"/>
+<trkpt lat="52.0981596" lon="6.7544803"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0980421" lon="6.7559685"/>
+<trkpt lat="52.0979501" lon="6.7558649"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0980421" lon="6.7559685"/>
+<trkpt lat="52.0982489" lon="6.7561764"/>
+<trkpt lat="52.0981181" lon="6.7560541"/>
+<trkpt lat="52.0980421" lon="6.7559685"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0981596" lon="6.7544803"/>
+<trkpt lat="52.0981222" lon="6.7545752"/>
+<trkpt lat="52.0979833" lon="6.7550018"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0981596" lon="6.7544803"/>
+<trkpt lat="52.0981612" lon="6.7544753"/>
+<trkpt lat="52.0981896" lon="6.7543224"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0981896" lon="6.7543224"/>
+<trkpt lat="52.0981875" lon="6.7543419"/>
+<trkpt lat="52.0981612" lon="6.7544761"/>
+<trkpt lat="52.0981596" lon="6.7544803"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.0981896" lon="6.7543224"/>
+<trkpt lat="52.0982123" lon="6.7542008"/>
+<trkpt lat="52.0983855" lon="6.7540981"/>
+<trkpt lat="52.0987088" lon="6.7515080"/>
+<trkpt lat="52.0987470" lon="6.7511514"/>
+<trkpt lat="52.0987377" lon="6.7510020"/>
+<trkpt lat="52.0986572" lon="6.7508074"/>
+<trkpt lat="52.0988154" lon="6.7494803"/>
+<trkpt lat="52.0989519" lon="6.7481912"/>
+<trkpt lat="52.0991393" lon="6.7468214"/>
+<trkpt lat="52.0991896" lon="6.7464205"/>
+<trkpt lat="52.0992228" lon="6.7460803"/>
+<trkpt lat="52.0993646" lon="6.7459822"/>
+<trkpt lat="52.0994544" lon="6.7451275"/>
+<trkpt lat="52.0995276" lon="6.7445519"/>
+<trkpt lat="52.0995959" lon="6.7439800"/>
+<trkpt lat="52.0997086" lon="6.7430517"/>
+<trkpt lat="52.0997966" lon="6.7425277"/>
+<trkpt lat="52.1000793" lon="6.7427567"/>
+<trkpt lat="52.1002849" lon="6.7429659"/>
+<trkpt lat="52.1010857" lon="6.7437438"/>
+<trkpt lat="52.1020032" lon="6.7444632"/>
+<trkpt lat="52.1029268" lon="6.7453815"/>
+<trkpt lat="52.1039645" lon="6.7463150"/>
+<trkpt lat="52.1040900" lon="6.7464358"/>
+<trkpt lat="52.1041612" lon="6.7464923"/>
+<trkpt lat="52.1042189" lon="6.7464361"/>
+<trkpt lat="52.1044533" lon="6.7462173"/>
+<trkpt lat="52.1048993" lon="6.7451978"/>
+<trkpt lat="52.1056962" lon="6.7433164"/>
+<trkpt lat="52.1063856" lon="6.7452343"/>
+<trkpt lat="52.1081566" lon="6.7441998"/>
+<trkpt lat="52.1081327" lon="6.7441144"/>
+<trkpt lat="52.1081930" lon="6.7440814"/>
+<trkpt lat="52.1086087" lon="6.7438457"/>
+<trkpt lat="52.1087135" lon="6.7437215"/>
+<trkpt lat="52.1084881" lon="6.7431585"/>
+<trkpt lat="52.1083169" lon="6.7426480"/>
+<trkpt lat="52.1081746" lon="6.7423058"/>
+<trkpt lat="52.1080827" lon="6.7420579"/>
+<trkpt lat="52.1080391" lon="6.7419397"/>
+<trkpt lat="52.1079719" lon="6.7417503"/>
+<trkpt lat="52.1078860" lon="6.7415302"/>
+<trkpt lat="52.1077476" lon="6.7411552"/>
+<trkpt lat="52.1079458" lon="6.7409872"/>
+<trkpt lat="52.1079914" lon="6.7414222"/>
+<trkpt lat="52.1080851" lon="6.7417077"/>
+<trkpt lat="52.1081579" lon="6.7417076"/>
+<trkpt lat="52.1082350" lon="6.7416686"/>
+<trkpt lat="52.1083792" lon="6.7415245"/>
+<trkpt lat="52.1087136" lon="6.7411830"/>
+<trkpt lat="52.1088674" lon="6.7410270"/>
+<trkpt lat="52.1090299" lon="6.7408541"/>
+<trkpt lat="52.1094541" lon="6.7404633"/>
+<trkpt lat="52.1088502" lon="6.7388447"/>
+<trkpt lat="52.1086467" lon="6.7381791"/>
+<trkpt lat="52.1083464" lon="6.7375535"/>
+<trkpt lat="52.1077929" lon="6.7372170"/>
+<trkpt lat="52.1066340" lon="6.7372614"/>
+<trkpt lat="52.1066339" lon="6.7371918"/>
+<trkpt lat="52.1066480" lon="6.7371271"/>
+<trkpt lat="52.1067219" lon="6.7368251"/>
+<trkpt lat="52.1067980" lon="6.7364856"/>
+<trkpt lat="52.1069384" lon="6.7359105"/>
+<trkpt lat="52.1070521" lon="6.7354055"/>
+<trkpt lat="52.1070830" lon="6.7351254"/>
+<trkpt lat="52.1070527" lon="6.7348029"/>
+<trkpt lat="52.1067891" lon="6.7337913"/>
+<trkpt lat="52.1065565" lon="6.7327559"/>
+<trkpt lat="52.1062995" lon="6.7316763"/>
+<trkpt lat="52.1062638" lon="6.7315217"/>
+<trkpt lat="52.1061315" lon="6.7312579"/>
+<trkpt lat="52.1058303" lon="6.7301109"/>
+<trkpt lat="52.1057431" lon="6.7297848"/>
+<trkpt lat="52.1056621" lon="6.7294782"/>
+<trkpt lat="52.1055204" lon="6.7288989"/>
+<trkpt lat="52.1053629" lon="6.7282506"/>
+<trkpt lat="52.1053780" lon="6.7279010"/>
+<trkpt lat="52.1051113" lon="6.7269105"/>
+<trkpt lat="52.1047342" lon="6.7252244"/>
+<trkpt lat="52.1049615" lon="6.7243767"/>
+<trkpt lat="52.1051231" lon="6.7238026"/>
+<trkpt lat="52.1050702" lon="6.7237513"/>
+<trkpt lat="52.1047219" lon="6.7235288"/>
+<trkpt lat="52.1043694" lon="6.7233126"/>
+<trkpt lat="52.1042195" lon="6.7232125"/>
+<trkpt lat="52.1041210" lon="6.7231436"/>
+<trkpt lat="52.1038756" lon="6.7229763"/>
+<trkpt lat="52.1036014" lon="6.7227949"/>
+<trkpt lat="52.1030876" lon="6.7224660"/>
+<trkpt lat="52.1028026" lon="6.7222663"/>
+<trkpt lat="52.1025085" lon="6.7220953"/>
+<trkpt lat="52.1021297" lon="6.7218349"/>
+<trkpt lat="52.1019924" lon="6.7216686"/>
+<trkpt lat="52.1016778" lon="6.7210972"/>
+<trkpt lat="52.1014099" lon="6.7204983"/>
+<trkpt lat="52.1010399" lon="6.7194619"/>
+<trkpt lat="52.1009066" lon="6.7195738"/>
+<trkpt lat="52.1007567" lon="6.7198995"/>
+<trkpt lat="52.1005932" lon="6.7201611"/>
+<trkpt lat="52.1003921" lon="6.7198018"/>
+<trkpt lat="52.1002038" lon="6.7194225"/>
+<trkpt lat="52.0997356" lon="6.7185483"/>
+<trkpt lat="52.0994983" lon="6.7180836"/>
+<trkpt lat="52.0993970" lon="6.7177301"/>
+<trkpt lat="52.0992842" lon="6.7172923"/>
+<trkpt lat="52.0991224" lon="6.7167764"/>
+<trkpt lat="52.0990115" lon="6.7164378"/>
+<trkpt lat="52.0989476" lon="6.7163404"/>
+<trkpt lat="52.0981958" lon="6.7159456"/>
+<trkpt lat="52.0972793" lon="6.7154500"/>
+<trkpt lat="52.0972865" lon="6.7153468"/>
+<trkpt lat="52.0973213" lon="6.7148103"/>
+<trkpt lat="52.0972322" lon="6.7139342"/>
+<trkpt lat="52.0970214" lon="6.7137200"/>
+<trkpt lat="52.0967274" lon="6.7124105"/>
+<trkpt lat="52.0965894" lon="6.7119476"/>
+<trkpt lat="52.0964616" lon="6.7120839"/>
+<trkpt lat="52.0935593" lon="6.7191671"/>
+<trkpt lat="52.0949815" lon="6.7207841"/>
+<trkpt lat="52.0948946" lon="6.7215199"/>
+<trkpt lat="52.0947167" lon="6.7217608"/>
+<trkpt lat="52.0944543" lon="6.7220425"/>
+<trkpt lat="52.0940274" lon="6.7226431"/>
+<trkpt lat="52.0938989" lon="6.7228635"/>
+<trkpt lat="52.0938371" lon="6.7231962"/>
+<trkpt lat="52.0937872" lon="6.7234574"/>
+<trkpt lat="52.0937799" lon="6.7239133"/>
+<trkpt lat="52.0936233" lon="6.7243652"/>
+<trkpt lat="52.0935004" lon="6.7245532"/>
+<trkpt lat="52.0934405" lon="6.7251717"/>
+<trkpt lat="52.0933644" lon="6.7255770"/>
+<trkpt lat="52.0933038" lon="6.7264375"/>
+<trkpt lat="52.0931637" lon="6.7266206"/>
+<trkpt lat="52.0929770" lon="6.7264039"/>
+<trkpt lat="52.0924573" lon="6.7261364"/>
+<trkpt lat="52.0921542" lon="6.7258428"/>
+<trkpt lat="52.0918074" lon="6.7256902"/>
+<trkpt lat="52.0917523" lon="6.7251297"/>
+<trkpt lat="52.0918839" lon="6.7240493"/>
+<trkpt lat="52.0924338" lon="6.7218898"/>
+<trkpt lat="52.0929301" lon="6.7204996"/>
+<trkpt lat="52.0935161" lon="6.7191363"/>
+<trkpt lat="52.0931061" lon="6.7187436"/>
+<trkpt lat="52.0929009" lon="6.7185940"/>
+<trkpt lat="52.0928565" lon="6.7184056"/>
+<trkpt lat="52.0927766" lon="6.7181366"/>
+<trkpt lat="52.0928890" lon="6.7176080"/>
+<trkpt lat="52.0931392" lon="6.7166764"/>
+<trkpt lat="52.0932778" lon="6.7162154"/>
+<trkpt lat="52.0933604" lon="6.7157223"/>
+<trkpt lat="52.0933292" lon="6.7154173"/>
+<trkpt lat="52.0932543" lon="6.7151476"/>
+<trkpt lat="52.0933321" lon="6.7154198"/>
+<trkpt lat="52.0933603" lon="6.7157141"/>
+<trkpt lat="52.0932840" lon="6.7162210"/>
+<trkpt lat="52.0931746" lon="6.7165612"/>
+<trkpt lat="52.0930610" lon="6.7164773"/>
+<trkpt lat="52.0927388" lon="6.7177725"/>
+<trkpt lat="52.0925797" lon="6.7176487"/>
+<trkpt lat="52.0920131" lon="6.7172476"/>
+<trkpt lat="52.0917209" lon="6.7182976"/>
+<trkpt lat="52.0916206" lon="6.7190490"/>
+<trkpt lat="52.0911667" lon="6.7203678"/>
+<trkpt lat="52.0916308" lon="6.7208287"/>
+<trkpt lat="52.0921276" lon="6.7212602"/>
+<trkpt lat="52.0919319" lon="6.7219753"/>
+<trkpt lat="52.0920197" lon="6.7221860"/>
+<trkpt lat="52.0906646" lon="6.7264503"/>
+<trkpt lat="52.0904518" lon="6.7272071"/>
+<trkpt lat="52.0899350" lon="6.7290892"/>
+<trkpt lat="52.0896086" lon="6.7305066"/>
+<trkpt lat="52.0892880" lon="6.7315961"/>
+<trkpt lat="52.0889678" lon="6.7321503"/>
+<trkpt lat="52.0885295" lon="6.7330346"/>
+<trkpt lat="52.0885273" lon="6.7334685"/>
+<trkpt lat="52.0888194" lon="6.7339807"/>
+<trkpt lat="52.0887336" lon="6.7359013"/>
+<trkpt lat="52.0888593" lon="6.7358171"/>
+<trkpt lat="52.0891991" lon="6.7354393"/>
+<trkpt lat="52.0895253" lon="6.7350272"/>
+<trkpt lat="52.0895860" lon="6.7348997"/>
+<trkpt lat="52.0895786" lon="6.7346929"/>
+<trkpt lat="52.0895704" lon="6.7343336"/>
+<trkpt lat="52.0898204" lon="6.7346593"/>
+<trkpt lat="52.0898444" lon="6.7348178"/>
+<trkpt lat="52.0899685" lon="6.7350812"/>
+<trkpt lat="52.0901705" lon="6.7356315"/>
+<trkpt lat="52.0902628" lon="6.7357947"/>
+<trkpt lat="52.0908131" lon="6.7367225"/>
+<trkpt lat="52.0912141" lon="6.7372211"/>
+<trkpt lat="52.0913793" lon="6.7375138"/>
+<trkpt lat="52.0914539" lon="6.7381648"/>
+<trkpt lat="52.0915806" lon="6.7387741"/>
+<trkpt lat="52.0917216" lon="6.7401685"/>
+<trkpt lat="52.0919711" lon="6.7401876"/>
+<trkpt lat="52.0922130" lon="6.7401019"/>
+<trkpt lat="52.0923563" lon="6.7408245"/>
+<trkpt lat="52.0925195" lon="6.7415215"/>
+<trkpt lat="52.0926254" lon="6.7420866"/>
+<trkpt lat="52.0926194" lon="6.7423007"/>
+<trkpt lat="52.0927946" lon="6.7428852"/>
+<trkpt lat="52.0928483" lon="6.7430229"/>
+<trkpt lat="52.0929226" lon="6.7430773"/>
+<trkpt lat="52.0929519" lon="6.7431680"/>
+<trkpt lat="52.0929338" lon="6.7433441"/>
+<trkpt lat="52.0930880" lon="6.7438990"/>
+<trkpt lat="52.0931924" lon="6.7442816"/>
+<trkpt lat="52.0932563" lon="6.7446166"/>
+<trkpt lat="52.0932970" lon="6.7446467"/>
+<trkpt lat="52.0933678" lon="6.7450022"/>
+<trkpt lat="52.0935677" lon="6.7451502"/>
+<trkpt lat="52.0937546" lon="6.7453383"/>
+<trkpt lat="52.0939842" lon="6.7453772"/>
+<trkpt lat="52.0941203" lon="6.7454856"/>
+<trkpt lat="52.0942576" lon="6.7456490"/>
+<trkpt lat="52.0944275" lon="6.7459177"/>
+<trkpt lat="52.0945816" lon="6.7461657"/>
+<trkpt lat="52.0946686" lon="6.7463595"/>
+<trkpt lat="52.0945624" lon="6.7465985"/>
+<trkpt lat="52.0948255" lon="6.7478094"/>
+<trkpt lat="52.0949817" lon="6.7485421"/>
+<trkpt lat="52.0951174" lon="6.7488397"/>
+<trkpt lat="52.0952948" lon="6.7490732"/>
+<trkpt lat="52.0954893" lon="6.7492976"/>
+<trkpt lat="52.0956802" lon="6.7495355"/>
+<trkpt lat="52.0958564" lon="6.7499261"/>
+<trkpt lat="52.0959475" lon="6.7500167"/>
+<trkpt lat="52.0960022" lon="6.7501230"/>
+<trkpt lat="52.0960105" lon="6.7502829"/>
+<trkpt lat="52.0960617" lon="6.7509020"/>
+<trkpt lat="52.0960588" lon="6.7510981"/>
+<trkpt lat="52.0960463" lon="6.7512939"/>
+<trkpt lat="52.0960242" lon="6.7515774"/>
+<trkpt lat="52.0960964" lon="6.7517261"/>
+<trkpt lat="52.0959092" lon="6.7525001"/>
+<trkpt lat="52.0959147" lon="6.7529022"/>
+<trkpt lat="52.0959364" lon="6.7531809"/>
+<trkpt lat="52.0963708" lon="6.7532608"/>
+<trkpt lat="52.0967514" lon="6.7533535"/>
+<trkpt lat="52.0968299" lon="6.7533559"/>
+<trkpt lat="52.0968753" lon="6.7532820"/>
+<trkpt lat="52.0968819" lon="6.7530245"/>
+<trkpt lat="52.0969718" lon="6.7528071"/>
+<trkpt lat="52.0970266" lon="6.7526929"/>
+<trkpt lat="52.0971837" lon="6.7526832"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>extensionRoute</type><trkseg>
+<trkpt lat="52.0880093" lon="6.7054218"/>
+<trkpt lat="52.0880080" lon="6.7054176"/>
+<trkpt lat="52.0880422" lon="6.7055017"/>
+<trkpt lat="52.0880093" lon="6.7054218"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>extensionRoute</type><trkseg>
+<trkpt lat="52.0880093" lon="6.7054218"/>
+<trkpt lat="52.0879960" lon="6.7053895"/>
+<trkpt lat="52.0879036" lon="6.7050514"/>
+<trkpt lat="52.0877201" lon="6.7043981"/>
+<trkpt lat="52.0874321" lon="6.7034117"/>
+<trkpt lat="52.0872103" lon="6.7024328"/>
+<trkpt lat="52.0873186" lon="6.7022968"/>
+<trkpt lat="52.0868873" lon="6.7008298"/>
+<trkpt lat="52.0865191" lon="6.6994580"/>
+<trkpt lat="52.0863431" lon="6.6987637"/>
+<trkpt lat="52.0861698" lon="6.6981477"/>
+<trkpt lat="52.0860607" lon="6.6981763"/>
+<trkpt lat="52.0857468" lon="6.6980108"/>
+<trkpt lat="52.0855584" lon="6.6979502"/>
+<trkpt lat="52.0853686" lon="6.6980141"/>
+<trkpt lat="52.0850869" lon="6.6981565"/>
+<trkpt lat="52.0848485" lon="6.6982595"/>
+<trkpt lat="52.0847596" lon="6.6984017"/>
+<trkpt lat="52.0846973" lon="6.6985504"/>
+<trkpt lat="52.0846014" lon="6.6988255"/>
+<trkpt lat="52.0845363" lon="6.6990726"/>
+<trkpt lat="52.0844272" lon="6.6994169"/>
+<trkpt lat="52.0845272" lon="6.6995617"/>
+<trkpt lat="52.0845687" lon="6.6996816"/>
+<trkpt lat="52.0845262" lon="6.6999728"/>
+<trkpt lat="52.0845185" lon="6.7001840"/>
+<trkpt lat="52.0845235" lon="6.7003752"/>
+<trkpt lat="52.0845129" lon="6.7005255"/>
+<trkpt lat="52.0844310" lon="6.7008329"/>
+<trkpt lat="52.0841826" lon="6.7015176"/>
+<trkpt lat="52.0840733" lon="6.7018763"/>
+<trkpt lat="52.0840168" lon="6.7021468"/>
+<trkpt lat="52.0836722" lon="6.7022742"/>
+<trkpt lat="52.0830477" lon="6.7021023"/>
+<trkpt lat="52.0819221" lon="6.7018124"/>
+<trkpt lat="52.0818257" lon="6.7025398"/>
+<trkpt lat="52.0817492" lon="6.7030397"/>
+<trkpt lat="52.0816321" lon="6.7035578"/>
+<trkpt lat="52.0815730" lon="6.7038509"/>
+<trkpt lat="52.0815800" lon="6.7041866"/>
+<trkpt lat="52.0816172" lon="6.7048065"/>
+<trkpt lat="52.0817156" lon="6.7060563"/>
+<trkpt lat="52.0817499" lon="6.7064789"/>
+<trkpt lat="52.0817739" lon="6.7068920"/>
+<trkpt lat="52.0817644" lon="6.7071249"/>
+<trkpt lat="52.0817988" lon="6.7071525"/>
+<trkpt lat="52.0816757" lon="6.7077878"/>
+<trkpt lat="52.0815276" lon="6.7084648"/>
+<trkpt lat="52.0813824" lon="6.7091725"/>
+<trkpt lat="52.0810019" lon="6.7100638"/>
+<trkpt lat="52.0807729" lon="6.7105569"/>
+<trkpt lat="52.0804828" lon="6.7109788"/>
+<trkpt lat="52.0797581" lon="6.7119888"/>
+<trkpt lat="52.0790007" lon="6.7129437"/>
+<trkpt lat="52.0787758" lon="6.7133941"/>
+<trkpt lat="52.0786117" lon="6.7139313"/>
+<trkpt lat="52.0784470" lon="6.7144162"/>
+<trkpt lat="52.0783279" lon="6.7148336"/>
+<trkpt lat="52.0774517" lon="6.7147111"/>
+<trkpt lat="52.0772785" lon="6.7170194"/>
+<trkpt lat="52.0772444" lon="6.7180231"/>
+<trkpt lat="52.0771068" lon="6.7185142"/>
+<trkpt lat="52.0771630" lon="6.7185502"/>
+<trkpt lat="52.0769408" lon="6.7192722"/>
+<trkpt lat="52.0767401" lon="6.7201926"/>
+<trkpt lat="52.0766255" lon="6.7208647"/>
+<trkpt lat="52.0766485" lon="6.7213981"/>
+<trkpt lat="52.0777537" lon="6.7213595"/>
+<trkpt lat="52.0783742" lon="6.7212832"/>
+<trkpt lat="52.0800937" lon="6.7222200"/>
+<trkpt lat="52.0805788" lon="6.7209601"/>
+<trkpt lat="52.0826947" lon="6.7206705"/>
+<trkpt lat="52.0832157" lon="6.7214435"/>
+<trkpt lat="52.0833798" lon="6.7215016"/>
+<trkpt lat="52.0836117" lon="6.7214614"/>
+<trkpt lat="52.0839653" lon="6.7217366"/>
+<trkpt lat="52.0844413" lon="6.7221069"/>
+<trkpt lat="52.0846892" lon="6.7222614"/>
+<trkpt lat="52.0850074" lon="6.7222906"/>
+<trkpt lat="52.0854682" lon="6.7221742"/>
+<trkpt lat="52.0859176" lon="6.7220072"/>
+<trkpt lat="52.0861282" lon="6.7240106"/>
+<trkpt lat="52.0867885" lon="6.7254886"/>
+<trkpt lat="52.0874293" lon="6.7287658"/>
+<trkpt lat="52.0873225" lon="6.7292799"/>
+<trkpt lat="52.0872239" lon="6.7294585"/>
+<trkpt lat="52.0870321" lon="6.7293279"/>
+<trkpt lat="52.0866916" lon="6.7292387"/>
+<trkpt lat="52.0865057" lon="6.7291239"/>
+<trkpt lat="52.0865043" lon="6.7293443"/>
+<trkpt lat="52.0866917" lon="6.7302299"/>
+<trkpt lat="52.0868496" lon="6.7312630"/>
+<trkpt lat="52.0871118" lon="6.7314256"/>
+<trkpt lat="52.0875280" lon="6.7346494"/>
+<trkpt lat="52.0878887" lon="6.7363766"/>
+<trkpt lat="52.0887272" lon="6.7359402"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>extensionRoute</type><trkseg>
+<trkpt lat="52.0932537" lon="6.7151424"/>
+<trkpt lat="52.0927664" lon="6.7141644"/>
+<trkpt lat="52.0922564" lon="6.7127391"/>
+<trkpt lat="52.0920173" lon="6.7112709"/>
+<trkpt lat="52.0918987" lon="6.7105992"/>
+<trkpt lat="52.0915319" lon="6.7111519"/>
+<trkpt lat="52.0912376" lon="6.7114752"/>
+<trkpt lat="52.0911505" lon="6.7114218"/>
+<trkpt lat="52.0908178" lon="6.7105697"/>
+<trkpt lat="52.0907057" lon="6.7102796"/>
+<trkpt lat="52.0906775" lon="6.7101672"/>
+<trkpt lat="52.0905802" lon="6.7100121"/>
+<trkpt lat="52.0904092" lon="6.7097497"/>
+<trkpt lat="52.0903117" lon="6.7096113"/>
+<trkpt lat="52.0902094" lon="6.7094718"/>
+<trkpt lat="52.0901507" lon="6.7094249"/>
+<trkpt lat="52.0901011" lon="6.7094189"/>
+<trkpt lat="52.0900098" lon="6.7094180"/>
+<trkpt lat="52.0899171" lon="6.7094287"/>
+<trkpt lat="52.0897377" lon="6.7094619"/>
+<trkpt lat="52.0897363" lon="6.7093476"/>
+<trkpt lat="52.0897598" lon="6.7092843"/>
+<trkpt lat="52.0897682" lon="6.7091934"/>
+<trkpt lat="52.0897000" lon="6.7084299"/>
+<trkpt lat="52.0896780" lon="6.7079754"/>
+<trkpt lat="52.0895949" lon="6.7074777"/>
+<trkpt lat="52.0889119" lon="6.7068892"/>
+<trkpt lat="52.0884875" lon="6.7065581"/>
+<trkpt lat="52.0883485" lon="6.7063919"/>
+<trkpt lat="52.0882663" lon="6.7062476"/>
+<trkpt lat="52.0880093" lon="6.7054218"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>alternativeRoute</type><trkseg>
+<trkpt lat="52.0921935" lon="6.7400202"/>
+<trkpt lat="52.0921452" lon="6.7398797"/>
+<trkpt lat="52.0925184" lon="6.7396941"/>
+<trkpt lat="52.0927363" lon="6.7368626"/>
+<trkpt lat="52.0924592" lon="6.7367615"/>
+<trkpt lat="52.0918309" lon="6.7368005"/>
+<trkpt lat="52.0912594" lon="6.7362388"/>
+<trkpt lat="52.0912102" lon="6.7361678"/>
+<trkpt lat="52.0910370" lon="6.7357224"/>
+<trkpt lat="52.0907454" lon="6.7343931"/>
+<trkpt lat="52.0907176" lon="6.7343228"/>
+<trkpt lat="52.0907368" lon="6.7338948"/>
+<trkpt lat="52.0907280" lon="6.7334196"/>
+<trkpt lat="52.0906556" lon="6.7328846"/>
+<trkpt lat="52.0906144" lon="6.7321188"/>
+<trkpt lat="52.0907306" lon="6.7319370"/>
+<trkpt lat="52.0904918" lon="6.7316055"/>
+<trkpt lat="52.0910096" lon="6.7306249"/>
+<trkpt lat="52.0917215" lon="6.7288855"/>
+<trkpt lat="52.0922802" lon="6.7274427"/>
+<trkpt lat="52.0922532" lon="6.7266774"/>
+<trkpt lat="52.0915673" lon="6.7261356"/>
+<trkpt lat="52.0915254" lon="6.7260532"/>
+<trkpt lat="52.0917748" lon="6.7254584"/>
+<trkpt lat="52.0917742" lon="6.7255047"/>
+<trkpt lat="52.0917814" lon="6.7255049"/>
+</trkseg></trk>
+<trk><name>Reckense Markepad - Geimporteerde shapefile</name><type>alternativeRoute</type><trkseg>
+<trkpt lat="52.0887369" lon="6.7359496"/>
+<trkpt lat="52.0891716" lon="6.7394144"/>
+<trkpt lat="52.0881060" lon="6.7396312"/>
+<trkpt lat="52.0879815" lon="6.7396850"/>
+<trkpt lat="52.0888832" lon="6.7419324"/>
+<trkpt lat="52.0894488" lon="6.7434167"/>
+<trkpt lat="52.0900609" lon="6.7444778"/>
+<trkpt lat="52.0902457" lon="6.7449564"/>
+<trkpt lat="52.0906256" lon="6.7470723"/>
+<trkpt lat="52.0911517" lon="6.7504282"/>
+<trkpt lat="52.0916788" lon="6.7536877"/>
+<trkpt lat="52.0926199" lon="6.7530311"/>
+<trkpt lat="52.0929980" lon="6.7527337"/>
+<trkpt lat="52.0932652" lon="6.7527612"/>
+<trkpt lat="52.0936870" lon="6.7533050"/>
+<trkpt lat="52.0939210" lon="6.7536404"/>
+<trkpt lat="52.0943007" lon="6.7537099"/>
+<trkpt lat="52.0946989" lon="6.7537221"/>
+<trkpt lat="52.0950048" lon="6.7534998"/>
+<trkpt lat="52.0952903" lon="6.7529775"/>
+<trkpt lat="52.0957796" lon="6.7517954"/>
+<trkpt lat="52.0960706" lon="6.7516695"/>
+</trkseg></trk>
+</gpx>

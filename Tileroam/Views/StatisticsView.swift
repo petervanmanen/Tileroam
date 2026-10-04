@@ -19,6 +19,7 @@ struct StatisticsView: View {
                 LabeledContent("Countries visited", value: visitedCountries.count.formatted())
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
+                LabeledContent("Klompenpaden walked", value: store.klompenpadenWalked.formatted())
                 LabeledContent(TileZoom.explorer.title, value: store.tiles14.count.formatted())
             }
 

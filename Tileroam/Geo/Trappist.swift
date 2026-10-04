@@ -27,33 +27,19 @@ enum TrappistData {
     static var folder: URL { URL.applicationSupportDirectory.appending(path: "Trappist", directoryHint: .isDirectory) }
     static func iconFile(_ id: String, in folder: URL = folder) -> URL { folder.appending(path: "\(id).png") }
     private static let listName = "trappists.json"
-    /// How long a downloaded list is used before checking for a new one.
-    static let maxAge: TimeInterval = 24 * 3600
+    static var maxAge: TimeInterval { RemoteList.maxAge }
 
     /// The list on the device (empty before the first download).
     static func cached(in folder: URL = folder) -> [Trappist] {
-        (try? Data(contentsOf: folder.appending(path: listName))).flatMap { try? JSONDecoder().decode([Trappist].self, from: $0) } ?? []
+        RemoteList.cached(Trappist.self, name: listName, in: folder)
     }
 
-    /// The list, downloaded when the copy on the device is missing or older than `maxAge`, plus
-    /// the logos not on the device yet. Throws when there's no list at all (offline on first use).
+    /// The list (see `RemoteList`), plus the logos not on the device yet. Throws when there's no
+    /// list at all (offline on first use).
     static func load(from server: URL = RoutingData.serverURL, session: URLSession = RoutingData.tileSession,
                      into folder: URL = folder, now: Date = .now) async throws -> [Trappist] {
-        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        let listFile = folder.appending(path: listName)
-        let modified = (try? listFile.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-        var list = cached(in: folder)
-        if list.isEmpty || modified.map({ now.timeIntervalSince($0) > maxAge }) ?? true {
-            do {
-                let data = try await RemoteFile.get(server.appending(path: "Trappist/\(listName)"), session: session) {
-                    (try? JSONDecoder().decode([Trappist].self, from: $0)) != nil
-                }
-                try data.write(to: listFile, options: .atomic)
-                list = try JSONDecoder().decode([Trappist].self, from: data)
-            } catch where !list.isEmpty {
-                // Offline or a passing problem: keep using the copy on the device.
-            }
-        }
+        let list = try await RemoteList.load(Trappist.self, name: listName, remote: "Trappist", into: folder,
+                                             from: server, session: session, now: now)
         for t in list where !FileManager.default.fileExists(atPath: iconFile(t.id, in: folder).path(percentEncoded: false)) {
             // A missing logo isn't fatal: the badge shows the brewery's initial until it arrives.
             if let png = try? await RemoteFile.get(server.appending(path: "Trappist/\(t.id).png"), session: session, isValid: {

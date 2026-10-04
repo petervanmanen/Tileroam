@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="klompenpaden.nl via Jimbo API" xmlns="http://www.topografix.com/GPX/1/1">
+<metadata><name>Bekbergerpad</name><desc>Ontdek het mooie afwisselende buitengebied van Beekbergen. Wandelen door het beekdal, langs historische enken en oude Veluwse bossen. Klompen aan, rugzak op en gaan!</desc><link href="https://www.klompenpaden.nl/klompenpaden/Bekbergerpad/7194a8eb-6194-411c-bde7-8972c9d224de"><text>klompenpaden.nl</text></link></metadata>
+<wpt lat="52.1674107957458" lon="5.975714921951294"><name>Start Beekbergen</name></wpt>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1496271" lon="5.9765973"/>
+<trkpt lat="52.1493242" lon="5.9768169"/>
+<trkpt lat="52.1491333" lon="5.9769832"/>
+<trkpt lat="52.1489621" lon="5.9770100"/>
+<trkpt lat="52.1488662" lon="5.9770267"/>
+<trkpt lat="52.1487198" lon="5.9768334"/>
+<trkpt lat="52.1485831" lon="5.9767638"/>
+<trkpt lat="52.1484488" lon="5.9768424"/>
+<trkpt lat="52.1483309" lon="5.9768223"/>
+<trkpt lat="52.1481624" lon="5.9767326"/>
+<trkpt lat="52.1480386" lon="5.9766947"/>
+<trkpt lat="52.1479861" lon="5.9769105"/>
+<trkpt lat="52.1477132" lon="5.9771404"/>
+<trkpt lat="52.1474573" lon="5.9772746"/>
+<trkpt lat="52.1471581" lon="5.9773727"/>
+<trkpt lat="52.1470475" lon="5.9774269"/>
+<trkpt lat="52.1469652" lon="5.9775248"/>
+<trkpt lat="52.1468937" lon="5.9776765"/>
+<trkpt lat="52.1466205" lon="5.9777838"/>
+<trkpt lat="52.1463440" lon="5.9778937"/>
+<trkpt lat="52.1462535" lon="5.9777543"/>
+<trkpt lat="52.1462436" lon="5.9775799"/>
+<trkpt lat="52.1462271" lon="5.9774351"/>
+<trkpt lat="52.1460748" lon="5.9771579"/>
+<trkpt lat="52.1459962" lon="5.9771441"/>
+<trkpt lat="52.1458723" lon="5.9769506"/>
+<trkpt lat="52.1461808" lon="5.9765001"/>
+<trkpt lat="52.1462847" lon="5.9762757"/>
+<trkpt lat="52.1463694" lon="5.9760758"/>
+<trkpt lat="52.1466721" lon="5.9756469"/>
+<trkpt lat="52.1467204" lon="5.9755491"/>
+<trkpt lat="52.1467780" lon="5.9754391"/>
+<trkpt lat="52.1468718" lon="5.9753023"/>
+<trkpt lat="52.1470024" lon="5.9751901"/>
+<trkpt lat="52.1470221" lon="5.9752866"/>
+<trkpt lat="52.1470468" lon="5.9753188"/>
+<trkpt lat="52.1471484" lon="5.9753709"/>
+<trkpt lat="52.1471935" lon="5.9752769"/>
+<trkpt lat="52.1472215" lon="5.9750382"/>
+<trkpt lat="52.1473285" lon="5.9748183"/>
+<trkpt lat="52.1474733" lon="5.9746788"/>
+<trkpt lat="52.1475787" lon="5.9745339"/>
+<trkpt lat="52.1478058" lon="5.9741879"/>
+<trkpt lat="52.1479605" lon="5.9741155"/>
+<trkpt lat="52.1480181" lon="5.9740243"/>
+<trkpt lat="52.1480110" lon="5.9738368"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1521653" lon="5.9737819"/>
+<trkpt lat="52.1521148" lon="5.9738510"/>
+<trkpt lat="52.1520489" lon="5.9739154"/>
+<trkpt lat="52.1519554" lon="5.9737931"/>
+<trkpt lat="52.1518072" lon="5.9737421"/>
+<trkpt lat="52.1516262" lon="5.9736375"/>
+<trkpt lat="52.1514337" lon="5.9734471"/>
+<trkpt lat="52.1510673" lon="5.9740090"/>
+<trkpt lat="52.1505976" lon="5.9746058"/>
+<trkpt lat="52.1502290" lon="5.9751208"/>
+<trkpt lat="52.1499506" lon="5.9754576"/>
+<trkpt lat="52.1497488" lon="5.9756851"/>
+<trkpt lat="52.1494558" lon="5.9760340"/>
+<trkpt lat="52.1495154" lon="5.9761628"/>
+<trkpt lat="52.1497046" lon="5.9765356"/>
+<trkpt lat="52.1496273" lon="5.9765973"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1521653" lon="5.9737819"/>
+<trkpt lat="52.1521659" lon="5.9737822"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1521658" lon="5.9737813"/>
+<trkpt lat="52.1521653" lon="5.9737819"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1534023" lon="5.9674870"/>
+<trkpt lat="52.1525682" lon="5.9670711"/>
+<trkpt lat="52.1523630" lon="5.9669220"/>
+<trkpt lat="52.1522033" lon="5.9676144"/>
+<trkpt lat="52.1517941" lon="5.9700257"/>
+<trkpt lat="52.1517401" lon="5.9700995"/>
+<trkpt lat="52.1516282" lon="5.9701102"/>
+<trkpt lat="52.1515196" lon="5.9700566"/>
+<trkpt lat="52.1514176" lon="5.9700137"/>
+<trkpt lat="52.1513283" lon="5.9700460"/>
+<trkpt lat="52.1513020" lon="5.9705932"/>
+<trkpt lat="52.1512428" lon="5.9707327"/>
+<trkpt lat="52.1508741" lon="5.9713013"/>
+<trkpt lat="52.1507221" lon="5.9716608"/>
+<trkpt lat="52.1500381" lon="5.9724708"/>
+<trkpt lat="52.1492786" lon="5.9734024"/>
+<trkpt lat="52.1491858" lon="5.9732929"/>
+<trkpt lat="52.1491230" lon="5.9732861"/>
+<trkpt lat="52.1490828" lon="5.9733353"/>
+<trkpt lat="52.1489781" lon="5.9732969"/>
+<trkpt lat="52.1486029" lon="5.9732754"/>
+<trkpt lat="52.1482803" lon="5.9733827"/>
+<trkpt lat="52.1480417" lon="5.9736875"/>
+<trkpt lat="52.1480105" lon="5.9738388"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1540408" lon="5.9635120"/>
+<trkpt lat="52.1535260" lon="5.9666195"/>
+<trkpt lat="52.1534023" lon="5.9674978"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1540496" lon="5.9635251"/>
+<trkpt lat="52.1554401" lon="5.9637504"/>
+<trkpt lat="52.1569754" lon="5.9629780"/>
+<trkpt lat="52.1571738" lon="5.9633371"/>
+<trkpt lat="52.1572063" lon="5.9632365"/>
+<trkpt lat="52.1572683" lon="5.9633240"/>
+<trkpt lat="52.1573078" lon="5.9633991"/>
+<trkpt lat="52.1573769" lon="5.9634286"/>
+<trkpt lat="52.1585041" lon="5.9637343"/>
+<trkpt lat="52.1585008" lon="5.9638872"/>
+<trkpt lat="52.1586720" lon="5.9639355"/>
+<trkpt lat="52.1592004" lon="5.9640035"/>
+<trkpt lat="52.1592311" lon="5.9633915"/>
+<trkpt lat="52.1592725" lon="5.9626722"/>
+<trkpt lat="52.1592775" lon="5.9619453"/>
+<trkpt lat="52.1593500" lon="5.9611680"/>
+<trkpt lat="52.1594914" lon="5.9604030"/>
+<trkpt lat="52.1595699" lon="5.9599103"/>
+<trkpt lat="52.1594177" lon="5.9597866"/>
+<trkpt lat="52.1594567" lon="5.9596063"/>
+<trkpt lat="52.1594172" lon="5.9595236"/>
+<trkpt lat="52.1590323" lon="5.9593194"/>
+<trkpt lat="52.1585815" lon="5.9593248"/>
+<trkpt lat="52.1580286" lon="5.9593087"/>
+<trkpt lat="52.1577719" lon="5.9592712"/>
+<trkpt lat="52.1575218" lon="5.9591531"/>
+<trkpt lat="52.1575366" lon="5.9586703"/>
+<trkpt lat="52.1574856" lon="5.9574237"/>
+<trkpt lat="52.1575415" lon="5.9550199"/>
+<trkpt lat="52.1575942" lon="5.9525495"/>
+<trkpt lat="52.1575855" lon="5.9516400"/>
+<trkpt lat="52.1576447" lon="5.9513664"/>
+<trkpt lat="52.1577502" lon="5.9512117"/>
+<trkpt lat="52.1587490" lon="5.9508744"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1546517" lon="5.9760346"/>
+<trkpt lat="52.1547160" lon="5.9754137"/>
+<trkpt lat="52.1544348" lon="5.9752713"/>
+<trkpt lat="52.1534918" lon="5.9744635"/>
+<trkpt lat="52.1531692" lon="5.9742119"/>
+<trkpt lat="52.1529112" lon="5.9741524"/>
+<trkpt lat="52.1527760" lon="5.9740850"/>
+<trkpt lat="52.1525960" lon="5.9742140"/>
+<trkpt lat="52.1522136" lon="5.9738768"/>
+<trkpt lat="52.1521653" lon="5.9737819"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1574230" lon="5.9446226"/>
+<trkpt lat="52.1574278" lon="5.9446242"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1574278" lon="5.9446242"/>
+<trkpt lat="52.1574266" lon="5.9446190"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1574278" lon="5.9446242"/>
+<trkpt lat="52.1580915" lon="5.9448545"/>
+<trkpt lat="52.1581341" lon="5.9446469"/>
+<trkpt lat="52.1583689" lon="5.9446550"/>
+<trkpt lat="52.1583822" lon="5.9443410"/>
+<trkpt lat="52.1584728" lon="5.9440473"/>
+<trkpt lat="52.1585578" lon="5.9439289"/>
+<trkpt lat="52.1586933" lon="5.9438461"/>
+<trkpt lat="52.1586093" lon="5.9435202"/>
+<trkpt lat="52.1586405" lon="5.9429483"/>
+<trkpt lat="52.1587951" lon="5.9424399"/>
+<trkpt lat="52.1589108" lon="5.9421010"/>
+<trkpt lat="52.1590168" lon="5.9418085"/>
+<trkpt lat="52.1590190" lon="5.9413600"/>
+<trkpt lat="52.1591740" lon="5.9407432"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1587479" lon="5.9508659"/>
+<trkpt lat="52.1584830" lon="5.9494202"/>
+<trkpt lat="52.1581868" lon="5.9478725"/>
+<trkpt lat="52.1574278" lon="5.9446242"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1591645" lon="5.9407431"/>
+<trkpt lat="52.1591484" lon="5.9401243"/>
+<trkpt lat="52.1591499" lon="5.9398149"/>
+<trkpt lat="52.1592368" lon="5.9395222"/>
+<trkpt lat="52.1593525" lon="5.9391988"/>
+<trkpt lat="52.1594682" lon="5.9388599"/>
+<trkpt lat="52.1595369" lon="5.9384277"/>
+<trkpt lat="52.1595489" lon="5.9378865"/>
+<trkpt lat="52.1596364" lon="5.9374855"/>
+<trkpt lat="52.1598282" lon="5.9371476"/>
+<trkpt lat="52.1599719" lon="5.9369328"/>
+<trkpt lat="52.1600881" lon="5.9369353"/>
+<trkpt lat="52.1601572" lon="5.9372840"/>
+<trkpt lat="52.1602428" lon="5.9376917"/>
+<trkpt lat="52.1603152" lon="5.9381209"/>
+<trkpt lat="52.1603876" lon="5.9385500"/>
+<trkpt lat="52.1604731" lon="5.9389470"/>
+<trkpt lat="52.1605389" lon="5.9393440"/>
+<trkpt lat="52.1606377" lon="5.9400199"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1606311" lon="5.9400306"/>
+<trkpt lat="52.1607732" lon="5.9402881"/>
+<trkpt lat="52.1609969" lon="5.9404169"/>
+<trkpt lat="52.1612201" lon="5.9405188"/>
+<trkpt lat="52.1613394" lon="5.9404157"/>
+<trkpt lat="52.1616967" lon="5.9418832"/>
+<trkpt lat="52.1616992" lon="5.9420601"/>
+<trkpt lat="52.1620727" lon="5.9440744"/>
+<trkpt lat="52.1626574" lon="5.9441228"/>
+<trkpt lat="52.1633370" lon="5.9443588"/>
+<trkpt lat="52.1646186" lon="5.9451769"/>
+<trkpt lat="52.1654067" lon="5.9459226"/>
+<trkpt lat="52.1661914" lon="5.9466575"/>
+<trkpt lat="52.1667612" lon="5.9456778"/>
+<trkpt lat="52.1672221" lon="5.9450068"/>
+<trkpt lat="52.1677258" lon="5.9447665"/>
+<trkpt lat="52.1681469" lon="5.9473736"/>
+<trkpt lat="52.1685418" lon="5.9475560"/>
+<trkpt lat="52.1684562" lon="5.9479958"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1669888" lon="5.9740908"/>
+<trkpt lat="52.1671811" lon="5.9740728"/>
+<trkpt lat="52.1673020" lon="5.9740730"/>
+<trkpt lat="52.1673558" lon="5.9740822"/>
+<trkpt lat="52.1673974" lon="5.9741481"/>
+<trkpt lat="52.1674085" lon="5.9742002"/>
+<trkpt lat="52.1673752" lon="5.9744536"/>
+<trkpt lat="52.1673678" lon="5.9745076"/>
+<trkpt lat="52.1673250" lon="5.9746202"/>
+<trkpt lat="52.1671868" lon="5.9747543"/>
+<trkpt lat="52.1671967" lon="5.9749421"/>
+<trkpt lat="52.1673848" lon="5.9748190"/>
+<trkpt lat="52.1673963" lon="5.9753447"/>
+<trkpt lat="52.1673897" lon="5.9755057"/>
+<trkpt lat="52.1673865" lon="5.9756747"/>
+<trkpt lat="52.1671572" lon="5.9757628"/>
+<trkpt lat="52.1669581" lon="5.9758744"/>
+<trkpt lat="52.1667794" lon="5.9754652"/>
+<trkpt lat="52.1662692" lon="5.9758218"/>
+<trkpt lat="52.1663947" lon="5.9744688"/>
+<trkpt lat="52.1647791" lon="5.9741919"/>
+<trkpt lat="52.1647782" lon="5.9742501"/>
+<trkpt lat="52.1648079" lon="5.9748455"/>
+<trkpt lat="52.1648342" lon="5.9753927"/>
+<trkpt lat="52.1647441" lon="5.9761453"/>
+<trkpt lat="52.1643574" lon="5.9759623"/>
+<trkpt lat="52.1642173" lon="5.9759179"/>
+<trkpt lat="52.1639984" lon="5.9759421"/>
+<trkpt lat="52.1639127" lon="5.9759627"/>
+<trkpt lat="52.1639359" lon="5.9756555"/>
+<trkpt lat="52.1639541" lon="5.9752841"/>
+<trkpt lat="52.1636666" lon="5.9752339"/>
+<trkpt lat="52.1634405" lon="5.9752036"/>
+<trkpt lat="52.1633220" lon="5.9751017"/>
+<trkpt lat="52.1632167" lon="5.9749917"/>
+<trkpt lat="52.1631460" lon="5.9748254"/>
+<trkpt lat="52.1631262" lon="5.9746162"/>
+<trkpt lat="52.1631213" lon="5.9743158"/>
+<trkpt lat="52.1632793" lon="5.9740369"/>
+<trkpt lat="52.1633072" lon="5.9732108"/>
+<trkpt lat="52.1631759" lon="5.9731363"/>
+<trkpt lat="52.1631717" lon="5.9729828"/>
+<trkpt lat="52.1631783" lon="5.9726078"/>
+<trkpt lat="52.1632036" lon="5.9722911"/>
+<trkpt lat="52.1631988" lon="5.9718386"/>
+<trkpt lat="52.1631723" lon="5.9709341"/>
+<trkpt lat="52.1612200" lon="5.9712951"/>
+<trkpt lat="52.1611651" lon="5.9711816"/>
+<trkpt lat="52.1610874" lon="5.9711757"/>
+<trkpt lat="52.1609671" lon="5.9711665"/>
+<trkpt lat="52.1607456" lon="5.9712332"/>
+<trkpt lat="52.1604029" lon="5.9712694"/>
+<trkpt lat="52.1600317" lon="5.9713167"/>
+<trkpt lat="52.1596780" lon="5.9713433"/>
+<trkpt lat="52.1592466" lon="5.9713876"/>
+<trkpt lat="52.1588149" lon="5.9713936"/>
+<trkpt lat="52.1587890" lon="5.9711481"/>
+<trkpt lat="52.1583595" lon="5.9710596"/>
+<trkpt lat="52.1583052" lon="5.9711386"/>
+<trkpt lat="52.1581372" lon="5.9715922"/>
+<trkpt lat="52.1578805" lon="5.9726759"/>
+<trkpt lat="52.1576797" lon="5.9735771"/>
+<trkpt lat="52.1575053" lon="5.9744568"/>
+<trkpt lat="52.1575711" lon="5.9747036"/>
+<trkpt lat="52.1574807" lon="5.9757144"/>
+<trkpt lat="52.1573580" lon="5.9767277"/>
+<trkpt lat="52.1573466" lon="5.9768667"/>
+<trkpt lat="52.1571685" lon="5.9768122"/>
+<trkpt lat="52.1546502" lon="5.9760350"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1671959" lon="5.9665184"/>
+<trkpt lat="52.1667216" lon="5.9664523"/>
+<trkpt lat="52.1654607" lon="5.9661322"/>
+<trkpt lat="52.1656207" lon="5.9671404"/>
+<trkpt lat="52.1657171" lon="5.9676583"/>
+<trkpt lat="52.1658024" lon="5.9681111"/>
+<trkpt lat="52.1658437" lon="5.9682440"/>
+<trkpt lat="52.1659317" lon="5.9685088"/>
+<trkpt lat="52.1660743" lon="5.9688133"/>
+<trkpt lat="52.1659559" lon="5.9689635"/>
+<trkpt lat="52.1660665" lon="5.9693211"/>
+<trkpt lat="52.1662150" lon="5.9696913"/>
+<trkpt lat="52.1665011" lon="5.9704086"/>
+<trkpt lat="52.1665735" lon="5.9709853"/>
+<trkpt lat="52.1665427" lon="5.9715209"/>
+<trkpt lat="52.1666494" lon="5.9714883"/>
+<trkpt lat="52.1668514" lon="5.9714259"/>
+<trkpt lat="52.1668446" lon="5.9714601"/>
+<trkpt lat="52.1668315" lon="5.9717069"/>
+<trkpt lat="52.1668147" lon="5.9718722"/>
+<trkpt lat="52.1668101" lon="5.9724391"/>
+<trkpt lat="52.1668150" lon="5.9730185"/>
+<trkpt lat="52.1668152" lon="5.9733797"/>
+<trkpt lat="52.1667936" lon="5.9736998"/>
+<trkpt lat="52.1668209" lon="5.9740956"/>
+<trkpt lat="52.1669320" lon="5.9740939"/>
+<trkpt lat="52.1669895" lon="5.9740908"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1671959" lon="5.9665184"/>
+<trkpt lat="52.1671614" lon="5.9665214"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1671963" lon="5.9665185"/>
+<trkpt lat="52.1671959" lon="5.9665184"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1684562" lon="5.9479975"/>
+<trkpt lat="52.1694259" lon="5.9483141"/>
+<trkpt lat="52.1698591" lon="5.9482612"/>
+<trkpt lat="52.1702254" lon="5.9484268"/>
+<trkpt lat="52.1703965" lon="5.9484691"/>
+<trkpt lat="52.1706564" lon="5.9484214"/>
+<trkpt lat="52.1708017" lon="5.9484649"/>
+<trkpt lat="52.1708969" lon="5.9488591"/>
+<trkpt lat="52.1709920" lon="5.9489203"/>
+<trkpt lat="52.1717915" lon="5.9485341"/>
+<trkpt lat="52.1717972" lon="5.9487714"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1711852" lon="5.9571090"/>
+<trkpt lat="52.1718959" lon="5.9578171"/>
+<trkpt lat="52.1718584" lon="5.9599374"/>
+<trkpt lat="52.1718996" lon="5.9606348"/>
+<trkpt lat="52.1721224" lon="5.9617030"/>
+<trkpt lat="52.1719621" lon="5.9617399"/>
+<trkpt lat="52.1715483" lon="5.9618961"/>
+<trkpt lat="52.1714669" lon="5.9619357"/>
+<trkpt lat="52.1712695" lon="5.9619357"/>
+<trkpt lat="52.1711227" lon="5.9619370"/>
+<trkpt lat="52.1711096" lon="5.9621972"/>
+<trkpt lat="52.1699134" lon="5.9621801"/>
+<trkpt lat="52.1705930" lon="5.9636118"/>
+<trkpt lat="52.1711737" lon="5.9648901"/>
+<trkpt lat="52.1717626" lon="5.9661213"/>
+<trkpt lat="52.1671959" lon="5.9665184"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>mainRoute</type><trkseg>
+<trkpt lat="52.1717950" lon="5.9487697"/>
+<trkpt lat="52.1719739" lon="5.9508220"/>
+<trkpt lat="52.1719823" lon="5.9513388"/>
+<trkpt lat="52.1719608" lon="5.9519698"/>
+<trkpt lat="52.1719272" lon="5.9520755"/>
+<trkpt lat="52.1713975" lon="5.9527514"/>
+<trkpt lat="52.1712474" lon="5.9531428"/>
+<trkpt lat="52.1711598" lon="5.9537637"/>
+<trkpt lat="52.1711269" lon="5.9546757"/>
+<trkpt lat="52.1711388" lon="5.9570300"/>
+<trkpt lat="52.1711490" lon="5.9570603"/>
+<trkpt lat="52.1711851" lon="5.9571089"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>shorteningRoute</type><trkseg>
+<trkpt lat="52.1587490" lon="5.9508744"/>
+<trkpt lat="52.1601328" lon="5.9504070"/>
+<trkpt lat="52.1602553" lon="5.9504013"/>
+<trkpt lat="52.1604356" lon="5.9505465"/>
+<trkpt lat="52.1618110" lon="5.9520262"/>
+<trkpt lat="52.1620348" lon="5.9523159"/>
+<trkpt lat="52.1612713" lon="5.9540218"/>
+<trkpt lat="52.1609980" lon="5.9546178"/>
+<trkpt lat="52.1607119" lon="5.9554595"/>
+<trkpt lat="52.1616524" lon="5.9562131"/>
+<trkpt lat="52.1619863" lon="5.9563937"/>
+<trkpt lat="52.1624889" lon="5.9567684"/>
+<trkpt lat="52.1624342" lon="5.9570243"/>
+<trkpt lat="52.1622834" lon="5.9575173"/>
+<trkpt lat="52.1622051" lon="5.9583701"/>
+<trkpt lat="52.1621901" lon="5.9587226"/>
+<trkpt lat="52.1622669" lon="5.9593640"/>
+<trkpt lat="52.1626493" lon="5.9589605"/>
+<trkpt lat="52.1630519" lon="5.9587213"/>
+<trkpt lat="52.1638395" lon="5.9580377"/>
+<trkpt lat="52.1638805" lon="5.9581101"/>
+<trkpt lat="52.1639727" lon="5.9586466"/>
+<trkpt lat="52.1641455" lon="5.9592447"/>
+<trkpt lat="52.1643215" lon="5.9595773"/>
+<trkpt lat="52.1645190" lon="5.9598295"/>
+<trkpt lat="52.1646341" lon="5.9599582"/>
+<trkpt lat="52.1647378" lon="5.9600843"/>
+<trkpt lat="52.1649721" lon="5.9602007"/>
+<trkpt lat="52.1653582" lon="5.9602767"/>
+<trkpt lat="52.1658157" lon="5.9611751"/>
+<trkpt lat="52.1659473" lon="5.9618831"/>
+<trkpt lat="52.1660329" lon="5.9621621"/>
+<trkpt lat="52.1671548" lon="5.9665155"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>alternativeRoute</type><trkseg>
+<trkpt lat="52.1659559" lon="5.9689635"/>
+<trkpt lat="52.1658234" lon="5.9686019"/>
+<trkpt lat="52.1648206" lon="5.9690147"/>
+<trkpt lat="52.1648651" lon="5.9732588"/>
+<trkpt lat="52.1647708" lon="5.9734096"/>
+<trkpt lat="52.1647494" lon="5.9739569"/>
+<trkpt lat="52.1647791" lon="5.9741919"/>
+<trkpt lat="52.1663947" lon="5.9744688"/>
+<trkpt lat="52.1667794" lon="5.9754652"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>alternativeRoute</type><trkseg>
+<trkpt lat="52.1663920" lon="5.9744750"/>
+<trkpt lat="52.1662705" lon="5.9758303"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>connectionRoute</type><trkseg>
+<trkpt lat="52.1613331" lon="5.9404584"/>
+<trkpt lat="52.1604427" lon="5.9355752"/>
+<trkpt lat="52.1610391" lon="5.9358543"/>
+<trkpt lat="52.1637207" lon="5.9314247"/>
+<trkpt lat="52.1650815" lon="5.9292370"/>
+<trkpt lat="52.1662651" lon="5.9273139"/>
+<trkpt lat="52.1673019" lon="5.9255590"/>
+</trkseg></trk>
+<trk><name>Bekbergerpad - Geimporteerde shapefile</name><type>connectionRoute</type><trkseg>
+<trkpt lat="52.1546699" lon="5.9760405"/>
+<trkpt lat="52.1543597" lon="5.9787290"/>
+<trkpt lat="52.1531657" lon="5.9877085"/>
+<trkpt lat="52.1522178" lon="5.9918176"/>
+<trkpt lat="52.1520466" lon="5.9927296"/>
+<trkpt lat="52.1521585" lon="5.9944891"/>
+<trkpt lat="52.1524862" lon="5.9979093"/>
+</trkseg></trk>
+</gpx>

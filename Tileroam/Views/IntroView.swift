@@ -92,6 +92,7 @@ struct IntroView: View {
                 feature("building.2.fill", "Challenges: municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
                 feature("mountain.2.fill", "Climbs from short steep hills to HC, and the ones you climbed")
                 feature("mug.fill", "The Trappist Challenge: ride past the Trappist breweries")
+                feature("shoeprints.fill", "Klompenpaden: walk the 167 country paths of Gelderland and Utrecht")
                 feature("rosette", "18 badges, from 100! and Everester to Festive 500 and Globetrotter")
                 feature("bicycle", "Your Eddington number, also as a widget")
                 if store.iCloudHasActivities && store.isICloudSyncOn {
