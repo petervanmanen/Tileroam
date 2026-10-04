@@ -1,6 +1,6 @@
 ---
 name: app-store-screenshots
-description: Capture Tileroam's App Store screenshots (iPhone 6.9″/6.5″ and iPad 13″) in the simulator with the sample rides, and check them. Use when the user asks for new or updated screenshots, or after UI changes that affect the screenshots.
+description: Capture Tileroam's App Store screenshots (iPhone 6.9″/6.5″ and iPad 13″) and the README images in the simulator with the sample rides, and check them. Use when the user asks for new or updated screenshots, or after UI changes that affect the screenshots.
 ---
 
 # App Store screenshots
@@ -13,14 +13,25 @@ The screenshots live in `docs/appstore/screenshots/`. They come from the simulat
 | `iphone-6.5` | scaled from the 6.9″ captures | 1284 × 2778 (the slot the user uploads to) |
 | `ipad-13` | iPad Pro 13-inch (M5) | 2064 × 2752 |
 
-The seven shots are:
+The eight shots are:
 - `00-intro`
 - `01-tiles`
 - `02-towns`
 - `03-postcodes`
-- `04-routes`
-- `05-plan`
-- `06-statistics`
+- `04-climbs` (South Limburg, around Valkenburg)
+- `05-trappists` (Belgium and the south of the Netherlands)
+- `06-plan`
+- `07-badges` (Statistics with Badges open)
+
+A `settings` shot is also taken, for the README only. The README images in `docs/screenshots/` (iPhone 644 × 1400, iPad 1050 × 1400, and the `overview.jpg` strip) are made from the same captures.
+
+## Quick way
+
+```bash
+Tools/update_screenshots.sh          # build, iPhone and iPad captures, README images (about 15 minutes)
+Tools/update_screenshots.sh iphone   # only iPhone and the README
+```
+Run it in the background with a long timeout, then check the images (step 3) and commit them. The steps below are what it does.
 
 ## Steps
 
@@ -41,13 +52,14 @@ The seven shots are:
    - launches the app once per shot, then converts the captures to JPEG in the right folders.
 3. **Check every image yourself.** Make 600 px previews and look at them:
    ```bash
-   sips -Z 600 docs/appstore/screenshots/iphone-6.5/05-plan.jpg --out /tmp/p.jpg
+   sips -Z 600 docs/appstore/screenshots/iphone-6.5/06-plan.jpg --out /tmp/p.jpg
    ```
    Things to look for:
    - **Not blank or white:** a white screen means the launch was still running. Raise that shot's wait in the script.
    - **The right tab is selected** for each shot.
    - **The plan shot** shows the purple route and the "Tileroam route" panel.
-   - **The statistics shot** shows the sheet, not just the map.
+   - **The badges shot** shows the Statistics sheet with the badge grid open (colour and grey badges).
+   - **The climbs shot** shows coloured climb lines, **the Trappists shot** the brewery logos (both come from R2: online only).
    - **iPad status bar:** the date is in English ("Thu 1 Oct"), not Dutch.
 4. **Check the sizes** (the script prints them). The JPEGs must have no transparency:
    ```bash
@@ -60,11 +72,14 @@ The seven shots are:
 | Argument | Effect |
 |---|---|
 | `-RegionsDir <repo>/AssetPacks/Regions` | Reads municipality and postcode boundaries from the repo instead of asset packs. Without it, the Towns and Postcodes tabs are empty in the simulator. |
-| `-mapMode squares\|activities\|gemeenten\|postcodes` | Opens on that tab |
+| `-mapMode squares\|gemeenten\|postcodes\|climbs\|trappists` | Opens on that tab (a challenge's tab is turned on with it) |
+| `-challenges gemeenten,postcodes,climbs,trappists` | The challenges shown at the top of the map (all off by default) |
+| `-MapCenter "lat,lon,span"` | Opens the map there (span in degrees), for the climbs and Trappists shots |
+| `-StatisticsOpen "badges"` | Opens those Statistics categories (with `-ShowStatistics YES`) |
 | `-FocusZoom 9` | Zooms the map out one step (default 10); the Towns shot uses one less |
 | `-PlanDemo YES` | Selects tiles near Utrecht and plans a route, on the device with Valhalla |
 | `-PlanDemoStart "lat,lon"` | The same demo from another start, for example on a border |
-| `-RoutingTar <repo>/AssetPacks/build/routing/routing-west.tar` | Routing data for the plan shot. Build it first with `Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany` (see docs/ROUTING.md). |
+| `-RoutingTar <repo>/AssetPacks/build/routing/routing-west.tar` | Routing data for the plan shot. Build it first with `Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany france switzerland austria` (see docs/ROUTING.md). |
 | `-ShowStatistics YES` / `-ShowSettings YES` | Opens that screen at launch |
 | `-hasSeenIntro NO` | Shows the introduction |
 

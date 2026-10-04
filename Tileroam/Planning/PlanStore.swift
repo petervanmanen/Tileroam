@@ -53,12 +53,11 @@ final class PlanStore {
     }
 
     var selectionSummary: String {
-        let t14 = selectedTiles(.explorer).count, t17 = selectedTiles(.squadratinho).count
+        let t14 = selectedTiles(.explorer).count
         let m = selectedMunicipalities.count, p = selectedPostcodes.count, c = selectedClimbs.count
         let b = selectedTrappists.count
         var parts = [String]()
         if t14 > 0 { parts.append(TileZoom.explorer.countLabel(t14)) }
-        if t17 > 0 { parts.append(TileZoom.squadratinho.countLabel(t17)) }
         if m > 0 { parts.append(String(localized: "\(m) municipalities")) }
         if p > 0 { parts.append(String(localized: "\(p) postcodes")) }
         if c > 0 { parts.append(String(localized: "\(c) climbs")) }
@@ -199,7 +198,7 @@ final class PlanStore {
         let loop = RoutePlanner.approximateLoop(start: start, targets: targets)
         let km = Int(RoutePlanner.length(loop) / 1000)
         guard km <= RoutePlanner.maxLoopKilometers else { throw RoutingError.tooLong(km: km) }
-        let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
+        let visited = (store.tiles14, store.visitedMunicipalities, store.visitedPostcodes)
         let climbs = await store.climbs(around: loop), climbed = Set(store.climbed.keys)
         let trappists = store.trappists, visitedTrappists = Set(store.trappistVisits.keys)
         let router = self.router
@@ -207,8 +206,8 @@ final class PlanStore {
             try await Task.detached(priority: .userInitiated) {
                 try await RoutePlanner.planRoute(
                     start: start, targets: targets, client: router,
-                    coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0, visitedTiles17: visited.1,
-                                              visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions,
+                    coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0,
+                                              visitedMunicipalities: visited.1, visitedPostcodes: visited.2, regions: regions,
                                               climbs: climbs, climbed: climbed, trappists: trappists, visitedTrappists: visitedTrappists) },
                     progress: { [weak self] in self?.status = $0 })
             }.value
@@ -339,13 +338,13 @@ final class PlanStore {
             status = nil
         }
         let regions: RegionData? = await store.loadedRegions()
-        let visited = (store.tiles14, store.tiles17, store.visitedMunicipalities, store.visitedPostcodes)
+        let visited = (store.tiles14, store.visitedMunicipalities, store.visitedPostcodes)
         let points = gpx.points
         let climbs = await store.climbs(around: points), climbed = Set(store.climbed.keys)
         let trappists = store.trappists, visitedTrappists = Set(store.trappistVisits.keys)
         let coverage = await Task.detached(priority: .userInitiated) {
-            RouteCoverage(route: points, visitedTiles14: visited.0, visitedTiles17: visited.1,
-                          visitedMunicipalities: visited.2, visitedPostcodes: visited.3, regions: regions,
+            RouteCoverage(route: points, visitedTiles14: visited.0,
+                          visitedMunicipalities: visited.1, visitedPostcodes: visited.2, regions: regions,
                           climbs: climbs, climbed: climbed, trappists: trappists, visitedTrappists: visitedTrappists)
         }.value
         let distance = zip(points, points.dropFirst()).reduce(0) { $0 + Geo.distance($1.0, $1.1) }

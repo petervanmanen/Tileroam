@@ -4,12 +4,14 @@
 
 Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtouren, Läufen und Wanderungen überall warst: jede Kartenkachel, Gemeinde und jedes Postleitzahlgebiet, das du besucht hast. Sie liest `.fit`-Dateien aus einem oder mehreren iCloud Drive-Ordnern (zum Beispiel Exporte aus HealthFit, Garmin oder Wahoo) und kann deinen Verlauf aus Strava importieren. Außerdem plant sie Radrouten zu Orten, an denen du noch nicht warst.
 
-![Tileroam auf dem iPhone: Kacheln, Squadratinhos, Gemeinden und Routenplanung](docs/screenshots/overview.jpg)
+![Tileroam auf dem iPhone: Kacheln, Gemeinden, Anstiege und Routenplanung](docs/screenshots/overview.jpg)
 
 ## Funktionen
 
-- **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) und *Squadratinhos* auf Zoom 17 (~190 m, wie bei Squadrats). Beide werden immer gezählt; du wählst, welche die Karte zeigt. Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
+- **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
 - **Anstiege**: alle Anstiege auf den Straßen (Kat. 4 bis HC wie bei Strava, dazu kurze steile Hügel), aus Höhendaten ermittelt; welche du gefahren bist, auf einem eigenen Kartentab und in den Statistiken, und Anstiege zum Einplanen in eine Route. Siehe [docs/CLIMBS.md](docs/CLIMBS.md).
+- **Herausforderungen**: neben den Kacheln schaltest du mit dem **+** oben auf der Karte die Herausforderungen ein, die du willst: Gemeinden, Postleitzahlen, Anstiege und die **Trappisten-Challenge** (fahre an den Trappistenbrauereien vorbei; näher als 200 m zählt). Ausgeblendete Herausforderungen zählen trotzdem.
+- **Abzeichen**: 18 Abzeichen, von *100!*, *Century* und *Everester* bis *Festive 500*, *Triathlet* und *Weltenbummler* (50 Länder, auf dem Gerät ermittelt). Verdiente Abzeichen sind farbig, mit Anzahl; Indoor-Aktivitäten zählen auch.
 - **Aktivitäten**: eine Liste aller Aktivitäten, die neuesten zuerst, mit Dauer, Distanz und durchschnittlicher Leistung (mit Powermeter) oder Durchschnittsgeschwindigkeit.
 - **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich, mit besucht/gesamt pro Land.
 - **Routenplanung** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
@@ -26,13 +28,17 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 
 ## Bildschirmfotos
 
-| Kacheln (Zoom 14) | Squadratinhos (Zoom 17) | Routen | Gemeinden |
-|---|---|---|---|
-| ![Kacheln](docs/screenshots/tiles.jpg) | ![Squadratinhos](docs/screenshots/squadratinhos.jpg) | ![Routen](docs/screenshots/routes.jpg) | ![Gemeinden](docs/screenshots/municipalities.jpg) |
+| Kacheln | Gemeinden | Postleitzahlen |
+|---|---|---|
+| ![Kacheln](docs/screenshots/tiles.jpg) | ![Gemeinden](docs/screenshots/municipalities.jpg) | ![Postleitzahlen](docs/screenshots/postcodes.jpg) |
 
-| Postleitzahlen | Routenplanung | Einstellungen | Einführung |
-|---|---|---|---|
-| ![Postleitzahlen](docs/screenshots/postcodes.jpg) | ![Routenplanung](docs/screenshots/planning.jpg) | ![Einstellungen](docs/screenshots/settings.jpg) | ![Einführung](docs/screenshots/intro.jpg) |
+| Anstiege | Trappisten-Challenge | Routenplanung |
+|---|---|---|
+| ![Anstiege](docs/screenshots/climbs.jpg) | ![Trappisten-Challenge](docs/screenshots/trappists.jpg) | ![Routenplanung](docs/screenshots/planning.jpg) |
+
+| Abzeichen | Einstellungen | Einführung |
+|---|---|---|
+| ![Abzeichen](docs/screenshots/badges.jpg) | ![Einstellungen](docs/screenshots/settings.jpg) | ![Einführung](docs/screenshots/intro.jpg) |
 
 **iPad**
 
@@ -82,7 +88,7 @@ Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitä
 
 - **FIT-Dateien** werden von einem kleinen eingebauten Decoder gelesen (`FIT/FITDecoder.swift`). Strecken, Kacheln und besuchte Gebiete werden zwischengespeichert, sodass beim nächsten Start nur neue oder geänderte Dateien gelesen werden.
 - **Speicher** (`Import/Library.swift`): jede Aktivität und Route liegt in der App (`Documents/Activities`, `Documents/Routes`). Mit iCloud-Synchronisierung spiegeln `Library.pull`/`push` sie nach iCloud Drive › Tileroam, nachdem doppelte Dateien entfernt wurden (`ActivityMerge.preferredFile`). Gelöschte Aktivitäten werden im Key-Value-Speicher von iCloud gemerkt (`Deletions`), damit andere Geräte ihre Kopie löschen und Strava sie nicht zurückbringt. Die Ordner früherer Versionen werden einmal kopiert (`Library.migrate`).
-- **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
+- **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch bei vielen Kacheln schnell.
 - **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
 - **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 6,3 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
 - Die **Routenplanung** läuft auf dem Gerät mit [Valhalla](https://github.com/valhalla/valhalla), über [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), und OpenStreetMap-Kacheln für die Niederlande, Belgien, Luxemburg, Deutschland, Frankreich, die Schweiz und Österreich. Die Kacheln liegen auf Cloudflare R2; ein Plan lädt nur die Valhalla-Kacheln in seiner Umgebung (25–75 MB statt 2,2 GB für alles). Downloads über 25 MB warten auf WLAN (`MapDataDownloads`). Die Reihenfolge wird auf Luftlinien-Entfernungen bestimmt (`TripSolver`, viel schneller als eine Routing-Matrix auf dem Gerät); danach wählt der Planer in jedem Ziel den Punkt mit dem kleinsten Umweg, und Valhalla berechnet die Rundtour. Kacheln bauen und hochladen, Länder hinzufügen: [docs/ROUTING.md](docs/ROUTING.md).

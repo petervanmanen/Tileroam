@@ -33,9 +33,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs** and **Trappists** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
-The map is divided into squares. A square turns green once you have passed through it. Choose the tile size in Settings → Tiles:
-- **Zoom 14 tiles** are about 1.5 km wide in the Netherlands. These are the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
-- **Zoom 17 squadratinhos** are about 190 m wide, as used by Squadrats.
+The map is divided into squares. A square turns green once you have passed through it. The squares are zoom 14 tiles, about 1.5 km wide in the Netherlands: the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
 
 The header shows three numbers:
 - **Tiles:** how many tiles you have visited.
@@ -129,7 +127,7 @@ Settings → Storage shows what Tileroam keeps on your device:
 
 Tileroam keeps every activity and planned route in its own storage on the device: **On My iPhone › Tileroam › Activities** and **› Routes**.
 
-With **Settings → Activities → Sync with iCloud** on (the default when you're signed in to iCloud with iCloud Drive on), they're also kept in **iCloud Drive › Tileroam**, without duplicates. Your other devices with the same Apple Account then have the same activities, also on a new device without importing anything or connecting Strava again. The tile size and map style are kept in sync too. Turning sync off keeps both copies; the device then stops reading and writing iCloud.
+With **Settings → Activities → Sync with iCloud** on (the default when you're signed in to iCloud with iCloud Drive on), they're also kept in **iCloud Drive › Tileroam**, without duplicates. Your other devices with the same Apple Account then have the same activities, also on a new device without importing anything or connecting Strava again. The map style and the challenges you show are kept in sync too. Turning sync off keeps both copies; the device then stops reading and writing iCloud.
 
 **Deleting an activity:** in Activities, swipe left on it and tap **Delete**. It's deleted on this device and from iCloud, so your other devices remove it too. It stays on Strava and wherever you imported it from; a deleted Strava activity isn't downloaded again.
 

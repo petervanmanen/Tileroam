@@ -6,8 +6,10 @@
 #   Tools/capture_screenshots.sh ipad     # iPad Pro 13-inch (M5) → ipad-13 (2064×2752)
 #
 # Build the Debug app for the simulator first (build/Build/Products/Debug-iphonesimulator).
-# Uses the Debug-only launch arguments -RegionsDir, -mapMode, -FocusZoom, -PlanDemo,
-# -ShowStatistics and -hasSeenIntro.
+# Uses the Debug-only launch arguments -RegionsDir, -challenges, -mapMode, -FocusZoom, -MapCenter,
+# -PlanDemo, -ShowStatistics, -StatisticsOpen, -ShowSettings and -hasSeenIntro. Climbs and the
+# Trappist breweries come from R2 (tiles.petervanmanen.nl), so it needs an internet connection.
+# The README images are made from these captures by Tools/update_screenshots.sh, which runs it all.
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
@@ -20,7 +22,9 @@ esac
 BID=nl.petervanmanen.Tileroam
 APP=$ROOT/build/Build/Products/Debug-iphonesimulator/Tileroam.app
 SHOTS=$ROOT/docs/appstore/screenshots
-RAW=$(mktemp -d)
+# Raw PNG captures stay here for Tools/update_screenshots.sh (the README images).
+RAW=$ROOT/AssetPacks/build/screenshots/$KIND
+rm -rf $RAW; mkdir -p $RAW
 [[ -d $APP ]] || { echo "Build the Debug app for the simulator first" >&2; exit 1 }
 
 # English system language, so the iPad status bar date isn't localized.
@@ -42,7 +46,9 @@ xcrun simctl privacy "$D" grant location-always $BID
 C=$(xcrun simctl get_app_container "$D" $BID data)
 mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
-COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB -tileZoom 14)
+# All challenges on, so the bar at the top shows every tab.
+COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB
+        -challenges gemeenten,postcodes,climbs,trappists)
 
 # The simulator is slow to launch apps (system libraries load lazily), so the waits are long.
 shot() { # name, wait, args…
@@ -53,20 +59,31 @@ shot() { # name, wait, args…
   xcrun simctl io "$D" screenshot --type=png $RAW/$name.png >/dev/null 2>&1
   echo "$name"
 }
-shot warmup       25 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS   # imports the rides
+# Warm-ups: import the rides, then download the climbs around Valkenburg (South Limburg) and the
+# Trappist breweries' logos.
+shot warmup       25 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS
+shot warmup2      25 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
+shot warmup3      20 -hasSeenIntro YES -mapMode trappists -MapCenter 50.8,4.2,3.9
 shot 01-tiles     16 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS
 shot 02-towns     16 -hasSeenIntro YES -mapMode gemeenten -FocusZoom $(( FOCUS - 1 ))
 shot 03-postcodes 16 -hasSeenIntro YES -mapMode postcodes -FocusZoom $FOCUS
-shot 04-routes    16 -hasSeenIntro YES -mapMode activities -FocusZoom $FOCUS
-shot 05-plan      35 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -PlanDemo YES
-shot 06-statistics 40 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -ShowStatistics YES
+shot 04-climbs    18 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
+shot 05-trappists 16 -hasSeenIntro YES -mapMode trappists -MapCenter 50.8,4.2,3.9
+shot 06-plan      35 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -PlanDemo YES
+shot 07-badges    40 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -ShowStatistics YES -StatisticsOpen badges
 shot 00-intro     15 -hasSeenIntro NO
+# Not for the App Store (only the README uses it).
+shot settings     30 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -ShowSettings YES
 xcrun simctl terminate "$D" $BID 2>/dev/null || true
-rm $RAW/warmup.png
+rm $RAW/warmup*.png
+# Shots of earlier sets that are gone (Routes, removed in 1.5.3).
+old=($SHOTS/*/(04-routes|05-plan|06-statistics).jpg(N))
+(( ${#old} )) && rm -f $old
 
 jpeg() { sips -s format jpeg -s formatOptions 90 $1 --out $2 >/dev/null; }
 for f in $RAW/*.png; do
   n=${f:t:r}
+  [[ $n == settings || $n == *-65 ]] && continue # README only / scaled copies
   if [[ $KIND == iphone ]]; then
     mkdir -p $SHOTS/iphone-6.9 $SHOTS/iphone-6.5
     jpeg $f $SHOTS/iphone-6.9/$n.jpg

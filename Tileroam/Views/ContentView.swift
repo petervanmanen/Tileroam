@@ -23,7 +23,8 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("mapMode") private var mode: MapMode = .squares
     @AppStorage(Challenges.key) private var challenges = ""
-    @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
+    /// Zoom 14 (zoom 17 squadratinhos were removed in 1.5.9).
+    private let tileZoom = TileZoom.explorer
     @AppStorage("mapStyle") private var mapStyle: MapStyle = .standard
     @State private var showPicker = false
     @State private var showSettings = false
@@ -150,7 +151,6 @@ struct ContentView: View {
                 if phase == .active { Task { await store.refreshAll() } }
             }
             .onChange(of: mode) { selectedArea = nil; selectedClimb = nil; selectedTrappist = nil }
-            .onChange(of: tileZoom, initial: true) { _, zoom in WidgetData.saveTileZoom(zoom.rawValue) }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 selectedClimb = nil
@@ -463,7 +463,9 @@ private struct ModeChips: View {
                                 .font(.subheadline.weight(selection == mode ? .semibold : .regular))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .foregroundStyle(selection == mode ? Color.primary : .secondary)
+                                // UIKit's label colours: SwiftUI's .secondary came out invisible
+                                // inside this scroll view in the iPad side panel.
+                                .foregroundStyle(Color(uiColor: selection == mode ? .label : .secondaryLabel))
                                 .background(selection == mode ? AnyShapeStyle(.background) : AnyShapeStyle(.clear), in: Capsule())
                                 .shadow(color: .black.opacity(selection == mode ? 0.12 : 0), radius: 2, y: 1)
                         }
@@ -502,7 +504,7 @@ private struct ModeChips: View {
         } label: {
             Image(systemName: "plus")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .contentShape(Capsule())

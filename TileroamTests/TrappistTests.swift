@@ -123,7 +123,7 @@ struct TrappistPlanningTests {
         let start = GeoPoint(lat: 51.25, lon: 4.60)
         let route = try await RoutePlanner.planRoute(
             start: start, targets: [target], client: StraightRouter(),
-            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],
+            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedMunicipalities: [],
                                       visitedPostcodes: [], regions: nil, trappists: [westmalle], visitedTrappists: []) },
             progress: { _ in })
         #expect(route.coverage.trappists == ["westmalle"] && route.coverage.newTrappists == ["westmalle"])

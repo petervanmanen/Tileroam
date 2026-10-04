@@ -15,7 +15,7 @@ Zie elke tegel, gemeente en postcode die je hebt bezocht, plan ritten naar nieuw
 Tileroam maakt van je ritten, hardlooprondes en wandelingen een kaart van overal waar je bent geweest, en helpt je om ergens nieuw te komen.
 
 ONTDEK TEGELS
-De kaart is verdeeld in vakjes. Elk vakje waar je doorheen komt, wordt groen. Kies zoom 14-tegels (ongeveer 1,5 km) of zoom 17-squadratinhos (ongeveer 190 m). Tileroam toont je totaal, je grootste vierkant (max square) en je cluster.
+De kaart is verdeeld in vakjes. Elk vakje waar je doorheen komt, wordt groen. Het zijn zoom 14-tegels (ongeveer 1,5 km), zoals bij VeloViewer en StatsHunters. Tileroam toont je totaal, je grootste vierkant (max square) en je cluster.
 
 GEMEENTEN EN POSTCODES
 Zie welke gemeenten en postcodegebieden je hebt bezocht in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk.

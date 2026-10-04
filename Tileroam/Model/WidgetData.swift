@@ -28,28 +28,18 @@ enum WidgetData {
     }
 
     /// Writes the visited tiles (as little-endian Int64 keys) for the tiles widget, if they changed.
-    static func saveTiles(_ tiles14: Set<Int64>, _ tiles17: Set<Int64>) async {
+    static func saveTiles(_ tiles14: Set<Int64>) async {
         guard let container else { return }
         let changed = await Task.detached(priority: .utility) {
-            var changed = false
-            for (name, tiles) in [("tiles14.bin", tiles14), ("tiles17.bin", tiles17)] {
-                let url = container.appending(path: name)
-                let data = tiles.sorted().withUnsafeBufferPointer { Data(buffer: $0) }
-                if (try? Data(contentsOf: url)) != data {
-                    try? data.write(to: url, options: .atomic)
-                    changed = true
-                }
-            }
-            return changed
+            // Zoom 17 tiles were removed in 1.5.9.
+            try? FileManager.default.removeItem(at: container.appending(path: "tiles17.bin"))
+            let url = container.appending(path: "tiles14.bin")
+            let data = tiles14.sorted().withUnsafeBufferPointer { Data(buffer: $0) }
+            guard (try? Data(contentsOf: url)) != data else { return false }
+            try? data.write(to: url, options: .atomic)
+            return true
         }.value
         if changed { WidgetCenter.shared.reloadTimelines(ofKind: tilesWidgetKind) }
-    }
-
-    /// The tile zoom level chosen in the app, for the tiles widget.
-    static func saveTileZoom(_ zoom: Int) {
-        guard let defaults = UserDefaults(suiteName: appGroup), defaults.integer(forKey: "tileZoom") != zoom else { return }
-        defaults.set(zoom, forKey: "tileZoom")
-        WidgetCenter.shared.reloadTimelines(ofKind: tilesWidgetKind)
     }
 
     /// Last known location, used by the tiles widget when it can't get one itself.

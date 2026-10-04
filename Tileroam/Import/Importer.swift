@@ -99,7 +99,6 @@ enum Importer {
             distance: distance ?? zip(points, points.dropFirst()).reduce(0) { $0 + Geo.distance($1.0, $1.1) },
             trackData: Activity.encodeTrack(Geo.simplify(points, tolerance: 8)),
             tiles14: Array(TileGrid.tiles(for: points, zoom: .explorer)).sorted(),
-            tiles17: Array(TileGrid.tiles(for: points, zoom: .squadratinho)).sorted(),
             isSummary: isSummary
         )
     }

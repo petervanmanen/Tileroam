@@ -4,19 +4,21 @@
 
 Tileroam is an iPhone and iPad app that shows everywhere you have been on your rides, runs and walks: every map tile, municipality and postcode area you have visited. It reads `.fit` files from one or more iCloud Drive folders (for example exports from HealthFit, Garmin or Wahoo) and can import your history from Strava. It also plans cycling routes to places you haven't been yet.
 
-![Tileroam on iPhone: tiles, squadratinhos, municipalities and route planning](docs/screenshots/overview.jpg)
+![Tileroam on iPhone: tiles, municipalities, climbs and route planning](docs/screenshots/overview.jpg)
 
 ## Features
 
-- **Tiles**: zoom 14 map tiles (~1.5 km, as on VeloViewer, StatsHunters and [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) and zoom 17 *squadratinhos* (~190 m, as on Squadrats). Both are always counted; you choose which one the map shows. Includes your **max square** and **max cluster**.
+- **Tiles**: zoom 14 map tiles (~1.5 km, as on VeloViewer, StatsHunters and [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Includes your **max square** and **max cluster**.
 - **Climbs**: every climb on the roads (Cat 4 to HC like Strava, and short steep hills), found from elevation data; which ones you have climbed, on a map tab and in Statistics, and climbs to include when planning a route. See [docs/CLIMBS.md](docs/CLIMBS.md).
+- **Challenges**: besides tiles, turn on the challenges you like with the **+** at the top of the map: municipalities, postcodes, climbs and the **Trappist Challenge** (ride past the Trappist breweries; within 200 m counts). Hidden challenges still count.
+- **Badges**: 18 badges, from *100!*, *Century* and *Everester* to *Festive 500*, *Triathlete* and *Globetrotter* (50 countries, worked out on the device). Earned badges are in colour, with how often; indoor activities count too.
 - **Activities**: a list of all activities, newest first, with duration, distance and average power (with a power meter) or average speed.
 - **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria, with visited/total per country.
 - **Route planning** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
 - **Strava**: import your full history with GPS. Activities are also saved as standard `.fit` files in a folder of your choice.
 - **Duplicates merged**: the same workout recorded by several devices or apps (watch, Zwift, Strava, HealthFit) counts once.
 - **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
-- **Statistics**: countries and municipalities visited, Eddington numbers for cycling, walking and running, and totals per sport for this year and all time.
+- **Statistics**: countries and municipalities visited, Eddington numbers for cycling, walking and running, climbs, badges, and totals per sport for this year and all time; each category opens with a tap.
 - **Indoor and virtual rides** (Zwift, Rouvy, MyWhoosh, trainer rides) count in the statistics but stay off the map, tiles, municipalities and postcodes.
 - **Your own copy, synced with iCloud**: imported `.fit` files and Strava downloads are kept in the app (Files app › On My iPhone › Tileroam › Activities), and with iCloud sync also in iCloud Drive › Tileroam, without duplicates; a further device needs no setup. Imports are one-time copies. Activities can be deleted in the Activities list.
 - **Settings → Storage** shows the downloaded map data and lets you remove it. Map downloads over 25 MB wait for Wi-Fi unless you allow mobile data.
@@ -26,13 +28,17 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 
 ## Screenshots
 
-| Tiles (zoom 14) | Squadratinhos (zoom 17) | Routes | Municipalities |
-|---|---|---|---|
-| ![Tiles](docs/screenshots/tiles.jpg) | ![Squadratinhos](docs/screenshots/squadratinhos.jpg) | ![Routes](docs/screenshots/routes.jpg) | ![Municipalities](docs/screenshots/municipalities.jpg) |
+| Tiles | Municipalities | Postcodes |
+|---|---|---|
+| ![Tiles](docs/screenshots/tiles.jpg) | ![Municipalities](docs/screenshots/municipalities.jpg) | ![Postcodes](docs/screenshots/postcodes.jpg) |
 
-| Postcodes | Route planning | Settings | Introduction |
-|---|---|---|---|
-| ![Postcodes](docs/screenshots/postcodes.jpg) | ![Route planning](docs/screenshots/planning.jpg) | ![Settings](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
+| Climbs | Trappist Challenge | Route planning |
+|---|---|---|
+| ![Climbs](docs/screenshots/climbs.jpg) | ![Trappist Challenge](docs/screenshots/trappists.jpg) | ![Route planning](docs/screenshots/planning.jpg) |
+
+| Badges | Settings | Introduction |
+|---|---|---|
+| ![Badges](docs/screenshots/badges.jpg) | ![Settings](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
 
 **iPad**
 
@@ -82,7 +88,7 @@ Strava allows about 100 requests per 15 minutes and 1,000 per day. The activity 
 
 - **FIT files** are decoded by a small built-in decoder (`FIT/FITDecoder.swift`). Parsed routes, tiles and visited areas are cached, so only new or changed files are read on the next launch.
 - **Storage** (`Import/Library.swift`): every activity and route lives in the app (`Documents/Activities`, `Documents/Routes`). With iCloud sync on, `Library.pull`/`push` mirror them to iCloud Drive › Tileroam, after duplicate files are removed (`ActivityMerge.preferredFile`). Deleted activities are remembered in iCloud's key-value store (`Deletions`), so other devices delete their copy and the Strava sync doesn't bring them back. Earlier versions' folders are copied in once (`Library.migrate`).
-- **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for zoom 17 tiles spread across Europe.
+- **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for many tiles.
 - **Duplicates**: activities of the same kind that overlap in time are merged (`Import/ActivityMerge.swift`); the copy with the best GPS and the longest distance is kept.
 - **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 6.3 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
 - **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria. The tiles are on Cloudflare R2; a plan downloads only Valhalla's tiles around it (25–75 MB, instead of 2.2 GB for everything). Downloads over 25 MB wait for Wi-Fi (`MapDataDownloads`). The visiting order is solved on straight-line distances (`TripSolver`, much faster than a routing matrix on the device); then, inside each target, the planner picks the point that keeps the detour shortest, and Valhalla routes the round trip. How to build and upload the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).

@@ -14,9 +14,9 @@ struct Activity: Codable, Sendable, Identifiable {
     var distance: Double
     /// Simplified track, interleaved latitude/longitude as Float32.
     var trackData: Data
-    /// Visited zoom 14 / zoom 17 tiles (see `TileGrid.key`); nil in caches from before tiles.
+    /// Visited zoom 14 tiles (see `TileGrid.key`); nil in caches from before tiles. (Caches from
+    /// before 1.5.9 also have zoom 17 tiles, which are ignored.)
     var tiles14: [Int64]?
-    var tiles17: [Int64]?
     /// Visited municipalities and postcode areas, country-prefixed ("NL:GM0344", "DE:10115"),
     /// for the countries in `regionsKey`; recomputed when the switched-on countries change.
     var municipalities: [String]?
