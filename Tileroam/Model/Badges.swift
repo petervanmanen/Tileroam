@@ -41,7 +41,7 @@ enum Badge: String, CaseIterable, Identifiable, Sendable {
         case .century: String(localized: "Cycle 100 miles in one activity")
         case .hollander: String(localized: "Cycle 100 km with less than 100 m of elevation")
         case .everester: String(localized: "Cycle more than 8,848 m of elevation within 24 hours")
-        case .pretzel: String(localized: "Complete the indoor activity Uber Pretzel")
+        case .pretzel: String(localized: "Ride Zwift's Uber Pretzel: at least 128 km and 2,300 m of climbing")
         case .nosleep: String(localized: "Complete an activity that took more than 24 hours")
         case .everyDayImHustling: String(localized: "Complete an activity every day of the week")
         case .working9To5: String(localized: "An activity every working day, none in the weekend before or after")
@@ -65,6 +65,13 @@ enum BadgeRules {
     /// GPS distances come out a little short: 1% less still counts.
     static let tolerance = 0.99
 
+    /// Zwift's Uber Pretzel: the name says so ("Uber" or "Über", any case), and it was really
+    /// ridden: at least 128 km and 2,300 m of climbing.
+    static func isUberPretzel(_ a: Activity) -> Bool {
+        let name = a.name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+        return name.contains("uber pretzel") && a.distance >= 128_000 && (a.ascent ?? 0) >= 2_300
+    }
+
     /// How often each badge was earned (badges never earned are left out). `countries` is the
     /// number of countries with activities, for Globetrotter.
     static func counts(_ activities: [Activity], countries: Int, calendar: Calendar = .current) -> [Badge: Int] {
@@ -82,7 +89,7 @@ enum BadgeRules {
         add(.marathon, running.count { $0.distance >= marathon * tolerance })
         add(.halfMarathon, running.count { $0.distance >= marathon / 2 * tolerance })
         add(.nosleep, dated.count { ($0.elapsedTime ?? 0) > 24 * 3600 })
-        add(.pretzel, dated.count { $0.name.lowercased().contains("uber pretzel") })
+        add(.pretzel, dated.count(where: isUberPretzel))
         add(.taylor, dated.count { $0.isZwift == true } / 100)
         add(.globetrotter, countries >= 50 ? 1 : 0)
 

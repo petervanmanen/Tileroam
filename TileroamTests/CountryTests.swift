@@ -43,6 +43,28 @@ struct CountryOutlinesTests {
     }
 }
 
+struct WorldCountriesTests {
+    let world = CountryOutlines.world!
+
+    @Test func pointsAroundTheWorld() {
+        #expect(world.country(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == "FR") // Paris
+        #expect(world.country(at: GeoPoint(lat: 35.6762, lon: 139.6503)) == "JP") // Tokyo
+        #expect(world.country(at: GeoPoint(lat: 39.7392, lon: -104.9903)) == "US") // Denver
+        #expect(world.country(at: GeoPoint(lat: 64.1466, lon: -21.9426)) == "IS") // Reykjavik
+        #expect(world.country(at: GeoPoint(lat: -33.9249, lon: 18.4241)) == "ZA") // Cape Town
+        #expect(world.country(at: GeoPoint(lat: 49.6116, lon: 6.1319)) == "LU") // Luxembourg
+        #expect(world.country(at: GeoPoint(lat: 59.9139, lon: 10.7522)) == "NO") // Oslo (ISO_A2 is -99 in the source)
+        #expect(world.country(at: GeoPoint(lat: 45, lon: -30)) == nil) // Atlantic
+    }
+
+    @Test func countriesOfTracks() {
+        // Borders are about 1 km coarse (Kerkrade, on the border, comes out German): a ride a few
+        // km into each country counts both.
+        let ride = [GeoPoint(lat: 50.8514, lon: 5.6910), GeoPoint(lat: 50.7753, lon: 6.0839)] // Maastricht → Aachen
+        #expect(world.countries(visitedBy: [ride]) == ["NL", "DE"])
+    }
+}
+
 struct RegionPackTests {
     @Test func packIDs() {
         #expect(RegionAssets.packID("NL") == "regions-NL")

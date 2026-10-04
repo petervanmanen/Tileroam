@@ -901,6 +901,34 @@
         }
       }
     },
+    "%lld of 50 countries so far": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tot nu toe %lld van 50 landen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld pays sur 50 jusqu’ici"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld de 50 países por ahora"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisher %lld von 50 Ländern"
+          }
+        }
+      }
+    },
     "%lld postcodes": {
       "localizations": {
         "en": {
@@ -2673,34 +2701,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Absolviere eine Aktivität, die länger als 24 Stunden dauerte"
-          }
-        }
-      }
-    },
-    "Complete the indoor activity Uber Pretzel": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rijd de indooractiviteit Uber Pretzel"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Terminez l’activité en salle Uber Pretzel"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completa la actividad en interior Uber Pretzel"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Absolviere die Indoor-Aktivität Uber Pretzel"
           }
         }
       }
@@ -6697,6 +6697,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neu planen"
+          }
+        }
+      }
+    },
+    "Ride Zwift's Uber Pretzel: at least 128 km and 2,300 m of climbing": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rijd Zwifts Uber Pretzel: minstens 128 km en 2.300 hoogtemeters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roulez l’Uber Pretzel de Zwift : au moins 128 km et 2 300 m de dénivelé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rueda el Uber Pretzel de Zwift: al menos 128 km y 2.300 m de desnivel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre Zwifts Uber Pretzel: mindestens 128 km und 2.300 Höhenmeter"
           }
         }
       }

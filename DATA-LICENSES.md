@@ -31,6 +31,13 @@ Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
 contributors. The script and the extracts it names are the complete recipe to
 rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
 
+## World countries
+
+`Tileroam/Resources/world.fmr` (made by `Tools/build_world_countries.py`) is simplified from
+[Natural Earth](https://www.naturalearthdata.com)'s admin-0 countries at 1:50 million, which are in
+the **public domain**. The app uses it on the device to count the countries of your activities
+(the Globetrotter badge).
+
 ## Elevation and climbs
 
 Route planning takes gradients into account, and the climbs are found, with elevation tiles from

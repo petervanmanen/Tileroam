@@ -279,6 +279,7 @@ private struct SourcesView: View {
         (Country.named("CH")!.name, "© swisstopo – Gemeinden and Ortschaftenverzeichnis (opendata.swiss)"),
         (Country.named("AT")!.name, "© Statistik Austria (CC BY 4.0)"),
         (String(localized: "Route planning"), "© OpenStreetMap contributors (ODbL), via Geofabrik; routing by Valhalla (MIT) on the device"),
+        (String(localized: "Badges"), "Country outlines: Natural Earth (public domain)"),
         (String(localized: "Trappist Challenge"), "Brewery logos © the Trappist breweries and abbeys, shown to identify each brewery; locations from public sources"),
         (String(localized: "Elevation and climbs"), "Terrain Tiles (AWS Open Data): SRTM (NASA, public domain); EU-DEM, produced using Copernicus data and information funded by the European Union; climbs found by Tileroam on OpenStreetMap roads (ODbL)"),
     ] + (FeatureFlags.strava ? [("Strava", String(localized: "Activity data from Strava when connected"))] : [])

@@ -71,6 +71,8 @@ final class ActivityStore {
 
     /// How often each badge was earned (see `BadgeRules`); indoor activities count too.
     private(set) var badges: [Badge: Int] = [:]
+    /// The countries of the world with activities (not virtual ones), for Globetrotter.
+    private(set) var worldCountries: Set<String> = []
     private var badgeTask: Task<Void, Never>?
 
     // Strava source
@@ -876,11 +878,16 @@ final class ActivityStore {
         }
         matchTrappists()
         badgeTask?.cancel()
-        let forBadges = activities, countries = enabledCountries.count
+        let forBadges = activities
         badgeTask = Task {
-            let counts = await Task.detached(priority: .utility) { BadgeRules.counts(forBadges, countries: countries) }.value
+            let (counts, countries) = await Task.detached(priority: .utility) {
+                let tracks = forBadges.filter(\.isOnMap).map { $0.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) } }
+                let countries = CountryOutlines.world?.countries(visitedBy: tracks) ?? []
+                return (BadgeRules.counts(forBadges, countries: countries.count), countries)
+            }.value
             guard !Task.isCancelled else { return }
             badges = counts
+            worldCountries = countries
         }
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
         eddingtonRunning = Eddington(activities: activities, sports: Eddington.runningSports)

@@ -14,12 +14,19 @@ struct CountryOutlines: Sendable {
     /// The outlines are cut into 1° × 1° pieces; each piece is indexed by its cell.
     private let cells: [Int: [Piece]]
 
-    static let bundled: CountryOutlines? = {
-        guard let url = Bundle.main.url(forResource: "countries", withExtension: "fmr"),
+    static let bundled: CountryOutlines? = load("countries")
+
+    /// All countries of the world, coarser (Natural Earth 1:50m: borders and coasts about 1 km off;
+    /// `world.fmr`, made by `Tools/build_world_countries.py`): for counting countries (the
+    /// Globetrotter badge), where a ride well into a country is what counts.
+    static let world: CountryOutlines? = load("world")
+
+    private static func load(_ name: String) -> CountryOutlines? {
+        guard let url = Bundle.main.url(forResource: name, withExtension: "fmr"),
               let data = try? Data(contentsOf: url),
               let areas = try? RegionFile.decode(data) else { return nil }
         return CountryOutlines(areas: areas)
-    }()
+    }
 
     init(areas: [Area]) {
         var cells = [Int: [Piece]]()

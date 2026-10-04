@@ -171,6 +171,9 @@ struct StatisticsView: View {
                         Text(count == 0 ? String(localized: "Not earned yet") : String(localized: "Earned \(count) times"))
                             .font(.footnote)
                             .foregroundStyle(count > 0 ? .green : .secondary)
+                        if badge == .globetrotter {
+                            Text("\(store.worldCountries.count) of 50 countries so far").font(.footnote).foregroundStyle(.secondary)
+                        }
                     }
                     .padding()
                     .frame(idealWidth: 260)
