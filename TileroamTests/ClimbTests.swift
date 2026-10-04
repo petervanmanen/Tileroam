@@ -39,6 +39,13 @@ struct ClimbMatcherTests {
         #expect(ClimbMatcher.climbed(climb, by: ride(from: 50.79, to: 50.83)))
     }
 
+    @Test func upAndBackDownTheSameRoad() {
+        // Up the climb and back down it: the bottom is passed twice, the last time after the top.
+        let up = (0...20).map { GeoPoint(lat: 50.80 + Double($0) * 0.0009, lon: 5.80) }
+        let ride = up + up.reversed().dropFirst()
+        #expect(ClimbMatcher.climbed(climb, by: ride))
+    }
+
     @Test func notWhenDescending() {
         #expect(!ClimbMatcher.climbed(climb, by: ride(from: 50.83, to: 50.79)))
     }

@@ -70,6 +70,8 @@ enum ClimbMatcher {
     static let tolerance = 30.0
     /// Share of the climb's points the track must pass.
     static let coverage = 0.9
+    /// Raised when the rules change, so activities are matched again (2: out-and-back rides).
+    static let version = 2
 
     /// Points along the climb about every 50 m, bottom first.
     static func checkpoints(_ climb: Climb) -> [GeoPoint] {
@@ -92,19 +94,15 @@ enum ClimbMatcher {
 
     static func climbed(_ checkpoints: [GeoPoint], by track: [GeoPoint]) -> Bool {
         guard checkpoints.count >= 2, track.count >= 2 else { return false }
-        // Index of the nearest track point to each checkpoint, within the tolerance.
         let grid = TrackGrid(track)
-        var hits = 0
-        var bottomIndex: Int?, topIndex: Int?
-        for (i, p) in checkpoints.enumerated() {
-            guard let index = grid.nearest(to: p, within: tolerance) else { continue }
-            hits += 1
-            if i == 0 { bottomIndex = index }
-            if i == checkpoints.count - 1 { topIndex = index }
-        }
+        let hits = checkpoints.count { grid.nearest(to: $0, within: tolerance) != nil }
         guard Double(hits) >= coverage * Double(checkpoints.count) else { return false }
-        // Uphill: the bottom is passed before the top (when both are matched).
-        if let bottomIndex, let topIndex { return bottomIndex < topIndex }
+        // Uphill: the track passes the bottom at some time before it passes the top. Not the
+        // nearest passes: up and back down the same road passes the bottom twice, the second
+        // time after the top (the Ötztaler Gletscherstraße, ridden from Sölden and back).
+        let bottom = grid.indices(near: checkpoints[0], within: tolerance)
+        let top = grid.indices(near: checkpoints[checkpoints.count - 1], within: tolerance)
+        if let firstBottom = bottom.min(), let lastTop = top.max() { return firstBottom < lastTop }
         return true
     }
 
@@ -131,6 +129,19 @@ enum ClimbMatcher {
 
         static func key(_ p: GeoPoint) -> Int64 {
             Int64((p.lat / cell).rounded(.down)) << 32 | Int64(UInt32(bitPattern: Int32((p.lon / cell).rounded(.down))))
+        }
+
+        /// All track points within `limit` of `p` (indexes along the track).
+        func indices(near p: GeoPoint, within limit: Double) -> [Int] {
+            let la = Int64((p.lat / Self.cell).rounded(.down)), lo = Int32((p.lon / Self.cell).rounded(.down))
+            var found = [Int]()
+            for dy in -1...1 {
+                for dx in -1...1 {
+                    let key = (la + Int64(dy)) << 32 | Int64(UInt32(bitPattern: lo + Int32(dx)))
+                    found += (cells[key] ?? []).filter { Geo.distance(points[$0], p) <= limit }
+                }
+            }
+            return found
         }
 
         func nearest(to p: GeoPoint, within limit: Double) -> Int? {

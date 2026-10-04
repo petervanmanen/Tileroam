@@ -814,7 +814,8 @@ final class ActivityStore {
         guard let index = ClimbData.index, !isMatchingClimbs else { return }
         isMatchingClimbs = true
         defer { isMatchingClimbs = false }
-        let key = ClimbData.key(index)
+        // The climbs and the matching rules: activities are matched again when either changes.
+        let key = "\(ClimbData.key(index))-m\(ClimbMatcher.version)"
         let all = folderActivities + stravaActivities
         var areas = Set<ClimbIndex.Area>()
         for a in all where a.isOnMap {
