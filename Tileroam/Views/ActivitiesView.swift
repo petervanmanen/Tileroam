@@ -158,3 +158,35 @@ struct ClimbCard: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
+
+struct TrappistCard: View {
+    let trappist: Trappist
+    let visits: [Date]
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            if let icon = trappist.icon {
+                Image(uiImage: icon)
+                    .resizable()
+                    .scaledToFit()
+                    .padding(4)
+                    .frame(width: 52, height: 52)
+                    .background(.white, in: RoundedRectangle(cornerRadius: 10))
+                    .accessibilityHidden(true)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text(trappist.name).font(.headline).lineLimit(2)
+                Text("\(trappist.abbey) · \(trappist.place)").font(.subheadline).foregroundStyle(.secondary)
+                if let last = visits.first {
+                    Text(String(localized: "Visited \(visits.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
+                        .font(.footnote).foregroundStyle(.green)
+                } else {
+                    Text("Not visited yet: ride within 200 m of the brewery").font(.footnote).foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}

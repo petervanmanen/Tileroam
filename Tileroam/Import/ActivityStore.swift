@@ -62,6 +62,11 @@ final class ActivityStore {
     private(set) var climbed: [String: [Date]] = [:]
     private var isMatchingClimbs = false
 
+    // Trappist Challenge (see Trappist)
+    /// For each visited brewery, when (newest first).
+    private(set) var trappistVisits: [String: [Date]] = [:]
+    private var trappistTask: Task<Void, Never>?
+
     // Strava source
     let stravaConfig = StravaConfig.bundled
     private var strava: StravaClient?
@@ -833,6 +838,15 @@ final class ActivityStore {
             statsReady = true
             version += 1
             await WidgetData.saveTiles(visited14, visited17)
+        }
+        // Which Trappist breweries the tracks pass: every track point is looked at, so in the background.
+        trappistTask?.cancel()
+        let all = activities
+        trappistTask = Task {
+            let visits = await Task.detached(priority: .utility) { TrappistMatcher.visits(all, among: Trappist.all) }.value
+            guard !Task.isCancelled, visits != trappistVisits else { return }
+            trappistVisits = visits
+            version += 1
         }
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
         eddingtonRunning = Eddington(activities: activities, sports: Eddington.runningSports)

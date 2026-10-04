@@ -33,6 +33,7 @@ struct ContentView: View {
     @State private var pickAfterSettings: PickerPurpose?
     @State private var selectedArea: Area?
     @State private var selectedClimb: Climb?
+    @State private var selectedTrappist: Trappist?
     @State private var locateRequest = 0
     @State private var isFollowingUser = false
     @State private var locationDenied = false
@@ -45,7 +46,7 @@ struct ContentView: View {
     private let sidePanelWidth: CGFloat = 380
 
     var body: some View {
-        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb,
+        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedTrappist: $selectedTrappist,
                         locateRequest: locateRequest, isFollowingUser: $isFollowingUser, locationDenied: $locationDenied,
                         plan: plan, planVersion: plan.version, leadingInset: isWide ? sidePanelWidth + 32 : 0)
             .ignoresSafeArea()
@@ -148,11 +149,12 @@ struct ContentView: View {
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { Task { await store.refreshAll() } }
             }
-            .onChange(of: mode) { selectedArea = nil; selectedClimb = nil }
+            .onChange(of: mode) { selectedArea = nil; selectedClimb = nil; selectedTrappist = nil }
             .onChange(of: tileZoom, initial: true) { _, zoom in WidgetData.saveTileZoom(zoom.rawValue) }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 selectedClimb = nil
+                selectedTrappist = nil
             }
     }
 
@@ -236,6 +238,8 @@ struct ContentView: View {
             return String(localized: "\(store.visitedPostcodes.count) / \(areas.all.count) postcodes visited")
         case .climbs:
             return String(localized: "\(store.climbed.count) climbs climbed · \(store.climbs.count) on the map")
+        case .trappists:
+            return String(localized: "\(store.trappistVisits.count) of \(Trappist.all.count) Trappist breweries visited")
         }
     }
 
@@ -343,6 +347,9 @@ struct ContentView: View {
             }
             if !plan.isPlanning, let climb = selectedClimb {
                 ClimbCard(climb: climb, climbed: store.climbed[climb.id] ?? [])
+            }
+            if !plan.isPlanning, let trappist = selectedTrappist {
+                TrappistCard(trappist: trappist, visits: store.trappistVisits[trappist.id] ?? [])
             }
             if store.isImporting, store.progress.total > 0 {
                 VStack(alignment: .leading, spacing: 4) {

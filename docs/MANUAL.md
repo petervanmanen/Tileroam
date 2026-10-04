@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes** and **Climbs** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs** and **Trappists** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. Choose the tile size in Settings → Tiles:
@@ -90,6 +90,10 @@ A climb counts as climbed when an activity rides almost all of it uphill, from t
 To **ride a climb on a planned route**, select it in planning mode on the Climbs tab: the route rides it uphill. A planned route or an opened GPX also shows which climbs it includes, and which are new.
 
 Climbs are found by Tileroam from elevation data along OpenStreetMap's roads. Short steep hills often come out less steep than signposted, because the elevation data is about 30 m coarse.
+
+## Trappist Challenge
+
+Turn on the **Trappists** challenge with the **+** at the end of the tabs to see the Trappist breweries on the map: Westmalle, Westvleteren, Chimay, Orval, Rochefort, La Trappe, Tre Fontane and Tynt Meadow. A brewery counts as visited when one of your activities passed within 200 m of it; it then gets a green ring and a check. Tap a brewery to see its abbey and when you were there.
 
 ## Statistics
 
