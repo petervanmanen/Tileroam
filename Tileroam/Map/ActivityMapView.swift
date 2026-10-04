@@ -5,7 +5,7 @@ import SwiftUI
 enum MapMode: String, CaseIterable, Identifiable {
     // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3; a
     // stored "activities" no longer decodes, so those users start on Tiles.)
-    case squares, gemeenten, postcodes, climbs
+    case squares, gemeenten, postcodes, climbs, trappists
 
     var id: Self { self }
 
@@ -15,6 +15,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .gemeenten: String(localized: "Municipalities", comment: "Map mode: municipalities (gemeenten, communes, Gemeinden…)")
         case .postcodes: String(localized: "Postcodes")
         case .climbs: String(localized: "Climbs")
+        case .trappists: String(localized: "Trappist Challenge")
         }
     }
 
@@ -25,6 +26,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .gemeenten: String(localized: "tab.municipalities", defaultValue: "Towns")
         case .postcodes: String(localized: "tab.postcodes", defaultValue: "Postcodes")
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
+        case .trappists: String(localized: "tab.trappists", defaultValue: "Trappists")
         }
     }
 
@@ -44,7 +46,7 @@ enum MapMode: String, CaseIterable, Identifiable {
 enum Challenges {
     /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
     static let key = "challenges"
-    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs]
+    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists]
 
     static func decode(_ raw: String) -> Set<MapMode> {
         Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).intersection(all)
@@ -107,6 +109,7 @@ struct ActivityMapView: UIViewRepresentable {
     let version: Int
     @Binding var selectedArea: Area?
     @Binding var selectedClimb: Climb?
+    @Binding var selectedTrappist: Trappist?
     /// Incremented by the "my location" button.
     let locateRequest: Int
     @Binding var isFollowingUser: Bool
@@ -312,6 +315,8 @@ struct ActivityMapView: UIViewRepresentable {
                     multi.color = color
                     map.addOverlay(multi, level: .aboveRoads)
                 }
+            case .trappists:
+                map.addAnnotations(Trappist.all.map { TrappistAnnotation(trappist: $0, visited: store.trappistVisits[$0.id] != nil) })
             }
 
             if planning, let start = plan.start {
@@ -348,7 +353,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .climbs:
+            case .climbs, .trappists:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -407,8 +412,54 @@ struct ActivityMapView: UIViewRepresentable {
         /// The chosen starting point; drag it to move the start.
         final class StartAnnotation: MKPointAnnotation {}
 
+        /// A Trappist brewery, drawn as its logo in a white badge: green ring and check once visited.
+        final class TrappistAnnotation: NSObject, MKAnnotation {
+            let trappist: Trappist
+            let visited: Bool
+            var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: trappist.lat, longitude: trappist.lon) }
+            var title: String? { trappist.name }
+
+            init(trappist: Trappist, visited: Bool) {
+                self.trappist = trappist
+                self.visited = visited
+            }
+
+            /// The badge, rendered once per brewery and state.
+            func badge() -> UIImage {
+                let size = CGSize(width: 46, height: 46)
+                return UIGraphicsImageRenderer(size: size).image { _ in
+                    let rect = CGRect(origin: .zero, size: size).insetBy(dx: 2, dy: 2)
+                    let ring = visited ? UIColor.systemGreen : UIColor.systemGray
+                    UIColor.white.setFill()
+                    let circle = UIBezierPath(ovalIn: rect)
+                    circle.fill()
+                    trappist.icon?.draw(in: rect.insetBy(dx: 5, dy: 5))
+                    ring.setStroke()
+                    circle.lineWidth = 3
+                    circle.stroke()
+                    if visited, let check = UIImage(systemName: "checkmark.circle.fill")?
+                        .withTintColor(.systemGreen, renderingMode: .alwaysOriginal) {
+                        let c = CGRect(x: size.width - 17, y: size.height - 17, width: 16, height: 16)
+                        UIColor.white.setFill()
+                        UIBezierPath(ovalIn: c).fill()
+                        check.draw(in: c)
+                    }
+                }
+            }
+        }
+
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             guard !(annotation is MKUserLocation) else { return nil }
+            if let trappist = annotation as? TrappistAnnotation {
+                let view = mapView.dequeueReusableAnnotationView(withIdentifier: "trappist")
+                    ?? MKAnnotationView(annotation: annotation, reuseIdentifier: "trappist")
+                view.annotation = annotation
+                view.image = trappist.badge()
+                view.canShowCallout = false
+                view.displayPriority = .required
+                view.collisionMode = .circle
+                return view
+            }
             if annotation is StartAnnotation {
                 let view = mapView.dequeueReusableAnnotationView(withIdentifier: "start") as? MKMarkerAnnotationView
                     ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "start")
@@ -523,7 +574,14 @@ struct ActivityMapView: UIViewRepresentable {
                     }
                 case .climbs:
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
+                case .trappists:
+                    break
                 }
+                return
+            }
+
+            if parent.mode == .trappists {
+                parent.selectedTrappist = nearestTrappist(to: p, on: map)
                 return
             }
 
@@ -533,6 +591,14 @@ struct ActivityMapView: UIViewRepresentable {
             }
             guard let (areas, _) = parent.mode.areas(in: store) else { return }
             parent.selectedArea = areas.area(at: p)
+        }
+
+        /// The brewery closest to a tap, within its badge (about 25 points on screen).
+        private func nearestTrappist(to p: GeoPoint, on map: MKMapView) -> Trappist? {
+            let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
+            return Trappist.all.map { ($0, Geo.distance($0.point, p)) }
+                .filter { $0.1 <= 25 * metresPerPoint }
+                .min { $0.1 < $1.1 }?.0
         }
 
         /// The climb drawn closest to a tap, within about 25 points on screen.

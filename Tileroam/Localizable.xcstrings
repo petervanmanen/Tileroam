@@ -845,6 +845,34 @@
         }
       }
     },
+    "%lld of %lld Trappist breweries visited": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld van %2$lld trappistenbrouwerijen bezocht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld brasseries trappistes visitées sur %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld cervecerías trapenses visitadas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Trappistenbrauereien besucht"
+          }
+        }
+      }
+    },
     "%lld postcodes": {
       "localizations": {
         "en": {
@@ -4825,6 +4853,34 @@
         }
       }
     },
+    "Not visited yet: ride within 200 m of the brewery": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet bezocht: rijd binnen 200 m van de brouwerij"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore visitée : passez à moins de 200 m de la brasserie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no visitada: pasa a menos de 200 m de la cervecería"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht besucht: fahre näher als 200 m an der Brauerei vorbei"
+          }
+        }
+      }
+    },
     "Not yet (%lld)": {
       "localizations": {
         "nl": {
@@ -7905,6 +7961,34 @@
         }
       }
     },
+    "Trappist Challenge": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trappistenuitdaging"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Défi trappiste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desafío trapense"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trappisten-Challenge"
+          }
+        }
+      }
+    },
     "Try Again": {
       "localizations": {
         "nl": {
@@ -7985,6 +8069,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Besucht"
+          }
+        }
+      }
+    },
+    "Visited %lld times, last on %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld keer bezocht, laatst op %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visitée %1$lld fois, dernière le %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visitada %1$lld veces, la última el %2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-mal besucht, zuletzt am %2$@"
           }
         }
       }
@@ -8618,6 +8730,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kacheln"
+          }
+        }
+      }
+    },
+    "tab.trappists": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trappisten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trappistes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trapenses"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trappisten"
           }
         }
       }
