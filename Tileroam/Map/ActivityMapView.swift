@@ -39,6 +39,38 @@ enum MapMode: String, CaseIterable, Identifiable {
     }
 }
 
+/// The map modes besides Tiles and Routes are challenges the user turns on (Settings, or the
+/// Challenges menu at the end of the mode bar). All are off by default, so the bar stays short.
+enum Challenges {
+    /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
+    static let key = "challenges"
+    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs]
+
+    static func decode(_ raw: String) -> Set<MapMode> {
+        Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).intersection(all)
+    }
+
+    static func encode(_ modes: Set<MapMode>) -> String {
+        all.filter(modes.contains).map(\.rawValue).joined(separator: ",")
+    }
+
+    /// The modes in the bar: Tiles, Routes (not while planning) and the turned-on challenges.
+    static func visibleModes(_ raw: String, planning: Bool) -> [MapMode] {
+        let on = decode(raw)
+        return MapMode.allCases.filter { mode in
+            switch mode {
+            case .squares: true
+            case .activities: !planning
+            default: on.contains(mode)
+            }
+        }
+    }
+}
+
+extension MapMode {
+    var isChallenge: Bool { Challenges.all.contains(self) }
+}
+
 /// Base map shown under the overlays.
 enum MapStyle: String, CaseIterable, Identifiable {
     case standard, satellite, hybrid

@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var stravaFileCount = 0
     @State private var showStorage = false
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
+    @AppStorage(Challenges.key) private var challenges = ""
     let onChooseFolder: (PickerPurpose) -> Void
     let onShowIntro: () -> Void
 
@@ -56,6 +57,22 @@ struct SettingsView: View {
                     Text("Tiles")
                 } footer: {
                     Text("Zoom 14 tiles (~1.5 km in the Netherlands) are the explorer tiles of VeloViewer, StatsHunters and rideeverytile.com. Zoom 17 squadratinhos (~190 m) are used by Squadrats. Both are always counted; this setting chooses which one the map, statistics and route planning use.")
+                }
+
+                Section {
+                    ForEach(Challenges.all) { mode in
+                        Toggle(mode.title, isOn: Binding(
+                            get: { Challenges.decode(challenges).contains(mode) },
+                            set: { on in
+                                var set = Challenges.decode(challenges)
+                                if on { set.insert(mode) } else { set.remove(mode) }
+                                challenges = Challenges.encode(set)
+                            }))
+                    }
+                } header: {
+                    Text("Challenges")
+                } footer: {
+                    Text("Tiles and Routes are always at the top of the map. Choose which other challenges are there too; the + at the end of that bar does the same. Everything is still counted, also for challenges you don't show.")
                 }
 
                 Section {

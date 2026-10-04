@@ -22,6 +22,7 @@ struct ContentView: View {
     @Environment(PlanStore.self) private var plan
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("mapMode") private var mode: MapMode = .squares
+    @AppStorage(Challenges.key) private var challenges = ""
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     @AppStorage("mapStyle") private var mapStyle: MapStyle = .standard
     @State private var showPicker = false
@@ -123,6 +124,11 @@ struct ContentView: View {
             }
             .onAppear {
                 if !hasSeenIntro { showIntro = true }
+                // Users who were on a challenge's tab before challenges could be turned off (and
+                // launches with -mapMode gemeenten) keep that challenge.
+                if mode.isChallenge, !Challenges.decode(challenges).contains(mode) {
+                    challenges = Challenges.encode(Challenges.decode(challenges).union([mode]))
+                }
                 #if DEBUG
                 // Screenshots: -ShowSettings YES opens Settings on launch.
                 if UserDefaults.standard.bool(forKey: "ShowSettings") { showSettings = true }
@@ -131,6 +137,10 @@ struct ContentView: View {
                 #endif
             }
             .task { await store.refreshAll() }
+            // A challenge turned off (here or on another device) while its tab shows: back to Tiles.
+            .onChange(of: challenges) { _, raw in
+                if mode.isChallenge, !Challenges.decode(raw).contains(mode) { mode = .squares }
+            }
             #if DEBUG
             .task { await plan.runDebugDemo(with: store) }
             .task { await runPreviewTour() }
@@ -170,7 +180,7 @@ struct ContentView: View {
 
     private var headerContent: some View {
         VStack(spacing: 8) {
-            ModeChips(modes: MapMode.allCases.filter { !plan.isPlanning || $0 != .activities }, selection: $mode)
+            ModeChips(modes: Challenges.visibleModes(challenges, planning: plan.isPlanning), selection: $mode, challenges: $challenges)
             HStack(alignment: .center, spacing: 10) {
                 Text(statsText)
                     .font(.footnote.weight(.medium))
@@ -412,6 +422,7 @@ extension ContentView {
         guard UserDefaults.standard.bool(forKey: "PreviewTour") else { return }
         _ = await store.loadedRegions()
         try? await Task.sleep(for: .seconds(6)) // map tiles and overlays finish drawing
+        challenges = Challenges.encode(Set(Challenges.all))
         print("PREVIEW_TOUR_START \(Date.now.timeIntervalSince1970)")
         try? await Task.sleep(for: .seconds(3))
         mode = .gemeenten
@@ -436,6 +447,8 @@ extension ContentView {
 private struct ModeChips: View {
     let modes: [MapMode]
     @Binding var selection: MapMode
+    /// Challenges.key's value: which challenges are in the bar.
+    @Binding var challenges: String
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -457,6 +470,7 @@ private struct ModeChips: View {
                         .id(mode)
                         .accessibilityAddTraits(selection == mode ? .isSelected : [])
                     }
+                    challengesMenu
                 }
                 .padding(3)
             }
@@ -465,5 +479,33 @@ private struct ModeChips: View {
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Mode")
         }
+    }
+
+    /// Turns challenges on and off; a turned-off challenge that's showing switches the map to Tiles.
+    private var challengesMenu: some View {
+        Menu {
+            Section("Challenges") {
+                ForEach(Challenges.all) { mode in
+                    Toggle(mode.title, isOn: Binding(
+                        get: { Challenges.decode(challenges).contains(mode) },
+                        set: { on in
+                            var set = Challenges.decode(challenges)
+                            if on { set.insert(mode) } else { set.remove(mode) }
+                            withAnimation(.snappy) {
+                                challenges = Challenges.encode(set)
+                                if on { selection = mode } else if selection == mode { selection = .squares }
+                            }
+                        }))
+                }
+            }
+        } label: {
+            Image(systemName: "plus")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .contentShape(Capsule())
+        }
+        .accessibilityLabel("Challenges")
     }
 }
