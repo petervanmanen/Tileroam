@@ -1,8 +1,9 @@
+import BackgroundAssets
 import Foundation
+import System
 
 /// A Klompenpad (www.klompenpaden.nl): a walking path through the countryside of Gelderland and
-/// Utrecht. The list is on Cloudflare R2 (`<server>/Klompenpaden/klompenpaden.json`, see
-/// `KlompenpadData`), made by Tools/build_klompenpaden.py. A path is walked when the user's
+/// Utrecht. The list is an asset pack (see `KlompenpadData`), made by Tools/build_klompenpaden.py. A path is walked when the user's
 /// activities cover its main route (`KlompenpadMatcher`).
 struct Klompenpad: Codable, Sendable, Identifiable, Hashable {
     let id: String
@@ -29,21 +30,57 @@ struct Klompenpad: Codable, Sendable, Identifiable, Hashable {
     }
 }
 
-/// The Klompenpaden list on R2, uploaded with Tools/upload_klompenpaden_r2.sh from
-/// AssetPacks/Klompenpaden; kept in `Application Support/Klompenpaden` (see `RemoteList`).
+/// The Klompenpaden list: an Apple-hosted asset pack, `klompenpaden` (klompenpaden.json, built by
+/// Tools/build_klompenpaden.py and packaged by Tools/build_asset_packs.sh klompenpaden; uploaded
+/// with Tools/upload_asset_packs.sh klompenpaden, or by the Asset packs workflow when the list
+/// changes on main). Downloaded on demand at the first refresh; the system keeps it.
 enum KlompenpadData {
-    static var folder: URL { URL.applicationSupportDirectory.appending(path: "Klompenpaden", directoryHint: .isDirectory) }
-    private static let listName = "klompenpaden.json"
+    static let packID = "klompenpaden"
+    private static let fileName = "klompenpaden.json"
 
-    static func cached(in folder: URL = folder) -> [Klompenpad] {
-        RemoteList.cached(Klompenpad.self, name: listName, in: folder)
+    /// The list, if the pack is on the device already (empty otherwise).
+    static func cached() -> [Klompenpad] {
+        (try? data()).flatMap { try? JSONDecoder().decode([Klompenpad].self, from: $0) } ?? []
     }
 
-    static func load(from server: URL = RoutingData.serverURL, session: URLSession = RoutingData.tileSession,
-                     into folder: URL = folder, now: Date = .now) async throws -> [Klompenpad] {
-        try await RemoteList.load(Klompenpad.self, name: listName, remote: "Klompenpaden", into: folder,
-                                  from: server, session: session, now: now)
+    /// The list, downloading the pack when it isn't on the device yet (retried once).
+    static func load() async throws -> [Klompenpad] {
+        #if DEBUG
+        if localFile != nil { return cached() }
+        #endif
+        let manager = AssetPackManager.shared
+        var lastError: (any Error)?
+        for attempt in 0..<2 {
+            if attempt > 0 { try await Task.sleep(for: .seconds(2)) }
+            do {
+                let pack = try await manager.assetPack(withID: packID)
+                if #available(iOS 26.4, *) {
+                    try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: false)
+                } else {
+                    try await manager.ensureLocalAvailability(of: pack)
+                }
+                return try JSONDecoder().decode([Klompenpad].self, from: try data())
+            } catch {
+                lastError = error
+            }
+        }
+        throw lastError!
     }
+
+    private static func data() throws -> Data {
+        #if DEBUG
+        if let localFile { return try Data(contentsOf: localFile) }
+        #endif
+        return try AssetPackManager.shared.contents(at: FilePath(fileName), searchingInAssetPackWithID: packID)
+    }
+
+    #if DEBUG
+    /// Simulator and screenshots: read the list from the Mac instead of the asset pack, e.g.
+    /// `-KlompenpadenFile /path/to/Tileroam/AssetPacks/Klompenpaden/klompenpaden.json`.
+    static var localFile: URL? {
+        UserDefaults.standard.string(forKey: "KlompenpadenFile").map { URL(filePath: $0) }
+    }
+    #endif
 }
 
 /// How much of each path the user has walked: the share of points along its main route (one

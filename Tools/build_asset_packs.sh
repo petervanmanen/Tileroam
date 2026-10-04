@@ -5,6 +5,7 @@
 #
 #   Tools/build_asset_packs.sh            # all countries
 #   Tools/build_asset_packs.sh NL BE      # some countries
+#   Tools/build_asset_packs.sh klompenpaden   # the Klompenpaden list (AssetPacks/Klompenpaden)
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
@@ -15,10 +16,25 @@ mkdir -p $OUT/manifests
 
 countries=("$@")
 if (( ${#countries} == 0 )); then
-  countries=(${(u)$(ls $SRC/*.fmr | xargs -n1 basename | cut -d- -f1)})
+  countries=(${(u)$(ls $SRC/*.fmr | xargs -n1 basename | cut -d- -f1)} klompenpaden)
 fi
 
 for cc in $countries; do
+  if [[ $cc == klompenpaden ]]; then
+    # The Klompenpaden challenge's list (Tools/build_klompenpaden.py), one small pack.
+    cat > $OUT/manifests/klompenpaden.json <<JSON
+{
+  "assetPackID": "klompenpaden",
+  "downloadPolicy": { "onDemand": {} },
+  "fileSelectors": [ { "file": "klompenpaden.json" } ],
+  "platforms": [ "iOS" ]
+}
+JSON
+    rm -f $OUT/klompenpaden.aar
+    (cd $ROOT/AssetPacks/Klompenpaden && xcrun ba-package package $OUT/manifests/klompenpaden.json --output-path $OUT/klompenpaden.aar --quiet)
+    echo "klompenpaden  $(du -h $OUT/klompenpaden.aar | cut -f1)"
+    continue
+  fi
   files=($SRC/$cc-*.fmr(N))
   (( ${#files} )) || { echo "no files for $cc" >&2; exit 1 }
   selectors=$(for f in $files; do printf '{ "file": "%s" },' ${f:t}; done)

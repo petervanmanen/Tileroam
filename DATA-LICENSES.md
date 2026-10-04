@@ -40,7 +40,7 @@ the **public domain**. The app uses it on the device to count the countries of y
 
 ## Klompenpaden
 
-The Klompenpaden challenge's list (`AssetPacks/Klompenpaden`, served from Cloudflare R2) holds the
+The Klompenpaden challenge's list (`AssetPacks/Klompenpaden/klompenpaden.json`, an Apple-hosted asset pack like the boundaries) holds the
 names, start points, lengths and main routes of the Klompenpaden, taken from
 [www.klompenpaden.nl](https://www.klompenpaden.nl) (`AssetPacks/Klompenpaden/source`). The routes
 and names belong to Klompenpaden; the app names the source under Settings → Sources & Licenses

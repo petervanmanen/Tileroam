@@ -68,7 +68,7 @@ final class ActivityStore {
     private var trappistTask: Task<Void, Never>?
 
     // Klompenpaden (see Klompenpad, KlompenpadData)
-    /// The paths, from R2 (the copy on the device until the download is checked).
+    /// The paths, from the `klompenpaden` asset pack (empty until it's downloaded).
     private(set) var klompenpaden: [Klompenpad] = KlompenpadData.cached()
     /// For each path with progress, the share of its main route walked (0…1).
     private(set) var klompenpadProgress: [String: Double] = [:]
@@ -335,7 +335,8 @@ final class ActivityStore {
         }
     }
 
-    /// Checks for a new list of Klompenpaden (at most once a day) and matches again when it changed.
+    /// Loads the Klompenpaden list (downloading its asset pack the first time) and matches again
+    /// when it changed.
     func updateKlompenpaden() async {
         guard let list = try? await KlompenpadData.load(), list != klompenpaden else { return }
         klompenpaden = list

@@ -6,7 +6,7 @@ name: Asset packs
 on:
   push:
     branches: [main]
-    paths: ['AssetPacks/Regions/*.fmr']
+    paths: ['AssetPacks/Regions/*.fmr', 'AssetPacks/Klompenpaden/klompenpaden.json']
   workflow_dispatch:
     inputs:
       countries:
@@ -48,10 +48,13 @@ jobs:
         run: |
           if [[ "$GITHUB_EVENT_NAME" == push ]]; then
             COUNTRIES=$(git diff --name-only HEAD^ HEAD -- 'AssetPacks/Regions/*.fmr' | xargs -n1 basename | cut -d- -f1 | sort -u | xargs)
+            # The Klompenpaden list is a pack of its own.
+            if git diff --quiet HEAD^ HEAD -- AssetPacks/Klompenpaden/klompenpaden.json; then :; else COUNTRIES="$COUNTRIES klompenpaden"; fi
+            COUNTRIES=$(echo $COUNTRIES)
           else
             COUNTRIES="$INPUT_COUNTRIES"
           fi
-          [[ "$COUNTRIES" =~ ^[A-Z\ ]*$ ]] || { echo "Invalid countries: $COUNTRIES"; exit 1; }
+          [[ "$COUNTRIES" =~ ^[A-Z\ ]*( ?klompenpaden)?$ ]] || { echo "Invalid countries: $COUNTRIES"; exit 1; }
           echo "COUNTRIES=$COUNTRIES" >> "$GITHUB_ENV"
           echo "Countries: ${COUNTRIES:-all}" >> "$GITHUB_STEP_SUMMARY"
 
