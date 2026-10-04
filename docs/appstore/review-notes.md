@@ -11,7 +11,7 @@ HOW TO TRY IT WITHOUT YOUR OWN FILES
 2. On the "Add your activities" card, tap "Try with Sample Rides". This loads 24 bundled example rides around Utrecht, the Netherlands.
 3. Explore the tabs at the top: Tiles, Routes, Towns (municipalities) and Postcodes.
 4. Statistics: tap the chart button in the header.
-5. Route planning covers the Netherlands, Belgium, Luxembourg and Germany and runs on the device. To try it from anywhere:
+5. Route planning covers the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria and runs on the device. To try it from anywhere:
    a. Tap the route button in the header.
    b. Tap "Start: My Location" in the panel at the bottom and search for "Utrecht Centraal". Or long-press the map near the sample rides; a green flag marks the start.
    c. Tap a few white (unvisited) tiles near the flag, then tap "Plan Route".

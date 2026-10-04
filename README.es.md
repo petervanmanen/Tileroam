@@ -12,8 +12,8 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 - **Rutas**: todas tus actividades en un mapa, coloreadas por deporte.
 - **Subidas**: todas las subidas de las carreteras (Cat. 4 a HC como en Strava, y repechos cortos), obtenidas de datos de altitud; cuáles has hecho, en una pestaña del mapa y en Estadísticas, y subidas para incluir al planificar una ruta. Ver [docs/CLIMBS.md](docs/CLIMBS.md).
 - **Actividades**: una lista de todas las actividades, de la más reciente a la más antigua, con duración, distancia y potencia media (con medidor de potencia) o velocidad media.
-- **Municipios y códigos postales** en los Países Bajos, Bélgica, Luxemburgo y Alemania, con visitados/total por país.
-- **Planificación de rutas** en los Países Bajos, Bélgica, Luxemburgo y Alemania: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
+- **Municipios y códigos postales** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria, con visitados/total por país.
+- **Planificación de rutas** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
 - **Strava**: importa todo tu historial con GPS. Las actividades también se guardan como archivos `.fit` estándar en la carpeta que elijas.
 - **Duplicados fusionados**: el mismo entrenamiento registrado por varios dispositivos o apps (reloj, Zwift, Strava, HealthFit) cuenta una sola vez.
 - **Widgets**: *Teselas a tu alrededor* (un mapa de las teselas cerca de ti) y *Número de Eddington*, en la pantalla de inicio y la pantalla bloqueada.
@@ -51,8 +51,11 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 | Bélgica | 565 | 1.150 |
 | Luxemburgo | 100 communes | – |
 | Alemania | 10.949 Gemeinden | 8.173 (PLZ) |
+| Francia | 34.888 communes | 6.158 (zonas aproximadas) |
+| Suiza | 2.128 Gemeinden | 3.181 PLZ |
+| Austria | 2.092 Gemeinden | – |
 
-Las teselas, rutas y estadísticas funcionan en todas partes; los municipios, códigos postales y la planificación cubren estos cuatro países. Los códigos postales solo se incluyen donde sus límites se publican como datos abiertos. Los límites de un país se descargan automáticamente la primera vez que tienes una actividad allí.
+Las teselas, rutas y estadísticas funcionan en todas partes; los municipios, códigos postales y la planificación cubren estos siete países. Los códigos postales solo se incluyen donde sus límites se publican como datos abiertos. Los límites de un país se descargan automáticamente la primera vez que tienes una actividad allí.
 
 ## Primeros pasos
 
@@ -83,7 +86,7 @@ Strava permite unas 100 solicitudes cada 15 minutos y 1.000 al día. La lista de
 - Las **teselas** usan la fórmula estándar de teselas Web Mercator (`Geo/TileGrid.swift`). El cuadrado máximo y el clúster se calculan solo sobre las teselas visitadas, por lo que siguen siendo rápidos incluso con teselas de zoom 17 repartidas por Europa.
 - **Duplicados**: las actividades del mismo tipo que se solapan en el tiempo se fusionan (`Import/ActivityMerge.swift`); se conserva la copia con el mejor GPS y la mayor distancia.
 - Los **municipios y códigos postales** son archivos binarios compactos (`AssetPacks/Regions/*.fmr`, 6,3 MB en total) con un índice espacial para búsquedas rápidas. No van en la app: cada país es un asset pack alojado por Apple (`regions-NL`, …) que la app descarga con Background Assets en cuanto tienes una actividad allí. `Tools/build_asset_packs.sh` los prepara para App Store Connect; en el simulador, `-RegionsDir <repo>/AssetPacks/Regions` los lee directamente.
-- La **planificación** funciona en el dispositivo con [Valhalla](https://github.com/valhalla/valhalla), a través de [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), y teselas de OpenStreetMap de los Países Bajos, Bélgica, Luxemburgo y Alemania. Las teselas están en Cloudflare R2; un plan solo descarga las teselas de Valhalla a su alrededor (25–75 MB, en lugar de 2,2 GB para todo). Las descargas de más de 25 MB esperan al wifi (`MapDataDownloads`). El orden de visita se resuelve con distancias en línea recta (`TripSolver`, mucho más rápido que una matriz de rutas en el dispositivo); después, dentro de cada objetivo, el planificador elige el punto que minimiza el desvío, y Valhalla calcula la ruta circular. Cómo generar y subir las teselas y añadir países: [docs/ROUTING.md](docs/ROUTING.md).
+- La **planificación** funciona en el dispositivo con [Valhalla](https://github.com/valhalla/valhalla), a través de [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), y teselas de OpenStreetMap de los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria. Las teselas están en Cloudflare R2; un plan solo descarga las teselas de Valhalla a su alrededor (25–75 MB, en lugar de 2,2 GB para todo). Las descargas de más de 25 MB esperan al wifi (`MapDataDownloads`). El orden de visita se resuelve con distancias en línea recta (`TripSolver`, mucho más rápido que una matriz de rutas en el dispositivo); después, dentro de cada objetivo, el planificador elige el punto que minimiza el desvío, y Valhalla calcula la ruta circular. Cómo generar y subir las teselas y añadir países: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Datos de límites
 
@@ -102,6 +105,9 @@ El script documenta de dónde viene cada archivo fuente. Reproyecta a WGS84, fus
 | Bélgica | NGI-IGN, bpost vía Opendatasoft (licencia de códigos postales: ver la fuente) |
 | Luxemburgo | ACT (CC0) |
 | Alemania | BKG VG250 (dl-de/by-2-0); códigos postales: OpenStreetMap (ODbL) |
+| Francia | IGN, INSEE; zonas postales Etalab / BAN (Licence Ouverte 2.0) |
+| Suiza | swisstopo (opendata.swiss) |
+| Austria | Statistik Austria (CC BY 4.0) |
 
 Planificación de rutas: © colaboradores de OpenStreetMap (ODbL), rutas calculadas por Valhalla en el dispositivo.
 
@@ -138,7 +144,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 ## Limitaciones
 
-- Los municipios, códigos postales y la planificación cubren solo los Países Bajos, Bélgica, Luxemburgo y Alemania. [docs/ROUTING.md](docs/ROUTING.md) explica cómo añadir países.
+- Los municipios, códigos postales y la planificación cubren solo los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria. [docs/ROUTING.md](docs/ROUTING.md) explica cómo añadir países.
 - Luxemburgo no tiene límites de códigos postales como datos abiertos.
 - Las rutas son circulares; las rutas de ida de A a B aún no son compatibles.
 

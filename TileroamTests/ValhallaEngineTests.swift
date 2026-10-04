@@ -95,10 +95,28 @@ struct ValhallaEngineTests {
         let r = try await router.route([kerkrade, aachen])
         #expect((9_000...20_000).contains(r.distance)) // about 12 km by bike
     }
+
+    @Test(.enabled(if: westBuild != nil)) func routesAcrossFrenchSwissAndAustrianBorders() async throws {
+        UserDefaults.standard.removeObject(forKey: "RoutingServer")
+        UserDefaults.standard.set(westBuild!.path(percentEncoded: false), forKey: "RoutingTar")
+        defer { UserDefaults.standard.removeObject(forKey: "RoutingTar") }
+        // Saint-Louis (FR) → Basel (CH) → Weil am Rhein (DE), and Lindau (DE) → Bregenz (AT).
+        let saintLouis = GeoPoint(lat: 47.5900, lon: 7.5600), basel = GeoPoint(lat: 47.5596, lon: 7.5886)
+        let weil = GeoPoint(lat: 47.5947, lon: 7.6110)
+        let lindau = GeoPoint(lat: 47.5460, lon: 9.6840), bregenz = GeoPoint(lat: 47.5031, lon: 9.7471)
+        #expect([saintLouis, basel, weil, lindau, bregenz].allSatisfy(RoutingData.covers))
+        let router = ValhallaRouter()
+        try await router.prepare(around: [saintLouis, basel, weil], margin: 10_000)
+        let tri = try await router.route([saintLouis, basel, weil])
+        #expect((4_000...15_000).contains(tri.distance))
+        try await router.prepare(around: [lindau, bregenz], margin: 10_000)
+        let lake = try await router.route([lindau, bregenz])
+        #expect((6_000...16_000).contains(lake.distance)) // about 9 km along the lake
+    }
 }
 
 /// The production build (Tools/build_routing_tiles.sh west …, not in Git): checks that routes cross
-/// the Dutch–German border, which needs the countries in one build.
+/// borders, which needs the countries in one build.
 private let westBuild: URL? = {
     let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
     let tar = root.appending(path: "AssetPacks/build/routing/routing-west.tar")

@@ -12,8 +12,8 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 - **Routen**: alle deine Aktivitäten auf einer Karte, nach Sportart eingefärbt.
 - **Anstiege**: alle Anstiege auf den Straßen (Kat. 4 bis HC wie bei Strava, dazu kurze steile Hügel), aus Höhendaten ermittelt; welche du gefahren bist, auf einem eigenen Kartentab und in den Statistiken, und Anstiege zum Einplanen in eine Route. Siehe [docs/CLIMBS.md](docs/CLIMBS.md).
 - **Aktivitäten**: eine Liste aller Aktivitäten, die neuesten zuerst, mit Dauer, Distanz und durchschnittlicher Leistung (mit Powermeter) oder Durchschnittsgeschwindigkeit.
-- **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg und Deutschland, mit besucht/gesamt pro Land.
-- **Routenplanung** in den Niederlanden, Belgien, Luxemburg und Deutschland: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
+- **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich, mit besucht/gesamt pro Land.
+- **Routenplanung** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
 - **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
 - **Widgets**: *Kacheln um dich herum* (eine Karte der Kacheln in deiner Nähe) und *Eddington-Zahl*, auf dem Home-Bildschirm und dem Sperrbildschirm.
@@ -51,8 +51,11 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 | Belgien | 565 | 1.150 |
 | Luxemburg | 100 communes | – |
 | Deutschland | 10.949 Gemeinden | 8.173 (PLZ) |
+| Frankreich | 34.888 communes | 6.158 (angenäherte Zonen) |
+| Schweiz | 2.128 Gemeinden | 3.181 PLZ |
+| Österreich | 2.092 Gemeinden | – |
 
-Kacheln, Routen und Statistiken funktionieren überall; Gemeinden, Postleitzahlen und Routenplanung decken diese vier Länder ab. Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Die Grenzen eines Landes werden automatisch geladen, sobald du dort eine Aktivität hast.
+Kacheln, Routen und Statistiken funktionieren überall; Gemeinden, Postleitzahlen und Routenplanung decken diese sieben Länder ab. Postleitzahlen sind nur dort enthalten, wo ihre Grenzen als offene Daten veröffentlicht sind. Die Grenzen eines Landes werden automatisch geladen, sobald du dort eine Aktivität hast.
 
 ## Erste Schritte
 
@@ -83,7 +86,7 @@ Strava erlaubt etwa 100 Anfragen pro 15 Minuten und 1.000 pro Tag. Die Aktivitä
 - **Kacheln** verwenden die Standardformel für Web-Mercator-Kacheln (`Geo/TileGrid.swift`). Max-Quadrat und Cluster werden nur über die besuchten Kacheln berechnet und bleiben so auch für Zoom-17-Kacheln quer durch Europa schnell.
 - **Doppelte**: Aktivitäten derselben Art, die sich zeitlich überschneiden, werden zusammengeführt (`Import/ActivityMerge.swift`); die Kopie mit dem besten GPS und der längsten Distanz bleibt erhalten.
 - **Gemeinden und Postleitzahlen** sind kompakte Binärdateien (`AssetPacks/Regions/*.fmr`, insgesamt 6,3 MB) mit einem räumlichen Index für schnelle Abfragen. Sie sind nicht in der App: Jedes Land ist ein von Apple gehostetes Asset Pack (`regions-NL`, …), das die App mit Background Assets lädt, sobald du dort eine Aktivität hast. `Tools/build_asset_packs.sh` erstellt die Packs für App Store Connect; im Simulator liest `-RegionsDir <repo>/AssetPacks/Regions` sie direkt.
-- Die **Routenplanung** läuft auf dem Gerät mit [Valhalla](https://github.com/valhalla/valhalla), über [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), und OpenStreetMap-Kacheln für die Niederlande, Belgien, Luxemburg und Deutschland. Die Kacheln liegen auf Cloudflare R2; ein Plan lädt nur die Valhalla-Kacheln in seiner Umgebung (25–75 MB statt 2,2 GB für alles). Downloads über 25 MB warten auf WLAN (`MapDataDownloads`). Die Reihenfolge wird auf Luftlinien-Entfernungen bestimmt (`TripSolver`, viel schneller als eine Routing-Matrix auf dem Gerät); danach wählt der Planer in jedem Ziel den Punkt mit dem kleinsten Umweg, und Valhalla berechnet die Rundtour. Kacheln bauen und hochladen, Länder hinzufügen: [docs/ROUTING.md](docs/ROUTING.md).
+- Die **Routenplanung** läuft auf dem Gerät mit [Valhalla](https://github.com/valhalla/valhalla), über [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), und OpenStreetMap-Kacheln für die Niederlande, Belgien, Luxemburg, Deutschland, Frankreich, die Schweiz und Österreich. Die Kacheln liegen auf Cloudflare R2; ein Plan lädt nur die Valhalla-Kacheln in seiner Umgebung (25–75 MB statt 2,2 GB für alles). Downloads über 25 MB warten auf WLAN (`MapDataDownloads`). Die Reihenfolge wird auf Luftlinien-Entfernungen bestimmt (`TripSolver`, viel schneller als eine Routing-Matrix auf dem Gerät); danach wählt der Planer in jedem Ziel den Punkt mit dem kleinsten Umweg, und Valhalla berechnet die Rundtour. Kacheln bauen und hochladen, Länder hinzufügen: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Grenzdaten
 
@@ -102,6 +105,9 @@ Das Skript dokumentiert, woher jede Quelldatei stammt. Es projiziert nach WGS84 
 | Belgien | NGI-IGN, bpost über Opendatasoft (Postleitzahl-Lizenz: siehe Quelle) |
 | Luxemburg | ACT (CC0) |
 | Deutschland | BKG VG250 (dl-de/by-2-0); Postleitzahlen: OpenStreetMap (ODbL) |
+| Frankreich | IGN, INSEE; Postleitzahlzonen Etalab / BAN (Licence Ouverte 2.0) |
+| Schweiz | swisstopo (opendata.swiss) |
+| Österreich | Statistik Austria (CC BY 4.0) |
 
 Routenplanung: © OpenStreetMap-Mitwirkende (ODbL), Routing durch Valhalla auf dem Gerät.
 
@@ -138,7 +144,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 ## Einschränkungen
 
-- Gemeinden, Postleitzahlen und Routenplanung decken nur die Niederlande, Belgien, Luxemburg und Deutschland ab. [docs/ROUTING.md](docs/ROUTING.md) beschreibt, wie man Länder hinzufügt.
+- Gemeinden, Postleitzahlen und Routenplanung decken nur die Niederlande, Belgien, Luxemburg, Deutschland, Frankreich, die Schweiz und Österreich ab. [docs/ROUTING.md](docs/ROUTING.md) beschreibt, wie man Länder hinzufügt.
 - Luxemburg hat keine offenen Postleitzahlgrenzen.
 - Routen sind Rundtouren; einfache Strecken von A nach B werden noch nicht unterstützt.
 

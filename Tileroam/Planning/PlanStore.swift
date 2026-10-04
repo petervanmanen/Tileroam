@@ -183,7 +183,7 @@ final class PlanStore {
         let regions: RegionData? = await store.loadedRegions()
         let targets = selected.sorted { $0.sortKey < $1.sortKey }
             .compactMap { TargetGeometry($0, regions: regions, climbs: store.climbs) }
-        // The routing data covers the Netherlands, Belgium, Luxembourg and Germany.
+        // The routing data covers the countries in RoutingData.countries.
         guard RoutingData.covers(start),
               targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
             throw RoutingError.outsideRegion

@@ -33,6 +33,9 @@ struct Country: Identifiable, Hashable, Sendable {
         Country(code: "BE", minLat: 49.4, maxLat: 51.6, minLon: 2.5, maxLon: 6.5, hasPostcodes: true),
         Country(code: "LU", minLat: 49.4, maxLat: 50.2, minLon: 5.7, maxLon: 6.6, hasPostcodes: false),
         Country(code: "DE", minLat: 47.2, maxLat: 55.1, minLon: 5.8, maxLon: 15.1, hasPostcodes: true),
+        Country(code: "FR", minLat: 41.3, maxLat: 51.2, minLon: -5.2, maxLon: 9.6, hasPostcodes: true),
+        Country(code: "CH", minLat: 45.8, maxLat: 47.9, minLon: 5.9, maxLon: 10.6, hasPostcodes: true),
+        Country(code: "AT", minLat: 46.3, maxLat: 49.1, minLon: 9.5, maxLon: 17.2, hasPostcodes: false),
     ]
 
     /// Sorted by name in the current language, for lists.

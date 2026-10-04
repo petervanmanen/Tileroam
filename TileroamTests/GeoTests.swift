@@ -85,7 +85,16 @@ struct GeoTests {
         #expect(m.area(at: GeoPoint(lat: 49.6116, lon: 6.1319))?.name == "Luxembourg")
         #expect(m.area(at: GeoPoint(lat: 52.5163, lon: 13.3777))?.country == "DE") // Berlin
         #expect(m.area(at: GeoPoint(lat: 50.7753, lon: 6.0839))?.name == "Aachen")
-        #expect(m.area(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == nil) // Paris: France isn't covered
+        #expect(m.area(at: GeoPoint(lat: 50.0755, lon: 14.4378)) == nil) // Prague: Czechia isn't covered
+    }
+
+    @Test func franceSwitzerlandAustria() {
+        let r = RegionData.load(countries: ["FR", "CH", "AT"], read: Self.read)
+        #expect(r.municipalities.area(at: GeoPoint(lat: 48.8584, lon: 2.2945))?.name == "Paris")
+        #expect(r.municipalities.area(at: GeoPoint(lat: 47.3769, lon: 8.5417))?.name == "Zürich")
+        #expect(r.municipalities.area(at: GeoPoint(lat: 48.2082, lon: 16.3738))?.name == "Wien")
+        #expect(r.postcodes.area(at: GeoPoint(lat: 47.3769, lon: 8.5417))?.localCode.hasPrefix("80") == true)
+        #expect(r.postcodes.area(at: GeoPoint(lat: 48.8584, lon: 2.2945))?.localCode == "75007") // Eiffel Tower
     }
 
     @Test func postcodeLookup() {
@@ -98,7 +107,7 @@ struct GeoTests {
     }
 
     @Test func routingCountries() {
-        #expect(Country.all.map(\.code) == ["NL", "BE", "LU", "DE"])
+        #expect(Country.all.map(\.code) == ["NL", "BE", "LU", "DE", "FR", "CH", "AT"])
         #expect(Set(Country.all.map(\.code)) == RoutingData.countries) // the same as route planning
     }
 

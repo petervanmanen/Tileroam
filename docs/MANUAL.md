@@ -49,7 +49,7 @@ All your activities with GPS, drawn on the map.
 The municipalities you have visited are filled in. The header shows how many of the total you have visited. Tap a municipality to see its name.
 
 ### Postcodes
-Like Towns, but for postcode areas. Available for Belgium, Germany and the Netherlands (Luxembourg has no open postcode boundaries).
+Like Towns, but for postcode areas. Available for Belgium, France, Germany, the Netherlands and Switzerland (Luxembourg and Austria have no open postcode boundaries).
 
 ### Map controls
 - **Layers button (bottom right):** choose Map, Satellite or Hybrid.
@@ -72,7 +72,7 @@ Like Towns, but for postcode areas. Available for Belgium, Germany and the Nethe
 
 You can also **open an existing GPX file** to see which new tiles and areas it would collect.
 
-Route planning works in **the Netherlands, Belgium, Luxembourg and Germany**: the starting point and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data around it, typically 25 to 75 MB; the panel shows the progress, and **Stop** ends it. What was downloaded is kept, so trying again continues where it stopped, also after a dropped connection. Round trips can be up to 500 km as the crow flies along the stops. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
+Route planning works in **the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria**: the starting point and all selected items must be there. Routes are calculated on your iPhone or iPad with OpenStreetMap data. The first time you plan in an area, Tileroam downloads the map data around it, typically 25 to 75 MB; the panel shows the progress, and **Stop** ends it. What was downloaded is kept, so trying again continues where it stopped, also after a dropped connection. Round trips can be up to 500 km as the crow flies along the stops. Downloads larger than 25 MB wait for Wi-Fi: on mobile data or in Low Data Mode, Tileroam says how much it would download and offers **Download Anyway**. To always allow it, turn on Settings → Storage → Download Map Data over Mobile Data. After that, planning in that area also works offline, and nothing is sent anywhere.
 
 ## Activities
 
@@ -110,7 +110,7 @@ Add Tileroam widgets to your Home Screen. Touch and hold the Home Screen, tap **
 
 ## Countries
 
-Municipalities and postcodes are available for **the Netherlands, Belgium, Luxembourg and Germany**, the same countries as route planning. Postcodes exist for the Netherlands, Belgium and Germany. Tiles, routes and statistics work everywhere.
+Municipalities and postcodes are available for **the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria**, the same countries as route planning. Postcodes exist for the Netherlands, Belgium, Germany, France and Switzerland. Tiles, routes and statistics work everywhere.
 
 A country is counted as soon as you have an activity there; there is nothing to set up. The municipality and postcode boundaries of a country are downloaded the first time you have an activity there, so the app itself stays small. This needs an internet connection once per country.
 

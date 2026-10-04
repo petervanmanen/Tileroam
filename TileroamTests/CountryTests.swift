@@ -14,13 +14,19 @@ struct CountryOutlinesTests {
         #expect(outlines.country(at: GeoPoint(lat: 50.7753, lon: 6.0839)) == "DE") // Aachen
         #expect(outlines.country(at: GeoPoint(lat: 52.5163, lon: 13.3777)) == "DE") // Berlin
         #expect(outlines.country(at: GeoPoint(lat: 47.4210, lon: 10.9850)) == "DE") // Zugspitze area
+        #expect(outlines.country(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == "FR") // Paris
+        #expect(outlines.country(at: GeoPoint(lat: 44.1741, lon: 5.2789)) == "FR") // Mont Ventoux
+        #expect(outlines.country(at: GeoPoint(lat: 47.5596, lon: 7.5886)) == "CH") // Basel
+        #expect(outlines.country(at: GeoPoint(lat: 46.5590, lon: 8.5610)) == "CH") // Furka Pass
+        #expect(outlines.country(at: GeoPoint(lat: 48.2082, lon: 16.3738)) == "AT") // Vienna
+        #expect(outlines.country(at: GeoPoint(lat: 47.0742, lon: 12.8417)) == "AT") // Grossglockner road
     }
 
     @Test func pointsOutsideSupportedCountries() {
         #expect(outlines.country(at: GeoPoint(lat: 53.5, lon: 3.0)) == nil) // North Sea
         #expect(outlines.country(at: GeoPoint(lat: 50.0755, lon: 14.4378)) == nil) // Prague
-        #expect(outlines.country(at: GeoPoint(lat: 47.5596, lon: 7.5886)) == nil) // Basel
-        #expect(outlines.country(at: GeoPoint(lat: 48.8566, lon: 2.3522)) == nil) // Paris
+        #expect(outlines.country(at: GeoPoint(lat: 45.4642, lon: 9.1900)) == nil) // Milan
+        #expect(outlines.country(at: GeoPoint(lat: 40.4168, lon: -3.7038)) == nil) // Madrid
     }
 
     @Test func tracksNearBordersOnlyCountTheirCountries() {
