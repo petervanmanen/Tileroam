@@ -101,7 +101,10 @@ struct BadgeTests {
 
     @Test func otherBadges() {
         var list = (0..<205).map { activity(on: date(2026, 1, 1).addingTimeInterval(Double($0) * 3600), zwift: true) }
-        list.append(activity(on: date(2026, 3, 1), name: "Zwift - Uber Pretzel in Watopia", zwift: true))
+        list.append(activity("Cycling", 129, on: date(2026, 3, 1), name: "Zwift - Über Pretzel in Watopia", ascent: 2_350, zwift: true))
+        // The name alone isn't enough.
+        list.append(activity("Cycling", 40, on: date(2026, 3, 2), name: "Zwift - UBER PRETZEL", ascent: 600, zwift: true))
+        list.append(activity("Cycling", 130, on: date(2026, 3, 3), name: "Zwift - Uber Pretzel", ascent: 1_200, zwift: true))
         list.append(activity("Running", 160, on: date(2026, 3, 10), hours: 26))
         list.append(activity("Skiing", 30, on: date(2026, 2, 2, 9), descent: 700))
         list.append(activity("Snowboarding", 20, on: date(2026, 2, 2, 14), descent: 600))
