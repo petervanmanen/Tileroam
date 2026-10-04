@@ -23,6 +23,7 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 - **Deine eigene Kopie, mit iCloud synchronisiert**: importierte `.fit`-Dateien und Strava-Downloads bleiben in der App (Dateien-App › Auf meinem iPhone › Tileroam › Activities), mit iCloud-Synchronisierung auch in iCloud Drive › Tileroam, ohne Duplikate; ein weiteres Gerät braucht keine Einrichtung. Importieren ist eine einmalige Kopie. Aktivitäten löschst du in der Liste Aktivitäten.
 - **Einstellungen → Speicher** zeigt die geladenen Kartendaten und lässt dich sie entfernen. Kartendownloads über 25 MB warten auf WLAN, außer du erlaubst mobile Daten.
 - **iPad**-Layout mit Seitenleiste, allen Ausrichtungen und Multitasking.
+- **Mac**-App (Mac Catalyst) mit allem außer der Routenplanung: der Routenplaner auf dem Gerät ist nicht für den Mac gebaut.
 - Verfügbar auf **Englisch, Niederländisch, Französisch, Spanisch und Deutsch**.
 - Die Karte öffnet sich auf deinem größten Cluster, dort, wo du am meisten fährst.
 

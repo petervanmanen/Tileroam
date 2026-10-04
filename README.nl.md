@@ -23,6 +23,7 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 - **Je eigen kopie, gesynchroniseerd met iCloud**: geïmporteerde `.fit`-bestanden en Strava-downloads worden in de app bewaard (Bestanden-app › Op mijn iPhone › Tileroam › Activities), en met iCloud-synchronisatie ook in iCloud Drive › Tileroam, zonder dubbelen; een volgend apparaat hoeft niets in te stellen. Importeren is een eenmalige kopie. Activiteiten kun je verwijderen in de lijst Activiteiten.
 - **Instellingen → Opslag** toont de gedownloade kaartgegevens en laat je ze verwijderen. Kaartdownloads groter dan 25 MB wachten op wifi, tenzij je mobiele data toestaat.
 - **iPad**-weergave met zijpaneel, alle oriëntaties en multitasking.
+- **Mac**-app (Mac Catalyst) met alles behalve routeplanning: de routeplanner op het apparaat is niet voor de Mac gebouwd.
 - Beschikbaar in het **Engels, Nederlands, Frans, Spaans en Duits**.
 - De kaart opent op je grootste cluster, zodat je begint waar je het meest rijdt.
 
