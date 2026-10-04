@@ -97,6 +97,7 @@ struct ContentView: View {
                         showIntro = true
                     }
                 })
+                .environment(store).environment(plan)
             }
             .sheet(isPresented: $showActivities) {
                 NavigationStack {
@@ -107,6 +108,7 @@ struct ContentView: View {
                             }
                         }
                 }
+                .environment(store).environment(plan)
             }
             .sheet(isPresented: $showStatistics) {
                 NavigationStack {
@@ -117,6 +119,7 @@ struct ContentView: View {
                             }
                         }
                 }
+                .environment(store).environment(plan)
             }
             .fullScreenCover(isPresented: $showIntro) {
                 IntroView {
@@ -124,6 +127,8 @@ struct ContentView: View {
                     showIntro = false
                 }
                 .presentationBackground(Color(.systemBackground))
+                // Passed on explicitly: on the Mac (Catalyst) presented views didn't get them.
+                .environment(store).environment(plan)
             }
             .onAppear {
                 if !hasSeenIntro { showIntro = true }
