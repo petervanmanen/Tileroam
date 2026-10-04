@@ -44,6 +44,7 @@ struct PlanPanel: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
         .sheet(isPresented: $showStartPicker) {
             StartPicker()
+                .environment(store).environment(plan)
         }
         #if DEBUG
         // Screenshots: -ShowStartPicker YES opens the starting point picker.

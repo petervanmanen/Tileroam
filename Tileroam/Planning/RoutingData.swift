@@ -196,6 +196,11 @@ enum RoutingData {
     /// region is tried; only packs on the device are removed (needs iOS 26.4 to check).
     static func removeAssetPackData() async {
         if let index { removeOtherVersions(index) }
+        #if targetEnvironment(macCatalyst)
+        // The Mac app never had these packs (and asking AssetPackManager about pack IDs that
+        // don't exist for it fails there).
+        return
+        #else
         guard #available(iOS 26.4, *) else { return }
         for build in assetPackBuilds {
             var ids = ["routing-\(build)-base"]
@@ -208,6 +213,7 @@ enum RoutingData {
                 try? await AssetPackManager.shared.remove(assetPackWithID: id)
             }
         }
+        #endif
     }
 
     /// Valhalla's configuration (`Resources/valhalla.json`, made with the same Valhalla version as

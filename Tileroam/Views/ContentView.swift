@@ -97,6 +97,7 @@ struct ContentView: View {
                         showIntro = true
                     }
                 })
+                .environment(store).environment(plan)
             }
             .sheet(isPresented: $showActivities) {
                 NavigationStack {
@@ -107,6 +108,7 @@ struct ContentView: View {
                             }
                         }
                 }
+                .environment(store).environment(plan)
             }
             .sheet(isPresented: $showStatistics) {
                 NavigationStack {
@@ -117,6 +119,7 @@ struct ContentView: View {
                             }
                         }
                 }
+                .environment(store).environment(plan)
             }
             .fullScreenCover(isPresented: $showIntro) {
                 IntroView {
@@ -124,6 +127,8 @@ struct ContentView: View {
                     showIntro = false
                 }
                 .presentationBackground(Color(.systemBackground))
+                // Passed on explicitly: on the Mac (Catalyst) presented views didn't get them.
+                .environment(store).environment(plan)
             }
             .onAppear {
                 if !hasSeenIntro { showIntro = true }
@@ -190,16 +195,18 @@ struct ContentView: View {
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Button {
-                    plan.isPlanning.toggle()
-                } label: {
-                    Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-                        .font(.title3)
-                        .foregroundStyle(plan.isPlanning ? Color.white : Color.accentColor)
-                        .padding(4)
-                        .background(plan.isPlanning ? Color.purple : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+                if FeatureFlags.routePlanning {
+                    Button {
+                        plan.isPlanning.toggle()
+                    } label: {
+                        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
+                            .font(.title3)
+                            .foregroundStyle(plan.isPlanning ? Color.white : Color.accentColor)
+                            .padding(4)
+                            .background(plan.isPlanning ? Color.purple : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+                    }
+                    .accessibilityLabel(plan.isPlanning ? Text("Stop route planning") : Text("Plan a route"))
                 }
-                .accessibilityLabel(plan.isPlanning ? Text("Stop route planning") : Text("Plan a route"))
                 Button {
                     showActivities = true
                 } label: {

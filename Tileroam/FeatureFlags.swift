@@ -9,4 +9,12 @@ enum FeatureFlags {
     #else
     static let strava = false
     #endif
+
+    /// Route planning: on iPhone and iPad. Not in the Mac app, because the on-device router
+    /// (valhalla-mobile) isn't built for the Mac.
+    #if targetEnvironment(macCatalyst)
+    static let routePlanning = false
+    #else
+    static let routePlanning = true
+    #endif
 }

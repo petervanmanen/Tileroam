@@ -2,6 +2,7 @@
 # Packages the municipality/postcode boundaries into Apple-hosted asset packs, one per country:
 # AssetPacks/build/<pack ID>.aar (regions-<CC>, see Tools/pack_ids.zsh), to upload to App Store Connect (Transporter or the
 # App Store Connect API). The app downloads them on demand; see Tileroam/Geo/RegionAssets.swift.
+# For iPhone, iPad and the Mac app (Mac Catalyst).
 #
 #   Tools/build_asset_packs.sh            # all countries
 #   Tools/build_asset_packs.sh NL BE      # some countries
@@ -27,7 +28,7 @@ for cc in $countries; do
   "assetPackID": "klompenpaden",
   "downloadPolicy": { "onDemand": {} },
   "fileSelectors": [ { "file": "klompenpaden.json" } ],
-  "platforms": [ "iOS" ]
+  "platforms": [ "iOS", "macOS" ]
 }
 JSON
     rm -f $OUT/klompenpaden.aar
@@ -45,7 +46,7 @@ JSON
   "assetPackID": "$id",
   "downloadPolicy": { "onDemand": {} },
   "fileSelectors": [ ${selectors%,} ],
-  "platforms": [ "iOS" ]
+  "platforms": [ "iOS", "macOS" ]
 }
 JSON
   rm -f $OUT/$id.aar
