@@ -5,6 +5,7 @@
 #
 #   Tools/upload_asset_packs.sh                   # all countries' boundaries
 #   Tools/upload_asset_packs.sh NL BE             # some countries' boundaries
+#   Tools/upload_asset_packs.sh klompenpaden      # the Klompenpaden list
 #   Tools/upload_asset_packs.sh routing-west      # all routing packs of a build (its areas and
 #                                                 # base), built first with Tools/build_routing_tiles.sh
 #                                                 # (docs/ROUTING.md)
@@ -50,7 +51,7 @@ routing=(${(M)@:#routing-*})
 packs=()
 if (( ${#countries} || ! $# )); then
   $ROOT/Tools/build_asset_packs.sh $countries
-  (( ${#countries} )) || countries=(${(u)$(ls $ROOT/AssetPacks/Regions/*.fmr | xargs -n1 basename | cut -d- -f1)})
+  (( ${#countries} )) || countries=(${(u)$(ls $ROOT/AssetPacks/Regions/*.fmr | xargs -n1 basename | cut -d- -f1)} klompenpaden)
   for cc in $countries; do packs+=($ROOT/AssetPacks/build/$(pack_id $cc).aar); done
 fi
 for r in $routing; do

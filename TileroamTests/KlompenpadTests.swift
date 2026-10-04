@@ -3,7 +3,7 @@ import Testing
 @testable import Tileroam
 
 struct KlompenpadTests {
-    /// The list in the repository (AssetPacks/Klompenpaden), as uploaded to R2.
+    /// The list in the repository (AssetPacks/Klompenpaden), as packaged in the asset pack.
     static let source = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
         .appending(path: "AssetPacks/Klompenpaden")
 
@@ -53,14 +53,11 @@ struct KlompenpadTests {
         #expect(path.lengthsText == "2, 5.5 km" || path.lengthsText == "2, 5,5 km")
     }
 
-    @Test func downloadsTheList() async throws {
-        let server = FileManager.default.temporaryDirectory.appending(path: "kp-\(UUID().uuidString)", directoryHint: .isDirectory)
-        let cache = FileManager.default.temporaryDirectory.appending(path: "kpc-\(UUID().uuidString)", directoryHint: .isDirectory)
-        try FileManager.default.createDirectory(at: server.appending(path: "Klompenpaden"), withIntermediateDirectories: true)
-        try FileManager.default.copyItem(at: Self.source.appending(path: "klompenpaden.json"),
-                                         to: server.appending(path: "Klompenpaden/klompenpaden.json"))
-        let list = try await KlompenpadData.load(from: server, into: cache)
-        #expect(list.count == 167 && KlompenpadData.cached(in: cache) == list)
+    @Test func readsTheListFromALocalFile() {
+        // In the app it comes from the asset pack; Debug builds can read a file instead.
+        UserDefaults.standard.set(Self.source.appending(path: "klompenpaden.json").path(percentEncoded: false), forKey: "KlompenpadenFile")
+        defer { UserDefaults.standard.removeObject(forKey: "KlompenpadenFile") }
+        #expect(KlompenpadData.cached().count == 167)
     }
 
     @Test func challengeIsOffByDefault() {

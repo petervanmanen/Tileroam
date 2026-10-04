@@ -2,7 +2,7 @@ import Foundation
 
 /// A challenge's list on Cloudflare R2 (`<server>/<remote>/<name>`), kept on the device in a
 /// folder: downloaded when the copy is missing or older than `maxAge`, the copy used offline.
-/// Used for the Trappist breweries and the Klompenpaden.
+/// Used for the Trappist breweries.
 enum RemoteList {
     /// How long a downloaded list is used before checking for a new one.
     static let maxAge: TimeInterval = 24 * 3600

@@ -95,7 +95,7 @@ Turn on the **Trappists** challenge with the **+** at the end of the tabs to see
 
 ## Klompenpaden
 
-Turn on the **Klompenpaden** challenge with the **+** to see the 167 Klompenpaden of [www.klompenpaden.nl](https://www.klompenpaden.nl) on the map: walking paths through the countryside of Gelderland and Utrecht. A path is brown until you walk it, orange when you have walked part of it, and green once your activities cover at least 90% of its main route (within 30 m; several walks add up). Tap a path to see where it starts, its lengths, how much you have walked, and a link to its page on klompenpaden.nl. The list is downloaded once (about 100 KB) and checked for changes once a day. Klompenpaden are footpaths, so they aren't used for route planning.
+Turn on the **Klompenpaden** challenge with the **+** to see the 167 Klompenpaden of [www.klompenpaden.nl](https://www.klompenpaden.nl) on the map: walking paths through the countryside of Gelderland and Utrecht. A path is brown until you walk it, orange when you have walked part of it, and green once your activities cover at least 90% of its main route (within 30 m; several walks add up). Tap a path to see where it starts, its lengths, how much you have walked, and a link to its page on klompenpaden.nl. The list is downloaded once from Apple, like the municipality boundaries (about 70 KB). Klompenpaden are footpaths, so they aren't used for route planning.
 
 ## Statistics
 

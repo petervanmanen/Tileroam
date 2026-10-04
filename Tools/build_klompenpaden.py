@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Builds AssetPacks/Klompenpaden/klompenpaden.json, the Klompenpaden challenge's list for Cloudflare
-R2 (Tools/upload_klompenpaden_r2.sh), from the GPX files and the list in AssetPacks/Klompenpaden/source
+"""Builds AssetPacks/Klompenpaden/klompenpaden.json, the Klompenpaden challenge's list for the
+`klompenpaden` asset pack (Tools/upload_asset_packs.sh klompenpaden, or the Asset packs workflow
+when it changes on main), from the GPX files and the list in AssetPacks/Klompenpaden/source
 (fetched from www.klompenpaden.nl by source/fetch_klompenpaden.py: the paths longer than 5 km).
 
 Per path: id (the GPX file name), name, start (village), lengths (km, of its variants), url,
