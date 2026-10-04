@@ -74,6 +74,6 @@ fi
 if [[ -n ${R2_PUBLIC_URL:-} ]]; then
   first=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['tiles'][0][0])" $INDEX)
   url=${R2_PUBLIC_URL%/}/$NAME/v$VERSION/$first.gph.gz
-  status=$(curl -s -o /dev/null -w '%{http_code}' --compressed $url)
-  [[ $status == 200 ]] && echo "Check: $url downloads." || { echo "Check failed: $url answered $status" >&2; exit 1 }
+  code=$(curl -s -o /dev/null -w '%{http_code}' --compressed $url)
+  [[ $code == 200 ]] && echo "Check: $url downloads." || { echo "Check failed: $url answered $code" >&2; exit 1 }
 fi
