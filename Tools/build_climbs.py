@@ -4,18 +4,20 @@ Called by Tools/build_climbs.sh; see docs/CLIMBS.md.
 
     build_climbs.py <elevation dir> <out.json> <extract.osm.pbf>…
 
-1. Roads: trunk, primary, secondary, tertiary and unclassified roads and cycleways (not motorways,
-   residential streets, service roads or unpaved tracks), exported with osmium.
-2. Pieces of the same road (same name or ref, meeting end to end) are joined into one line;
-   unnamed pieces only where exactly two meet.
+1. Roads: trunk, primary, secondary, tertiary, unclassified and residential roads, living streets
+   and cycleways (not motorways, service roads or unpaved tracks), exported with osmium.
+2. Pieces of the same road (same ref, else same name, meeting end to end) are joined into one
+   line; unnamed pieces only where exactly two meet. Joining by ref keeps a col road in one
+   piece where its name changes on the way up (the D 918 over the Tourmalet has ten names).
 3. Each line is sampled every 20 m from the elevation tiles (Valhalla's "skadi" layout:
-   N52/N52E005.hgt) and smoothed over 100 m.
+   N52/N52E005.hgt) and smoothed over 60 m.
 4. Climbs, in both directions: from a low point up to the highest point reached before the road
    drops more than 10 m, without the flat run-up. Kept when they're categorised like Strava's
    climbs (average at least 3%, length × gradient ≥ 8,000 for Cat 4, 16,000 Cat 3, 32,000 Cat 2,
-   64,000 Cat 1, 80,000 HC) or a short steep hill (at least 300 m at 6% or more).
+   64,000 Cat 1, 80,000 HC) or a short steep hill (at least 300 m at 5% or more).
 5. The same climb found twice (dual carriageways, overlapping pieces) is kept once, and each gets
-   a name: the road's, else "near <place>".
+   a name: the road name used most on its upper half (else anywhere on it, else the ref), and the
+   nearest place at the top.
 
 Output: {"climbs": [{id, name, place, cat, length, gain, avg, max, top, start, end, line}]}, with
 the line as a Google encoded polyline (precision 5) of points every ~20 m, simplified.
@@ -33,6 +35,9 @@ import numpy as np
 STEP = 20.0          # metres between profile samples
 SMOOTH = 3           # samples in the moving average (60 m; more flattens short steep hills further)
 DROP = 10.0          # metres a climb may dip before it ends
+# Long climbs may dip more: 5% of the height gained so far, up to 50 m. The elevation model has
+# false dips of 10–30 m on hairpins, which otherwise cut the Tourmalet or Alpe d'Huez in pieces.
+DROP_SHARE, DROP_MAX = 0.05, 50
 ROAD_TYPES = "trunk,primary,secondary,tertiary,unclassified,residential,living_street,cycleway"
 CATEGORIES = [(80000, "HC"), (64000, "1"), (32000, "2"), (16000, "3"), (8000, "4")]
 
@@ -82,7 +87,8 @@ class Elevation:
 # MARK: Roads
 
 def roads(pbf):
-    """(name or ref, highway, [(lon, lat), …]) per way, streamed from osmium."""
+    """(ref or name, [(lon, lat, flat, name, kind)]) per way, streamed from osmium; name is an
+    index into NAMES (or -1), kind one into HIGHWAYS."""
     filtered = os.path.join(os.path.dirname(out_path), os.path.basename(pbf) + ".roads.pbf")
     subprocess.run(["osmium", "tags-filter", pbf, f"w/highway={ROAD_TYPES}", "-o", filtered, "--overwrite", "--no-progress"], check=True)
     proc = subprocess.Popen(["osmium", "export", filtered, "-f", "geojsonseq", "--geometry-types=linestring", "--no-progress",
@@ -99,9 +105,22 @@ def roads(pbf):
         # On bridges and in tunnels the elevation model has the valley or the hill, not the road.
         flat = p.get("bridge", "no") != "no" or p.get("tunnel", "no") != "no"
         # Compact: millions of road pieces for a large country.
-        yield p.get("name") or p.get("ref"), np.array([(x, y, 1.0 if flat else 0.0) for x, y in coords])
+        name = name_index(p["name"]) if p.get("name") else -1
+        kind = HIGHWAYS.index(p["highway"]) if p.get("highway") in HIGHWAYS else -1
+        yield p.get("ref") or p.get("name"), np.array([(x, y, 1.0 if flat else 0.0, name, kind) for x, y in coords])
     proc.wait()
     os.remove(filtered)
+
+
+NAMES, NAME_IDS = [], {}
+HIGHWAYS = ROAD_TYPES.split(",")
+
+
+def name_index(name):
+    if name not in NAME_IDS:
+        NAME_IDS[name] = len(NAMES)
+        NAMES.append(name)
+    return NAME_IDS[name]
 
 
 def places(pbf):
@@ -127,14 +146,33 @@ def chains(ways):
             by_end[(key, round(end[0], 6), round(end[1], 6))].append(i)
     used = [False] * len(ways)
 
-    def next_way(key, point, current):
-        candidates = [j for j in by_end[(key, round(point[0], 6), round(point[1], 6))] if j != current and not used[j]]
+    def away(j, point):
+        """Direction of way j leaving `point` (one of its ends)."""
+        c = ways[j][1]
+        if round(c[0][0], 6) == round(point[0], 6) and round(c[0][1], 6) == round(point[1], 6):
+            return c[1][0] - c[0][0], c[1][1] - c[0][1]
+        return c[-2][0] - c[-1][0], c[-2][1] - c[-1][1]
+
+    def next_way(key, point, heading, kind):
+        candidates = [j for j in by_end[(key, round(point[0], 6), round(point[1], 6))] if not used[j]]
         # Unnamed roads only continue where exactly two pieces meet.
         if key is None and len(by_end[(key, round(point[0], 6), round(point[1], 6))]) != 2:
             return None
-        return candidates[0] if len(candidates) == 1 or (key is not None and candidates) else None
+        if not candidates or (key is None and len(candidates) != 1):
+            return None
+        # Where a road splits (one-way pairs, a fork of the same ref), stay on the same kind of
+        # road (a side street may go straight on at a hairpin, as on the Cauberg), then go
+        # straightest on: the first piece found could be the other carriageway, back the way
+        # the road came.
+        def turn(j):
+            dx, dy = away(j, point)
+            return (ways[j][1][0][4] != kind,
+                    -(dx * heading[0] + dy * heading[1]) / (math.hypot(dx, dy) * math.hypot(*heading) or 1))
+        return min(candidates, key=turn)
 
-    for i, (key, coords) in enumerate(ways):
+    # Major roads first, so a side street with the same name doesn't take over a main road's pieces.
+    for i in sorted(range(len(ways)), key=lambda i: ways[i][1][0][4] if ways[i][1][0][4] >= 0 else len(HIGHWAYS)):
+        key, coords = ways[i]
         if used[i]:
             continue
         used[i] = True
@@ -142,7 +180,12 @@ def chains(ways):
         for forward in (True, False):
             while True:
                 end = parts[-1][-1] if forward else parts[0][0]
-                j = next_way(key, end, i)
+                # (A joined piece can be a single point: its way's other end.)
+                if forward:
+                    before = parts[-1][-2] if len(parts[-1]) > 1 else parts[-2][-1]
+                else:
+                    before = parts[0][1] if len(parts[0]) > 1 else parts[1][0]
+                j = next_way(key, end, (end[0] - before[0], end[1] - before[1]), end[4])
                 if j is None:
                     break
                 used[j] = True
@@ -156,11 +199,66 @@ def chains(ways):
         yield key, np.concatenate(parts)
 
 
+GAP = 300  # metres between the ends of two pieces of the same road that are joined anyway
+
+
+def stitch(lines):
+    """Joins lines of the same road whose ends are close but don't meet: where a road's ref or
+    name is missing on a stretch, for example on the one-way streets through a village (the
+    D 918 in Barèges). The gap counts as a bridge: its elevation is interpolated."""
+    lines = [[key, line] for key, line in lines]
+    for _ in range(3):
+        ends = defaultdict(list)  # (key, cell) → [(line index, at start?)]
+        for i, (key, line) in enumerate(lines):
+            if key is None or line is None:
+                continue
+            for start in (True, False):
+                p = line[0] if start else line[-1]
+                ends[(key, int(p[0] * 200), int(p[1] * 200))].append((i, start))
+
+        def nearest(i, start):
+            key, line = lines[i]
+            p = line[0] if start else line[-1]
+            k = math.cos(math.radians(p[1]))
+            best, best_d = None, GAP
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    for j, s in ends[(key, int(p[0] * 200) + dx, int(p[1] * 200) + dy)]:
+                        if j == i or lines[j][1] is None:
+                            continue
+                        q = lines[j][1][0] if s else lines[j][1][-1]
+                        d = math.hypot((q[0] - p[0]) * k, q[1] - p[1]) * 111_320
+                        if d < best_d:
+                            best, best_d = (j, s), d
+            return best
+
+        joined = 0
+        for i in range(len(lines)):
+            for start in (True, False):
+                if lines[i][1] is None or lines[i][0] is None:
+                    continue
+                other = nearest(i, start)
+                if other is None or nearest(*other) != (i, start):
+                    continue
+                j, s = other
+                a = lines[i][1] if not start else lines[i][1][::-1]   # ends at the gap
+                b = lines[j][1] if s else lines[j][1][::-1]           # starts at the gap
+                # Only the gap is flat: two points just inside it, so the roads on either side
+                # keep their own elevation (marking their end points would flatten short streets).
+                gap = np.array([[*(a[-1, :2] + (b[0, :2] - a[-1, :2]) * f), 1.0, -1.0, a[-1, 4]] for f in (0.02, 0.98)])
+                lines[i][1] = np.concatenate([a, gap, b])
+                lines[j][1] = None
+                joined += 1
+        if not joined:
+            break
+    return [(key, line) for key, line in lines if line is not None]
+
+
 # MARK: Profiles and climbs
 
 def resample(line):
-    """Points every STEP metres along the line, their distances, and which are on a bridge or in
-    a tunnel."""
+    """Points every STEP metres along the line, their distances, which are on a bridge or in a
+    tunnel, and their road names (indexes into NAMES)."""
     lon, lat, flat = line[:, 0], line[:, 1], line[:, 2]
     k = math.cos(math.radians(float(lat.mean())))
     seg = np.hypot(np.diff(lon) * k, np.diff(lat)) * 111_320
@@ -168,7 +266,8 @@ def resample(line):
     if dist[-1] < 300:
         return None
     at = np.arange(0, dist[-1], STEP)
-    return np.interp(at, dist, lat), np.interp(at, dist, lon), at, np.interp(at, dist, flat) > 0.5
+    piece = np.clip(np.searchsorted(dist, at, side="right") - 1, 0, len(line) - 1)
+    return np.interp(at, dist, lat), np.interp(at, dist, lon), at, np.interp(at, dist, flat) > 0.5, line[piece, 3].astype(int)
 
 
 def find_climbs(dist, elev):
@@ -182,7 +281,7 @@ def find_climbs(dist, elev):
         while k < n:
             if elev[k] > high:
                 high, top = elev[k], k
-            elif high - elev[k] > DROP:
+            elif high - elev[k] > max(DROP, min(DROP_MAX, DROP_SHARE * (high - elev[start]))):
                 break
             k += 1
         if top > start:
@@ -242,6 +341,15 @@ def simplify(lats, lons, tolerance=5.0):
     return [(float(lats[i]), float(lons[i])) for i in np.nonzero(keep)[0]]
 
 
+def climb_name(names, ref):
+    """The road name used most on the climb's upper half, else anywhere on it, else the ref."""
+    for part in (names[len(names) // 2:], names):
+        named = part[part >= 0]
+        if len(named):
+            return NAMES[int(np.bincount(named).argmax())]
+    return ref
+
+
 def main():
     dem = Elevation(elevation_dir)
     found, town_list = [], []
@@ -249,13 +357,13 @@ def main():
         print(f"{os.path.basename(pbf)}: reading roads…", flush=True)
         ways = list(roads(pbf))
         town_list += list(places(pbf))
-        lines = list(chains(ways))
+        lines = stitch(chains(ways))
         print(f"  {len(ways)} road pieces in {len(lines)} roads", flush=True)
         for key, line in lines:
             r = resample(line)
             if r is None:
                 continue
-            lats, lons, at, flat = r
+            lats, lons, at, flat, names = r
             elev = dem.sample(lats, lons)
             if np.isnan(elev).any():
                 continue
@@ -266,7 +374,7 @@ def main():
             if len(elev) >= SMOOTH:
                 elev = np.convolve(np.pad(elev, SMOOTH // 2, mode="edge"), np.ones(SMOOTH) / SMOOTH, mode="valid")
             for reverse in (False, True):
-                e, la, lo = (elev[::-1], lats[::-1], lons[::-1]) if reverse else (elev, lats, lons)
+                e, la, lo, nm = (elev[::-1], lats[::-1], lons[::-1], names[::-1]) if reverse else (elev, lats, lons, names)
                 for s, t in find_climbs(at, e):
                     length = (t - s) * STEP
                     gain = float(e[t] - e[s])
@@ -276,7 +384,7 @@ def main():
                         continue
                     window = 10  # steepest 200 m (100 m is too noisy in the elevation data)
                     steep = max(((e[j + window] - e[j]) / (window * STEP) * 100 for j in range(s, t - window + 1)), default=avg)
-                    found.append({"name": key, "cat": cat, "length": round(length), "gain": round(gain),
+                    found.append({"name": climb_name(nm[s:t + 1], key), "cat": cat, "length": round(length), "gain": round(gain),
                                   "avg": round(avg, 1), "max": round(float(steep), 1), "top": round(float(e[t])),
                                   "lats": la[s:t + 1], "lons": lo[s:t + 1]})
         print(f"  {len(found)} climbs so far", flush=True)
