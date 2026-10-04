@@ -89,7 +89,7 @@ struct IntroView: View {
                   text: "See everywhere you have been: every map tile, municipality and postcode area you have visited on your rides, runs and walks.") {
             VStack(alignment: .leading, spacing: 12) {
                 feature("square.grid.3x3.fill", "Tiles (zoom 14) and squadratinhos (zoom 17), with your max square and cluster")
-                feature("building.2.fill", "Municipalities and postcodes in the Netherlands, Belgium, Luxembourg and Germany")
+                feature("building.2.fill", "Municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
                 feature("bicycle", "Your Eddington number, also as a widget")
                 if store.iCloudHasActivities && store.isICloudSyncOn {
                     feature("icloud.fill", "Your activities come from iCloud, from your other devices")

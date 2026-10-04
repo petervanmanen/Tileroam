@@ -18,10 +18,10 @@ ONTDEK TEGELS
 De kaart is verdeeld in vakjes. Elk vakje waar je doorheen komt, wordt groen. Kies zoom 14-tegels (ongeveer 1,5 km) of zoom 17-squadratinhos (ongeveer 190 m). Tileroam toont je totaal, je grootste vierkant (max square) en je cluster.
 
 GEMEENTEN EN POSTCODES
-Zie welke gemeenten en postcodegebieden je hebt bezocht in Nederland, België, Luxemburg en Duitsland.
+Zie welke gemeenten en postcodegebieden je hebt bezocht in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk.
 
 PLAN ROUTES NAAR NIEUWE TEGELS
-Tik op de tegels, gemeenten of postcodes die je wilt verzamelen. Tileroam plant een fietsrondje vanaf waar je bent, of vanaf een startpunt dat je kiest, en laat precies zien wat het oplevert. Routes worden op je iPhone of iPad berekend met OpenStreetMap-gegevens, dus plannen werkt ook offline zodra een gebied is gedownload. Routeplanning werkt in Nederland, België, Luxemburg en Duitsland. Exporteer de route als GPX voor je fietscomputer, of open een GPX om te zien wat een route brengt.
+Tik op de tegels, gemeenten of postcodes die je wilt verzamelen. Tileroam plant een fietsrondje vanaf waar je bent, of vanaf een startpunt dat je kiest, en laat precies zien wat het oplevert. Routes worden op je iPhone of iPad berekend met OpenStreetMap-gegevens, dus plannen werkt ook offline zodra een gebied is gedownload. Routeplanning werkt in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk. Exporteer de route als GPX voor je fietscomputer, of open een GPX om te zien wat een route brengt.
 
 STATISTIEKEN EN EDDINGTON-GETAL
 Je Eddington-getal voor fietsen, hardlopen en wandelen, met hoeveel activiteiten je nog nodig hebt voor het volgende. Plus totalen per sport voor dit jaar en altijd, en je voortgang per land.

@@ -258,6 +258,9 @@ private struct SourcesView: View {
         (Country.named("BE")!.name, "© NGI-IGN, bpost – municipalities and postal codes via Opendatasoft"),
         (Country.named("LU")!.name, "© ACT Luxembourg (CC0)"),
         (Country.named("DE")!.name, "© GeoBasis-DE / BKG (dl-de/by-2-0) – Gemeinden; postcodes © OpenStreetMap contributors (ODbL)"),
+        (Country.named("FR")!.name, "© IGN, INSEE (Licence Ouverte 2.0) – communes; codes postaux © Etalab / BAN (Licence Ouverte 2.0)"),
+        (Country.named("CH")!.name, "© swisstopo – Gemeinden and Ortschaftenverzeichnis (opendata.swiss)"),
+        (Country.named("AT")!.name, "© Statistik Austria (CC BY 4.0)"),
         (String(localized: "Route planning"), "© OpenStreetMap contributors (ODbL), via Geofabrik; routing by Valhalla (MIT) on the device"),
         (String(localized: "Elevation and climbs"), "Terrain Tiles (AWS Open Data): SRTM (NASA, public domain); EU-DEM, produced using Copernicus data and information funded by the European Union; climbs found by Tileroam on OpenStreetMap roads (ODbL)"),
     ] + (FeatureFlags.strava ? [("Strava", String(localized: "Activity data from Strava when connected"))] : [])

@@ -97,5 +97,76 @@
    "license": "ODbL",
    "attribution": "© OpenStreetMap contributors"
   }
+ },
+ "FR": {
+  "municipalities": {
+   "file": "FR-municipalities.fmr",
+   "count": 34888,
+   "bbox": [
+    -178.1857,
+    -60.0041,
+    139.0107,
+    51.0892
+   ],
+   "source": "IGN Admin Express / INSEE via Opendatasoft (georef-france-commune)",
+   "license": "Licence Ouverte 2.0",
+   "attribution": "© IGN, INSEE"
+  },
+  "postcodes": {
+   "file": "FR-postcodes.fmr",
+   "count": 6158,
+   "bbox": [
+    -61.8079,
+    -21.3874,
+    55.8319,
+    51.0823
+   ],
+   "source": "adresse.data.gouv.fr – contours calculés des zones codes postaux",
+   "license": "Licence Ouverte 2.0",
+   "attribution": "© Etalab, BAN"
+  }
+ },
+ "CH": {
+  "municipalities": {
+   "file": "CH-municipalities.fmr",
+   "count": 2128,
+   "bbox": [
+    5.9559,
+    45.818,
+    10.4922,
+    47.8085
+   ],
+   "source": "swisstopo swissBOUNDARIES3D via Opendatasoft",
+   "license": "opendata.swiss BY",
+   "attribution": "© swisstopo"
+  },
+  "postcodes": {
+   "file": "CH-postcodes.fmr",
+   "count": 3181,
+   "bbox": [
+    5.9559,
+    45.818,
+    10.4922,
+    47.8085
+   ],
+   "source": "swisstopo Amtliches Ortschaftenverzeichnis via Opendatasoft",
+   "license": "opendata.swiss (see source)",
+   "attribution": "© swisstopo"
+  }
+ },
+ "AT": {
+  "municipalities": {
+   "file": "AT-municipalities.fmr",
+   "count": 2092,
+   "bbox": [
+    9.5308,
+    46.3725,
+    17.1608,
+    49.0205
+   ],
+   "source": "Statistik Austria Gemeinden 2025-01-01",
+   "license": "CC BY 4.0",
+   "attribution": "© Statistik Austria"
+  }
  }
 }

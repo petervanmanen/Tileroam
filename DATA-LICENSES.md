@@ -15,13 +15,17 @@ attribution and follow the license of each source.
 | `LU-municipalities` | data.public.lu | CC0 | ACT Luxembourg |
 | `DE-municipalities` | BKG VG250 via Opendatasoft | dl-de/by-2-0 | © GeoBasis-DE / BKG |
 | `DE-postcodes` | OpenStreetMap (tdudek/de-plz-geojson) | **ODbL 1.0** | © OpenStreetMap contributors |
+| `FR-municipalities` | IGN Admin Express / INSEE via Opendatasoft | Licence Ouverte 2.0 | © IGN, INSEE |
+| `FR-postcodes` | adresse.data.gouv.fr, calculated postcode zones | Licence Ouverte 2.0 | © Etalab, BAN |
+| `CH-*` | swisstopo via Opendatasoft | opendata.swiss (see source) | © swisstopo |
+| `AT-municipalities` | Statistik Austria | CC BY 4.0 | © Statistik Austria |
 | `regions.json` | Generated manifest | as above | – |
 
 Files derived from OpenStreetMap (**ODbL 1.0**) are made available under the
 [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/). Anyone
 may reuse them under the same license.
 
-The routing data (`routing-<name>-<area>` asset packs, Valhalla tiles made by
+The routing data (Valhalla tiles on Cloudflare R2, made by
 `Tools/build_routing_tiles.sh` from Geofabrik's OpenStreetMap extracts) is a
 Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
 contributors. The script and the extracts it names are the complete recipe to

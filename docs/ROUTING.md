@@ -4,7 +4,7 @@ Tileroam plans cycling routes on the iPhone or iPad itself, with [Valhalla](http
 
 The routing data comes from [Geofabrik](https://download.geofabrik.de)'s OpenStreetMap extracts. It's built on a Mac into Valhalla tiles, gzipped per tile and put on **Cloudflare R2**, from where the app downloads only the tiles around a plan. (Until October 2026 the tiles came as Apple-hosted asset packs per 1° area; see "Why R2" below.)
 
-Route planning currently covers **the Netherlands, Belgium, Luxembourg and Germany**: build `west`, version 1, 1,179 tiles, 2.2 GB compressed on R2.
+Route planning currently covers **the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria**: build `west`, version 2 (with gradients from elevation data), 2,940 tiles, 4.8 GB compressed on R2. Version 1 (NL, BE, LU, DE: 1,179 tiles, 2.2 GB) stays for app versions up to 1.4.
 
 | Example plan (15 km around one point) | Download |
 |---|---|
@@ -50,37 +50,52 @@ In Cloudflare (once):
 2. **Public access:** the bucket's Settings → Custom Domains → connect the domain `tiles.petervanmanen.nl` (the domain's DNS must be on Cloudflare). That URL goes into `Tileroam/Servers.plist` as `RoutingTilesURL`. The `r2.dev` address works for testing but is rate-limited; don't ship it.
 3. **R2 → Manage API tokens → Create API token:** *Object Read & Write*, only for that bucket. Keep its Access Key ID and Secret Access Key yourself; the upload script reads them from environment variables.
 
-R2 charges nothing for downloads (egress) and has 10 GB of storage free; Tileroam's data is about 2.2 GB per version.
+R2 charges nothing for downloads (egress) and has 10 GB of storage free; Tileroam's data is about 2–5 GB per version (version 2: 4.8 GB), so two versions fit.
 
 ## Building the routing data
 
 ```bash
-ROUTING_CONCURRENCY=4 Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany
+ROUTING_CONCURRENCY=4 Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany france switzerland austria
 ```
 
 The first argument names the build (keep `west`, see "Versions"); the others are Geofabrik extract names under `europe/`. The script:
 
-1. **Downloads** the extracts to `AssetPacks/build/routing/osm/`. It downloads them again when they're older than a week. The Netherlands is about 1.4 GB, Belgium 0.7 GB, Luxembourg 50 MB, Germany 4.9 GB.
+1. **Downloads** the extracts to `AssetPacks/build/routing/osm/`. It downloads them again when they're older than a week. The Netherlands is about 1.4 GB, Belgium 0.7 GB, Luxembourg 50 MB, Germany 4.9 GB, France 5.1 GB, Switzerland 0.5 GB, Austria 0.8 GB.
 2. **Merges** them with `osmium merge`. Country extracts overlap at the borders; building them separately would duplicate the border roads.
 3. **Builds Valhalla's tiles** with `valhalla_build_tiles`. Left out, because cycling routes don't need them:
    - time zone, admin and traffic data;
    - car-only roads, driveways and car shortcuts (about 10% smaller).
+
+   With elevation tiles in `AssetPacks/build/elevation` (or `ROUTING_ELEVATION`; `Tools/download_elevation.sh`, see docs/CLIMBS.md), Valhalla stores each road's gradient in the tiles (since version 2), so the bicycle costing avoids steep climbs where it can (`use_hills`). The app doesn't need the elevation data itself.
 
    Footpaths stay in, so routes can cross pedestrian zones with the bike pushed. `ROUTING_PEDESTRIAN=False` drops them too, about 25% smaller in total, but then routes can't use pedestrian-only paths.
 4. **Writes one tile extract** with all tiles, `AssetPacks/build/routing/routing-west.tar` (`valhalla_build_extract`). It's for the simulator, the tests and later repacks; it isn't uploaded.
 5. **Packs the tiles for R2** (`Tools/pack_routing_tiles.py`), on every core:
    - gzips each tile to `AssetPacks/build/routing/r2/west/v<version>/…`;
    - writes the index `Tileroam/Resources/routing-west.json` (commit it with the app);
-   - leaves out tiles more than 70 km from the covered countries (`Tools/routing_area_filter.py`, with the country outlines the app bundles). Planning never needs them: plans start and stop in those countries and download at most 60 km around. Germany's extract, for example, reaches 60°N and 25°E through its ferry routes. The countries come from `RoutingData.countries` (or `ROUTING_COUNTRIES="NL BE LU DE"`).
+   - leaves out tiles more than 70 km from the covered countries (`Tools/routing_area_filter.py`, with the country outlines the app bundles). Planning never needs them: plans start and stop in those countries and download at most 60 km around. Germany's extract, for example, reaches 60°N and 25°E through its ferry routes. The countries come from `RoutingData.countries` (or `ROUTING_COUNTRIES="NL BE LU DE FR CH AT"`).
 
    `ROUTING_REPACK=1 Tools/build_routing_tiles.sh west` redoes only this step from the tile extract, without downloading or building again (6 minutes instead of 1½ hours).
 
    Test builds named `<name>-test` keep their index in the build folder instead.
 
-Everything under `AssetPacks/build/` is ignored by Git. What the `west` build took on an M-series Mac with 8 GB of memory (`ROUTING_CONCURRENCY=4`, to spare memory):
-- **Time:** about 1½ hours: 20 minutes downloading Germany, an hour building the tiles, 6 minutes packing.
-- **Disk:** about 40 GB at the peak: the extracts (7 GB), the merged extract (7 GB, deleted after the tile build), Valhalla's temporary files (about 20 GB, deleted at the end), the tiles (5 GB), the tile extract (5.7 GB) and the packed tiles (2.2 GB).
-- An external disk must be formatted for Mac (APFS or Mac OS Extended): FAT32 (MS-DOS) can't hold files over 4 GB.
+Everything under `AssetPacks/build/` is ignored by Git. What the `west` build of seven countries with elevation (version 2, October 2026) took on an M-series Mac with 8 GB of memory (`ROUTING_CONCURRENCY=4`, to spare memory):
+- **Time:** about 4 hours: 30 minutes downloading, 15 minutes merging, about 3 hours building the tiles, 20 minutes for the tile extract and packing. (Four countries without elevation took 1½ hours.)
+- **Disk:** about 75 GB at the peak, besides the 8.3 GB of elevation tiles:
+  - the extracts (13.5 GB) and the merged extract (13.7 GB, deleted after the tile build);
+  - Valhalla's temporary files (`*.bin` in `tiles-west`, about 32 GB, deleted at the end) and the tiles (9–11 GB);
+  - then the tile extract (11.5 GB) and the packed tiles (about 4 GB).
+- **Short on disk:** once Valhalla has written its first tiles (log: "Building … tiles"), it no longer reads the extracts. The country extracts and the merged extract can then be deleted (check with `lsof` that the merged one is closed); the climbs build downloads the country extracts again.
+- **Resuming a stopped build:** as long as the `*.bin` files in `tiles-west` are there, Valhalla can continue from its tile stage instead of starting over (no extracts needed):
+  ```bash
+  cd AssetPacks/build/routing
+  venv/lib/python3.12/site-packages/valhalla/bin/valhalla_build_tiles -c config-west.json -s build -j 4 >> build-west.log 2>&1
+  rm -f routing-west.tar && venv/bin/python ../../../Tools/valhalla_build_extract.py -c config-west.json -v >> build-west.log 2>&1
+  cd ../../.. && ROUTING_REPACK=1 ROUTING_VERSION=<n> Tools/build_routing_tiles.sh west <the same extracts>
+  ```
+  Don't resume from a later stage than `build`: the later stages rewrite the tiles in place, and a stage stopped halfway leaves them inconsistent.
+- **Run it in a terminal of your own:** a build longer than two hours gets stopped when it runs as a background task of Claude Code.
+- An external disk must be formatted for Mac (APFS or Mac OS Extended): FAT32 (MS-DOS) can't hold files over 4 GB. It may also need access for Claude under System Settings → Privacy & Security; in October 2026 that didn't work, so the build ran on the internal disk.
 
 ## Uploading
 
@@ -121,13 +136,13 @@ The app removes the asset-pack routing data of earlier TestFlight versions from 
   ```bash
   ROUTING_COUNTRIES=LU Tools/build_routing_tiles.sh lu-test luxembourg
   ```
-  `ValhallaEngineTests.routesAcrossTheGermanBorder` routes Kerkrade → Aachen across the border on the `west` tile extract. Without these files, the tests are skipped, as on GitHub.
+  `ValhallaEngineTests.routesAcrossTheGermanBorder` routes Kerkrade → Aachen, and `routesAcrossFrenchSwissAndAustrianBorders` Saint-Louis → Basel → Weil am Rhein and Lindau → Bregenz, on the `west` tile extract. Without these files, the tests are skipped, as on GitHub.
 - **Downloading:** `RoutingDownloadTests` (in `StorageTests.swift`) checks tile selection, downloading and decompressing, damaged tiles and version folders, against a temporary folder.
 - **The rest:** the decoding and stop-ordering tests (`PlanningTests`) don't need any tiles.
 
 ## Adding countries
 
-Germany was added in October 2026. For the next country:
+Germany was added in October 2026, France, Switzerland and Austria a day later (version 2). For the next country:
 
 1. **Use build `west`.** Countries whose routes should cross each other's borders must be in one build. The new country makes a new version of `west`. A plan still only downloads the tiles around it, so a bigger build doesn't make downloads bigger.
 2. **Disk and time:** see "Building the routing data" above. There's no limit on R2's side.
@@ -143,11 +158,11 @@ Germany was added in October 2026. For the next country:
    - Docs: the READMEs, `docs/MANUAL.md`, `SUPPORT.md`, the App Store texts and review notes, `DATA-LICENSES.md` and this document.
    - Once Tileroam is an Apple Maps routing app (not in 1.0), regenerate the Routing App Coverage File:
      ```bash
-     <venv with shapely>/bin/python Tools/build_routing_coverage.py NL BE LU DE
+     <venv with shapely>/bin/python Tools/build_routing_coverage.py NL BE LU DE FR CH AT
      ```
 5. **Build and test:**
    ```bash
-   ROUTING_CONCURRENCY=4 Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany <new country>
+   ROUTING_CONCURRENCY=4 Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany france switzerland austria <new country>
    ```
    - Add a route across the new border to `ValhallaEngineTests` (next to `routesAcrossTheGermanBorder`).
    - In the simulator: `-RoutingServer file://<repo>/AssetPacks/build/routing/r2/ -RegionsDir <repo>/AssetPacks/Regions -PlanDemo YES -PlanDemoStart "<lat>,<lon>"` plans the demo route from any start, for example `50.8687,6.0835` on the Dutch–German border in Kerkrade.

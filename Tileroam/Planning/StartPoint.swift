@@ -73,9 +73,9 @@ final class PlaceSearch: NSObject {
     }
 
     @ObservationIgnored private let completer = MKLocalSearchCompleter()
-    /// The Netherlands, Belgium, Luxembourg and Germany.
-    static let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.4, longitude: 9.0),
-                                           span: MKCoordinateSpan(latitudeDelta: 8.4, longitudeDelta: 12.8))
+    /// The Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria.
+    static let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 48.2, longitude: 6.0),
+                                           span: MKCoordinateSpan(latitudeDelta: 13.8, longitudeDelta: 22.4))
 
     override init() {
         super.init()

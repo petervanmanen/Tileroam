@@ -12,8 +12,8 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 - **Routes**: all your activities on one map, coloured by sport.
 - **Climbs**: every climb on the roads (Cat 4 to HC like Strava, and short steep hills), found from elevation data; which ones you have climbed, on a map tab and in Statistics, and climbs to include when planning a route. See [docs/CLIMBS.md](docs/CLIMBS.md).
 - **Activities**: a list of all activities, newest first, with duration, distance and average power (with a power meter) or average speed.
-- **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg and Germany, with visited/total per country.
-- **Route planning** in the Netherlands, Belgium, Luxembourg and Germany: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
+- **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria, with visited/total per country.
+- **Route planning** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
 - **Strava**: import your full history with GPS. Activities are also saved as standard `.fit` files in a folder of your choice.
 - **Duplicates merged**: the same workout recorded by several devices or apps (watch, Zwift, Strava, HealthFit) counts once.
 - **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
@@ -51,8 +51,11 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 | Belgium | 565 | 1,150 |
 | Luxembourg | 100 communes | – |
 | Germany | 10,949 Gemeinden | 8,173 (PLZ) |
+| France | 34,888 communes | 6,158 (approximate zones) |
+| Switzerland | 2,128 Gemeinden | 3,181 PLZ |
+| Austria | 2,092 Gemeinden | – |
 
-Tiles, routes and statistics work everywhere; municipalities, postcodes and route planning cover these four countries. Postcodes are only included where their boundaries are published as open data. A country's boundaries are downloaded automatically the first time you have an activity there.
+Tiles, routes and statistics work everywhere; municipalities, postcodes and route planning cover these seven countries. Postcodes are only included where their boundaries are published as open data. A country's boundaries are downloaded automatically the first time you have an activity there.
 
 ## Getting started
 
@@ -83,7 +86,7 @@ Strava allows about 100 requests per 15 minutes and 1,000 per day. The activity 
 - **Tiles** use the standard Web Mercator tile formula (`Geo/TileGrid.swift`). Max square and cluster are computed on the visited tiles only, so they stay fast even for zoom 17 tiles spread across Europe.
 - **Duplicates**: activities of the same kind that overlap in time are merged (`Import/ActivityMerge.swift`); the copy with the best GPS and the longest distance is kept.
 - **Municipalities and postcodes** are compact binary files (`AssetPacks/Regions/*.fmr`, 6.3 MB in total) with a spatial index for fast lookups. They're not in the app: each country is an Apple-hosted asset pack (`regions-NL`, …) that the app downloads with Background Assets the first time you have an activity there. `Tools/build_asset_packs.sh` packages them for upload to App Store Connect; in the simulator, `-RegionsDir <repo>/AssetPacks/Regions` reads them directly. Which countries to download comes from simplified country outlines bundled in the app (`Tileroam/Resources/countries.fmr`, 0.5 MB, made from the municipalities by `Tools/build_country_outlines.py`).
-- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium, Luxembourg and Germany. The tiles are on Cloudflare R2; a plan downloads only Valhalla's tiles around it (25–75 MB, instead of 2.2 GB for everything). Downloads over 25 MB wait for Wi-Fi (`MapDataDownloads`). The visiting order is solved on straight-line distances (`TripSolver`, much faster than a routing matrix on the device); then, inside each target, the planner picks the point that keeps the detour shortest, and Valhalla routes the round trip. How to build and upload the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
+- **Route planning** runs on the device with [Valhalla](https://github.com/valhalla/valhalla), through [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), and OpenStreetMap tiles for the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria. The tiles are on Cloudflare R2; a plan downloads only Valhalla's tiles around it (25–75 MB, instead of 2.2 GB for everything). Downloads over 25 MB wait for Wi-Fi (`MapDataDownloads`). The visiting order is solved on straight-line distances (`TripSolver`, much faster than a routing matrix on the device); then, inside each target, the planner picks the point that keeps the detour shortest, and Valhalla routes the round trip. How to build and upload the tiles and add countries: [docs/ROUTING.md](docs/ROUTING.md).
 
 ## Region data
 
@@ -102,6 +105,9 @@ The script documents where each source file comes from. It reprojects to WGS84, 
 | Belgium | NGI-IGN, bpost via Opendatasoft (postcode licence: see source) |
 | Luxembourg | ACT (CC0) |
 | Germany | BKG VG250 (dl-de/by-2-0); postcodes: OpenStreetMap (ODbL) |
+| France | IGN, INSEE; postcode zones Etalab / BAN (Licence Ouverte 2.0) |
+| Switzerland | swisstopo (opendata.swiss) |
+| Austria | Statistik Austria (CC BY 4.0) |
 
 Route planning: © OpenStreetMap contributors (ODbL), routing by Valhalla on the device.
 
@@ -138,7 +144,7 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 ## Limitations
 
-- Municipalities, postcodes and route planning cover the Netherlands, Belgium, Luxembourg and Germany only. [docs/ROUTING.md](docs/ROUTING.md) describes how to add countries.
+- Municipalities, postcodes and route planning cover the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria only. [docs/ROUTING.md](docs/ROUTING.md) describes how to add countries.
 - Luxembourg has no open postcode boundaries.
 - Routes are round trips; one-way routes from A to B aren't supported yet.
 

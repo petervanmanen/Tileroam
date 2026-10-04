@@ -6,7 +6,7 @@ import Foundation
 /// only the tiles around it, of each of Valhalla's three levels. See docs/ROUTING.md.
 enum RoutingData {
     /// Countries the routing data covers. Built together, so routes cross their borders.
-    static let countries: Set<String> = ["NL", "BE", "LU", "DE"]
+    static let countries: Set<String> = ["NL", "BE", "LU", "DE", "FR", "CH", "AT"]
     /// The build whose index (`Resources/routing-<name>.json`) the app bundles. Keep the name; new
     /// data is a new version of it (docs/ROUTING.md, "Versions").
     static let build = "west"
