@@ -957,6 +957,34 @@
         }
       }
     },
+    "%lld of %lld Klompenpaden walked": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld van %2$lld klompenpaden gelopen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld Klompenpaden parcourus sur %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld Klompenpaden recorridos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Klompenpaden gelaufen"
+          }
+        }
+      }
+    },
     "%lld of %lld Trappist breweries visited": {
       "localizations": {
         "nl": {
@@ -1385,6 +1413,34 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld%% of the route walked": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% van de route gelopen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% du parcours effectué"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% de la ruta recorrida"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% der Route gelaufen"
           }
         }
       }
@@ -4405,6 +4461,34 @@
         }
       }
     },
+    "From %@ · %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanuit %1$@ · %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depuis %1$@ · %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desde %1$@ · %2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ab %1$@ · %2$@"
+          }
+        }
+      }
+    },
     "Get Started": {
       "localizations": {
         "nl": {
@@ -4933,6 +5017,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sie wird aus Tileroam auf diesem Gerät und aus iCloud gelöscht, sodass deine anderen Geräte sie auch entfernen. Sie bleibt auf Strava und dort, woher du sie importiert hast."
+          }
+        }
+      }
+    },
+    "Klompenpaden": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        }
+      }
+    },
+    "Klompenpaden walked": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden gelopen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden parcourus"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden recorridos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelaufene Klompenpaden"
+          }
+        }
+      }
+    },
+    "Klompenpaden: walk the 167 country paths of Gelderland and Utrecht": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden: loop de 167 klompenpaden van Gelderland en Utrecht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden : parcourez les 167 sentiers ruraux de Gueldre et d’Utrecht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden: recorre los 167 senderos rurales de Güeldres y Utrecht"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden: lauf die 167 Landwege in Gelderland und Utrecht"
           }
         }
       }
@@ -6053,6 +6221,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Noch nicht besucht: fahre näher als 200 m an der Brauerei vorbei"
+          }
+        }
+      }
+    },
+    "Not walked yet": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet gelopen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore parcouru"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no recorrido"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht gelaufen"
           }
         }
       }
@@ -9753,6 +9949,34 @@
         }
       }
     },
+    "Walked": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelopen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcouru"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorrido"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelaufen"
+          }
+        }
+      }
+    },
     "Walking": {
       "localizations": {
         "nl": {
@@ -10270,6 +10494,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anstiege"
+          }
+        }
+      }
+    },
+    "tab.klompenpaden": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klompenpaden"
           }
         }
       }

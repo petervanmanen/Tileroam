@@ -244,6 +244,7 @@ private struct SourcesView: View {
         (String(localized: "Route planning"), "© OpenStreetMap contributors (ODbL), via Geofabrik; routing by Valhalla (MIT) on the device"),
         (String(localized: "Badges"), "Country outlines: Natural Earth (public domain)"),
         (String(localized: "Trappist Challenge"), "Brewery logos © the Trappist breweries and abbeys, shown to identify each brewery; locations from public sources"),
+        (String(localized: "Klompenpaden"), "Routes and names of the Klompenpaden: [www.klompenpaden.nl](https://www.klompenpaden.nl)"),
         (String(localized: "Elevation and climbs"), "Terrain Tiles (AWS Open Data): SRTM (NASA, public domain); EU-DEM, produced using Copernicus data and information funded by the European Union; climbs found by Tileroam on OpenStreetMap roads (ODbL)"),
     ] + (FeatureFlags.strava ? [("Strava", String(localized: "Activity data from Strava when connected"))] : [])
 
@@ -251,7 +252,9 @@ private struct SourcesView: View {
         List(sources, id: \.0) { source in
             VStack(alignment: .leading, spacing: 4) {
                 Text(source.0).font(.headline)
-                Text(source.1).font(.footnote).foregroundStyle(.secondary)
+                // Markdown, for links such as www.klompenpaden.nl (the texts aren't translated).
+                Text((try? AttributedString(markdown: source.1)) ?? AttributedString(source.1))
+                    .font(.footnote).foregroundStyle(.secondary)
             }
         }
         .navigationTitle("Sources & Licenses")

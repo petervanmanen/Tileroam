@@ -67,6 +67,15 @@ final class ActivityStore {
     private(set) var trappistVisits: [String: [Date]] = [:]
     private var trappistTask: Task<Void, Never>?
 
+    // Klompenpaden (see Klompenpad, KlompenpadData)
+    /// The paths, from R2 (the copy on the device until the download is checked).
+    private(set) var klompenpaden: [Klompenpad] = KlompenpadData.cached()
+    /// For each path with progress, the share of its main route walked (0…1).
+    private(set) var klompenpadProgress: [String: Double] = [:]
+    private var klompenpadTask: Task<Void, Never>?
+    /// Paths walked (at least `KlompenpadMatcher.done`).
+    var klompenpadenWalked: Int { klompenpadProgress.values.count { $0 >= KlompenpadMatcher.done } }
+
     /// How often each badge was earned (see `BadgeRules`); indoor activities count too.
     private(set) var badges: [Badge: Int] = [:]
     /// The countries of the world with activities (not virtual ones), for Globetrotter.
@@ -306,6 +315,7 @@ final class ActivityStore {
         if sync { await Task.detached(priority: .utility) { Library.push() }.value }
         if regions != nil { backfillDerived() }
         await updateTrappists()
+        await updateKlompenpaden()
         await updateClimbs()
     }
 
@@ -322,6 +332,25 @@ final class ActivityStore {
             matchTrappists()
         } else if logos() != before {
             version += 1 // redraw with the new logos
+        }
+    }
+
+    /// Checks for a new list of Klompenpaden (at most once a day) and matches again when it changed.
+    func updateKlompenpaden() async {
+        guard let list = try? await KlompenpadData.load(), list != klompenpaden else { return }
+        klompenpaden = list
+        matchKlompenpaden()
+    }
+
+    /// How much of each Klompenpad the tracks cover, in the background.
+    private func matchKlompenpaden() {
+        klompenpadTask?.cancel()
+        let all = activities, list = klompenpaden
+        klompenpadTask = Task {
+            let progress = await Task.detached(priority: .utility) { KlompenpadMatcher.progress(all, paths: list) }.value
+            guard !Task.isCancelled, progress != klompenpadProgress else { return }
+            klompenpadProgress = progress
+            version += 1
         }
     }
 
@@ -869,6 +898,7 @@ final class ActivityStore {
             await WidgetData.saveTiles(visited14)
         }
         matchTrappists()
+        matchKlompenpaden()
         badgeTask?.cancel()
         let forBadges = activities
         badgeTask = Task {

@@ -108,8 +108,8 @@ enum ClimbMatcher {
         return true
     }
 
-    /// Track points in ~50 m cells, for fast nearest-point lookups.
-    private struct TrackGrid {
+    /// Track points in ~50 m cells, for fast nearest-point lookups (also used for Klompenpaden).
+    struct TrackGrid {
         let points: [GeoPoint]
         var cells: [Int64: [Int]] = [:]
         static let cell = 0.0005 // degrees, about 55 m of latitude
