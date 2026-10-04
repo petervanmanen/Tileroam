@@ -316,7 +316,10 @@ struct ActivityMapView: UIViewRepresentable {
                     map.addOverlay(multi, level: .aboveRoads)
                 }
             case .trappists:
-                map.addAnnotations(store.trappists.map { TrappistAnnotation(trappist: $0, visited: store.trappistVisits[$0.id] != nil) })
+                let marked = planning ? plan.selectedTrappists.union(coverage?.trappists ?? []) : []
+                map.addAnnotations(store.trappists.map {
+                    TrappistAnnotation(trappist: $0, visited: store.trappistVisits[$0.id] != nil, marked: marked.contains($0.id))
+                })
             }
 
             if planning, let start = plan.start {
@@ -416,12 +419,15 @@ struct ActivityMapView: UIViewRepresentable {
         final class TrappistAnnotation: NSObject, MKAnnotation {
             let trappist: Trappist
             let visited: Bool
+            /// Selected for a plan, or on the planned route: orange ring.
+            let marked: Bool
             var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: trappist.lat, longitude: trappist.lon) }
             var title: String? { trappist.name }
 
-            init(trappist: Trappist, visited: Bool) {
+            init(trappist: Trappist, visited: Bool, marked: Bool = false) {
                 self.trappist = trappist
                 self.visited = visited
+                self.marked = marked
             }
 
             /// The badge, rendered once per brewery and state.
@@ -429,7 +435,7 @@ struct ActivityMapView: UIViewRepresentable {
                 let size = CGSize(width: 46, height: 46)
                 return UIGraphicsImageRenderer(size: size).image { _ in
                     let rect = CGRect(origin: .zero, size: size).insetBy(dx: 2, dy: 2)
-                    let ring = visited ? UIColor.systemGreen : UIColor.systemGray
+                    let ring = marked ? UIColor.systemOrange : visited ? UIColor.systemGreen : UIColor.systemGray
                     UIColor.white.setFill()
                     let circle = UIBezierPath(ovalIn: rect)
                     circle.fill()
@@ -443,7 +449,7 @@ struct ActivityMapView: UIViewRepresentable {
                         text.draw(at: CGPoint(x: (size.width - s.width) / 2, y: (size.height - s.height) / 2), withAttributes: attributes)
                     }
                     ring.setStroke()
-                    circle.lineWidth = 3
+                    circle.lineWidth = marked ? 4 : 3
                     circle.stroke()
                     if visited, let check = UIImage(systemName: "checkmark.circle.fill")?
                         .withTintColor(.systemGreen, renderingMode: .alwaysOriginal) {
@@ -583,7 +589,7 @@ struct ActivityMapView: UIViewRepresentable {
                 case .climbs:
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
                 case .trappists:
-                    break
+                    if let t = nearestTrappist(to: p, on: map) { parent.plan.toggle(.trappist(t.id)) }
                 }
                 return
             }

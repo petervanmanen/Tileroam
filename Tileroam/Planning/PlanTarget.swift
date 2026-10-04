@@ -8,6 +8,8 @@ enum PlanTarget: Hashable, Sendable {
     case postcode(String)
     /// `Climb.id`: ridden uphill, bottom to top.
     case climb(String)
+    /// `Trappist.id`: passed within `TrappistMatcher.radius`.
+    case trappist(String)
 
     var sortKey: String {
         switch self {
@@ -15,6 +17,7 @@ enum PlanTarget: Hashable, Sendable {
         case .municipality(let c): "1\(c)"
         case .postcode(let c): "2\(c)"
         case .climb(let id): "3\(id)"
+        case .trappist(let id): "4\(id)"
         }
     }
 }
@@ -27,10 +30,13 @@ struct TargetGeometry: Sendable {
     let area: Area?
     /// Set for climbs.
     let climb: Climb?
+    /// Set for Trappist breweries.
+    let trappist: Trappist?
 
-    init?(_ target: PlanTarget, regions: RegionData?, climbs: [String: Climb] = [:]) {
+    init?(_ target: PlanTarget, regions: RegionData?, climbs: [String: Climb] = [:], trappists: [Trappist] = []) {
         self.target = target
         climb = if case .climb(let id) = target { climbs[id] } else { nil }
+        trappist = if case .trappist(let id) = target { trappists.first { $0.id == id } } else { nil }
         switch target {
         case .tile(let zoom, let key):
             let c = TileGrid.cell(of: key)
@@ -47,6 +53,10 @@ struct TargetGeometry: Sendable {
         case .climb:
             guard let climb else { return nil }
             name = climb.title
+            area = nil
+        case .trappist:
+            guard let trappist else { return nil }
+            name = trappist.name
             area = nil
         }
     }
@@ -70,6 +80,7 @@ struct TargetGeometry: Sendable {
         switch target {
         case .tile(let zoom, let key): TileGrid.key(lat: p.lat, lon: p.lon, zoom: zoom) == key
         case .climb: climb.map { Geo.distance($0.bottom, p) < 60 } ?? false
+        case .trappist: trappist.map { Geo.distance($0.point, p) <= TrappistMatcher.radius } ?? false
         default: area?.contains(p) ?? false
         }
     }
@@ -79,6 +90,15 @@ struct TargetGeometry: Sendable {
         switch target {
         case .climb:
             return climb.map { [$0.bottom] } ?? []
+        case .trappist:
+            // The brewery, then a ring 120 m around it: abbeys often lie back from the road, and
+            // the router snaps a point to the nearest road.
+            guard let p = trappist?.point else { return [] }
+            let dLat = 120 / 111_000.0, dLon = dLat / max(cos(p.lat * .pi / 180), 0.2)
+            return [p] + (0..<8).map { k in
+                let a = Double(k) * .pi / 4
+                return GeoPoint(lat: p.lat + dLat * sin(a), lon: p.lon + dLon * cos(a))
+            }
         case .tile(let zoom, let key):
             let c = TileGrid.cell(of: key)
             let nw = TileGrid.corner(x: c.x, y: c.y, zoom: zoom)

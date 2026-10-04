@@ -82,7 +82,7 @@ struct ClimbDataTests {
 }
 
 /// A router that follows the points straight, to see what the planner asks for.
-private actor StraightRouter: CyclingRouter {
+actor StraightRouter: CyclingRouter {
     private(set) var requested = [[GeoPoint]]()
     func tripOrder(_ points: [GeoPoint]) async throws -> [Int] { Array(points.indices) }
     func route(_ points: [GeoPoint]) async throws -> RoutedPath {
