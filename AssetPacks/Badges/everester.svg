@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+<defs><linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#b197fc"/><stop offset="1.00" stop-color="#5f3dc4"/></linearGradient><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0.00" stop-color="#1c2f6e"/><stop offset="1.00" stop-color="#74c0fc"/></linearGradient>
+<clipPath id="clip"><circle cx="128" cy="128" r="108"/></clipPath></defs>
+<circle cx="128" cy="128" r="126" fill="url(#ring)"/>
+<circle cx="128" cy="128" r="126" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2"/>
+<circle cx="128" cy="128" r="114" fill="#fff"/>
+<circle cx="128" cy="128" r="108" fill="url(#bg)"/>
+<g clip-path="url(#clip)"><circle cx="50" cy="70" r="1.5" fill="#fff" opacity=".85"/><circle cx="70" cy="50" r="1.2" fill="#fff" opacity=".85"/><circle cx="190" cy="60" r="1.5" fill="#fff" opacity=".85"/><circle cx="210" cy="90" r="1.2" fill="#fff" opacity=".85"/><circle cx="170" cy="40" r="1" fill="#fff" opacity=".85"/><polygon points="10,240 128,62 246,240" fill="#adb5bd"/><polygon points="128,62 246,240 150,240 140,150" fill="#868e96"/><polygon points="128,62 156,104 142,98 132,110 120,96 102,104" fill="#fff"/><path d="M128 228 L92 200 L160 176 L108 148 L140 122 L124 108" fill="none" stroke="#ffd43b" stroke-width="4" stroke-dasharray="7 5" stroke-linecap="round"/><line x1="128" y1="64" x2="128" y2="34" stroke="#343a40" stroke-width="3"/><polygon points="128,34 152,41 128,48" fill="#fa5252"/><rect x="80" y="196" width="96" height="32" rx="10" fill="#212529" opacity=".75"/><text x="128" y="220" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900" font-size="20" text-anchor="middle" fill="#fff">8848 m</text></g>
+<circle cx="128" cy="128" r="108" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="2"/>
+<path d="M30 92 A104 104 0 0 1 92 30" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="5" stroke-linecap="round"/>
+</svg>

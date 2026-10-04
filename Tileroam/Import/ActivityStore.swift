@@ -69,6 +69,10 @@ final class ActivityStore {
     private(set) var trappistVisits: [String: [Date]] = [:]
     private var trappistTask: Task<Void, Never>?
 
+    /// How often each badge was earned (see `BadgeRules`); indoor activities count too.
+    private(set) var badges: [Badge: Int] = [:]
+    private var badgeTask: Task<Void, Never>?
+
     // Strava source
     let stravaConfig = StravaConfig.bundled
     private var strava: StravaClient?
@@ -871,6 +875,13 @@ final class ActivityStore {
             await WidgetData.saveTiles(visited14, visited17)
         }
         matchTrappists()
+        badgeTask?.cancel()
+        let forBadges = activities, countries = enabledCountries.count
+        badgeTask = Task {
+            let counts = await Task.detached(priority: .utility) { BadgeRules.counts(forBadges, countries: countries) }.value
+            guard !Task.isCancelled else { return }
+            badges = counts
+        }
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
         eddingtonRunning = Eddington(activities: activities, sports: Eddington.runningSports)
         eddingtonWalking = Eddington(activities: activities, sports: Eddington.walkingSports)

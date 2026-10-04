@@ -1,16 +1,21 @@
 import SwiftUI
 
-/// Statistics: countries and municipalities visited, Eddington numbers and totals per sport.
+/// Statistics: countries and municipalities visited, Eddington numbers, climbs, badges and totals
+/// per sport. Each category is one row until tapped.
 struct StatisticsView: View {
     @Environment(ActivityStore.self) private var store
+    /// The categories the user opened; all start closed, as one small row each.
+    @State private var expanded: Set<String> = []
+    @State private var shownBadge: Badge?
 
     private var year: Int { Calendar.current.component(.year, from: .now) }
 
     var body: some View {
         let municipalities = store.regionCounts(.municipalities)
         let visitedCountries = Country.sortedByName.filter { (municipalities[$0.code]?.visited ?? 0) > 0 }
+        let thisYear = store.activities.filter { $0.startDate.map { Calendar.current.component(.year, from: $0) == year } ?? false }
         List {
-            Section("Overview") {
+            category("overview", "Overview", summary: String(localized: "\(store.tiles(.explorer).count) tiles")) {
                 LabeledContent("Countries visited", value: visitedCountries.count.formatted())
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
@@ -18,7 +23,7 @@ struct StatisticsView: View {
                 LabeledContent(TileZoom.squadratinho.title, value: store.tiles17.count.formatted())
             }
 
-            Section {
+            category("eddington", "Eddington Number", summary: store.eddingtonCycling.number.formatted()) {
                 eddington(store.eddingtonCycling, symbol: "bicycle", title: String(localized: "Cycling")) { e in
                     Text("\(e.daysNeeded) more rides of at least \(e.number + 1) km to reach \(e.number + 1)")
                 }
@@ -28,14 +33,12 @@ struct StatisticsView: View {
                 eddington(store.eddingtonRunning, symbol: "figure.run", title: String(localized: "Running")) { e in
                     Text("\(e.daysNeeded) more runs of at least \(e.number + 1) km to reach \(e.number + 1)")
                 }
-            } header: {
-                Text("Eddington Number")
             } footer: {
                 Text("The largest number E such that you covered at least E km on at least E days. Walking includes hikes.")
             }
 
             if ClimbData.index != nil {
-                Section {
+                category("climbs", "Climbs", summary: store.climbed.count.formatted()) {
                     let climbed = store.climbed.keys.compactMap { store.climbs[$0] }
                     LabeledContent("Climbs climbed", value: store.climbed.count.formatted())
                     ForEach(Climb.Category.allCases.reversed(), id: \.self) { category in
@@ -43,14 +46,18 @@ struct StatisticsView: View {
                         if count > 0 { LabeledContent(category.title, value: count.formatted()) }
                     }
                     NavigationLink("All Climbs") { ClimbsView() }
-                } header: {
-                    Text("Climbs")
                 } footer: {
                     Text("Climbs are found from elevation data along the roads; Cat 4 to HC as on Strava, and short steep hills. Gradients of short hills are often lower than signposted.")
                 }
             }
 
-            Section {
+            category("badges", "Badges", summary: String(localized: "\(store.badges.count) of \(Badge.allCases.count)")) {
+                badgeGrid
+            } footer: {
+                Text("Badges in colour are yours; tap one to see what it takes. Indoor and virtual activities count too.")
+            }
+
+            category("municipalities", "Municipalities per Country", summary: store.visitedMunicipalities.count.formatted()) {
                 if store.regions == nil {
                     HStack { ProgressView(); Text("Loading municipalities…") }
                 } else if visitedCountries.isEmpty {
@@ -61,17 +68,117 @@ struct StatisticsView: View {
                         countryRow(country, visited: m.visited, total: m.total)
                     }
                 }
-            } header: {
-                Text("Municipalities per Country")
             } footer: {
                 Text("Countries are counted as soon as you have an activity there. Postcodes are only available where their boundaries are open data. In the United Kingdom and Ireland, local authorities count as municipalities; in Andorra and San Marino, parishes and castelli.")
             }
 
-            totals(title: String(localized: "This Year (\(String(year)))"),
-                   activities: store.activities.filter { $0.startDate.map { Calendar.current.component(.year, from: $0) == year } ?? false })
-            totals(title: String(localized: "All Time"), activities: store.activities)
+            category("year", "This Year (\(String(year)))", summary: kilometres(thisYear)) {
+                totals(thisYear)
+            }
+            category("all", "All Time", summary: kilometres(store.activities)) {
+                totals(store.activities)
+            }
         }
         .navigationTitle("Statistics")
+        #if DEBUG
+        // Screenshots: -StatisticsOpen "badges climbs" opens those categories.
+        .onAppear {
+            if let open = UserDefaults.standard.string(forKey: "StatisticsOpen") { expanded = Set(open.split(separator: " ").map(String.init)) }
+        }
+        #endif
+    }
+
+    // MARK: Categories
+
+    /// A category of statistics: one row with its title and a summary, which opens on a tap.
+    private func category<Content: View, Footer: View>(
+        _ id: String, _ title: LocalizedStringKey, summary: String,
+        @ViewBuilder content: () -> Content, @ViewBuilder footer: () -> Footer
+    ) -> some View {
+        let isOpen = expanded.contains(id)
+        return Section {
+            Button {
+                withAnimation(.snappy) {
+                    if isOpen { expanded.remove(id) } else { expanded.insert(id) }
+                }
+            } label: {
+                HStack {
+                    Text(title).font(.headline)
+                    Spacer()
+                    Text(summary).foregroundStyle(.secondary).monospacedDigit()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                        .rotationEffect(.degrees(isOpen ? 90 : 0))
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityValue(summary)
+            .accessibilityHint(isOpen ? "Closes this category" : "Opens this category")
+            if isOpen { content() }
+        } footer: {
+            if isOpen { footer() }
+        }
+    }
+
+    private func category<Content: View>(_ id: String, _ title: LocalizedStringKey, summary: String,
+                                         @ViewBuilder content: () -> Content) -> some View {
+        category(id, title, summary: summary, content: content) { EmptyView() }
+    }
+
+    // MARK: Badges
+
+    private var badgeGrid: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 76), spacing: 12, alignment: .top)], spacing: 14) {
+            ForEach(Badge.allCases) { badge in
+                let count = store.badges[badge] ?? 0
+                Button { shownBadge = badge } label: {
+                    VStack(spacing: 4) {
+                        ZStack(alignment: .topTrailing) {
+                            Image(uiImage: UIImage(named: badge.imageName) ?? UIImage())
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 64, height: 64)
+                                .saturation(count > 0 ? 1 : 0)
+                                .opacity(count > 0 ? 1 : 0.45)
+                            if count > 1 {
+                                Text("×\(count)")
+                                    .font(.caption2.bold())
+                                    .monospacedDigit()
+                                    .padding(.horizontal, 5)
+                                    .padding(.vertical, 2)
+                                    .background(.tint, in: Capsule())
+                                    .foregroundStyle(.white)
+                                    .offset(x: 6, y: -4)
+                            }
+                        }
+                        Text(badge.title)
+                            .font(.caption2)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .foregroundStyle(count > 0 ? .primary : .secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(badge.title)
+                .accessibilityValue(count == 0 ? String(localized: "Not earned yet") : String(localized: "Earned \(count) times"))
+                .popover(isPresented: Binding(get: { shownBadge == badge }, set: { if !$0 { shownBadge = nil } })) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(badge.title).font(.headline)
+                        Text(badge.goal).font(.subheadline)
+                        Text(count == 0 ? String(localized: "Not earned yet") : String(localized: "Earned \(count) times"))
+                            .font(.footnote)
+                            .foregroundStyle(count > 0 ? .green : .secondary)
+                    }
+                    .padding()
+                    .frame(idealWidth: 260)
+                    .presentationCompactAdaptation(.popover)
+                }
+            }
+        }
+        .padding(.vertical, 6)
     }
 
     // MARK: Rows
@@ -121,8 +228,13 @@ struct StatisticsView: View {
         var seconds = 0.0
     }
 
+    private func kilometres(_ activities: [Activity]) -> String {
+        Measurement(value: activities.reduce(0) { $0 + $1.distance } / 1000, unit: UnitLength.kilometers)
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))
+    }
+
     @ViewBuilder
-    private func totals(title: String, activities: [Activity]) -> some View {
+    private func totals(_ activities: [Activity]) -> some View {
         let bySport = Dictionary(grouping: activities, by: \.sport).mapValues { list in
             list.reduce(into: Total()) {
                 $0.count += 1
@@ -135,15 +247,13 @@ struct StatisticsView: View {
             $0.meters += $1.meters
             $0.seconds += $1.seconds
         }
-        Section(title) {
-            if activities.isEmpty {
-                Text("No activities.").foregroundStyle(.secondary)
-            } else {
-                ForEach(bySport.sorted { $0.value.meters > $1.value.meters }, id: \.key) { sport, total in
-                    totalRow(Label(Sport.name(sport), systemImage: Sport.symbol(sport)), total)
-                }
-                totalRow(Label("Total", systemImage: "sum").bold(), all)
+        if activities.isEmpty {
+            Text("No activities.").foregroundStyle(.secondary)
+        } else {
+            ForEach(bySport.sorted { $0.value.meters > $1.value.meters }, id: \.key) { sport, total in
+                totalRow(Label(Sport.name(sport), systemImage: Sport.symbol(sport)), total)
             }
+            totalRow(Label("Total", systemImage: "sum").bold(), all)
         }
     }
 

@@ -61,6 +61,8 @@ struct StravaSummary: Decodable, Sendable {
     let deviceWatts: Bool?
     let trainer: Bool?
     let map: MapInfo?
+    /// Metres climbed.
+    let totalElevationGain: Double?
 }
 
 enum StravaError: LocalizedError {

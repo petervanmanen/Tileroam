@@ -49,7 +49,13 @@ struct Activity: Codable, Sendable, Identifiable {
     /// Which details the import read (see `Activity.currentDetails`); older cached activities are
     /// read again to fill in moving time and power.
     var detailsVersion: Int?
-    static let currentDetails = 2
+    static let currentDetails = 3
+    /// Metres climbed and descended (FIT total_ascent/total_descent, Strava total_elevation_gain;
+    /// Strava has no descent). For badges.
+    var ascent: Double?
+    var descent: Double?
+    /// Recorded in Zwift (FIT manufacturer 260, or a Strava name starting "Zwift"). For badges.
+    var isZwift: Bool?
 
     /// Moving time if known, otherwise elapsed time.
     var duration: Double? { (movingTime ?? 0) > 0 ? movingTime : elapsedTime }

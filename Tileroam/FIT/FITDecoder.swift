@@ -20,6 +20,10 @@ struct FITActivityData: Sendable {
     var subSport: UInt8?
     /// FIT manufacturer from file_id (e.g. 260 Zwift).
     var manufacturer: UInt16?
+    /// Metres, summed over sessions.
+    var ascent: Double?
+    var descent: Double?
+    var isZwift: Bool { manufacturer == 260 }
 
     /// Indoor or virtual (Zwift, Rouvy, …): GPS positions, if any, are not real places.
     var isVirtual: Bool {
@@ -175,6 +179,10 @@ enum FITDecoder {
                     result.totalDistance = (result.totalDistance ?? 0) + Double(value) / 100
                 case 7 where value != 0xFFFF_FFFF:
                     result.elapsedTime = (result.elapsedTime ?? 0) + Double(value) / 1000
+                case 22 where value != 0xFFFF:
+                    result.ascent = (result.ascent ?? 0) + Double(value)
+                case 23 where value != 0xFFFF:
+                    result.descent = (result.descent ?? 0) + Double(value)
                 default: break
                 }
             }
@@ -222,6 +230,8 @@ enum FITDecoder {
         case 17: "Hiking"
         case 4: "Fitness"
         case 13: "Skiing"
+        case 14: "Snowboarding"
+        case 12: "Cross-country skiing"
         case 15: "Rowing"
         case 30: "Inline skating"
         case 21: "E-biking"

@@ -78,6 +78,9 @@ enum Importer {
         activity.elapsedTime = fit.elapsedTime
         activity.movingTime = fit.movingTime
         activity.averagePower = fit.averagePower
+        activity.ascent = fit.ascent
+        activity.descent = fit.descent
+        activity.isZwift = fit.isZwift || name.lowercased().hasPrefix("zwift")
         activity.detailsVersion = Activity.currentDetails
         activity.isVirtual = fit.isVirtual || Activity.looksVirtual(name: name)
         return activity

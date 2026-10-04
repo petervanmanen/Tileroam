@@ -61,6 +61,14 @@ enum ActivityMerge {
         best.averagePower = best.averagePower ?? members.lazy.compactMap(\.averagePower).first
         best.movingTime = best.movingTime ?? members.lazy.compactMap(\.movingTime).first
         best.elapsedTime = best.elapsedTime ?? members.lazy.compactMap(\.elapsedTime).first
+        best.ascent = best.ascent ?? members.lazy.compactMap(\.ascent).first
+        best.descent = best.descent ?? members.lazy.compactMap(\.descent).first
+        if members.contains(where: { $0.isZwift == true }) { best.isZwift = true }
+        // A watch or Zwift file is named after its file; the Strava copy has the real name
+        // ("Zwift - Uber Pretzel in Watopia").
+        if StravaImport.stravaID(of: best) == nil, let strava = members.first(where: { StravaImport.stravaID(of: $0) != nil }) {
+            best.name = strava.name
+        }
         return best
     }
 
