@@ -190,16 +190,18 @@ struct ContentView: View {
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Button {
-                    plan.isPlanning.toggle()
-                } label: {
-                    Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-                        .font(.title3)
-                        .foregroundStyle(plan.isPlanning ? Color.white : Color.accentColor)
-                        .padding(4)
-                        .background(plan.isPlanning ? Color.purple : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+                if FeatureFlags.routePlanning {
+                    Button {
+                        plan.isPlanning.toggle()
+                    } label: {
+                        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
+                            .font(.title3)
+                            .foregroundStyle(plan.isPlanning ? Color.white : Color.accentColor)
+                            .padding(4)
+                            .background(plan.isPlanning ? Color.purple : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+                    }
+                    .accessibilityLabel(plan.isPlanning ? Text("Stop route planning") : Text("Plan a route"))
                 }
-                .accessibilityLabel(plan.isPlanning ? Text("Stop route planning") : Text("Plan a route"))
                 Button {
                     showActivities = true
                 } label: {

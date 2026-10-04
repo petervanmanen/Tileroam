@@ -1,4 +1,5 @@
 import Foundation
+#if !targetEnvironment(macCatalyst)
 import Valhalla
 
 /// Cycling routes computed on the device by Valhalla (valhalla-mobile), from OpenStreetMap data
@@ -156,3 +157,19 @@ actor ValhallaRouter: CyclingRouter {
         return points
     }
 }
+
+#else
+
+/// The Mac app has no route planning: valhalla-mobile is only built for iPhone and iPad. Route
+/// planning is hidden there (`FeatureFlags.routePlanning`); this stand-in is never asked for a route.
+actor ValhallaRouter: CyclingRouter {
+    func prepare(along path: [GeoPoint], near points: [GeoPoint], margin: Double,
+                 progress: (@Sendable (Int, Int) async -> Void)? = nil) async throws {
+        throw CancellationError()
+    }
+
+    func forget() {}
+    func tripOrder(_ points: [GeoPoint]) async throws -> [Int] { throw CancellationError() }
+    func route(_ points: [GeoPoint]) async throws -> RoutedPath { throw CancellationError() }
+}
+#endif
