@@ -93,7 +93,7 @@ Climbs are found by Tileroam from elevation data along OpenStreetMap's roads. Sh
 
 ## Trappist Challenge
 
-Turn on the **Trappists** challenge with the **+** at the end of the tabs to see the Trappist breweries on the map: Westmalle, Westvleteren, Chimay, Orval, Rochefort, La Trappe, Tre Fontane and Tynt Meadow. A brewery counts as visited when one of your activities passed within 200 m of it; it then gets a green ring and a check. Tap a brewery to see its abbey and when you were there.
+Turn on the **Trappists** challenge with the **+** at the end of the tabs to see the Trappist breweries on the map: Westmalle, Westvleteren, Chimay, Orval, Rochefort, La Trappe, Tre Fontane and Tynt Meadow. A brewery counts as visited when one of your activities passed within 200 m of it; it then gets a green ring and a check. Tap a brewery to see its abbey and when you were there. The list of breweries and their logos are downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for new breweries once a day.
 
 ## Statistics
 

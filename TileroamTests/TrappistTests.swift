@@ -6,10 +6,15 @@ struct TrappistTests {
     private let westmalle = Trappist(id: "westmalle", name: "Westmalle", abbey: "Abdij", place: "Westmalle", country: "BE",
                                      lat: 51.28472, lon: 4.65667)
 
-    @Test func bundledBreweries() {
-        #expect(Trappist.all.count == 8)
-        #expect(Trappist.all.allSatisfy { $0.icon != nil })
-        #expect(Set(Trappist.all.map(\.id)).count == Trappist.all.count)
+    /// The data in the repository (AssetPacks/Trappist), as uploaded to R2.
+    static let source = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        .appending(path: "AssetPacks/Trappist")
+
+    @Test func repositoryData() throws {
+        let list = try JSONDecoder().decode([Trappist].self, from: Data(contentsOf: Self.source.appending(path: "trappists.json")))
+        #expect(list.count == 8)
+        #expect(Set(list.map(\.id)).count == list.count)
+        #expect(list.allSatisfy { FileManager.default.fileExists(atPath: Self.source.appending(path: "\($0.id).png").path(percentEncoded: false)) })
     }
 
     @Test func passingWithin200Metres() {
@@ -44,5 +49,57 @@ struct TrappistTests {
     @Test func challengeIsOffByDefault() {
         #expect(MapMode.trappists.isChallenge)
         #expect(!Challenges.visibleModes("").contains(.trappists))
+    }
+}
+
+/// TrappistData against a local folder laid out like R2 (`<server>/Trappist/…`).
+struct TrappistDataTests {
+    private func temp() throws -> URL {
+        let url = FileManager.default.temporaryDirectory.appending(path: "trappist-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// A server folder with the repository's list and logos.
+    private func server() throws -> URL {
+        let root = try temp()
+        try FileManager.default.copyItem(at: TrappistTests.source, to: root.appending(path: "Trappist"))
+        return root
+    }
+
+    @Test func downloadsListAndLogos() async throws {
+        let server = try server(), cache = try temp()
+        let list = try await TrappistData.load(from: server, into: cache)
+        #expect(list.count == 8)
+        #expect(TrappistData.cached(in: cache) == list)
+        #expect(list.allSatisfy { FileManager.default.fileExists(atPath: TrappistData.iconFile($0.id, in: cache).path(percentEncoded: false)) })
+    }
+
+    @Test func usesTheCopyOffline() async throws {
+        let server = try server(), cache = try temp()
+        let list = try await TrappistData.load(from: server, into: cache)
+        try FileManager.default.removeItem(at: server)
+        // Within a day: no download at all. A day later: the download fails, the copy is used.
+        #expect(try await TrappistData.load(from: server, into: cache) == list)
+        #expect(try await TrappistData.load(from: server, into: cache, now: .now.addingTimeInterval(2 * TrappistData.maxAge)) == list)
+    }
+
+    @Test func noListWithoutDownload() async throws {
+        let cache = try temp()
+        await #expect(throws: (any Error).self) {
+            try await TrappistData.load(from: try temp(), into: cache)
+        }
+        #expect(TrappistData.cached(in: cache).isEmpty)
+    }
+
+    @Test func picksUpANewList() async throws {
+        let server = try server(), cache = try temp()
+        _ = try await TrappistData.load(from: server, into: cache)
+        let file = server.appending(path: "Trappist/trappists.json")
+        var list = try JSONDecoder().decode([Trappist].self, from: Data(contentsOf: file))
+        list.removeLast()
+        try JSONEncoder().encode(list).write(to: file)
+        #expect(try await TrappistData.load(from: server, into: cache).count == 8) // still within a day
+        #expect(try await TrappistData.load(from: server, into: cache, now: .now.addingTimeInterval(2 * TrappistData.maxAge)).count == 7)
     }
 }

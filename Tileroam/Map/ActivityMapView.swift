@@ -316,7 +316,7 @@ struct ActivityMapView: UIViewRepresentable {
                     map.addOverlay(multi, level: .aboveRoads)
                 }
             case .trappists:
-                map.addAnnotations(Trappist.all.map { TrappistAnnotation(trappist: $0, visited: store.trappistVisits[$0.id] != nil) })
+                map.addAnnotations(store.trappists.map { TrappistAnnotation(trappist: $0, visited: store.trappistVisits[$0.id] != nil) })
             }
 
             if planning, let start = plan.start {
@@ -433,7 +433,15 @@ struct ActivityMapView: UIViewRepresentable {
                     UIColor.white.setFill()
                     let circle = UIBezierPath(ovalIn: rect)
                     circle.fill()
-                    trappist.icon?.draw(in: rect.insetBy(dx: 5, dy: 5))
+                    if let icon = trappist.icon {
+                        icon.draw(in: rect.insetBy(dx: 5, dy: 5))
+                    } else {
+                        // Logo not downloaded yet: the brewery's initial.
+                        let text = String(trappist.name.prefix(1)) as NSString
+                        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.boldSystemFont(ofSize: 20), .foregroundColor: UIColor.black]
+                        let s = text.size(withAttributes: attributes)
+                        text.draw(at: CGPoint(x: (size.width - s.width) / 2, y: (size.height - s.height) / 2), withAttributes: attributes)
+                    }
                     ring.setStroke()
                     circle.lineWidth = 3
                     circle.stroke()
@@ -596,7 +604,7 @@ struct ActivityMapView: UIViewRepresentable {
         /// The brewery closest to a tap, within its badge (about 25 points on screen).
         private func nearestTrappist(to p: GeoPoint, on map: MKMapView) -> Trappist? {
             let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
-            return Trappist.all.map { ($0, Geo.distance($0.point, p)) }
+            return parent.store.trappists.map { ($0, Geo.distance($0.point, p)) }
                 .filter { $0.1 <= 25 * metresPerPoint }
                 .min { $0.1 < $1.1 }?.0
         }
