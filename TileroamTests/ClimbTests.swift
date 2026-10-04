@@ -108,7 +108,7 @@ struct ClimbPlanningTests {
         let start = GeoPoint(lat: 50.79, lon: 5.79)
         let route = try await RoutePlanner.planRoute(
             start: start, targets: [target], client: router,
-            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],
+            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedMunicipalities: [],
                                       visitedPostcodes: [], regions: nil, climbs: [climb], climbed: []) },
             progress: { _ in })
         let asked = try #require(await router.requested.first)
@@ -131,7 +131,7 @@ struct ClimbPlanningTests {
 
     @Test func climbedBeforeIsNotNew() {
         let ride = (0...25).map { GeoPoint(lat: 50.795 + Double($0) * 0.0009, lon: 5.8001) }
-        let coverage = RouteCoverage(route: ride, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],
+        let coverage = RouteCoverage(route: ride, visitedTiles14: [], visitedMunicipalities: [],
                                      visitedPostcodes: [], regions: nil, climbs: [climb], climbed: ["test"])
         #expect(coverage.climbs == ["test"] && coverage.newClimbs.isEmpty)
     }

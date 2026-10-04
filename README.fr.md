@@ -4,12 +4,14 @@
 
 Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé lors de vos sorties à vélo, courses et marches : chaque tuile de carte, commune et zone de code postal visitée. Elle lit les fichiers `.fit` d’un ou plusieurs dossiers iCloud Drive (par exemple des exports HealthFit, Garmin ou Wahoo) et peut importer votre historique Strava. Elle planifie aussi des parcours à vélo vers des lieux où vous n’êtes pas encore allé.
 
-![Tileroam sur iPhone : tuiles, squadratinhos, communes et planification](docs/screenshots/overview.jpg)
+![Tileroam sur iPhone : tuiles, communes, montées et planification](docs/screenshots/overview.jpg)
 
 ## Fonctionnalités
 
-- **Tuiles** : tuiles de carte au zoom 14 (~1,5 km, comme sur VeloViewer, StatsHunters et [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) et *squadratinhos* au zoom 17 (~190 m, comme sur Squadrats). Les deux sont toujours comptés ; vous choisissez celui que la carte affiche. Avec votre **carré max** et votre **plus grand cluster**.
+- **Tuiles** : tuiles de carte au zoom 14 (~1,5 km, comme sur VeloViewer, StatsHunters et [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Avec votre **carré max** et votre **plus grand cluster**.
 - **Montées** : toutes les montées des routes (Cat. 4 à HC comme sur Strava, et courtes côtes raides), trouvées à partir de données d'altitude ; celles que vous avez gravies, sur un onglet de carte et dans les Statistiques, et des montées à inclure en planifiant un parcours. Voir [docs/CLIMBS.md](docs/CLIMBS.md).
+- **Défis** : en plus des tuiles, activez les défis de votre choix avec le **+** en haut de la carte : communes, codes postaux, montées et le **défi trappiste** (passez devant les brasseries trappistes ; à moins de 200 m, ça compte). Les défis masqués comptent quand même.
+- **Badges** : 18 badges, de *100 !*, *Century* et *Everester* à *Festive 500*, *Triathlète* et *Globe-trotter* (50 pays, calculés sur l’appareil). Les badges obtenus sont en couleur, avec leur nombre ; les activités en salle comptent aussi.
 - **Activités** : la liste de toutes les activités, des plus récentes aux plus anciennes, avec durée, distance et puissance moyenne (avec un capteur de puissance) ou vitesse moyenne.
 - **Communes et codes postaux** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche, avec visités/total par pays.
 - **Planification d’itinéraire** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte qui les relie tous. Elle part de votre position, ou d’un **point de départ** que vous recherchez ou choisissez par un appui long sur la carte (les départs récents sont mémorisés). Les itinéraires sont calculés **sur l’appareil**, donc la planification fonctionne aussi hors ligne une fois la zone téléchargée. Partagez l’itinéraire en **GPX** ou enregistrez-le dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
@@ -26,13 +28,17 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 
 ## Captures d’écran
 
-| Tuiles (zoom 14) | Squadratinhos (zoom 17) | Parcours | Communes |
-|---|---|---|---|
-| ![Tuiles](docs/screenshots/tiles.jpg) | ![Squadratinhos](docs/screenshots/squadratinhos.jpg) | ![Parcours](docs/screenshots/routes.jpg) | ![Communes](docs/screenshots/municipalities.jpg) |
+| Tuiles | Communes | Codes postaux |
+|---|---|---|
+| ![Tuiles](docs/screenshots/tiles.jpg) | ![Communes](docs/screenshots/municipalities.jpg) | ![Codes postaux](docs/screenshots/postcodes.jpg) |
 
-| Codes postaux | Planification | Réglages | Introduction |
-|---|---|---|---|
-| ![Codes postaux](docs/screenshots/postcodes.jpg) | ![Planification](docs/screenshots/planning.jpg) | ![Réglages](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
+| Montées | Défi trappiste | Planification |
+|---|---|---|
+| ![Montées](docs/screenshots/climbs.jpg) | ![Défi trappiste](docs/screenshots/trappists.jpg) | ![Planification](docs/screenshots/planning.jpg) |
+
+| Badges | Réglages | Introduction |
+|---|---|---|
+| ![Badges](docs/screenshots/badges.jpg) | ![Réglages](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
 
 **iPad**
 
@@ -82,7 +88,7 @@ Strava autorise environ 100 requêtes par 15 minutes et 1 000 par jour. La liste
 
 - Les **fichiers FIT** sont lus par un petit décodeur intégré (`FIT/FITDecoder.swift`). Tracés, tuiles et zones visitées sont mis en cache ; au lancement suivant, seuls les fichiers nouveaux ou modifiés sont lus.
 - **Stockage** (`Import/Library.swift`) : chaque activité et parcours est dans l’app (`Documents/Activities`, `Documents/Routes`). Avec la synchronisation iCloud, `Library.pull`/`push` les reflètent dans iCloud Drive › Tileroam, après suppression des doublons (`ActivityMerge.preferredFile`). Les activités supprimées sont mémorisées dans le stockage clé-valeur d’iCloud (`Deletions`), pour que les autres appareils suppriment leur copie et que Strava ne les ramène pas. Les dossiers des versions précédentes sont copiés une fois (`Library.migrate`).
-- Les **tuiles** utilisent la formule standard des tuiles Web Mercator (`Geo/TileGrid.swift`). Le carré max et le cluster sont calculés uniquement sur les tuiles visitées, ce qui reste rapide même pour des tuiles zoom 17 réparties dans toute l’Europe.
+- Les **tuiles** utilisent la formule standard des tuiles Web Mercator (`Geo/TileGrid.swift`). Le carré max et le cluster sont calculés uniquement sur les tuiles visitées, ce qui reste rapide même avec beaucoup de tuiles.
 - **Doublons** : les activités du même type qui se chevauchent dans le temps sont fusionnées (`Import/ActivityMerge.swift`) ; la copie au meilleur GPS et à la plus longue distance est conservée.
 - Les **communes et codes postaux** sont des fichiers binaires compacts (`AssetPacks/Regions/*.fmr`, 6,3 Mo au total) avec un index spatial pour des recherches rapides. Ils ne sont pas dans l’app : chaque pays est un asset pack hébergé par Apple (`regions-NL`, …) que l’app télécharge avec Background Assets dès que vous y avez une activité. `Tools/build_asset_packs.sh` les prépare pour App Store Connect ; dans le simulateur, `-RegionsDir <repo>/AssetPacks/Regions` les lit directement.
 - La **planification** fonctionne sur l’appareil avec [Valhalla](https://github.com/valhalla/valhalla), via [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), et des tuiles OpenStreetMap pour les Pays-Bas, la Belgique, le Luxembourg, l’Allemagne, la France, la Suisse et l’Autriche. Les tuiles sont sur Cloudflare R2 ; un plan ne télécharge que les tuiles Valhalla autour de lui (25 à 75 Mo, au lieu de 2,2 Go pour tout). Les téléchargements de plus de 25 Mo attendent le Wi-Fi (`MapDataDownloads`). L’ordre de passage est calculé sur les distances à vol d’oiseau (`TripSolver`, bien plus rapide qu’une matrice d’itinéraires sur l’appareil) ; ensuite, dans chaque cible, le planificateur choisit le point qui minimise le détour, et Valhalla calcule la boucle. Construire et envoyer les tuiles, ajouter des pays : [docs/ROUTING.md](docs/ROUTING.md).

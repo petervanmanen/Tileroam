@@ -7,9 +7,7 @@ final class ActivityStore {
     /// All activities from all sources, with duplicates merged.
     private(set) var activities: [Activity] = []
     private(set) var tiles14: Set<Int64> = []
-    private(set) var tiles17: Set<Int64> = []
     private(set) var tileStats14 = SquareStats()
-    private(set) var tileStats17 = SquareStats()
     private var statsTask: Task<Void, Never>?
     /// Max square/cluster have been computed for the current activities.
     private(set) var statsReady = false
@@ -228,11 +226,11 @@ final class ActivityStore {
     }
 
     func tiles(_ zoom: TileZoom) -> Set<Int64> {
-        zoom == .explorer ? tiles14 : tiles17
+        tiles14
     }
 
     func tileStats(_ zoom: TileZoom) -> SquareStats {
-        zoom == .explorer ? tileStats14 : tileStats17
+        tileStats14
     }
 
     var stravaDetailedCount: Int {
@@ -739,7 +737,7 @@ final class ActivityStore {
         guard let regions, !isBackfilling else { return }
         let key = regions.key
         let missing = (folderActivities + stravaActivities)
-            .filter { $0.regionsKey != key || $0.tiles14 == nil || $0.tiles17 == nil }
+            .filter { $0.regionsKey != key || $0.tiles14 == nil }
         guard !missing.isEmpty else { return }
         isBackfilling = true
         Task {
@@ -748,14 +746,13 @@ final class ActivityStore {
                 backfillDerived() // activities added or countries changed meanwhile
             }
             let computed = await Task.detached(priority: .utility) {
-                var result = [String: (tiles14: [Int64], tiles17: [Int64], municipalities: [String], postalCodes: [String])]()
+                var result = [String: (tiles14: [Int64], municipalities: [String], postalCodes: [String])]()
                 for a in missing {
                     let points = a.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) }
                     let dense = Geo.densified(points, spacing: 100)
                     let fresh = a.regionsKey != key
                     result[a.id] = (
                         a.tiles14 ?? Array(TileGrid.tiles(for: points, zoom: .explorer)).sorted(),
-                        a.tiles17 ?? Array(TileGrid.tiles(for: points, zoom: .squadratinho)).sorted(),
                         fresh ? Array(regions.municipalities.visited(by: dense)).sorted() : a.municipalities ?? [],
                         fresh ? Array(regions.postcodes.visited(by: dense)).sorted() : a.postalCodes ?? []
                     )
@@ -767,7 +764,6 @@ final class ActivityStore {
             func fill(_ a: inout Activity) {
                 guard let c = computed[a.id] else { return }
                 a.tiles14 = c.tiles14
-                a.tiles17 = c.tiles17
                 a.municipalities = c.municipalities
                 a.postalCodes = c.postalCodes
                 a.regionsKey = key
@@ -844,12 +840,10 @@ final class ActivityStore {
         activities = groups.map(ActivityMerge.best(of:))
         copies = Dictionary(zip(activities.map(\.id), groups.map { $0.map(\.id) }), uniquingKeysWith: { a, _ in a })
         var tiles14 = Set<Int64>()
-        var tiles17 = Set<Int64>()
         var municipalities = Set<String>()
         var postcodes = Set<String>()
         for a in activities where a.isOnMap {
             tiles14.formUnion(a.tiles14 ?? [])
-            tiles17.formUnion(a.tiles17 ?? [])
             municipalities.formUnion(a.municipalities ?? [])
             postcodes.formUnion(a.postalCodes ?? [])
         }
@@ -859,22 +853,20 @@ final class ActivityStore {
         }
         self.climbed = climbed.mapValues { $0.sorted(by: >) }
         self.tiles14 = tiles14
-        self.tiles17 = tiles17
         self.visitedMunicipalities = municipalities
         self.visitedPostcodes = postcodes
-        // Max square and cluster can take a moment for many zoom 17 tiles: compute in the background.
+        // Max square and cluster can take a moment for many tiles: compute in the background.
         statsTask?.cancel()
-        let visited14 = tiles14, visited17 = tiles17
+        let visited14 = tiles14
         statsTask = Task {
             let stats = await Task.detached(priority: .userInitiated) {
-                (SquareStats(visited: visited14), SquareStats(visited: visited17))
+                SquareStats(visited: visited14)
             }.value
             guard !Task.isCancelled else { return }
-            tileStats14 = stats.0
-            tileStats17 = stats.1
+            tileStats14 = stats
             statsReady = true
             version += 1
-            await WidgetData.saveTiles(visited14, visited17)
+            await WidgetData.saveTiles(visited14)
         }
         matchTrappists()
         badgeTask?.cancel()

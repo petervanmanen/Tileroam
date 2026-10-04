@@ -95,15 +95,14 @@ struct PlanningTests {
     @Test func coverageExcludesVisited() throws {
         // ~2.2 km north from the Dom through Utrecht.
         let route = [GeoPoint(lat: 52.0907, lon: 5.1214), GeoPoint(lat: 52.1107, lon: 5.1214)]
-        let all = RouteCoverage(route: route, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [], visitedPostcodes: [],
+        let all = RouteCoverage(route: route, visitedTiles14: [], visitedMunicipalities: [], visitedPostcodes: [],
                                 regions: GeoTests.regions)
         #expect(all.newTiles14.count >= 2)
-        #expect(all.newTiles17.count >= 10)
         #expect(all.newMunicipalities == ["NL:GM0344"])
         #expect(all.newPostcodes.contains("NL:3512"))
 
         let first = try #require(TileGrid.key(lat: 52.0907, lon: 5.1214, zoom: .explorer))
-        let some = RouteCoverage(route: route, visitedTiles14: [first], visitedTiles17: [], visitedMunicipalities: ["NL:GM0344"],
+        let some = RouteCoverage(route: route, visitedTiles14: [first], visitedMunicipalities: ["NL:GM0344"],
                                  visitedPostcodes: ["NL:3512"], regions: GeoTests.regions)
         #expect(!some.newTiles14.contains(first))
         #expect(all.contains(.tile(.explorer, first)))

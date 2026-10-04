@@ -9,7 +9,6 @@ struct SettingsView: View {
     @State private var confirmDeleteStravaFiles = false
     @State private var stravaFileCount = 0
     @State private var showStorage = false
-    @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     @AppStorage(Challenges.key) private var challenges = ""
     let onChooseFolder: (PickerPurpose) -> Void
     let onShowIntro: () -> Void
@@ -24,10 +23,21 @@ struct SettingsView: View {
                         Label("Sync with iCloud", systemImage: "icloud")
                     }
                     .disabled(!store.isICloudAvailable)
-                    LabeledContent("Activity files", value: "\(store.libraryFileCount)")
-                    Button("Import .fit Files…") { onChooseFolder(.fitFiles) }
+                    Button { onChooseFolder(.fitFiles) } label: {
+                        Label("Import .fit Files…", systemImage: "square.and.arrow.down")
+                    }
                     if store.hasSampleRides {
-                        Button("Remove Sample Rides", role: .destructive) { Task { await store.removeSampleRides() } }
+                        Button(role: .destructive) { Task { await store.removeSampleRides() } } label: {
+                            Label("Remove Sample Rides", systemImage: "trash")
+                        }
+                    }
+                    if !store.failedFiles.isEmpty {
+                        NavigationLink {
+                            List(store.failedFiles, id: \.self) { Text($0).font(.footnote) }
+                                .navigationTitle("Could Not Read")
+                        } label: {
+                            Label("Could not read (\(store.failedFiles.count))", systemImage: "exclamationmark.triangle")
+                        }
                     }
                     if let message = store.libraryMessage {
                         Text(message).font(.footnote)
@@ -35,11 +45,9 @@ struct SettingsView: View {
                 } header: {
                     Text("Activities")
                 } footer: {
-                    if store.isICloudAvailable {
-                        Text("Tileroam keeps your activities and planned routes on this device (\(FolderAccess.internalLocation) › Activities and › Routes). With iCloud sync, they're also in \(FolderAccess.iCloudLocation), without duplicates, so your other devices have them. Turning it off keeps both copies. Imported files are copied once: the folder they came from isn't watched.")
-                    } else {
-                        Text("Tileroam keeps your activities and planned routes on this device (\(FolderAccess.internalLocation) › Activities and › Routes). Sign in to iCloud with iCloud Drive on to share them with your other devices. Imported files are copied once: the folder they came from isn't watched.")
-                    }
+                    Text(store.isICloudAvailable
+                         ? "\(store.libraryFileCount) activity files on this device, and with iCloud sync also in iCloud Drive › Tileroam. Imported files are copied once."
+                         : "\(store.libraryFileCount) activity files on this device. Sign in to iCloud with iCloud Drive on to share them with your other devices.")
                 }
 
                 #if STRAVA
@@ -47,63 +55,28 @@ struct SettingsView: View {
                 #endif
 
                 Section {
-                    Picker("Show on map", selection: $tileZoom) {
-                        ForEach(TileZoom.allCases) { Text($0.shortTitle).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    tileRow(.explorer)
-                    tileRow(.squadratinho)
-                } header: {
-                    Text("Tiles")
-                } footer: {
-                    Text("Zoom 14 tiles (~1.5 km in the Netherlands) are the explorer tiles of VeloViewer, StatsHunters and rideeverytile.com. Zoom 17 squadratinhos (~190 m) are used by Squadrats. Both are always counted; this setting chooses which one the map, statistics and route planning use.")
-                }
-
-                Section {
                     ForEach(Challenges.all) { mode in
-                        Toggle(mode.title, isOn: Binding(
+                        Toggle(isOn: Binding(
                             get: { Challenges.decode(challenges).contains(mode) },
                             set: { on in
                                 var set = Challenges.decode(challenges)
                                 if on { set.insert(mode) } else { set.remove(mode) }
                                 challenges = Challenges.encode(set)
-                            }))
+                            })) {
+                            Label(mode.title, systemImage: mode.symbol)
+                        }
                     }
                 } header: {
                     Text("Challenges")
                 } footer: {
-                    Text("Tiles are always at the top of the map. Choose which other challenges are there too; the + at the end of that bar does the same. Everything is still counted, also for challenges you don't show.")
+                    Text("Tiles are always on the map. Challenges you hide still count.")
                 }
 
                 Section {
-                    NavigationLink {
-                        StatisticsView()
-                    } label: {
-                        Label("Statistics", systemImage: "chart.bar.xaxis")
-                    }
-                    LabeledContent("Activities", value: store.activities.count.formatted())
-                    LabeledContent("Without GPS", value: store.activitiesWithoutGPS.formatted())
-                } footer: {
-                    Text("Activities without GPS (indoor workouts, or workouts synced into Apple Health without a route) are counted but can't be drawn.")
-                }
-
-                if !store.failedFiles.isEmpty {
-                    Section("Could not read (\(store.failedFiles.count))") {
-                        ForEach(store.failedFiles, id: \.self) { Text($0).font(.footnote) }
-                    }
-                }
-
-                Section {
-                    Button("Show Introduction") { onShowIntro() }
-                    NavigationLink("Sources & Licenses") { SourcesView() }
-                }
-
-                Section {
-                    NavigationLink {
-                        StorageView()
-                    } label: {
-                        Label("Storage", systemImage: "internaldrive")
-                    }
+                    NavigationLink { StorageView() } label: { Label("Storage", systemImage: "internaldrive") }
+                    Button { onShowIntro() } label: { Label("Show Introduction", systemImage: "sparkles") }
+                    NavigationLink { SourcesView() } label: { Label("Sources & Licenses", systemImage: "doc.text") }
+                    LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")
                 }
             }
             .navigationTitle("Settings")
@@ -123,16 +96,6 @@ struct SettingsView: View {
 }
 
 extension SettingsView {
-    private func tileRow(_ zoom: TileZoom) -> some View {
-        let stats = store.tileStats(zoom)
-        return LabeledContent {
-            Text(store.tiles(zoom).count.formatted()).font(.headline)
-        } label: {
-            Text(zoom.title)
-            Text("Max square \(stats.maxSquare)×\(stats.maxSquare) · cluster \(stats.maxCluster)")
-        }
-    }
-
     #if STRAVA
     @ViewBuilder
     private var stravaSection: some View {

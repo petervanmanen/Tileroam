@@ -12,10 +12,8 @@ enum TilesWidgetData {
 
     static var defaults: UserDefaults? { UserDefaults(suiteName: appGroup) }
 
-    static var zoom: Int {
-        let z = defaults?.integer(forKey: "tileZoom") ?? 0
-        return z == 17 ? 17 : 14
-    }
+    /// Zoom 14 tiles (zoom 17 was removed in 1.5.9).
+    static let zoom = 14
 
     static var lastLocation: CLLocationCoordinate2D? {
         guard let d = defaults, d.object(forKey: "location.lat") != nil else { return nil }
@@ -121,11 +119,10 @@ struct TilesProvider: TimelineProvider {
 
     /// Tiles shown around the location: wider in medium widgets.
     private func span(for family: WidgetFamily, zoom: Int) -> (columns: Int, rows: Int) {
-        let base = zoom == 17 ? 3 : 1 // squadratinhos are 8× smaller: show more of them
         switch family {
-        case .systemMedium: return (11 * base, 5 * base)
-        case .systemLarge: return (7 * base, 7 * base)
-        default: return (5 * base, 5 * base)
+        case .systemMedium: return (11, 5)
+        case .systemLarge: return (7, 7)
+        default: return (5, 5)
         }
     }
 

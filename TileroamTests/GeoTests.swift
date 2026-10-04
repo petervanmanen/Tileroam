@@ -7,7 +7,6 @@ struct GeoTests {
     @Test func tileNumbersMatchOSMFormula() {
         // Reference values from the standard slippy-map formula (computed independently).
         #expect(TileGrid.cell(lat: 52.0907, lon: 5.1214, zoom: .explorer)! == (8425, 5405))
-        #expect(TileGrid.cell(lat: 52.0907, lon: 5.1214, zoom: .squadratinho)! == (67400, 43241))
         #expect(TileGrid.cell(lat: -33.8568, lon: 151.2153, zoom: .explorer)! == (15073, 9831))
         #expect(TileGrid.cell(lat: 89, lon: 0, zoom: .explorer) == nil)
     }
@@ -128,7 +127,6 @@ struct GeoTests {
         let a = Importer.makeActivity(fit, id: "rides/ride.fit", cacheKey: "1")
         #expect(a.name == "ride")
         #expect((a.tiles14?.count ?? 0) >= 1)
-        #expect((a.tiles17?.count ?? 0) >= 10)
         #expect(a.coordinates.count == 2)
     }
 }

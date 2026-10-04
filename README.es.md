@@ -4,12 +4,14 @@
 
 Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que has pasado en tus salidas en bici, carreras y paseos: cada tesela del mapa, municipio y código postal que has visitado. Lee archivos `.fit` de una o varias carpetas de iCloud Drive (por ejemplo, exportaciones de HealthFit, Garmin o Wahoo) y puede importar tu historial de Strava. También planifica rutas en bici hacia lugares donde aún no has estado.
 
-![Tileroam en iPhone: teselas, squadratinhos, municipios y planificación de rutas](docs/screenshots/overview.jpg)
+![Tileroam en iPhone: teselas, municipios, subidas y planificación de rutas](docs/screenshots/overview.jpg)
 
 ## Funciones
 
-- **Teselas**: teselas de mapa de zoom 14 (~1,5 km, como en VeloViewer, StatsHunters y [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) y *squadratinhos* de zoom 17 (~190 m, como en Squadrats). Siempre se cuentan ambos; tú eliges cuál muestra el mapa. Incluye tu **cuadrado máximo** y tu **mayor clúster**.
+- **Teselas**: teselas de mapa de zoom 14 (~1,5 km, como en VeloViewer, StatsHunters y [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Incluye tu **cuadrado máximo** y tu **mayor clúster**.
 - **Subidas**: todas las subidas de las carreteras (Cat. 4 a HC como en Strava, y repechos cortos), obtenidas de datos de altitud; cuáles has hecho, en una pestaña del mapa y en Estadísticas, y subidas para incluir al planificar una ruta. Ver [docs/CLIMBS.md](docs/CLIMBS.md).
+- **Desafíos**: además de las teselas, activa con el **+** de arriba del mapa los desafíos que quieras: municipios, códigos postales, subidas y el **desafío trapense** (pasa por las cervecerías trapenses; a menos de 200 m cuenta). Los desafíos ocultos siguen contando.
+- **Insignias**: 18 insignias, de *¡100!*, *Century* y *Everester* a *Festive 500*, *Triatleta* y *Trotamundos* (50 países, calculados en el dispositivo). Las conseguidas aparecen en color, con cuántas veces; las actividades en interior también cuentan.
 - **Actividades**: una lista de todas las actividades, de la más reciente a la más antigua, con duración, distancia y potencia media (con medidor de potencia) o velocidad media.
 - **Municipios y códigos postales** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria, con visitados/total por país.
 - **Planificación de rutas** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
@@ -26,13 +28,17 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 
 ## Capturas de pantalla
 
-| Teselas (zoom 14) | Squadratinhos (zoom 17) | Rutas | Municipios |
-|---|---|---|---|
-| ![Teselas](docs/screenshots/tiles.jpg) | ![Squadratinhos](docs/screenshots/squadratinhos.jpg) | ![Rutas](docs/screenshots/routes.jpg) | ![Municipios](docs/screenshots/municipalities.jpg) |
+| Teselas | Municipios | Códigos postales |
+|---|---|---|
+| ![Teselas](docs/screenshots/tiles.jpg) | ![Municipios](docs/screenshots/municipalities.jpg) | ![Códigos postales](docs/screenshots/postcodes.jpg) |
 
-| Códigos postales | Planificación | Ajustes | Introducción |
-|---|---|---|---|
-| ![Códigos postales](docs/screenshots/postcodes.jpg) | ![Planificación](docs/screenshots/planning.jpg) | ![Ajustes](docs/screenshots/settings.jpg) | ![Introducción](docs/screenshots/intro.jpg) |
+| Subidas | Desafío trapense | Planificación |
+|---|---|---|
+| ![Subidas](docs/screenshots/climbs.jpg) | ![Desafío trapense](docs/screenshots/trappists.jpg) | ![Planificación](docs/screenshots/planning.jpg) |
+
+| Insignias | Ajustes | Introducción |
+|---|---|---|
+| ![Insignias](docs/screenshots/badges.jpg) | ![Ajustes](docs/screenshots/settings.jpg) | ![Introducción](docs/screenshots/intro.jpg) |
 
 **iPad**
 
@@ -82,7 +88,7 @@ Strava permite unas 100 solicitudes cada 15 minutos y 1.000 al día. La lista de
 
 - Los **archivos FIT** se leen con un pequeño decodificador integrado (`FIT/FITDecoder.swift`). Rutas, teselas y zonas visitadas se guardan en caché, así que en el siguiente inicio solo se leen los archivos nuevos o modificados.
 - **Almacenamiento** (`Import/Library.swift`): cada actividad y ruta está en la app (`Documents/Activities`, `Documents/Routes`). Con la sincronización de iCloud, `Library.pull`/`push` las reflejan en iCloud Drive › Tileroam, tras eliminar archivos duplicados (`ActivityMerge.preferredFile`). Las actividades eliminadas se recuerdan en el almacenamiento clave-valor de iCloud (`Deletions`), para que otros dispositivos eliminen su copia y Strava no las traiga de vuelta. Las carpetas de versiones anteriores se copian una vez (`Library.migrate`).
-- Las **teselas** usan la fórmula estándar de teselas Web Mercator (`Geo/TileGrid.swift`). El cuadrado máximo y el clúster se calculan solo sobre las teselas visitadas, por lo que siguen siendo rápidos incluso con teselas de zoom 17 repartidas por Europa.
+- Las **teselas** usan la fórmula estándar de teselas Web Mercator (`Geo/TileGrid.swift`). El cuadrado máximo y el clúster se calculan solo sobre las teselas visitadas, por lo que siguen siendo rápidos incluso con muchas teselas.
 - **Duplicados**: las actividades del mismo tipo que se solapan en el tiempo se fusionan (`Import/ActivityMerge.swift`); se conserva la copia con el mejor GPS y la mayor distancia.
 - Los **municipios y códigos postales** son archivos binarios compactos (`AssetPacks/Regions/*.fmr`, 6,3 MB en total) con un índice espacial para búsquedas rápidas. No van en la app: cada país es un asset pack alojado por Apple (`regions-NL`, …) que la app descarga con Background Assets en cuanto tienes una actividad allí. `Tools/build_asset_packs.sh` los prepara para App Store Connect; en el simulador, `-RegionsDir <repo>/AssetPacks/Regions` los lee directamente.
 - La **planificación** funciona en el dispositivo con [Valhalla](https://github.com/valhalla/valhalla), a través de [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), y teselas de OpenStreetMap de los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria. Las teselas están en Cloudflare R2; un plan solo descarga las teselas de Valhalla a su alrededor (25–75 MB, en lugar de 2,2 GB para todo). Las descargas de más de 25 MB esperan al wifi (`MapDataDownloads`). El orden de visita se resuelve con distancias en línea recta (`TripSolver`, mucho más rápido que una matriz de rutas en el dispositivo); después, dentro de cada objetivo, el planificador elige el punto que minimiza el desvío, y Valhalla calcula la ruta circular. Cómo generar y subir las teselas y añadir países: [docs/ROUTING.md](docs/ROUTING.md).

@@ -30,6 +30,17 @@ enum MapMode: String, CaseIterable, Identifiable {
         }
     }
 
+    /// SF Symbol for Settings → Challenges.
+    var symbol: String {
+        switch self {
+        case .squares: "square.grid.3x3"
+        case .gemeenten: "building.2"
+        case .postcodes: "envelope"
+        case .climbs: "mountain.2"
+        case .trappists: "mug"
+        }
+    }
+
     /// Area-based challenge shown in this mode, if any.
     @MainActor
     func areas(in store: ActivityStore) -> (set: AreaSet, visited: Set<String>)? {

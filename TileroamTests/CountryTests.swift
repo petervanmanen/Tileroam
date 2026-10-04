@@ -99,10 +99,10 @@ struct SettingsSyncTests {
 
     @Test func pushesChangedSettingsOnce() {
         let (local, cloud) = stores()
-        local.set(17, forKey: "tileZoom")
+        local.set("satellite", forKey: "mapStyle")
         local.set("something", forKey: "notSynced")
-        #expect(SettingsSync.push(from: local, to: cloud) == ["tileZoom"])
-        #expect(cloud.integer(forKey: "tileZoom") == 17)
+        #expect(SettingsSync.push(from: local, to: cloud) == ["mapStyle"])
+        #expect(cloud.string(forKey: "mapStyle") == "satellite")
         #expect(cloud.object(forKey: "notSynced") == nil)
         #expect(SettingsSync.push(from: local, to: cloud).isEmpty) // already equal: no write loop
     }

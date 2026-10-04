@@ -4,12 +4,14 @@
 
 Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent geweest tijdens je fietsritten, hardlooprondes en wandelingen: elke kaarttegel, gemeente en elk postcodegebied dat je hebt bezocht. De app leest `.fit`-bestanden uit een of meer iCloud Drive-mappen (bijvoorbeeld exports van HealthFit, Garmin of Wahoo) en kan je geschiedenis uit Strava importeren. Daarnaast plant Tileroam fietsroutes naar plekken waar je nog niet bent geweest.
 
-![Tileroam op iPhone: tegels, squadratinho's, gemeenten en routeplanning](docs/screenshots/overview.jpg)
+![Tileroam op iPhone: tegels, gemeenten, klimmen en routeplanning](docs/screenshots/overview.jpg)
 
 ## Functies
 
-- **Tegels**: kaarttegels op zoom 14 (~1,5 km, zoals bij VeloViewer, StatsHunters en [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) en *squadratinho's* op zoom 17 (~190 m, zoals bij Squadrats). Beide worden altijd geteld; jij kiest welke de kaart toont. Inclusief je **max. vierkant** en **grootste cluster**.
+- **Tegels**: kaarttegels op zoom 14 (~1,5 km, zoals bij VeloViewer, StatsHunters en [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Inclusief je **max. vierkant** en **grootste cluster**.
 - **Klimmen**: elke klim op de wegen (Cat. 4 tot HC zoals op Strava, en korte steile heuvels), gevonden uit hoogtegegevens; welke je hebt beklommen, op een eigen kaarttab en in Statistieken, en klimmen om mee te nemen bij het plannen van een route. Zie [docs/CLIMBS.md](docs/CLIMBS.md).
+- **Uitdagingen**: naast tegels zet je met de **+** boven aan de kaart de uitdagingen aan die je wilt: gemeenten, postcodes, klimmen en de **Trappistenuitdaging** (fiets langs de trappistenbrouwerijen; binnen 200 m telt). Verborgen uitdagingen tellen gewoon mee.
+- **Badges**: 18 badges, van *100!*, *Century* en *Everester* tot *Festive 500*, *Triatleet* en *Wereldreiziger* (50 landen, op het apparaat bepaald). Verdiende badges staan in kleur, met hoe vaak; indooractiviteiten tellen ook.
 - **Activiteiten**: een lijst van alle activiteiten, nieuwste eerst, met duur, afstand en gemiddeld vermogen (met een vermogensmeter) of gemiddelde snelheid.
 - **Gemeenten en postcodes** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk, met bezocht/totaal per land.
 - **Routeplanning** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit langs al die plekken. Hij start vanaf je locatie, of vanaf een **startpunt** dat je zoekt of op de kaart ingedrukt houdt (recente startpunten worden onthouden). Routes worden **op het apparaat** berekend, dus plannen werkt ook offline zodra een gebied is gedownload. Deel de route als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
@@ -26,13 +28,17 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 
 ## Schermafbeeldingen
 
-| Tegels (zoom 14) | Squadratinho's (zoom 17) | Routes | Gemeenten |
-|---|---|---|---|
-| ![Tegels](docs/screenshots/tiles.jpg) | ![Squadratinho's](docs/screenshots/squadratinhos.jpg) | ![Routes](docs/screenshots/routes.jpg) | ![Gemeenten](docs/screenshots/municipalities.jpg) |
+| Tegels | Gemeenten | Postcodes |
+|---|---|---|
+| ![Tegels](docs/screenshots/tiles.jpg) | ![Gemeenten](docs/screenshots/municipalities.jpg) | ![Postcodes](docs/screenshots/postcodes.jpg) |
 
-| Postcodes | Routeplanning | Instellingen | Introductie |
-|---|---|---|---|
-| ![Postcodes](docs/screenshots/postcodes.jpg) | ![Routeplanning](docs/screenshots/planning.jpg) | ![Instellingen](docs/screenshots/settings.jpg) | ![Introductie](docs/screenshots/intro.jpg) |
+| Klimmen | Trappistenuitdaging | Routeplanning |
+|---|---|---|
+| ![Klimmen](docs/screenshots/climbs.jpg) | ![Trappistenuitdaging](docs/screenshots/trappists.jpg) | ![Routeplanning](docs/screenshots/planning.jpg) |
+
+| Badges | Instellingen | Introductie |
+|---|---|---|
+| ![Badges](docs/screenshots/badges.jpg) | ![Instellingen](docs/screenshots/settings.jpg) | ![Introductie](docs/screenshots/intro.jpg) |
 
 **iPad**
 
@@ -82,7 +88,7 @@ Strava staat ongeveer 100 verzoeken per 15 minuten en 1.000 per dag toe. De acti
 
 - **FIT-bestanden** worden gelezen door een kleine ingebouwde decoder (`FIT/FITDecoder.swift`). Routes, tegels en bezochte gebieden worden bewaard in een cache, zodat bij de volgende start alleen nieuwe of gewijzigde bestanden worden gelezen.
 - **Opslag** (`Import/Library.swift`): elke activiteit en route staat in de app (`Documents/Activities`, `Documents/Routes`). Met iCloud-synchronisatie spiegelen `Library.pull`/`push` ze naar iCloud Drive › Tileroam, nadat dubbele bestanden zijn verwijderd (`ActivityMerge.preferredFile`). Verwijderde activiteiten worden onthouden in de key-value-opslag van iCloud (`Deletions`), zodat andere apparaten hun kopie verwijderen en Strava ze niet terugbrengt. De mappen van eerdere versies worden eenmalig gekopieerd (`Library.migrate`).
-- **Tegels** gebruiken de standaard Web Mercator-tegelformule (`Geo/TileGrid.swift`). Max. vierkant en cluster worden alleen over de bezochte tegels berekend, zodat dat ook snel blijft voor zoom 17-tegels verspreid over Europa.
+- **Tegels** gebruiken de standaard Web Mercator-tegelformule (`Geo/TileGrid.swift`). Max. vierkant en cluster worden alleen over de bezochte tegels berekend, zodat dat ook bij veel tegels snel blijft.
 - **Dubbelen**: activiteiten van hetzelfde soort die in de tijd overlappen worden samengevoegd (`Import/ActivityMerge.swift`); de kopie met de beste gps en de langste afstand blijft over.
 - **Gemeenten en postcodes** zijn compacte binaire bestanden (`AssetPacks/Regions/*.fmr`, samen 6,3 MB) met een ruimtelijke index voor snelle opzoekingen. Ze zitten niet in de app: elk land is een door Apple gehost asset pack (`regions-NL`, …) dat de app met Background Assets downloadt zodra je er een activiteit hebt. `Tools/build_asset_packs.sh` maakt de packs voor App Store Connect; in de simulator leest `-RegionsDir <repo>/AssetPacks/Regions` ze rechtstreeks.
 - **Routeplanning** draait op het apparaat met [Valhalla](https://github.com/valhalla/valhalla), via [valhalla-mobile](https://github.com/Rallista/valhalla-mobile), en OpenStreetMap-tegels voor Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk. De tegels staan op Cloudflare R2; een plan downloadt alleen de Valhalla-tegels eromheen (25–75 MB, in plaats van 2,2 GB voor alles). Downloads groter dan 25 MB wachten op wifi (`MapDataDownloads`). De volgorde wordt bepaald op hemelsbrede afstanden (`TripSolver`, veel sneller dan een routematrix op het apparaat); daarna kiest de planner binnen elk doel het punt dat de omweg het kleinst houdt, en Valhalla berekent de rondrit. Hoe je de tegels bouwt en uploadt en landen toevoegt: [docs/ROUTING.md](docs/ROUTING.md).

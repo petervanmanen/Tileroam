@@ -3,34 +3,30 @@ import Foundation
 /// Web Mercator map tiles ("slippy map" tiles), as used by OpenStreetMap, Apple and Google.
 ///
 /// - Zoom 14: explorer tiles (VeloViewer, StatsHunters, rideeverytile.com), ~1.5 km in the Netherlands.
-/// - Zoom 17: squadratinhos (Squadrats), ~190 m in the Netherlands.
 ///
 /// Tile width = 40,075 km × cos(latitude) / 2^zoom.
 enum TileZoom: Int, CaseIterable, Identifiable, Sendable, Codable {
     case explorer = 14
-    case squadratinho = 17
+    // Zoom 17 "squadratinhos" were removed in 1.5.9; a stored 17 no longer decodes (zoom 14).
 
     var id: Int { rawValue }
 
     var title: String {
         switch self {
         case .explorer: String(localized: "Tiles (14)")
-        case .squadratinho: String(localized: "Squadratinhos (17)")
         }
     }
 
-    /// "812 tiles" / "1 squadratinho", localized with plural rules.
+    /// "812 tiles", localized with plural rules.
     func countLabel(_ count: Int) -> String {
         switch self {
         case .explorer: String(localized: "\(count) tiles")
-        case .squadratinho: String(localized: "\(count) squadratinhos")
         }
     }
 
     var shortTitle: String {
         switch self {
         case .explorer: String(localized: "Zoom 14")
-        case .squadratinho: String(localized: "Zoom 17")
         }
     }
 
@@ -38,7 +34,6 @@ enum TileZoom: Int, CaseIterable, Identifiable, Sendable, Codable {
     var trackSpacing: Double {
         switch self {
         case .explorer: 100
-        case .squadratinho: 20
         }
     }
 }

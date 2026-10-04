@@ -21,10 +21,9 @@ If a file won't import, mention where it came from (for example Garmin, Wahoo or
 **An activity is in my statistics but not on the map.**
 Indoor and virtual activities aren't drawn on the map: Zwift, Rouvy, treadmill and indoor cycling. Activities without GPS aren't drawn either. They do count in your totals and Eddington number.
 
-**My tile count differs from VeloViewer, StatsHunters or Squadrats.**
-- Tileroam uses the same tiles: zoom 14 explorer tiles and zoom 17 squadratinhos.
+**My tile count differs from VeloViewer or StatsHunters.**
+- Tileroam uses the same tiles: zoom 14 explorer tiles.
 - Differences usually come from activities one service has and the other doesn't, or from GPS points right at a tile edge.
-- Check in Settings → Tiles that the right tile size is selected.
 
 **The Strava sync is slow.**
 Strava limits how many requests an app may make every 15 minutes and every day. With a long history, the detailed GPS download can take a day or more. The sync continues by itself each time you open Tileroam.

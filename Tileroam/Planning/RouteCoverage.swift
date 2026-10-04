@@ -3,7 +3,6 @@ import Foundation
 /// Which not-yet-visited tiles, municipalities and postcodes a route passes through.
 struct RouteCoverage: Sendable, Equatable {
     var newTiles14 = Set<Int64>()
-    var newTiles17 = Set<Int64>()
     var newMunicipalities = Set<String>()
     var newPostcodes = Set<String>()
     /// Climbs the route rides uphill, and those of them not climbed before.
@@ -14,17 +13,16 @@ struct RouteCoverage: Sendable, Equatable {
     var newTrappists = Set<String>()
 
     func newTiles(_ zoom: TileZoom) -> Set<Int64> {
-        zoom == .explorer ? newTiles14 : newTiles17
+        newTiles14
     }
 
     init() {}
 
-    init(route: [GeoPoint], visitedTiles14: Set<Int64>, visitedTiles17: Set<Int64>, visitedMunicipalities: Set<String>,
+    init(route: [GeoPoint], visitedTiles14: Set<Int64>, visitedMunicipalities: Set<String>,
          visitedPostcodes: Set<String>, regions: RegionData?, climbs knownClimbs: [Climb] = [], climbed: Set<String> = [],
          trappists knownTrappists: [Trappist] = [], visitedTrappists: Set<String> = []) {
         let dense = Geo.densified(route, spacing: 20, maxGap: 5_000)
         newTiles14 = TileGrid.tiles(for: dense, zoom: .explorer).subtracting(visitedTiles14)
-        newTiles17 = TileGrid.tiles(for: dense, zoom: .squadratinho).subtracting(visitedTiles17)
         newMunicipalities = (regions?.municipalities.visited(by: dense) ?? []).subtracting(visitedMunicipalities)
         newPostcodes = (regions?.postcodes.visited(by: dense) ?? []).subtracting(visitedPostcodes)
         let ride = Activity(id: "route", cacheKey: "", name: "", sport: "Cycling", startDate: nil, distance: 0,

@@ -86,10 +86,13 @@ struct IntroView: View {
     private var welcome: some View {
         IntroPage(symbol: "map.fill", color: .green,
                   title: "Welcome to Tileroam",
-                  text: "See everywhere you have been: every map tile, municipality and postcode area you have visited on your rides, runs and walks.") {
+                  text: "See everywhere you have been, and take on challenges with your rides, runs and walks.") {
             VStack(alignment: .leading, spacing: 12) {
-                feature("square.grid.3x3.fill", "Tiles (zoom 14) and squadratinhos (zoom 17), with your max square and cluster")
-                feature("building.2.fill", "Municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
+                feature("square.grid.3x3.fill", "Map tiles, with your max square and cluster")
+                feature("building.2.fill", "Challenges: municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
+                feature("mountain.2.fill", "Climbs from short steep hills to HC, and the ones you climbed")
+                feature("mug.fill", "The Trappist Challenge: ride past the Trappist breweries")
+                feature("rosette", "18 badges, from 100! and Everester to Festive 500 and Globetrotter")
                 feature("bicycle", "Your Eddington number, also as a widget")
                 if store.iCloudHasActivities && store.isICloudSyncOn {
                     feature("icloud.fill", "Your activities come from iCloud, from your other devices")
@@ -149,7 +152,7 @@ struct IntroView: View {
     private var planning: some View {
         IntroPage(symbol: "point.topleft.down.to.point.bottomright.curvepath", color: .purple,
                   title: "Plan Routes to New Places",
-                  text: "Tap the route button, select unvisited tiles, municipalities or postcodes, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.") {
+                  text: "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or Trappist breweries, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.") {
             VStack(alignment: .leading, spacing: 12) {
                 feature("hand.tap.fill", "Select as many places as you like, mixed types allowed")
                 feature("arrow.triangle.turn.up.right.diamond.fill", "Routes follow cycle-friendly roads")
@@ -161,7 +164,7 @@ struct IntroView: View {
     private var ready: some View {
         IntroPage(symbol: "checkmark.seal.fill", color: .green,
                   title: "You're All Set",
-                  text: "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, iCloud sync and imports.") {
+                  text: "Tiles are at the top of the map; add the challenges you like with the +. The chart button has your statistics and badges, Settings your iCloud sync and imports.") {
             EmptyView()
         }
     }

@@ -72,7 +72,7 @@ struct ValhallaEngineTests {
         try await router.prepare(around: [start.point] + target.candidates(), margin: 15_000)
         let route = try await RoutePlanner.planRoute(
             start: start.point, targets: [target], client: router,
-            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],
+            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedMunicipalities: [],
                                       visitedPostcodes: [], regions: nil) },
             progress: { _ in })
         let first = try #require(route.coordinates.first), last = try #require(route.coordinates.last)

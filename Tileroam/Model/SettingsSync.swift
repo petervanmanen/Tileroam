@@ -15,7 +15,7 @@ extension NSUbiquitousKeyValueStore: KeyValueStore {}
 /// and changes from other devices are copied back.
 @MainActor
 enum SettingsSync {
-    static let keys = ["tileZoom", "mapStyle", Challenges.key]
+    static let keys = ["mapStyle", Challenges.key]
 
     private static var observers: [NSObjectProtocol] = []
 
