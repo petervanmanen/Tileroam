@@ -845,6 +845,34 @@
         }
       }
     },
+    "%lld of %lld": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld van %2$lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld sur %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld"
+          }
+        }
+      }
+    },
     "%lld of %lld Trappist breweries visited": {
       "localizations": {
         "nl": {
@@ -1249,6 +1277,62 @@
         }
       }
     },
+    "100!": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100!"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 !"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡100!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100!"
+          }
+        }
+      }
+    },
+    "500 km of activities from 24 to 31 December": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 km aan activiteiten van 24 tot en met 31 december"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 km d’activités du 24 au 31 décembre"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 km de actividades del 24 al 31 de diciembre"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 km Aktivitäten vom 24. bis 31. Dezember"
+          }
+        }
+      }
+    },
     "A climb needs more route points than other items. Remove a few items to add it.": {
       "localizations": {
         "nl": {
@@ -1413,6 +1497,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktivitätsdateien"
+          }
+        }
+      }
+    },
+    "Activity, 1 rest day, activity, 2 rest days, activity": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activiteit, 1 rustdag, activiteit, 2 rustdagen, activiteit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activité, 1 jour de repos, activité, 2 jours de repos, activité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actividad, 1 día de descanso, actividad, 2 días de descanso, actividad"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivität, 1 Ruhetag, Aktivität, 2 Ruhetage, Aktivität"
           }
         }
       }
@@ -1585,6 +1697,90 @@
         }
       }
     },
+    "An activity every working day, none in the weekend before or after": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elke werkdag een activiteit, geen in het weekend ervoor of erna"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une activité chaque jour ouvré, aucune le week-end avant ou après"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una actividad cada día laborable, ninguna el fin de semana anterior ni posterior"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Werktag eine Aktivität, keine am Wochenende davor oder danach"
+          }
+        }
+      }
+    },
+    "Badges": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Badges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Badges"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insignias"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abzeichen"
+          }
+        }
+      }
+    },
+    "Badges in colour are yours; tap one to see what it takes. Indoor and virtual activities count too.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Badges in kleur heb je verdiend; tik erop om te zien wat ervoor nodig is. Indoor- en virtuele activiteiten tellen ook mee."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les badges en couleur sont à vous ; touchez-en un pour voir ce qu’il faut. Les activités en salle et virtuelles comptent aussi."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las insignias en color son tuyas; toca una para ver qué hace falta. Las actividades en interior y virtuales también cuentan."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Farbige Abzeichen hast du verdient; tippe auf eines, um zu sehen, was es braucht. Indoor- und virtuelle Aktivitäten zählen auch."
+          }
+        }
+      }
+    },
     "Cancel": {
       "localizations": {
         "nl": {
@@ -1749,6 +1945,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auf meinen Standort zentrieren"
+          }
+        }
+      }
+    },
+    "Century": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Century"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Century"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Century"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Century"
           }
         }
       }
@@ -2257,6 +2481,230 @@
         }
       }
     },
+    "Closes this category": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sluit deze categorie"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferme cette catégorie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cierra esta categoría"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schließt diese Kategorie"
+          }
+        }
+      }
+    },
+    "Complete 100 Zwift activities": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doe 100 Zwift-activiteiten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminez 100 activités Zwift"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completa 100 actividades en Zwift"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Absolviere 100 Zwift-Aktivitäten"
+          }
+        }
+      }
+    },
+    "Complete activities in 50 countries": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activiteiten in 50 landen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Des activités dans 50 pays"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actividades en 50 países"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivitäten in 50 Ländern"
+          }
+        }
+      }
+    },
+    "Complete an activity every day of the week": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elke dag van de week een activiteit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une activité chaque jour de la semaine"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una actividad cada día de la semana"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Tag der Woche eine Aktivität"
+          }
+        }
+      }
+    },
+    "Complete an activity on 29 February": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doe een activiteit op 29 februari"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une activité le 29 février"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una actividad el 29 de febrero"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Aktivität am 29. Februar"
+          }
+        }
+      }
+    },
+    "Complete an activity on Christmas Eve": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doe een activiteit op kerstavond"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une activité le soir de Noël"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una actividad en Nochebuena"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Aktivität an Heiligabend"
+          }
+        }
+      }
+    },
+    "Complete an activity that took more than 24 hours": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doe een activiteit die langer dan 24 uur duurde"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminez une activité de plus de 24 heures"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completa una actividad de más de 24 horas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Absolviere eine Aktivität, die länger als 24 Stunden dauerte"
+          }
+        }
+      }
+    },
+    "Complete the indoor activity Uber Pretzel": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rijd de indooractiviteit Uber Pretzel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminez l’activité en salle Uber Pretzel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completa la actividad en interior Uber Pretzel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Absolviere die Indoor-Aktivität Uber Pretzel"
+          }
+        }
+      }
+    },
     "Connect Strava": {
       "localizations": {
         "nl": {
@@ -2589,6 +3037,146 @@
           "stringUnit": {
             "state": "translated",
             "value": "Besuchte Länder"
+          }
+        }
+      }
+    },
+    "Cross-country skiing": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langlaufen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ski de fond"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esquí de fondo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skilanglauf"
+          }
+        }
+      }
+    },
+    "Cycle 100 km in one activity": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiets 100 km in één activiteit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roulez 100 km en une activité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pedalea 100 km en una actividad"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre 100 km in einer Aktivität"
+          }
+        }
+      }
+    },
+    "Cycle 100 km with less than 100 m of elevation": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiets 100 km met minder dan 100 hoogtemeters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roulez 100 km avec moins de 100 m de dénivelé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pedalea 100 km con menos de 100 m de desnivel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre 100 km mit weniger als 100 Höhenmetern"
+          }
+        }
+      }
+    },
+    "Cycle 100 miles in one activity": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiets 100 mijl in één activiteit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roulez 100 miles en une activité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pedalea 100 millas en una actividad"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre 100 Meilen in einer Aktivität"
+          }
+        }
+      }
+    },
+    "Cycle more than 8,848 m of elevation within 24 hours": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiets meer dan 8.848 hoogtemeters binnen 24 uur"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grimpez plus de 8 848 m de dénivelé à vélo en 24 heures"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sube más de 8.848 m de desnivel en bici en 24 horas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre mehr als 8.848 Höhenmeter innerhalb von 24 Stunden"
           }
         }
       }
@@ -2949,6 +3537,34 @@
         }
       }
     },
+    "Descend more than 1,000 m in one day skiing or snowboarding": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daal op één dag meer dan 1.000 m af met skiën of snowboarden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descendez plus de 1 000 m en un jour à ski ou en snowboard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desciende más de 1.000 m en un día esquiando o en snowboard"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre an einem Tag mehr als 1.000 m mit Ski oder Snowboard ab"
+          }
+        }
+      }
+    },
     "Disconnect Strava": {
       "localizations": {
         "nl": {
@@ -3285,6 +3901,34 @@
         }
       }
     },
+    "Earned %lld times": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld keer verdiend"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtenu %lld fois"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conseguida %lld veces"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld-mal verdient"
+          }
+        }
+      }
+    },
     "Eddington Number": {
       "localizations": {
         "nl": {
@@ -3313,6 +3957,34 @@
         }
       }
     },
+    "Eddy the Eagle": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eddy the Eagle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eddy the Eagle"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eddy the Eagle"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eddy the Eagle"
+          }
+        }
+      }
+    },
     "Elevation and climbs": {
       "localizations": {
         "nl": {
@@ -3337,6 +4009,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Höhe und Anstiege"
+          }
+        }
+      }
+    },
+    "Everester": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everester"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everester"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everester"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everester"
+          }
+        }
+      }
+    },
+    "Every day I'm hustling": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every day I'm hustling"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every day I'm hustling"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every day I'm hustling"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every day I'm hustling"
+          }
+        }
+      }
+    },
+    "Festive 500": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festive 500"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festive 500"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festive 500"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festive 500"
           }
         }
       }
@@ -3481,6 +4237,90 @@
         }
       }
     },
+    "Giant leap": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reuzensprong"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas de géant"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gran salto"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riesensprung"
+          }
+        }
+      }
+    },
+    "Globetrotter": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wereldreiziger"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globe-trotter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trotamundos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weltenbummler"
+          }
+        }
+      }
+    },
+    "Half Marathon": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halve marathon"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semi-marathon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media maratón"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halbmarathon"
+          }
+        }
+      }
+    },
     "Hiking": {
       "localizations": {
         "nl": {
@@ -3533,6 +4373,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hügel"
+          }
+        }
+      }
+    },
+    "Hollander": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hollander"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hollander"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hollander"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hollander"
           }
         }
       }
@@ -4237,6 +5105,34 @@
         }
       }
     },
+    "Marathon": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marathon"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marathon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maratón"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marathon"
+          }
+        }
+      }
+    },
     "Max square %lld×%lld · cluster %lld": {
       "localizations": {
         "nl": {
@@ -4741,6 +5637,34 @@
         }
       }
     },
+    "Nosleep": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nosleep"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nosleep"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nosleep"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nosleep"
+          }
+        }
+      }
+    },
     "Not climbed yet": {
       "localizations": {
         "nl": {
@@ -4793,6 +5717,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nicht mit Strava verbunden."
+          }
+        }
+      }
+    },
+    "Not earned yet": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet verdiend"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore obtenu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no conseguida"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht verdient"
           }
         }
       }
@@ -5101,6 +6053,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Einstellungen öffnen"
+          }
+        }
+      }
+    },
+    "Opens this category": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opent deze categorie"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre cette catégorie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre esta categoría"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet diese Kategorie"
           }
         }
       }
@@ -5493,6 +6473,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Powered by Strava"
+          }
+        }
+      }
+    },
+    "Pretzel": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pretzel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bretzel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pretzel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brezel"
           }
         }
       }
@@ -5913,6 +6921,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rudern"
+          }
+        }
+      }
+    },
+    "Run a half-marathon distance": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loop een halvemarathonafstand"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Courez la distance d’un semi-marathon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corre la distancia de una media maratón"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laufe eine Halbmarathondistanz"
+          }
+        }
+      }
+    },
+    "Run a marathon distance": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loop een marathonafstand"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Courez la distance d’un marathon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corre la distancia de un maratón"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laufe eine Marathondistanz"
           }
         }
       }
@@ -6421,6 +7485,34 @@
         }
       }
     },
+    "Silent night": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stille nacht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Douce nuit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche de paz"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stille Nacht"
+          }
+        }
+      }
+    },
     "Skiing": {
       "localizations": {
         "nl": {
@@ -6473,6 +7565,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Überspringen"
+          }
+        }
+      }
+    },
+    "Snowboarding": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snowboarden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snowboard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snowboard"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snowboarden"
           }
         }
       }
@@ -7177,6 +8297,34 @@
         }
       }
     },
+    "Swim, bike and run on the same day, in that order": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwemmen, fietsen en hardlopen op één dag, in die volgorde"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nagez, roulez et courez le même jour, dans cet ordre"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada, pedalea y corre el mismo día, en ese orden"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwimmen, Radfahren und Laufen am selben Tag, in dieser Reihenfolge"
+          }
+        }
+      }
+    },
     "Swimming": {
       "localizations": {
         "nl": {
@@ -7341,6 +8489,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet am Startpunkt; halte die Karte gedrückt, um dort zu starten."
+          }
+        }
+      }
+    },
+    "Taylor": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taylor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taylor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taylor"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taylor"
           }
         }
       }
@@ -7989,6 +9165,62 @@
         }
       }
     },
+    "Triathlete": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triatleet"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triathlète"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triatleta"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triathlet"
+          }
+        }
+      }
+    },
+    "Triple jump": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hink-stap-sprong"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triple saut"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triple salto"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dreisprung"
+          }
+        }
+      }
+    },
     "Try Again": {
       "localizations": {
         "nl": {
@@ -8237,6 +9469,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ohne Datum"
+          }
+        }
+      }
+    },
+    "Working 9 to 5": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working 9 to 5"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working 9 to 5"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working 9 to 5"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Working 9 to 5"
           }
         }
       }

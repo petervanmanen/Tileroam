@@ -35,6 +35,8 @@ enum StravaImport {
         a.elapsedTime = s.elapsedTime
         a.movingTime = s.movingTime
         a.averagePower = s.deviceWatts == true ? s.averageWatts : nil
+        a.ascent = s.totalElevationGain
+        a.isZwift = s.name.lowercased().hasPrefix("zwift")
         a.detailsVersion = Activity.currentDetails
     }
 
@@ -51,6 +53,9 @@ enum StravaImport {
         a.elapsedTime = activity.elapsedTime
         a.movingTime = activity.movingTime
         a.averagePower = activity.averagePower
+        a.ascent = activity.ascent
+        a.descent = activity.descent
+        a.isZwift = activity.isZwift
         a.detailsVersion = activity.detailsVersion
         a.exportedFile = activity.exportedFile
         a.isVirtual = activity.isVirtual
