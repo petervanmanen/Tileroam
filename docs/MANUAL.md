@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch between four views.
+Use the tabs at the top to switch views. **Tiles** and **Routes** are always there. **Towns**, **Postcodes** and **Climbs** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. Choose the tile size in Settings → Tiles:
@@ -58,7 +58,7 @@ Like Towns, but for postcode areas. Available for Belgium, France, Germany, the 
 ## Planning a route to new tiles
 
 1. Tap the **route** button in the header to enter planning mode.
-2. Tap unvisited tiles, municipalities or postcodes to select them. You can mix types, using the tabs to switch between them.
+2. Tap unvisited tiles, municipalities or postcodes to select them. You can mix types, using the tabs to switch between them (turn on the Towns or Postcodes challenge to see their tab).
 3. Choose where to start (optional). The route starts and ends at your current location, unless you choose a different **starting point**:
    - tap **Start: My Location** in the panel to search for an address or place, or pick a recent starting point;
    - or long-press the map to start there. Drag the green flag to move it.
@@ -86,7 +86,7 @@ Indoor and virtual activities are marked "Indoor". The same workout from several
 
 ## Climbs
 
-The **Climbs** tab shows the climbs on the roads: short steep hills in yellow, Cat 4 to HC in orange, red, purple and black (as on Strava), and the ones you have climbed in green. Tap a climb to see its length, gradient, gain, steepest part and when you climbed it. Climbs are downloaded for the areas you ride and look at, a few hundred kilobytes per area.
+The **Climbs** tab (turn the Climbs challenge on with the **+** at the end of the tabs) shows the climbs on the roads: short steep hills in yellow, Cat 4 to HC in orange, red, purple and black (as on Strava), and the ones you have climbed in green. Tap a climb to see its length, gradient, gain, steepest part and when you climbed it. Climbs are downloaded for the areas you ride and look at, a few hundred kilobytes per area.
 
 A climb counts as climbed when an activity rides almost all of it uphill, from the bottom to the top. **Statistics → Climbs** shows how many you have climbed per category, and **All Climbs** lists them, with the ones you haven't climbed yet in the areas where you ride.
 

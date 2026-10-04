@@ -1753,6 +1753,34 @@
         }
       }
     },
+    "Challenges": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uitdagingen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Défis"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desafíos"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herausforderungen"
+          }
+        }
+      }
+    },
     "Checking Strava for new activities…": {
       "localizations": {
         "nl": {
@@ -7961,6 +7989,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kacheln (Zoom 14) und Squadratinhos (Zoom 17), mit Max-Quadrat und Cluster"
+          }
+        }
+      }
+    },
+    "Tiles and Routes are always at the top of the map. Choose which other challenges are there too; the + at the end of that bar does the same. Everything is still counted, also for challenges you don't show.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tegels en Routes staan altijd boven aan de kaart. Kies welke andere uitdagingen daar ook staan; de + aan het eind van die balk doet hetzelfde. Alles wordt gewoon geteld, ook voor uitdagingen die je niet toont."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuiles et Parcours sont toujours en haut de la carte. Choisissez les autres défis à y afficher ; le + au bout de cette barre fait de même. Tout reste compté, même pour les défis que vous n’affichez pas."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teselas y Rutas están siempre en la parte superior del mapa. Elige qué otros desafíos aparecen también; el + al final de esa barra hace lo mismo. Todo se sigue contando, también en los desafíos que no muestras."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kacheln und Routen stehen immer oben auf der Karte. Wähle, welche anderen Herausforderungen dort auch stehen; das + am Ende dieser Leiste tut dasselbe. Gezählt wird trotzdem alles, auch für Herausforderungen, die du nicht anzeigst."
           }
         }
       }
