@@ -43,6 +43,16 @@ struct CountryOutlinesTests {
     }
 }
 
+struct RegionPackTests {
+    @Test func packIDs() {
+        #expect(RegionAssets.packID("NL") == "regions-NL")
+        // Their first packs were archived in App Store Connect, which can't be undone.
+        #expect(RegionAssets.packID("FR") == "regions-FR-2")
+        #expect(RegionAssets.packID("CH") == "regions-CH-2")
+        #expect(RegionAssets.packID("AT") == "regions-AT-2")
+    }
+}
+
 struct CountrySelectionTests {
     @Test func keepsVisitedAndFailedCountries() {
         let keep = CountrySelection.pruned(enabled: ["NL", "BE", "DE", "FR"],

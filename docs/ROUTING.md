@@ -150,7 +150,7 @@ Germany was added in October 2026, France, Switzerland and Austria a day later (
    - `Tools/build_regions.py` for its `AssetPacks/Regions/<CC>-*.fmr`, plus its entry in `regions.json`;
    - add it to `Country.all` in `Tileroam/Geo/Regions.swift` and to Sources & Licenses in `SettingsView`;
    - rebuild the country outlines (`Tools/build_country_outlines.py`), which decide where planning is allowed;
-   - upload its boundary pack (`Tools/upload_asset_packs.sh <CC>`), unless it's already in App Store Connect. Mind Apple's limit of 100 asset packs; the boundaries use 4.
+   - upload its boundary pack (`Tools/upload_asset_packs.sh <CC>`), unless it's already in App Store Connect. Mind Apple's limit of 100 asset packs. **A pack that was ever archived can't come back** (not on the website, not with the API, and new versions are refused): give the country a new pack ID in `RegionAssets.renamedPacks`, as France, Switzerland and Austria have (`regions-FR-2`). The scripts read that table.
 4. **The app:**
    - Add the country code to `RoutingData.countries` (the build reads it too, for the reach filter).
    - Texts naming the countries: `RoutingError.outsideRegion` (`Tileroam/Planning/Routing.swift`), the introduction (`IntroView`), and their translations in the string catalog. The starting point search region is `PlaceSearch.region` (`StartPoint.swift`).

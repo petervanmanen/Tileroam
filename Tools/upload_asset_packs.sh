@@ -22,6 +22,7 @@
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
+source $ROOT/Tools/pack_ids.zsh
 : ${ASC_KEY_ID:?set ASC_KEY_ID} ${ASC_ISSUER_ID:?set ASC_ISSUER_ID}
 ASC_APP_ID=${ASC_APP_ID:-6818280181}
 [[ $ASC_APP_ID == <-> ]] || { echo "Set ASC_APP_ID to the app's numeric Apple ID" >&2; exit 1 }
@@ -49,8 +50,8 @@ routing=(${(M)@:#routing-*})
 packs=()
 if (( ${#countries} || ! $# )); then
   $ROOT/Tools/build_asset_packs.sh $countries
-  if (( ${#countries} )); then packs=(${^countries/#/$ROOT/AssetPacks/build/regions-}.aar)
-  else packs=($ROOT/AssetPacks/build/regions-*.aar); fi
+  (( ${#countries} )) || countries=(${(u)$(ls $ROOT/AssetPacks/Regions/*.fmr | xargs -n1 basename | cut -d- -f1)})
+  for cc in $countries; do packs+=($ROOT/AssetPacks/build/$(pack_id $cc).aar); done
 fi
 for r in $routing; do
   built=($ROOT/AssetPacks/build/$r-*.aar(N))

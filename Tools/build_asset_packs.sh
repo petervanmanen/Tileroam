@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Packages the municipality/postcode boundaries into Apple-hosted asset packs, one per country:
-# AssetPacks/build/regions-<CC>.aar, to upload to App Store Connect (Transporter or the
+# AssetPacks/build/<pack ID>.aar (regions-<CC>, see Tools/pack_ids.zsh), to upload to App Store Connect (Transporter or the
 # App Store Connect API). The app downloads them on demand; see Tileroam/Geo/RegionAssets.swift.
 #
 #   Tools/build_asset_packs.sh            # all countries
@@ -8,6 +8,7 @@
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
+source $ROOT/Tools/pack_ids.zsh
 SRC=$ROOT/AssetPacks/Regions
 OUT=$ROOT/AssetPacks/build
 mkdir -p $OUT/manifests
@@ -21,16 +22,17 @@ for cc in $countries; do
   files=($SRC/$cc-*.fmr(N))
   (( ${#files} )) || { echo "no files for $cc" >&2; exit 1 }
   selectors=$(for f in $files; do printf '{ "file": "%s" },' ${f:t}; done)
-  manifest=$OUT/manifests/regions-$cc.json
+  id=$(pack_id $cc)
+  manifest=$OUT/manifests/$id.json
   cat > $manifest <<JSON
 {
-  "assetPackID": "regions-$cc",
+  "assetPackID": "$id",
   "downloadPolicy": { "onDemand": {} },
   "fileSelectors": [ ${selectors%,} ],
   "platforms": [ "iOS" ]
 }
 JSON
-  rm -f $OUT/regions-$cc.aar
-  (cd $SRC && xcrun ba-package package $manifest --output-path $OUT/regions-$cc.aar --quiet)
-  echo "regions-$cc  $(du -h $OUT/regions-$cc.aar | cut -f1)"
+  rm -f $OUT/$id.aar
+  (cd $SRC && xcrun ba-package package $manifest --output-path $OUT/$id.aar --quiet)
+  echo "$id  $(du -h $OUT/$id.aar | cut -f1)"
 done

@@ -4,12 +4,11 @@
 #   - unused:  in App Store Connect but no longer needed
 #
 # With ARCHIVE it archives unused packs whose IDs start with the given prefixes, after you confirm
-# by typing "archive":
+# by typing "archive" (in the terminal):
 #   ARCHIVE="regions-" Tools/clean_asset_packs.sh
 #   ARCHIVE="routing-" Tools/clean_asset_packs.sh   # the routing packs from before R2
-# With UNARCHIVE=1 it unarchives the archived packs the app needs again (a country that comes
-# back; App Store Connect's website can't do that), then upload them with upload_asset_packs.sh:
-#   UNARCHIVE=1 Tools/clean_asset_packs.sh
+# Archiving can't be undone, not even with the API: a country that comes back needs a new pack
+# ID (RegionAssets.renamedPacks in Tileroam/Geo/RegionAssets.swift).
 # "Unused" is decided by the checkout you run it in (Country.all), so run it
 # on the branch that matches the app versions in use.
 #
