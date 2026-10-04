@@ -6,7 +6,13 @@ import System
 /// ("regions-NL" holds NL-municipalities.fmr and NL-postcodes.fmr). They are downloaded on
 /// demand, when the user has an activity in that country. See `Tools/build_asset_packs.sh`.
 enum RegionAssets {
-    static func packID(_ country: String) -> String { "regions-\(country)" }
+    /// Countries whose first pack was archived in App Store Connect (October 2026, when their
+    /// boundaries were dropped for a while). Archiving can't be undone: the website can't, the API
+    /// answers 405, and new versions of an archived pack are refused (409). So they have a new
+    /// pack ID. The tools read this table (`Tools/pack_ids.zsh`, `Tools/asset_packs.swift`).
+    static let renamedPacks: [String: String] = ["FR": "regions-FR-2", "CH": "regions-CH-2", "AT": "regions-AT-2"]
+
+    static func packID(_ country: String) -> String { renamedPacks[country] ?? "regions-\(country)" }
 
     struct Availability: Sendable {
         /// Countries whose boundaries can be read.

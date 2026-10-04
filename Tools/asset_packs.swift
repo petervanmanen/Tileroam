@@ -5,9 +5,9 @@
 // With ARCHIVE="<prefix> …" it also archives the unused packs whose IDs start with one of those
 // prefixes (PATCH /v1/backgroundAssets/{id}, archived: true), after asking for confirmation.
 // Archiving removes all versions of a pack, for every app version, including TestFlight builds.
-//
-// With UNARCHIVE=1 it restores the archived packs the app needs again (archived: false), for a
-// country that comes back (App Store Connect's website can't unarchive).
+// Archiving can't be undone (the API answers 405 to archived: false, and new versions of an
+// archived pack are refused with 409), so a country that comes back gets a new pack ID in
+// RegionAssets.renamedPacks.
 import CryptoKit
 import Foundation
 
@@ -29,7 +29,14 @@ func neededBoundaryPacks() -> Set<String> {
     let source = (try? String(contentsOf: root.appending(path: "Tileroam/Geo/Regions.swift"), encoding: .utf8)) ?? ""
     let pattern = try! Regex(#"Country\(code: "([A-Z]{2})""#)
     let codes = source.matches(of: pattern).compactMap { $0.output[1].substring.map(String.init) }
-    return Set(codes.map { "regions-\($0)" })
+    // RegionAssets.renamedPacks: countries whose first pack was archived have a new pack ID.
+    let assets = (try? String(contentsOf: root.appending(path: "Tileroam/Geo/RegionAssets.swift"), encoding: .utf8)) ?? ""
+    let renamed = Dictionary(uniqueKeysWithValues: assets.matches(of: try! Regex(#""([A-Z]{2})": "(regions-[^"]+)""#))
+        .compactMap { m -> (String, String)? in
+            guard let cc = m.output[1].substring, let id = m.output[2].substring else { return nil }
+            return (String(cc), String(id))
+        })
+    return Set(codes.map { renamed[$0] ?? "regions-\($0)" })
 }
 
 // The routing data isn't in asset packs any more (it's on Cloudflare R2 since October 2026), so
@@ -140,7 +147,7 @@ let unused = active.filter { !needed.contains($0.id) }.sorted { $0.id < $1.id }
 let present = Set(active.map(\.id))
 let missing = needed.subtracting(present).sorted()
 let archived = packs.filter(\.archived).count
-// Needed packs that are archived: upload fails for them until they're unarchived.
+// Needed packs that are archived: uploads to them fail (409).
 let archivedNeeded = packs.filter { $0.archived && missing.contains($0.id) }.sorted { $0.id < $1.id }
 func mb(_ b: Int64) -> String { String(format: "%.1f MB", Double(b) / 1_000_000) }
 
@@ -152,8 +159,8 @@ if missing.isEmpty {
     print("✗ Needed but missing (\(missing.count)); upload them with Tools/upload_asset_packs.sh:")
     for id in missing { print("    \(id)") }
     if !archivedNeeded.isEmpty {
-        print("  Archived in App Store Connect: \(archivedNeeded.map(\.id).joined(separator: ", ")). Unarchive them first:")
-        print("    UNARCHIVE=1 Tools/clean_asset_packs.sh")
+        print("  Archived in App Store Connect, which can't be undone: \(archivedNeeded.map(\.id).joined(separator: ", ")).")
+        print("  Give these countries a new pack ID in RegionAssets.renamedPacks (Tileroam/Geo/RegionAssets.swift).")
     }
 }
 if unused.isEmpty {
@@ -161,39 +168,6 @@ if unused.isEmpty {
 } else {
     print("\nUnused (\(unused.count), \(mb(unused.reduce(0) { $0 + $1.bytes })) together):")
     for p in unused { print("    \(p.id)  \(mb(p.bytes))") }
-}
-
-// MARK: Unarchiving
-
-if env["UNARCHIVE"] == "1" {
-    guard !archivedNeeded.isEmpty else {
-        print("\nNothing to unarchive: no pack the app needs is archived.")
-        exit(missing.isEmpty ? 0 : 1)
-    }
-    // One at a time, waiting for each answer: unlike archiving, it's quick, and the answer says
-    // whether App Store Connect allows it.
-    let auth = "Bearer \(try token())"
-    var failed = 0
-    print("")
-    for p in archivedNeeded {
-        var request = URLRequest(url: URL(string: "https://api.appstoreconnect.apple.com/v1/backgroundAssets/\(p.resourceID)")!)
-        request.httpMethod = "PATCH"
-        request.setValue(auth, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: [
-            "data": ["type": "backgroundAssets", "id": p.resourceID, "attributes": ["archived": false]],
-        ])
-        let (data, status) = try await send(request)
-        if (200...299).contains(status) {
-            print("✓ \(p.id) unarchived")
-        } else {
-            failed += 1
-            print("✗ \(p.id): App Store Connect answered \(status): \(String(decoding: data, as: UTF8.self).prefix(400))")
-        }
-    }
-    print(failed == 0 ? "\nNow upload them: Tools/upload_asset_packs.sh \(archivedNeeded.map { $0.id.replacingOccurrences(of: "regions-", with: "") }.joined(separator: " "))"
-                      : "\n\(failed) not unarchived; see the answers above.")
-    exit(failed == 0 ? 0 : 1)
 }
 
 // MARK: Archiving
