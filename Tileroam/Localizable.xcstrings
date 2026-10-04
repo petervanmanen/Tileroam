@@ -169,6 +169,34 @@
         }
       }
     },
+    "%lld Trappist breweries": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld trappistenbrouwerijen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld brasseries trappistes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cervecerías trapenses"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Trappistenbrauereien"
+          }
+        }
+      }
+    },
     "%lld activities": {
       "localizations": {
         "en": {

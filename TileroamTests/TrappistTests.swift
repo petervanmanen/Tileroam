@@ -103,3 +103,30 @@ struct TrappistDataTests {
         #expect(try await TrappistData.load(from: server, into: cache, now: .now.addingTimeInterval(2 * TrappistData.maxAge)).count == 7)
     }
 }
+
+struct TrappistPlanningTests {
+    private let westmalle = Trappist(id: "westmalle", name: "Westmalle", abbey: "Abdij", place: "Westmalle", country: "BE",
+                                     lat: 51.28472, lon: 4.65667)
+
+    @Test func breweryAsATarget() throws {
+        let target = try #require(TargetGeometry(.trappist("westmalle"), regions: nil, trappists: [westmalle]))
+        #expect(target.name == "Westmalle")
+        let candidates = target.candidates()
+        #expect(candidates.first == westmalle.point && candidates.count == 9)
+        #expect(candidates.allSatisfy(target.contains)) // the ring lies within the 200 m
+        #expect(!target.contains(GeoPoint(lat: 51.28472 + 300 / 111_000.0, lon: 4.65667)))
+        #expect(TargetGeometry(.trappist("unknown"), regions: nil, trappists: [westmalle]) == nil)
+    }
+
+    @Test func routeVisitsTheBrewery() async throws {
+        let target = try #require(TargetGeometry(.trappist("westmalle"), regions: nil, trappists: [westmalle]))
+        let start = GeoPoint(lat: 51.25, lon: 4.60)
+        let route = try await RoutePlanner.planRoute(
+            start: start, targets: [target], client: StraightRouter(),
+            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedTiles17: [], visitedMunicipalities: [],
+                                      visitedPostcodes: [], regions: nil, trappists: [westmalle], visitedTrappists: []) },
+            progress: { _ in })
+        #expect(route.coverage.trappists == ["westmalle"] && route.coverage.newTrappists == ["westmalle"])
+        #expect(route.missed.isEmpty)
+    }
+}
