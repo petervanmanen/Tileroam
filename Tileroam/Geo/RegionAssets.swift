@@ -91,8 +91,16 @@ enum RegionAssets {
     #if DEBUG
     /// Development and screenshots in the simulator: read the files from a folder on the Mac
     /// instead of asset packs, e.g. `-RegionsDir /path/to/Tileroam/AssetPacks/Regions`.
+    /// Debug builds for the Mac use the repository's folder by default: Apple-hosted packs only
+    /// reach TestFlight and App Store builds.
     static var localDirectory: URL? {
-        UserDefaults.standard.string(forKey: "RegionsDir").map { URL(filePath: $0, directoryHint: .isDirectory) }
+        if let dir = UserDefaults.standard.string(forKey: "RegionsDir") { return URL(filePath: dir, directoryHint: .isDirectory) }
+        #if targetEnvironment(macCatalyst)
+        let repo = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appending(path: "AssetPacks/Regions", directoryHint: .isDirectory)
+        if FileManager.default.fileExists(atPath: repo.path(percentEncoded: false)) { return repo }
+        #endif
+        return nil
     }
     #endif
 }

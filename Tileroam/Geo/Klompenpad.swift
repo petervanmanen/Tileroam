@@ -77,8 +77,15 @@ enum KlompenpadData {
     #if DEBUG
     /// Simulator and screenshots: read the list from the Mac instead of the asset pack, e.g.
     /// `-KlompenpadenFile /path/to/Tileroam/AssetPacks/Klompenpaden/klompenpaden.json`.
+    /// Debug builds for the Mac use the repository's file by default (see `RegionAssets.localDirectory`).
     static var localFile: URL? {
-        UserDefaults.standard.string(forKey: "KlompenpadenFile").map { URL(filePath: $0) }
+        if let file = UserDefaults.standard.string(forKey: "KlompenpadenFile") { return URL(filePath: file) }
+        #if targetEnvironment(macCatalyst)
+        let repo = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appending(path: "AssetPacks/Klompenpaden/klompenpaden.json")
+        if FileManager.default.fileExists(atPath: repo.path(percentEncoded: false)) { return repo }
+        #endif
+        return nil
     }
     #endif
 }
