@@ -463,7 +463,9 @@ private struct ModeChips: View {
                                 .font(.subheadline.weight(selection == mode ? .semibold : .regular))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .foregroundStyle(selection == mode ? Color.primary : .secondary)
+                                // UIKit's label colours: SwiftUI's .secondary came out invisible
+                                // inside this scroll view in the iPad side panel.
+                                .foregroundStyle(Color(uiColor: selection == mode ? .label : .secondaryLabel))
                                 .background(selection == mode ? AnyShapeStyle(.background) : AnyShapeStyle(.clear), in: Capsule())
                                 .shadow(color: .black.opacity(selection == mode ? 0.12 : 0), radius: 2, y: 1)
                         }
@@ -502,7 +504,7 @@ private struct ModeChips: View {
         } label: {
             Image(systemName: "plus")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .contentShape(Capsule())
