@@ -65,14 +65,12 @@ final class ActivityStore {
     private(set) var trappists: [Trappist] = TrappistData.cached()
     /// For each visited brewery, when (newest first).
     private(set) var trappistVisits: [String: [Date]] = [:]
-    private var trappistTask: Task<Void, Never>?
 
     // Klompenpaden (see Klompenpad, KlompenpadData)
     /// The paths, from the `klompenpaden` asset pack (empty until it's downloaded).
     private(set) var klompenpaden: [Klompenpad] = KlompenpadData.cached()
     /// For each path with progress, the share of its main route walked (0…1).
     private(set) var klompenpadProgress: [String: Double] = [:]
-    private var klompenpadTask: Task<Void, Never>?
     /// Paths walked (at least `KlompenpadMatcher.done`).
     var klompenpadenWalked: Int { klompenpadProgress.values.count { $0 >= KlompenpadMatcher.done } }
 
@@ -80,7 +78,10 @@ final class ActivityStore {
     private(set) var badges: [Badge: Int] = [:]
     /// The countries of the world with activities (not virtual ones), for Globetrotter.
     private(set) var worldCountries: Set<String> = []
-    private var badgeTask: Task<Void, Never>?
+    /// The pass that checks activities for the challenges (one at a time, see `matchChallenges`).
+    private var challengeTask: Task<Void, Never>?
+    /// The Klompenpaden's checkpoints, for the current list.
+    private var preparedPaths: (key: String, paths: KlompenpadMatcher.Prepared)?
 
     // Strava source
     let stravaConfig = StravaConfig.bundled
@@ -359,7 +360,7 @@ final class ActivityStore {
         guard let list = try? await TrappistData.load() else { return }
         if list != trappists {
             trappists = list
-            matchTrappists()
+            matchChallenges() // a new list has a new key: every activity is checked again
         } else if logos() != before {
             version += 1 // redraw with the new logos
         }
@@ -370,31 +371,73 @@ final class ActivityStore {
     func updateKlompenpaden() async {
         guard let list = try? await KlompenpadData.load(), list != klompenpaden else { return }
         klompenpaden = list
-        matchKlompenpaden()
+        matchChallenges()
     }
 
-    /// How much of each Klompenpad the tracks cover, in the background.
-    private func matchKlompenpaden() {
-        klompenpadTask?.cancel()
-        let all = activities, list = klompenpaden
-        klompenpadTask = Task {
-            let progress = await Task.detached(priority: .utility) { KlompenpadMatcher.progress(all, paths: list) }.value
-            guard !Task.isCancelled, progress != klompenpadProgress else { return }
-            klompenpadProgress = progress
-            version += 1
+    // MARK: Challenge results (see ChallengeResults)
+
+    private var klompenpadPrepared: KlompenpadMatcher.Prepared {
+        let key = ChallengeResults.klompenpadKey(klompenpaden)
+        if let preparedPaths, preparedPaths.key == key { return preparedPaths.paths }
+        let paths = KlompenpadMatcher.Prepared(klompenpaden)
+        preparedPaths = (key, paths)
+        return paths
+    }
+
+    /// Checks the activities whose challenge results are missing or out of date (new ones, or all
+    /// of them after a new list or new rules), stores the results with them, then adds everything
+    /// up again. One pass at a time: activities that arrive meanwhile are picked up by the next.
+    private func matchChallenges() {
+        aggregateChallenges()
+        guard challengeTask == nil else { return }
+        let tKey = ChallengeResults.trappistsKey(trappists), kKey = ChallengeResults.klompenpadKey(klompenpaden)
+        let pending = (folderActivities + stravaActivities).filter { ChallengeResults.isPending($0, trappistsKey: tKey, klompenpadKey: kKey) }
+        guard !pending.isEmpty else { return }
+        let list = trappists, paths = klompenpadPrepared
+        challengeTask = Task {
+            let results = await Task.detached(priority: .utility) {
+                Dictionary(pending.map { a in
+                    (a.id, ChallengeResults.compute(a, trappists: list, trappistsKey: tKey, paths: paths, klompenpadKey: kKey))
+                }, uniquingKeysWith: { a, _ in a })
+            }.value
+            challengeTask = nil
+            func fill(_ a: inout Activity) {
+                guard let r = results[a.id] else { return } // deleted meanwhile: nothing to store
+                if let t = r.trappists { a.trappists = t; a.trappistsKey = tKey }
+                if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = kKey }
+                if let c = r.countries { a.countries = c; a.countriesKey = ChallengeResults.countriesKey }
+            }
+            for i in folderActivities.indices { fill(&folderActivities[i]) }
+            for i in stravaActivities.indices { fill(&stravaActivities[i]) }
+            TrackCache.save(folderActivities, folder: Self.folderCacheKey)
+            if let id = stravaAthleteID { saveStrava(id) }
+            recompute() // merged activities with their results; checks what arrived meanwhile
         }
     }
 
-    /// Which breweries the tracks pass: every track point is looked at, so in the background.
-    private func matchTrappists() {
-        trappistTask?.cancel()
-        let all = activities, list = trappists
-        trappistTask = Task {
-            let visits = await Task.detached(priority: .utility) { TrappistMatcher.visits(all, among: list) }.value
-            guard !Task.isCancelled, visits != trappistVisits else { return }
-            trappistVisits = visits
-            version += 1
+    /// Adds up the stored results of the activities there are (so deleted ones drop out): visited
+    /// breweries, Klompenpaden progress, countries, and the badges. Results computed with an older
+    /// key don't count until they're checked again.
+    private func aggregateChallenges() {
+        let tKey = ChallengeResults.trappistsKey(trappists), kKey = ChallengeResults.klompenpadKey(klompenpaden)
+        let cKey = ChallengeResults.countriesKey
+        var visits = [String: [Date]]()
+        var hits = [[String: [Int]]]()
+        var countries = Set<String>()
+        for a in activities where a.isOnMap {
+            if a.trappistsKey == tKey { for id in a.trappists ?? [] { visits[id, default: []].append(a.startDate ?? .distantPast) } }
+            if a.klompenpadKey == kKey, let h = a.klompenpadHits { hits.append(h) }
+            if a.countriesKey == cKey { countries.formUnion(a.countries ?? []) }
         }
+        let progress = KlompenpadMatcher.progress(hits: hits, counts: klompenpadPrepared.counts)
+        let counts = BadgeRules.counts(activities, countries: countries.count)
+        let sortedVisits = visits.mapValues { $0.sorted(by: >) }
+        guard sortedVisits != trappistVisits || progress != klompenpadProgress || countries != worldCountries || counts != badges else { return }
+        trappistVisits = sortedVisits
+        klompenpadProgress = progress
+        worldCountries = countries
+        badges = counts
+        version += 1
     }
 
     /// Reads the .fit files of a folder; unchanged files come from the cache.
@@ -930,20 +973,7 @@ final class ActivityStore {
             version += 1
             await WidgetData.saveTiles(visited14)
         }
-        matchTrappists()
-        matchKlompenpaden()
-        badgeTask?.cancel()
-        let forBadges = activities
-        badgeTask = Task {
-            let (counts, countries) = await Task.detached(priority: .utility) {
-                let tracks = forBadges.filter(\.isOnMap).map { $0.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) } }
-                let countries = CountryOutlines.world?.countries(visitedBy: tracks) ?? []
-                return (BadgeRules.counts(forBadges, countries: countries.count), countries)
-            }.value
-            guard !Task.isCancelled else { return }
-            badges = counts
-            worldCountries = countries
-        }
+        matchChallenges()
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
         eddingtonRunning = Eddington(activities: activities, sports: Eddington.runningSports)
         eddingtonWalking = Eddington(activities: activities, sports: Eddington.walkingSports)

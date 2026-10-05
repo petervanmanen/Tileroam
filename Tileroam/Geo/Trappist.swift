@@ -53,6 +53,8 @@ enum TrappistData {
 }
 
 enum TrappistMatcher {
+    /// Raise when the rules below change: stored results are then computed again (see `ChallengeResults`).
+    static let version = 1
     /// Metres between a brewery and the track.
     static let radius = 200.0
 

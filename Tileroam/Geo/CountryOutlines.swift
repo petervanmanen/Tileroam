@@ -20,6 +20,9 @@ struct CountryOutlines: Sendable {
     /// `world.fmr`, made by `Tools/build_world_countries.py`): for counting countries (the
     /// Globetrotter badge), where a ride well into a country is what counts.
     static let world: CountryOutlines? = load("world")
+    /// Raise when the lookup for `world` changes: stored countries are then computed again (the
+    /// map file itself is fingerprinted, see `ChallengeResults`).
+    static let worldVersion = 1
 
     private static func load(_ name: String) -> CountryOutlines? {
         guard let url = Bundle.main.url(forResource: name, withExtension: "fmr"),
