@@ -81,7 +81,7 @@ Indoor and virtual activities are marked "Indoor". The same workout from several
 
 ## Climbs
 
-The **Climbs** tab (turn the Climbs challenge on with the **+** at the end of the tabs) shows the climbs on the roads: short steep hills in yellow, Cat 4 to HC in orange, red, purple and black (as on Strava), and the ones you have climbed in green. Tap a climb to see its length, gradient, gain, steepest part and when you climbed it. Climbs are downloaded for the areas you ride and look at, a few hundred kilobytes per area.
+The **Climbs** tab (turn the Climbs challenge on with the **+** at the end of the tabs) shows the climbs on the roads: short steep hills in yellow, Cat 4 to HC in orange, red, purple and black (as on Strava), and the ones you have climbed in green. A climb you tap, or one on a planned route, is blue and thicker. Tap a climb to see its length, gradient, gain, steepest part and when you climbed it. Climbs are downloaded for the areas you ride and look at, a few hundred kilobytes per area.
 
 A climb counts as climbed when an activity rides almost all of it uphill, from the bottom to the top. **Statistics → Climbs** shows how many you have climbed per category, and **All Climbs** lists them, with the ones you haven't climbed yet in the areas where you ride.
 
@@ -95,7 +95,7 @@ Turn on the **Trappists** challenge with the **+** at the end of the tabs to see
 
 ## Klompenpaden
 
-Turn on the **Klompenpaden** challenge with the **+** to see the 167 Klompenpaden of [www.klompenpaden.nl](https://www.klompenpaden.nl) on the map: walking paths through the countryside of Gelderland and Utrecht. A path is brown until you walk it, orange when you have walked part of it, and green once your activities cover at least 90% of its main route (within 30 m; several walks add up). Tap a path to see where it starts, its lengths, how much you have walked, and a link to its page on klompenpaden.nl. The list is downloaded once from Apple, like the municipality boundaries (about 70 KB). Klompenpaden are footpaths, so they aren't used for route planning.
+Turn on the **Klompenpaden** challenge with the **+** to see the 167 Klompenpaden of [www.klompenpaden.nl](https://www.klompenpaden.nl) on the map: walking paths through the countryside of Gelderland and Utrecht. A path is dark orange until you have walked it, and green once your activities cover at least 90% of its main route (within 30 m; several walks add up). Tap a path to see where it starts, its lengths, how much you have walked, and a link to its page on klompenpaden.nl. The list is downloaded once from Apple, like the municipality boundaries (about 70 KB). Klompenpaden are footpaths, so they aren't used for route planning.
 
 ## Statistics
 
