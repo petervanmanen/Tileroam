@@ -2257,6 +2257,34 @@
         }
       }
     },
+    "Checking iCloud…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud controleren…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérification d’iCloud…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprobando iCloud…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud wird geprüft…"
+          }
+        }
+      }
+    },
     "Checking which tiles and areas this route passes…": {
       "localizations": {
         "nl": {
@@ -6925,6 +6953,34 @@
         }
       }
     },
+    "Reading your activities…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je activiteiten lezen…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture de vos activités…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyendo tus actividades…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Aktivitäten werden gelesen…"
+          }
+        }
+      }
+    },
     "Recent": {
       "localizations": {
         "nl": {
@@ -7593,6 +7649,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Strava-Aktivitäten werden gespeichert: %1$lld von %2$lld"
+          }
+        }
+      }
+    },
+    "Saving to iCloud…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opslaan in iCloud…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrement dans iCloud…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardando en iCloud…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In iCloud sichern…"
           }
         }
       }

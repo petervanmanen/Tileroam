@@ -108,6 +108,14 @@ struct LibraryMirrorTests {
         #expect(seen.withLock { $0.sorted() } == Array(1...299))
     }
 
+    @Test func readsWithinTheTimeLimit() throws {
+        let (local, _) = try folders()
+        let file = local.appending(path: "a.fit")
+        try Data([7, 8]).write(to: file)
+        #expect(Library.readWithin(5, file) == Data([7, 8]))
+        #expect(Library.readWithin(1, local.appending(path: "missing.fit")) == nil) // gives up after the limit
+    }
+
     @Test func deletionsReachBothSides() throws {
         let (local, cloud) = try folders()
         for folder in [local, cloud] { try Data([1]).write(to: folder.appending(path: "x.fit")) }
