@@ -23,13 +23,16 @@ The eight shots are:
 - `06-plan`
 - `07-badges` (Statistics with Badges open)
 
+**The Mac** (`mac`, 2880 × 1800, a Mac App Store size): the same shots except the plan (the Mac app has no route planning), plus `06-klompenpaden`. `Tools/capture_screenshots.sh mac` (in `capture_screenshots_mac.sh`) builds a copy of the Debug app under its own bundle ID (`nl.petervanmanen.Tileroam.screenshots`), signed ad hoc with `Tools/screenshots-mac.entitlements`: its own sandbox container with the sample rides and copies of the boundaries and Klompenpaden, no iCloud, no location, so the real app's data is never touched. It fixes the window at 1440 × 900 points (`-WindowSize`) and captures it with `screencapture -l`, which needs **Screen Recording permission** for the app running the script (Terminal, or Claude): System Settings → Privacy & Security → Screen Recording. Without it the script stops with "allow Screen Recording". The Mac's own light or dark appearance is used: set it to Light first.
+
 A `settings` shot is also taken, for the README only. The README images in `docs/screenshots/` (iPhone 644 × 1400, iPad 1050 × 1400, and the `overview.jpg` strip) are made from the same captures.
 
 ## Quick way
 
 ```bash
-Tools/update_screenshots.sh          # build, iPhone and iPad captures, README images (about 15 minutes)
+Tools/update_screenshots.sh          # build, iPhone, iPad and Mac captures, README images (about 25 minutes)
 Tools/update_screenshots.sh iphone   # only iPhone and the README
+Tools/update_screenshots.sh mac      # only the Mac
 ```
 Run it in the background with a long timeout, then check the images (step 3) and commit them. The steps below are what it does.
 

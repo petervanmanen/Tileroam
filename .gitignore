@@ -1,6 +1,10 @@
 # Xcode
 build/
 build-release/
+build-device/
+build-mac/
+build-mac-screenshots/
+Tools/__pycache__/
 DerivedData/
 xcuserdata/
 *.xcuserstate

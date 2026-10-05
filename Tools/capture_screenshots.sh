@@ -4,6 +4,7 @@
 #
 #   Tools/capture_screenshots.sh iphone   # iPhone 18 Pro Max → iphone-6.9 (1320×2868) and iphone-6.5 (1284×2778)
 #   Tools/capture_screenshots.sh ipad     # iPad Pro 13-inch (M5) → ipad-13 (2064×2752)
+#   Tools/capture_screenshots.sh mac      # the Mac app → mac (2880×1800); see capture_screenshots_mac.sh
 #
 # Build the Debug app for the simulator first (build/Build/Products/Debug-iphonesimulator).
 # Uses the Debug-only launch arguments -RegionsDir, -challenges, -mapMode, -FocusZoom, -MapCenter,
@@ -13,11 +14,12 @@
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
-KIND=${1:?iphone or ipad}
+KIND=${1:?iphone, ipad or mac}
 case $KIND in
+  mac)    exec $ROOT/Tools/capture_screenshots_mac.sh ;;
   iphone) D="iPhone 18 Pro Max"; FOCUS=9 ;;
   ipad)   D="iPad Pro 13-inch (M5)"; FOCUS=10 ;;
-  *) echo "iphone or ipad" >&2; exit 1 ;;
+  *) echo "iphone, ipad or mac" >&2; exit 1 ;;
 esac
 BID=nl.petervanmanen.Tileroam
 APP=$ROOT/build/Build/Products/Debug-iphonesimulator/Tileroam.app

@@ -1,12 +1,15 @@
 #!/bin/zsh
 # Updates every screenshot in one go:
 #   1. builds the Debug app for the simulator;
-#   2. captures the App Store screenshots on iPhone and iPad (Tools/capture_screenshots.sh, with
-#      the bundled sample rides): docs/appstore/screenshots/{iphone-6.9,iphone-6.5,ipad-13};
+#   2. captures the App Store screenshots on iPhone, iPad and the Mac (Tools/capture_screenshots.sh,
+#      with the bundled sample rides): docs/appstore/screenshots/{iphone-6.9,iphone-6.5,ipad-13,mac}
+#      (the Mac needs Screen Recording permission for the app running this; see
+#      capture_screenshots_mac.sh);
 #   3. makes the README images from those captures: docs/screenshots/*.jpg (iPhone 644×1400,
 #      iPad 1050×1400) and the overview strip.
 #
-#   Tools/update_screenshots.sh            # everything (about 10 minutes)
+#   Tools/update_screenshots.sh            # everything (about 25 minutes)
+#   Tools/update_screenshots.sh mac        # only the Mac
 #   Tools/update_screenshots.sh iphone     # only the iPhone captures and the README
 #
 # Needs the routing tile extract for the plan shot (AssetPacks/build/routing/routing-west.tar,
@@ -17,7 +20,7 @@ set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
 KINDS=("$@")
-(( ${#KINDS} )) || KINDS=(iphone ipad)
+(( ${#KINDS} )) || KINDS=(iphone ipad mac)
 cd $ROOT
 
 echo "Building…"
