@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 import Testing
 @testable import Tileroam
 
@@ -90,6 +91,21 @@ struct LibraryMirrorTests {
         #expect(Library.names(in: local, ext: "fit") == ["a.fit", "b.fit"])
         #expect(Library.names(in: cloud, ext: "fit") == ["a.fit", "b.fit", "gone.fit"])
         #expect(try Data(contentsOf: local.appending(path: "b.fit")) == Data([2]))
+    }
+
+    @Test func manyFilesInParallel() throws {
+        let (local, cloud) = try folders()
+        for i in 0..<300 { try Data("ride \(i)".utf8).write(to: cloud.appending(path: "r\(i).fit")) }
+        let seen = Mutex([Int]())
+        let copied = Library.copyMissing(from: cloud, to: local, ext: "fit", skipping: ["r7.fit"], coordinated: false) { done, total in
+            #expect(total == 299)
+            seen.withLock { $0.append(done) }
+        }
+        #expect(copied == 299)
+        #expect(Library.names(in: local, ext: "fit").count == 299)
+        #expect(try Data(contentsOf: local.appending(path: "r42.fit")) == Data("ride 42".utf8))
+        // Progress counts up to the total, once per file.
+        #expect(seen.withLock { $0.sorted() } == Array(1...299))
     }
 
     @Test func deletionsReachBothSides() throws {

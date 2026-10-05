@@ -1,5 +1,6 @@
 import CryptoKit
 import Foundation
+import Synchronization
 
 /// Tileroam's own files: every activity (.fit) and planned route (.gpx) lives in the app,
 /// visible in the Files app as "On My iPhone › Tileroam › Activities" and "› Routes".
@@ -100,7 +101,7 @@ enum Library {
     /// Brings activities and routes from iCloud that this device doesn't have, and applies
     /// deletions made on other devices. Returns the number of files that arrived.
     @discardableResult
-    static func pull(progress: @Sendable (Int, Int) -> Void = { _, _ in }) -> Int {
+    static func pull(progress: @escaping @Sendable (Int, Int) -> Void = { _, _ in }) -> Int {
         guard isSyncOn, let cloud = cloudActivitiesFolder, let cloudRoutes = cloudRoutesFolder else { return 0 }
         let deleted = Deletions.names()
         applyDeletions(deleted, local: activitiesFolder, cloud: cloud)
@@ -128,18 +129,36 @@ enum Library {
 
     /// Copies the files of `source` that `target` doesn't have (by name), except `skipping`.
     /// Reading waits for iCloud downloads; writing into iCloud is coordinated.
+    ///
+    /// Fast on a new device with many activities: iCloud is asked for all missing files at once
+    /// (it downloads several in parallel), and `parallel` files are read and written at the same
+    /// time. One at a time, every file waited for its own download (about a second each).
     static func copyMissing(from source: URL, to target: URL, ext: String, skipping: Set<String>, coordinated: Bool,
-                            progress: @Sendable (Int, Int) -> Void = { _, _ in }) -> Int {
-        let missing = names(in: source, ext: ext).subtracting(names(in: target, ext: ext)).subtracting(skipping)
-        var copied = 0
-        for (n, name) in missing.sorted().enumerated() {
-            progress(n, missing.count)
-            guard let data = try? FolderAccess.read(source.appending(path: name)) else { continue }
-            let url = target.appending(path: name)
-            let written = coordinated ? (try? coordinatedWrite(data, to: url)) != nil : (try? data.write(to: url, options: .atomic)) != nil
-            if written { copied += 1 }
+                            parallel: Int = 8, progress: @escaping @Sendable (Int, Int) -> Void = { _, _ in }) -> Int {
+        let missing = names(in: source, ext: ext).subtracting(names(in: target, ext: ext)).subtracting(skipping).sorted()
+        guard !missing.isEmpty else { return 0 }
+        for name in missing { try? FileManager.default.startDownloadingUbiquitousItem(at: source.appending(path: name)) }
+        let state = Mutex((done: 0, copied: 0))
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = parallel
+        queue.qualityOfService = .userInitiated
+        for name in missing {
+            queue.addOperation {
+                var written = false
+                if let data = try? FolderAccess.read(source.appending(path: name)) {
+                    let url = target.appending(path: name)
+                    written = coordinated ? (try? coordinatedWrite(data, to: url)) != nil : (try? data.write(to: url, options: .atomic)) != nil
+                }
+                let done = state.withLock { s in
+                    s.done += 1
+                    if written { s.copied += 1 }
+                    return s.done
+                }
+                progress(done, missing.count)
+            }
         }
-        return copied
+        queue.waitUntilAllOperationsAreFinished()
+        return state.withLock { $0.copied }
     }
 
     /// Whether iCloud has activities (also files not downloaded yet), for a new device.
