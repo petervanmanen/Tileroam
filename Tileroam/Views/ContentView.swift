@@ -142,6 +142,16 @@ struct ContentView: View {
                 if UserDefaults.standard.bool(forKey: "ShowSettings") { showSettings = true }
                 if UserDefaults.standard.bool(forKey: "ShowStatistics") { showStatistics = true }
                 if UserDefaults.standard.bool(forKey: "ShowActivities") { showActivities = true }
+                #if targetEnvironment(macCatalyst)
+                // Mac screenshots: -WindowSize 1440x900 fixes the window's size (points).
+                let size = (UserDefaults.standard.string(forKey: "WindowSize") ?? "").split(separator: "x").compactMap { Double($0) }
+                if size.count == 2 {
+                    for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+                        scene.sizeRestrictions?.minimumSize = CGSize(width: size[0], height: size[1])
+                        scene.sizeRestrictions?.maximumSize = CGSize(width: size[0], height: size[1])
+                    }
+                }
+                #endif
                 #endif
             }
             .task { await store.refreshAll() }
