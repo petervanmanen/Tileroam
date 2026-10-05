@@ -145,7 +145,7 @@ enum Library {
         for name in missing {
             queue.addOperation {
                 var written = false
-                if let data = try? FolderAccess.read(source.appending(path: name)) {
+                if let data = readWithin(downloadTimeout, source.appending(path: name)) {
                     let url = target.appending(path: name)
                     written = coordinated ? (try? coordinatedWrite(data, to: url)) != nil : (try? data.write(to: url, options: .atomic)) != nil
                 }
@@ -159,6 +159,25 @@ enum Library {
         }
         queue.waitUntilAllOperationsAreFinished()
         return state.withLock { $0.copied }
+    }
+
+    /// How long one iCloud file may take to download before it's left for the next refresh.
+    static let downloadTimeout: TimeInterval = 120
+
+    /// Reads a file, waiting for iCloud to download it, but at most `timeout` seconds: a download
+    /// that stalls would otherwise block the refresh forever (the coordinated read waits for it).
+    static func readWithin(_ timeout: TimeInterval, _ url: URL) -> Data? {
+        try? FileManager.default.startDownloadingUbiquitousItem(at: url)
+        nonisolated(unsafe) let coordinator = NSFileCoordinator()
+        let stop = DispatchWorkItem { coordinator.cancel() } // the read then returns with an error
+        DispatchQueue.global().asyncAfter(deadline: .now() + timeout, execute: stop)
+        defer { stop.cancel() }
+        var coordinationError: NSError?
+        var data: Data?
+        coordinator.coordinate(readingItemAt: url, options: [], error: &coordinationError) { readURL in
+            data = try? Data(contentsOf: readURL)
+        }
+        return coordinationError == nil ? data : nil
     }
 
     /// Whether iCloud has activities (also files not downloaded yet), for a new device.

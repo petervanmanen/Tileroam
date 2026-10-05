@@ -342,7 +342,7 @@ struct ContentView: View {
             if store.isImporting, store.progress.total == 0 {
                 HStack(spacing: 8) {
                     ProgressView()
-                    Text("Checking your activities…").font(.footnote)
+                    Text(store.importPhase ?? String(localized: "Checking your activities…")).font(.footnote)
                 }
                 .padding(12)
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))

@@ -65,6 +65,8 @@ final class ActivityStore {
     private(set) var trappists: [Trappist] = TrappistData.cached()
     /// For each visited brewery, when (newest first).
     private(set) var trappistVisits: [String: [Date]] = [:]
+    /// What the refresh is doing, for the banner while there's no file count to show.
+    private(set) var importPhase: String?
 
     // Klompenpaden (see Klompenpad, KlompenpadData)
     /// The paths, from the `klompenpaden` asset pack (empty until it's downloaded).
@@ -295,11 +297,16 @@ final class ActivityStore {
         guard !isImporting else { return }
         isImporting = true
         progress = (0, 0)
-        defer { isImporting = false }
+        importPhase = nil
+        defer {
+            isImporting = false
+            importPhase = nil
+        }
         await updateICloud()
         if !Library.isMigrated { await migrate() }
         let sync = syncSetting && isICloudAvailable
         if sync {
+            importPhase = String(localized: "Checking iCloud…")
             let pull = Task.detached(priority: .userInitiated) {
                 Library.pull { done, total in Task { @MainActor [weak self] in self?.progress = (done, total) } }
             }
@@ -321,6 +328,7 @@ final class ActivityStore {
             await interim.value // a refresh under way finishes first
         }
 
+        importPhase = String(localized: "Reading your activities…")
         var failed = [String]()
         var library = await parse(Library.activitiesFolder, prefix: Self.libraryPrefix, failed: &failed)
         let samples = hasSampleRides ? await parse(FolderAccess.sampleRidesFolder, prefix: Self.samplePrefix, failed: &failed) : []
@@ -329,11 +337,18 @@ final class ActivityStore {
         failedFiles = failed
         recompute()
         TrackCache.save(folderActivities, folder: Self.folderCacheKey)
-        if sync { await Task.detached(priority: .utility) { Library.push() }.value }
+        if sync {
+            importPhase = String(localized: "Saving to iCloud…")
+            await Task.detached(priority: .utility) { Library.push() }.value
+        }
         if regions != nil { backfillDerived() }
-        await updateTrappists()
-        await updateKlompenpaden()
-        await updateClimbs()
+        // The import is done: the rest (lists from the server or an asset pack, climbs to match,
+        // which takes minutes the first time) runs on without the "Checking" banner, each on its own.
+        isImporting = false
+        importPhase = nil
+        Task { await updateTrappists() }
+        Task { await updateKlompenpaden() }
+        Task { await updateClimbs() }
     }
 
     /// How often activities arriving from iCloud are shown while they download.
