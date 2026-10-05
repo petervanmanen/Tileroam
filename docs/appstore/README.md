@@ -110,6 +110,7 @@ xcodebuild -exportArchive -archivePath build/Tileroam.xcarchive -exportOptionsPl
   git tag v1.0.1 && git push origin v1.0.1
   ```
 - **Upload the current version again:** Actions → TestFlight → **Run workflow**.
+- **The Mac app** (Mac Catalyst, without route planning) is uploaded by the same workflow, in a second job (`upload-mac`) after the iPhone/iPad upload. It's archived for `generic/platform=macOS,variant=Mac Catalyst`, signed ad hoc with the sandboxed `Tileroam-Mac.entitlements` and `TileroamAssets-Mac.entitlements` (Release only; Debug Mac builds aren't sandboxed so they can read the repository's data), and exported with the same cloud signing. The app record in App Store Connect needs the **macOS** platform; after the first Mac build, upload all asset packs again so their macOS part is accepted (`Tools/upload_asset_packs.sh`).
 - **Build numbers:** 100 + the workflow run number, set automatically. Don't upload builds numbered above 100 by hand.
 - **Signing:** the runner has no certificates. The archive is built unsigned, `Tools/ci_sign_archive.sh` signs it ad hoc with its entitlements, and the export does the distribution signing with the API key (cloud signing).
 

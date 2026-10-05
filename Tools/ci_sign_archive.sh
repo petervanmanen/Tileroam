@@ -3,7 +3,8 @@
 # this signs its bundles ad hoc with their entitlements, so that `xcodebuild -exportArchive`
 # (cloud signing with an App Store Connect API key) keeps iCloud and the App Group.
 #
-#   Tools/ci_sign_archive.sh build/Tileroam.xcarchive
+#   Tools/ci_sign_archive.sh build/Tileroam.xcarchive       # iPhone and iPad
+#   Tools/ci_sign_archive.sh build/Tileroam-Mac.xcarchive   # the Mac app (Mac Catalyst)
 set -euo pipefail
 ROOT=${0:A:h:h}
 ARCHIVE=$1
@@ -18,10 +19,17 @@ expand() { # entitlements file, bundle id
 }
 
 # Inside out: extensions first, then the app.
-codesign -f -s - --entitlements $(expand $ROOT/TileroamWidget/TileroamWidget.entitlements nl.petervanmanen.Tileroam.Widget) \
-  $APP/PlugIns/TileroamWidget.appex
-codesign -f -s - --entitlements $(expand $ROOT/TileroamAssets/TileroamAssets.entitlements nl.petervanmanen.Tileroam.Assets) \
-  $APP/Extensions/TileroamAssets.appex
-codesign -f -s - --entitlements $(expand $ROOT/Tileroam/Tileroam.entitlements nl.petervanmanen.Tileroam) $APP
+if [[ -d $APP/Contents ]]; then
+  # The Mac app (Mac Catalyst): no widget, sandboxed entitlements.
+  codesign -f -s - --entitlements $(expand $ROOT/TileroamAssets/TileroamAssets-Mac.entitlements nl.petervanmanen.Tileroam.Assets) \
+    $APP/Contents/Extensions/TileroamAssets.appex
+  codesign -f -s - --entitlements $(expand $ROOT/Tileroam/Tileroam-Mac.entitlements nl.petervanmanen.Tileroam) $APP
+else
+  codesign -f -s - --entitlements $(expand $ROOT/TileroamWidget/TileroamWidget.entitlements nl.petervanmanen.Tileroam.Widget) \
+    $APP/PlugIns/TileroamWidget.appex
+  codesign -f -s - --entitlements $(expand $ROOT/TileroamAssets/TileroamAssets.entitlements nl.petervanmanen.Tileroam.Assets) \
+    $APP/Extensions/TileroamAssets.appex
+  codesign -f -s - --entitlements $(expand $ROOT/Tileroam/Tileroam.entitlements nl.petervanmanen.Tileroam) $APP
+fi
 codesign --verify --deep --strict $APP
 echo "Signed $APP ad hoc (team $TEAM)"
