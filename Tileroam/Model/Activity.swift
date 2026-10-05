@@ -57,6 +57,20 @@ struct Activity: Codable, Sendable, Identifiable {
     /// Recorded in Zwift (FIT manufacturer 260, or a Strava name starting "Zwift"). For badges.
     var isZwift: Bool?
 
+    // Challenge results, computed once per activity (see `ChallengeResults`). Each is valid for
+    // its key: the matcher's version and a fingerprint of the list or map it was computed with;
+    // a different key means it is computed again.
+    /// Trappist breweries passed (`Trappist.id`).
+    var trappists: [String]?
+    var trappistsKey: String?
+    /// Klompenpaden: for each path touched, the indexes of its checkpoints passed
+    /// (`KlompenpadMatcher.checkpoints`).
+    var klompenpadHits: [String: [Int]]?
+    var klompenpadKey: String?
+    /// Countries of the world the track passes (ISO codes, `CountryOutlines.world`), for Globetrotter.
+    var countries: [String]?
+    var countriesKey: String?
+
     /// Moving time if known, otherwise elapsed time.
     var duration: Double? { (movingTime ?? 0) > 0 ? movingTime : elapsedTime }
     /// Meters per second over the moving time.
