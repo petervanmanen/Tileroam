@@ -16,7 +16,8 @@ struct StatisticsView: View {
         let thisYear = store.activities.filter { $0.startDate.map { Calendar.current.component(.year, from: $0) == year } ?? false }
         List {
             category("overview", "Overview", summary: String(localized: "\(store.tiles(.explorer).count) tiles")) {
-                LabeledContent("Countries visited", value: visitedCountries.count.formatted())
+                // All countries of the world with activities (issue #38), not only those with municipalities.
+                LabeledContent("Countries visited", value: store.worldCountries.count.formatted())
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
                 LabeledContent("Klompenpaden walked", value: store.klompenpadenWalked.formatted())

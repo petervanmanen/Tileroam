@@ -143,6 +143,7 @@ struct ActivityMapView: UIViewRepresentable {
         map.showsUserLocation = status == .authorizedWhenInUse || status == .authorizedAlways
         map.preferredConfiguration = mapStyle.configuration
         map.isPitchEnabled = false // no tilt: tiles and areas stay flat on the map
+        map.isRotateEnabled = false // always north up (issue #39)
         map.pointOfInterestFilter = .excludingAll
         map.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 52.2, longitude: 5.3),
                                         span: MKCoordinateSpan(latitudeDelta: 3.4, longitudeDelta: 3.4))
@@ -321,34 +322,57 @@ struct ActivityMapView: UIViewRepresentable {
             case .climbs:
                 let selected = planning ? plan.selectedClimbs : Set(parent.selectedClimb.map { [$0.id] } ?? [])
                 let onRoute = coverage?.climbs ?? []
+                // The selected climbs (and those on a planned route) in blue, a colour no category
+                // uses, thicker and on top (issue #40).
                 var groups = [UIColor: [MKPolyline]]()
+                var highlighted = [MKPolyline]()
                 for climb in store.climbs.values {
-                    let color: UIColor = selected.contains(climb.id) || onRoute.contains(climb.id) ? .systemOrange
-                        : store.climbed[climb.id] != nil ? .systemGreen : Self.color(for: climb.cat)
                     let coords = climb.points.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
-                    groups[color, default: []].append(MKPolyline(coordinates: coords, count: coords.count))
+                    let line = MKPolyline(coordinates: coords, count: coords.count)
+                    if selected.contains(climb.id) || onRoute.contains(climb.id) {
+                        highlighted.append(line)
+                    } else {
+                        groups[store.climbed[climb.id] != nil ? .systemGreen : Self.color(for: climb.cat), default: []].append(line)
+                    }
                 }
                 for (color, lines) in groups {
                     let multi = ClimbLines(lines)
                     multi.color = color
                     map.addOverlay(multi, level: .aboveRoads)
                 }
+                if !highlighted.isEmpty {
+                    let multi = ClimbLines(highlighted)
+                    multi.color = Self.selectedClimbColor
+                    multi.width = 7
+                    map.addOverlay(multi, level: .aboveRoads)
+                }
             case .klompenpaden:
-                // Walked green, partly walked orange, not yet brown; the selected one blue.
+                // Two colours (issue #41): walked green, not (yet) walked dark orange. The selected
+                // path keeps its colour, drawn thicker and on top; its card shows the progress.
                 var groups = [UIColor: [MKPolyline]]()
+                var selectedLines = [MKPolyline](), selectedColor = Self.klompenpadOpen
                 for path in store.klompenpaden {
-                    let share = store.klompenpadProgress[path.id] ?? 0
-                    let color: UIColor = path.id == parent.selectedKlompenpad?.id ? .systemBlue
-                        : share >= KlompenpadMatcher.done ? .systemGreen : share > 0.05 ? .systemOrange
-                        : UIColor(red: 0.55, green: 0.35, blue: 0.17, alpha: 1)
-                    for piece in path.pieces {
+                    let color = (store.klompenpadProgress[path.id] ?? 0) >= KlompenpadMatcher.done ? UIColor.systemGreen : Self.klompenpadOpen
+                    let lines = path.pieces.map { piece in
                         let coords = piece.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
-                        groups[color, default: []].append(MKPolyline(coordinates: coords, count: coords.count))
+                        return MKPolyline(coordinates: coords, count: coords.count)
+                    }
+                    if path.id == parent.selectedKlompenpad?.id {
+                        selectedLines = lines
+                        selectedColor = color
+                    } else {
+                        groups[color, default: []] += lines
                     }
                 }
                 for (color, lines) in groups {
                     let multi = ClimbLines(lines)
                     multi.color = color
+                    map.addOverlay(multi, level: .aboveRoads)
+                }
+                if !selectedLines.isEmpty {
+                    let multi = ClimbLines(selectedLines)
+                    multi.color = selectedColor
+                    multi.width = 8
                     map.addOverlay(multi, level: .aboveRoads)
                 }
             case .trappists:
@@ -536,7 +560,13 @@ struct ActivityMapView: UIViewRepresentable {
         /// Climbs (or Klompenpaden) drawn in one colour.
         final class ClimbLines: MKMultiPolyline {
             var color = UIColor.systemRed
+            var width: CGFloat = 4
         }
+
+        /// A selected climb: no category uses blue.
+        static let selectedClimbColor = UIColor.systemBlue
+        /// A Klompenpad not (yet) walked.
+        static let klompenpadOpen = UIColor(red: 0.85, green: 0.35, blue: 0.0, alpha: 1)
 
         static func color(for category: Climb.Category) -> UIColor {
             switch category {
@@ -563,7 +593,7 @@ struct ActivityMapView: UIViewRepresentable {
             case let climbs as ClimbLines:
                 let r = MKMultiPolylineRenderer(multiPolyline: climbs)
                 r.strokeColor = climbs.color.withAlphaComponent(0.9)
-                r.lineWidth = 4
+                r.lineWidth = climbs.width
                 r.lineCap = .round
                 return r
             case let areas as AreaOverlay:

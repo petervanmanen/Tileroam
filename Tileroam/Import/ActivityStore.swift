@@ -788,6 +788,25 @@ final class ActivityStore {
         let inFolderWithGPS = ActivityMerge.Index(folderActivities.filter { !$0.trackData.isEmpty })
         let inFolder = ActivityMerge.Index(folderActivities)
 
+        // "Saved" activities whose file isn't in the library (saved before 1.3 into a save folder
+        // whose files never reached the library, or removed elsewhere): save them again, unless the
+        // library has another copy of the workout. Otherwise they'd never reach iCloud and the
+        // user's other devices.
+        let present = await Task.detached(priority: .utility) { Library.names(in: Library.activitiesFolder, ext: "fit") }.value
+        var resaved = 0
+        for i in stravaActivities.indices {
+            guard let file = stravaActivities[i].exportedFile, !present.contains(file), !inFolder.contains(stravaActivities[i]) else { continue }
+            stravaActivities[i].exportedFile = nil
+            resaved += 1
+        }
+        if resaved > 0, let id = stravaAthleteID { saveStrava(id) }
+        defer {
+            // New files go to iCloud now, not only at the next refresh.
+            if syncSetting && isICloudAvailable {
+                Task.detached(priority: .utility) { Library.push() }
+            }
+        }
+
         defer {
             recompute()
             if let id = stravaAthleteID { saveStrava(id) }
