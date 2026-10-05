@@ -299,9 +299,25 @@ final class ActivityStore {
         if !Library.isMigrated { await migrate() }
         let sync = syncSetting && isICloudAvailable
         if sync {
-            await Task.detached(priority: .userInitiated) {
+            let pull = Task.detached(priority: .userInitiated) {
                 Library.pull { done, total in Task { @MainActor [weak self] in self?.progress = (done, total) } }
-            }.value
+            }
+            // A new device can fetch hundreds of activities: show what has arrived every 10
+            // seconds, instead of only at the end.
+            let interim = Task { @MainActor [weak self] in
+                var shown = Library.names(in: Library.activitiesFolder, ext: "fit").count
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: Self.interimRefresh)
+                    guard let self, !Task.isCancelled else { return }
+                    let arrived = Library.names(in: Library.activitiesFolder, ext: "fit").count
+                    guard arrived > shown else { continue }
+                    shown = arrived
+                    await self.showArrivedActivities()
+                }
+            }
+            _ = await pull.value
+            interim.cancel()
+            await interim.value // a refresh under way finishes first
         }
 
         var failed = [String]()
@@ -317,6 +333,20 @@ final class ActivityStore {
         await updateTrappists()
         await updateKlompenpaden()
         await updateClimbs()
+    }
+
+    /// How often activities arriving from iCloud are shown while they download.
+    static let interimRefresh = Duration.seconds(10)
+
+    /// While iCloud downloads: reads the activity files that have arrived (unchanged ones come from
+    /// the cache) and updates the map and statistics. Duplicates, failures and the cache are left
+    /// to the full refresh after the download.
+    private func showArrivedActivities() async {
+        var failed = [String]()
+        let library = await parse(Library.activitiesFolder, prefix: Self.libraryPrefix, failed: &failed, reportProgress: false)
+        let samples = folderActivities.filter { $0.id.hasPrefix(Self.samplePrefix) }
+        folderActivities = (library + samples).sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
+        recompute()
     }
 
     /// Checks for a new list of Trappist breweries (at most once a day; the copy on the device
@@ -368,15 +398,16 @@ final class ActivityStore {
     }
 
     /// Reads the .fit files of a folder; unchanged files come from the cache.
-    private func parse(_ folder: URL, prefix: String, failed: inout [String]) async -> [Activity] {
+    /// `reportProgress` false keeps the progress line on the iCloud download (interim refreshes).
+    private func parse(_ folder: URL, prefix: String, failed: inout [String], reportProgress: Bool = true) async -> [Activity] {
         let previous = folderActivities.filter { $0.id.hasPrefix(prefix) }
         let existing = Dictionary(previous.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         var result: [Activity]?
         for await event in Importer.run(folder: folder, existing: existing, activityID: { prefix + $0 }) {
             switch event {
-            case .started(_, let toParse): progress = (0, toParse)
+            case .started(_, let toParse): if reportProgress { progress = (0, toParse) }
             case .folderUnreadable(let message): failed.append(message)
-            case .progress(let done, let total): progress = (done, total)
+            case .progress(let done, let total): if reportProgress { progress = (done, total) }
             case .finished(let activities, let failedPaths):
                 result = activities
                 failed += failedPaths
