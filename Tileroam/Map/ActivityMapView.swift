@@ -159,6 +159,7 @@ struct ActivityMapView: UIViewRepresentable {
         map.addGestureRecognizer(tap)
         let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
         map.addGestureRecognizer(longPress)
+        map.addInteraction(context.coordinator.placeMenu)
         #if DEBUG
         // Screenshots and checks: -MapCenter "50.85,5.85,0.3" (latitude, longitude, span in degrees).
         let center = (UserDefaults.standard.string(forKey: "MapCenter") ?? "").split(separator: ",").compactMap { Double($0) }
@@ -166,6 +167,14 @@ struct ActivityMapView: UIViewRepresentable {
             map.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: center[0], longitude: center[1]),
                                             span: MKCoordinateSpan(latitudeDelta: center[2], longitudeDelta: center[2]))
             context.coordinator.skipFocus()
+        }
+        // -PlaceMenuDemo YES: opens the long-press menu in the middle of the map after launch.
+        if UserDefaults.standard.bool(forKey: "PlaceMenuDemo") {
+            Task { @MainActor [weak map, coordinator = context.coordinator] in
+                try? await Task.sleep(for: .seconds(8))
+                guard let map else { return }
+                coordinator.showPlaceMenu(at: CGPoint(x: map.bounds.midX, y: map.bounds.midY), on: map)
+            }
         }
         #endif
         return map
@@ -183,8 +192,12 @@ struct ActivityMapView: UIViewRepresentable {
     }
 
     @MainActor
-    final class Coordinator: NSObject, MKMapViewDelegate, CLLocationManagerDelegate {
+    final class Coordinator: NSObject, MKMapViewDelegate, CLLocationManagerDelegate, @MainActor UIEditMenuInteractionDelegate {
         var parent: ActivityMapView
+        /// Planning mode: the menu a long-press opens, "Start Here" / "End Here".
+        lazy var placeMenu = UIEditMenuInteraction(delegate: self)
+        /// Where the map was long-pressed, for that menu.
+        private var pressedPoint: GeoPoint?
         private let locationManager = CLLocationManager()
         private var handledLocateRequest = 0
         private weak var mapView: MKMapView?
@@ -654,13 +667,32 @@ struct ActivityMapView: UIViewRepresentable {
             if pin is EndAnnotation { setEnd(at: point) } else if pin is StartAnnotation { setStart(at: point) }
         }
 
-        /// Planning mode: long-press the map to start the round trip there.
+        /// Planning mode: long-press the map to start or end the route there (a small menu at the
+        /// finger: "Start Here", "End Here").
         @objc func handleLongPress(_ recognizer: UILongPressGestureRecognizer) {
             guard recognizer.state == .began, parent.plan.isPlanning, !parent.plan.isWorking,
                   let map = recognizer.view as? MKMapView else { return }
-            let c = map.convert(recognizer.location(in: map), toCoordinateFrom: map)
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            setStart(at: GeoPoint(lat: c.latitude, lon: c.longitude))
+            showPlaceMenu(at: recognizer.location(in: map), on: map)
+        }
+
+        func showPlaceMenu(at location: CGPoint, on map: MKMapView) {
+            let c = map.convert(location, toCoordinateFrom: map)
+            pressedPoint = GeoPoint(lat: c.latitude, lon: c.longitude)
+            placeMenu.presentEditMenu(with: UIEditMenuConfiguration(identifier: nil, sourcePoint: location))
+        }
+
+        func editMenuInteraction(_ interaction: UIEditMenuInteraction, menuFor configuration: UIEditMenuConfiguration,
+                                 suggestedActions: [UIMenuElement]) -> UIMenu? {
+            guard let point = pressedPoint else { return nil }
+            return UIMenu(children: [
+                UIAction(title: String(localized: "Start Here"), image: UIImage(systemName: "flag.fill")) { [weak self] _ in
+                    self?.setStart(at: point)
+                },
+                UIAction(title: String(localized: "End Here"), image: UIImage(systemName: "flag.checkered")) { [weak self] _ in
+                    self?.setEnd(at: point)
+                },
+            ])
         }
 
         private func setStart(at point: GeoPoint) {
