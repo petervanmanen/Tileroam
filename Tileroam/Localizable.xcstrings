@@ -431,6 +431,34 @@
         }
       }
     },
+    "%lld m climbing": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld hm klimmen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld m de dénivelé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld m de desnivel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Hm Anstieg"
+          }
+        }
+      }
+    },
     "%lld more rides of at least %lld km to reach %lld": {
       "localizations": {
         "en": {
@@ -4461,6 +4489,34 @@
         }
       }
     },
+    "Easy": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Makkelijk"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fácil"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leicht"
+          }
+        }
+      }
+    },
     "Eddington Number": {
       "localizations": {
         "nl": {
@@ -4653,6 +4709,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ziel: zurück zum Start"
+          }
+        }
+      }
+    },
+    "Estimated": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschat"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimado"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschätzt"
           }
         }
       }
@@ -4989,6 +5073,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Halbmarathon"
+          }
+        }
+      }
+    },
+    "Hard": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moeilijk"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difficile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difícil"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwer"
           }
         }
       }
@@ -6053,6 +6165,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ansicht"
+          }
+        }
+      }
+    },
+    "Moderate": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemiddeld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moyen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mittel"
           }
         }
       }
@@ -8717,6 +8857,34 @@
         }
       }
     },
+    "Signposted": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegwijzerd"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balisé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Señalizado"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausgeschildert"
+          }
+        }
+      }
+    },
     "Silent night": {
       "localizations": {
         "nl": {
@@ -10733,6 +10901,34 @@
         }
       }
     },
+    "Very hard": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeer moeilijk"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Très difficile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muy difícil"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sehr schwer"
+          }
+        }
+      }
+    },
     "Visited": {
       "localizations": {
         "nl": {
@@ -11614,6 +11810,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trappisten"
+          }
+        }
+      }
+    },
+    "technical S%@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "technisch S%@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "technique S%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "técnica S%@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "technisch S%@"
           }
         }
       }

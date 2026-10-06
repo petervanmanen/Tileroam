@@ -496,6 +496,15 @@ T = {
     "Climbed (%lld)": ("Beklommen (%lld)", "Gravies (%lld)", "Hechas (%lld)", "Gefahren (%lld)"),
     "Climbs": ("Klimmen", "Montées", "Subidas", "Anstiege"),
     "The download took too long.": ("Het downloaden duurde te lang.", "Le téléchargement a pris trop de temps.", "La descarga tardó demasiado.", "Der Download hat zu lange gedauert."),
+    # MTB route difficulty (1.10, issue #57)
+    "Easy": ("Makkelijk", "Facile", "Fácil", "Leicht"),
+    "Moderate": ("Gemiddeld", "Moyen", "Media", "Mittel"),
+    "Hard": ("Moeilijk", "Difficile", "Difícil", "Schwer"),
+    "Very hard": ("Zeer moeilijk", "Très difficile", "Muy difícil", "Sehr schwer"),
+    "Signposted": ("Bewegwijzerd", "Balisé", "Señalizado", "Ausgeschildert"),
+    "Estimated": ("Geschat", "Estimé", "Estimado", "Geschätzt"),
+    "%lld m climbing": ("%lld hm klimmen", "%lld m de dénivelé", "%lld m de desnivel", "%lld Hm Anstieg"),
+    "technical S%@": ("technisch S%@", "technique S%@", "técnica S%@", "technisch S%@"),
     # Boscafé Challenge (1.8)
     "Boscafé Challenge": ("Boscafé-uitdaging", "Défi des cafés en forêt", "Desafío de cafés del bosque", "Waldcafé-Challenge"),
     "tab.boscafes": ("Boscafés", "Cafés forêt", "Cafés bosque", "Waldcafés"),
