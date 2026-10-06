@@ -24,6 +24,14 @@
   "lon": 5.88429
  },
  {
+  "id": "boscafe-merlijn-grafwegen",
+  "name": "Boscafé Merlijn",
+  "place": "Grafwegen",
+  "emoji": "☕",
+  "lat": 51.74826,
+  "lon": 5.95562
+ },
+ {
   "id": "boscafe-tivilo-valkenburg",
   "name": "Boscafé Tivilo",
   "place": "Valkenburg",

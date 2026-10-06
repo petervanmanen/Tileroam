@@ -97,7 +97,7 @@ Turn on the **Trappists** challenge with the **+** at the end of the tabs to see
 
 ## Boscafé Challenge
 
-Turn on the **Boscafés** challenge with the **+** to see 53 boscafés on the map: cafés, pavilions, tea gardens and inns in the woods and on the heaths of the Netherlands, from the Veluwe and the Utrechtse Heuvelrug to Brabant, Limburg, Twente and Drenthe. Each is shown with its emoji (🌲 ☕ 🍺 🍽️ 🥞 🫖). A boscafé counts as visited when one of your activities, a ride or a walk, passed within 200 m of it; it then gets a green ring and a check. Tap a boscafé to see when you were there. In planning mode, tap boscafés on the Boscafés tab to plan a route past them. The list is downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for changes once a day.
+Turn on the **Boscafés** challenge with the **+** to see the boscafés on the map: cafés, pavilions, tea gardens and inns in the woods and on the heaths of the Netherlands, from the Veluwe and the Utrechtse Heuvelrug to Brabant, Limburg, Twente and Drenthe. Each is shown with its emoji (🌲 ☕ 🍺 🍽️ 🥞 🫖). A boscafé counts as visited when one of your activities, a ride or a walk, passed within 200 m of it; it then gets a green ring and a check. Tap a boscafé to see when you were there. In planning mode, tap boscafés on the Boscafés tab to plan a route past them. The list is downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for changes once a day.
 
 ## Klompenpaden
 

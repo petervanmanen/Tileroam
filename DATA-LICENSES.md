@@ -34,7 +34,7 @@ rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
 ## Boscafés
 
 The Boscafé Challenge's list (`AssetPacks/Boscafes/boscafes.json`, served from Cloudflare R2 and
-uploaded with `Tools/upload_boscafes_r2.sh`) holds the names, places and locations of 53 boscafés,
+uploaded with `Tools/upload_boscafes_r2.sh`) holds the names, places and locations of the boscafés,
 from public sources. Names and coordinates are facts; no logos or other content of the cafés are
 used.
 

@@ -9837,30 +9837,30 @@
         }
       }
     },
-    "The Boscafé Challenge: visit 53 cafés in the woods": {
+    "The Boscafé Challenge: visit the cafés in the woods": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "De Boscafé-uitdaging: bezoek 53 cafés in het bos"
+            "value": "De Boscafé-uitdaging: bezoek de cafés in het bos"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le défi des cafés en forêt : visitez 53 cafés dans les bois"
+            "value": "Le défi des cafés en forêt : visitez les cafés dans les bois"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El desafío de cafés del bosque: visita 53 cafés en el bosque"
+            "value": "El desafío de cafés del bosque: visita los cafés del bosque"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Waldcafé-Challenge: besuche 53 Cafés im Wald"
+            "value": "Die Waldcafé-Challenge: besuche die Cafés im Wald"
           }
         }
       }
