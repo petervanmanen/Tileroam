@@ -6,8 +6,11 @@ struct RegionAssetsTests {
     @Test func timeoutStopsWaiting() async {
         let start = ContinuousClock.now
         await #expect(throws: RegionAssets.TimeoutError.self) {
-            // An operation that ignores cancellation, like a download that hangs.
-            try await RegionAssets.withTimeout(.milliseconds(200)) { while true { try? await Task.sleep(for: .seconds(60)) } }
+            // An operation that ignores cancellation, like a download that hangs: it waits for a
+            // detached task, which the cancellation doesn't reach (and which ends by itself).
+            try await RegionAssets.withTimeout(.milliseconds(200)) {
+                await Task.detached { try? await Task.sleep(for: .seconds(10)) }.value
+            }
         }
         #expect(ContinuousClock.now - start < .seconds(5))
     }
