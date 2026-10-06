@@ -24,7 +24,7 @@ final class ActivityStore {
     private(set) var isImporting = false
     private(set) var progress: (done: Int, total: Int) = (0, 0)
     private(set) var failedFiles: [String] = []
-    /// What the last import, migration or deletion did, for Settings.
+    /// What the last import or deletion did, for Settings.
     private(set) var libraryMessage: String?
     /// For each listed activity, the ids of all its copies (the same workout from several
     /// sources), so deleting it deletes them all.
@@ -321,7 +321,6 @@ final class ActivityStore {
             importPhase = nil
         }
         await updateICloud()
-        if !Library.isMigrated { await migrate() }
         let sync = syncSetting && isICloudAvailable
         if sync {
             importPhase = String(localized: "Checking iCloud…")
@@ -578,25 +577,6 @@ final class ActivityStore {
             await Task.detached(priority: .utility) { Library.delete(names: drop) }.value
         }
         return keep
-    }
-
-    /// Once per device: copies the files earlier versions read or saved into the library (no
-    /// downloads from Strava again), then forgets the watched folders and the save folder.
-    private func migrate() async {
-        let folders = FolderAccess.importFolders().filter { !$0.isBuiltIn }.compactMap(FolderAccess.resolve)
-        let saveFolder = FolderAccess.resolve(.export)
-        let result = await Task.detached(priority: .userInitiated) {
-            Library.migrate(importFolders: folders, saveFolder: saveFolder) { done, total in
-                Task { @MainActor [weak self] in self?.progress = (done, total) }
-            }
-        }.value
-        FolderAccess.clearImportFolders()
-        FolderAccess.clearSaveFolder()
-        UserDefaults.standard.set(true, forKey: Library.migratedKey)
-        failedFiles += result.failed
-        if result.files > 0 {
-            libraryMessage = String(localized: "Tileroam now keeps its own copy of your \(result.files) .fit files. The folders they came from aren't watched any more; import new files in Settings.")
-        }
     }
 
     /// Deletes an activity, with all its copies, from this device and iCloud. It isn't deleted

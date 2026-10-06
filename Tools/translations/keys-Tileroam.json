@@ -327,7 +327,6 @@
  "Tile %lld/%lld",
  "Tileroam keeps your activities and planned routes on this device (%@ › Activities and › Routes). Sign in to iCloud with iCloud Drive on to share them with your other devices. Imported files are copied once: the folder they came from isn't watched.",
  "Tileroam keeps your activities and planned routes on this device (%@ › Activities and › Routes). With iCloud sync, they're also in %@, without duplicates, so your other devices have them. Turning it off keeps both copies. Imported files are copied once: the folder they came from isn't watched.",
- "Tileroam now keeps its own copy of your %lld .fit files. The folders they came from aren't watched any more; import new files in Settings.",
  "Tileroam route",
  "Tiles",
  "Tiles (14)",

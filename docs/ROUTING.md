@@ -125,7 +125,7 @@ Until October 2026 the tiles came as Apple-hosted asset packs (Background Assets
 
 On R2 there's no limit on the number of files, so the app downloads Valhalla's own tiles, 0.25° for local roads, and a plan needs a fraction. The price is a server: the download requests reach Cloudflare. The bucket keeps no access logs (R2 doesn't by default), and the privacy policy says what a request reveals (an IP address and which map area). The municipality and postcode boundaries stay asset packs: 4 small packs, which suit them.
 
-The app removes the asset-pack routing data of earlier TestFlight versions from devices (`RoutingData.removeAssetPackData`), and `Tools/clean_asset_packs.sh` lists the old `routing-benelux-*` and `routing-west-*` packs as unused, to archive with `ARCHIVE="routing-"` once no TestFlight build uses them.
+`Tools/clean_asset_packs.sh` lists the old `routing-benelux-*` and `routing-west-*` packs as unused, to archive with `ARCHIVE="routing-"` once no TestFlight build uses them.
 
 ## Testing in the simulator
 

@@ -92,24 +92,13 @@ struct StravaTests {
     }
 }
 
-struct ImportFolderTests {
+struct FolderLocationTests {
     @Test func iCloudLocations() {
         let root = "/private/var/mobile/Library/Mobile Documents"
         #expect(FolderAccess.displayLocation(URL(filePath: "\(root)/com~apple~CloudDocs/Sport/FIT"))
                 == "iCloud Drive › Sport › FIT")
         #expect(FolderAccess.displayLocation(URL(filePath: "\(root)/iCloud~nl~petervanmanen~Tileroam/Documents/Strava"))
                 == "iCloud Drive › Tileroam › Strava")
-        #expect(FolderAccess.ImportFolder.iCloudDrive.isBuiltIn)
-    }
-
-    @Test func activityIDsPerFolder() {
-        let legacy = FolderAccess.ImportFolder(id: FolderAccess.ImportFolder.legacyID, name: "HealthFit", bookmark: Data())
-        let garmin = FolderAccess.ImportFolder(id: "A1B2", name: "Garmin", bookmark: Data())
-        // The first folder keeps plain paths, so caches from the single-folder version stay valid.
-        #expect(legacy.activityID(for: "2023/ride.fit") == "2023/ride.fit")
-        #expect(garmin.activityID(for: "2023/ride.fit") == "A1B2|2023/ride.fit")
-        #expect(legacy.owns("2023/ride.fit") && !legacy.owns("A1B2|2023/ride.fit"))
-        #expect(garmin.owns("A1B2|2023/ride.fit") && !garmin.owns("2023/ride.fit"))
     }
 }
 

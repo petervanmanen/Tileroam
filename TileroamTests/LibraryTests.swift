@@ -161,28 +161,4 @@ struct LibraryImportTests {
         try FileManager.default.removeItem(at: source)
         #expect(FileManager.default.fileExists(atPath: Library.activitiesFolder.appending(path: result.added[0]).path(percentEncoded: false)))
     }
-
-    @Test func migratesWatchedFoldersAndTheSaveFolder() throws {
-        let marker = UUID().uuidString
-        let watched = try folder(["HealthFit/a \(marker).fit": Data("a\(marker)".utf8),
-                                  "Activities/b \(marker).fit": Data("b\(marker)".utf8), // a user's folder named like the library
-                                  "Sample Rides/Sample-Ride-01.fit": Data("sample".utf8)])
-        let strava = "2023-08-10-105956-Rit \(marker)-Strava-123.fit"
-        let saveFolder = try folder(["Strava/\(strava)": Data("s\(marker)".utf8),
-                                     "Routes/2026-10-03-0900-\(marker)-Tileroam.gpx": Data("<gpx/>".utf8)])
-        let result = Library.migrate(importFolders: [watched], saveFolder: saveFolder)
-        let names = Library.names(in: Library.activitiesFolder, ext: "fit").filter { $0.contains(marker) }.sorted()
-        defer {
-            cleanUp(names)
-            try? FileManager.default.removeItem(at: Library.routesFolder.appending(path: "2026-10-03-0900-\(marker)-Tileroam.gpx"))
-        }
-        #expect(result.failed.isEmpty)
-        #expect(names.contains(strava)) // Strava files keep their name: no new download
-        #expect(names.contains { $0.hasPrefix("a \(marker)-") })
-        #expect(names.contains { $0.hasPrefix("b \(marker)-") })
-        #expect(!names.contains { $0.contains("Sample-Ride") }) // sample rides stay out
-        #expect(FileManager.default.fileExists(atPath: Library.routesFolder.appending(path: "2026-10-03-0900-\(marker)-Tileroam.gpx").path(percentEncoded: false)))
-        // The originals stay where they were.
-        #expect(FileManager.default.fileExists(atPath: saveFolder.appending(path: "Strava/\(strava)").path(percentEncoded: false)))
-    }
 }
