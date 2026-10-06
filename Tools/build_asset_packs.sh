@@ -8,6 +8,7 @@
 #   Tools/build_asset_packs.sh NL BE      # some countries
 #   Tools/build_asset_packs.sh klompenpaden   # the Klompenpaden list (AssetPacks/Klompenpaden)
 #   Tools/build_asset_packs.sh mtbroutes      # the mountain bike routes (AssetPacks/MTB)
+#   Tools/build_asset_packs.sh ferries        # the ferries (AssetPacks/Ferries)
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
@@ -18,7 +19,7 @@ mkdir -p $OUT/manifests
 
 countries=("$@")
 if (( ${#countries} == 0 )); then
-  countries=(${(u)$(ls $SRC/*.fmr | xargs -n1 basename | cut -d- -f1)} klompenpaden mtbroutes)
+  countries=(${(u)$(ls $SRC/*.fmr | xargs -n1 basename | cut -d- -f1)} klompenpaden mtbroutes ferries)
 fi
 
 for cc in $countries; do
@@ -27,6 +28,7 @@ for cc in $countries; do
   case $cc in
     klompenpaden) src=$ROOT/AssetPacks/Klompenpaden; file=klompenpaden.json ;;
     mtbroutes)    src=$ROOT/AssetPacks/MTB;          file=mtb-routes.json ;;
+    ferries)      src=$ROOT/AssetPacks/Ferries;      file=ferries.json ;;
     *)            src= ;;
   esac
   if [[ -n $src ]]; then

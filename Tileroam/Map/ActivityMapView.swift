@@ -5,7 +5,7 @@ import SwiftUI
 enum MapMode: String, CaseIterable, Identifiable {
     // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3; a
     // stored "activities" no longer decodes, so those users start on Tiles.)
-    case squares, gemeenten, postcodes, climbs, trappists, boscafes, klompenpaden, mtb
+    case squares, gemeenten, postcodes, climbs, trappists, boscafes, ferries, klompenpaden, mtb
 
     var id: Self { self }
 
@@ -17,6 +17,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .climbs: String(localized: "Climbs")
         case .trappists: String(localized: "Trappist Challenge")
         case .boscafes: String(localized: "Boscafé Challenge")
+        case .ferries: String(localized: "Ferries")
         case .klompenpaden: String(localized: "Klompenpaden")
         case .mtb: String(localized: "Mountain bike routes")
         }
@@ -31,6 +32,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
         case .trappists: String(localized: "tab.trappists", defaultValue: "Trappists")
         case .boscafes: String(localized: "tab.boscafes", defaultValue: "Boscafés")
+        case .ferries: String(localized: "tab.ferries", defaultValue: "Ferries")
         case .klompenpaden: String(localized: "tab.klompenpaden", defaultValue: "Klompenpaden")
         case .mtb: String(localized: "tab.mtb", defaultValue: "MTB")
         }
@@ -45,6 +47,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .climbs: "mountain.2"
         case .trappists: "mug"
         case .boscafes: "tree"
+        case .ferries: "ferry"
         case .klompenpaden: "shoeprints.fill"
         case .mtb: "bicycle"
         }
@@ -66,7 +69,7 @@ enum MapMode: String, CaseIterable, Identifiable {
 enum Challenges {
     /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
     static let key = "challenges"
-    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .boscafes, .klompenpaden, .mtb]
+    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .boscafes, .ferries, .klompenpaden, .mtb]
 
     static func decode(_ raw: String) -> Set<MapMode> {
         Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).intersection(all)
@@ -131,6 +134,7 @@ struct ActivityMapView: UIViewRepresentable {
     @Binding var selectedClimb: Climb?
     @Binding var selectedTrappist: Trappist?
     @Binding var selectedBoscafe: Boscafe?
+    @Binding var selectedFerry: Ferry?
     @Binding var selectedKlompenpad: Klompenpad?
     @Binding var selectedMTBRoute: MTBRoute?
     /// Incremented by the "my location" button.
@@ -388,6 +392,10 @@ struct ActivityMapView: UIViewRepresentable {
                 map.addAnnotations(store.boscafes.map {
                     PlaceAnnotation(place: $0, emoji: $0.emoji, visited: store.boscafeVisits[$0.id] != nil, marked: marked.contains($0.id))
                 })
+            case .ferries:
+                map.addAnnotations(store.ferries.map {
+                    PlaceAnnotation(place: $0, emoji: "⛴️", visited: store.ferryCrossings[$0.id] != nil)
+                })
             }
 
             if planning, let start = plan.start {
@@ -430,7 +438,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .climbs, .trappists, .boscafes, .klompenpaden, .mtb:
+            case .climbs, .trappists, .boscafes, .ferries, .klompenpaden, .mtb:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -744,8 +752,8 @@ struct ActivityMapView: UIViewRepresentable {
                     if let t = nearestPlace(parent.store.trappists, to: p, on: map) { parent.plan.toggle(.trappist(t.id)) }
                 case .boscafes:
                     if let b = nearestPlace(parent.store.boscafes, to: p, on: map) { parent.plan.toggle(.boscafe(b.id)) }
-                case .klompenpaden, .mtb:
-                    break // routes to ride or walk themselves, not planning targets
+                case .klompenpaden, .mtb, .ferries:
+                    break // routes and crossings to ride themselves, not planning targets
                 }
                 return
             }
@@ -765,6 +773,10 @@ struct ActivityMapView: UIViewRepresentable {
             }
             if parent.mode == .boscafes {
                 parent.selectedBoscafe = nearestPlace(parent.store.boscafes, to: p, on: map)
+                return
+            }
+            if parent.mode == .ferries {
+                parent.selectedFerry = nearestPlace(parent.store.ferries, to: p, on: map)
                 return
             }
 

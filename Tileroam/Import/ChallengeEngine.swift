@@ -2,7 +2,7 @@ import Foundation
 import Observation
 
 /// The challenges that check activities against a list (see `ChallengeResults`): the Trappist
-/// breweries, the boscafés, the Klompenpaden and the mountain bike routes. Holds the lists, checks
+/// breweries, the boscafés, the ferries, the Klompenpaden and the mountain bike routes. Holds the lists, checks
 /// activities whose stored results are missing or out of date, and adds the stored results up
 /// (visits, progress, countries for Globetrotter, badges). `ActivityStore` owns the activities and
 /// decides when to check; this type knows how.
@@ -17,6 +17,10 @@ final class ChallengeEngine {
     private(set) var boscafes: [Boscafe] = BoscafeData.cached()
     /// For each visited boscafé, when (newest first).
     private(set) var boscafeVisits: [String: [Date]] = [:]
+    /// The ferries, from the `ferries` asset pack (empty until it's downloaded).
+    private(set) var ferries: [Ferry] = FerryData.cached()
+    /// For each ferry taken, when (newest first).
+    private(set) var ferryCrossings: [String: [Date]] = [:]
     /// The paths, from the `klompenpaden` asset pack (empty until it's downloaded).
     private(set) var klompenpaden: [Klompenpad] = KlompenpadData.cached()
     /// For each path with progress, the share of its main route walked (0…1).
@@ -66,6 +70,14 @@ final class ChallengeEngine {
         return .list
     }
 
+    /// Loads the ferries (downloading their asset pack the first time).
+    func updateFerries() async -> Change {
+        guard let list = try? await FerryData.load(), list != ferries else { return .none }
+        ferries = list
+        ferriesKeyCache = nil
+        return .list
+    }
+
     /// Loads the mountain bike routes (downloading their asset pack the first time).
     func updateMTBRoutes() async -> Change {
         guard let list = try? await MTBRouteData.load(), list != mtbRoutes else { return .none }
@@ -88,6 +100,13 @@ final class ChallengeEngine {
     // on every count would make the main thread stutter.
     @ObservationIgnored private var klompenpadKeyCache: String?
     @ObservationIgnored private var mtbKeyCache: String?
+    @ObservationIgnored private var ferriesKeyCache: String?
+    private var ferriesKey: String {
+        if let ferriesKeyCache { return ferriesKeyCache }
+        let key = ChallengeResults.ferriesKey(ferries)
+        ferriesKeyCache = key
+        return key
+    }
     private var klompenpadKey: String {
         if let klompenpadKeyCache { return klompenpadKeyCache }
         let key = ChallengeResults.klompenpadKey(klompenpaden)
@@ -116,6 +135,7 @@ final class ChallengeEngine {
         }
         return ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
                                         boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
+                                        ferries: ferries, ferriesKey: ferriesKey,
                                         paths: paths.paths, klompenpadKey: kKey, mtb: mtb.paths, mtbKey: mKey)
     }
 
@@ -156,6 +176,7 @@ final class ChallengeEngine {
     nonisolated static func store(_ r: ChallengeResults.Result, _ current: ChallengeResults.Current, in a: inout Activity) {
         if let t = r.trappists { a.trappists = t; a.trappistsKey = current.trappistsKey }
         if let b = r.boscafes { a.boscafes = b; a.boscafesKey = current.boscafesKey }
+        if let f = r.ferries { a.ferries = f; a.ferriesKey = current.ferriesKey }
         if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = current.klompenpadKey }
         if let h = r.mtbHits { a.mtbHits = h; a.mtbKey = current.mtbKey }
         if let c = r.countries { a.countries = c; a.countriesKey = ChallengeResults.countriesKey }
@@ -167,7 +188,7 @@ final class ChallengeEngine {
     /// anything changed.
     func aggregate(_ activities: [Activity], _ current: ChallengeResults.Current) -> Bool {
         let cKey = ChallengeResults.countriesKey
-        var visits = [String: [Date]](), cafes = [String: [Date]]()
+        var visits = [String: [Date]](), cafes = [String: [Date]](), crossings = [String: [Date]]()
         var paths = [[String: [Int]]](), mtb = [[String: [Int]]]()
         var countries = Set<String>()
         for a in activities where a.isOnMap {
@@ -177,6 +198,9 @@ final class ChallengeEngine {
             if a.boscafesKey == current.boscafesKey {
                 for id in a.boscafes ?? [] { cafes[id, default: []].append(a.startDate ?? .distantPast) }
             }
+            if a.ferriesKey == current.ferriesKey {
+                for id in a.ferries ?? [] { crossings[id, default: []].append(a.startDate ?? .distantPast) }
+            }
             if a.klompenpadKey == current.klompenpadKey, let h = a.klompenpadHits { paths.append(h) }
             if a.mtbKey == current.mtbKey, let h = a.mtbHits { mtb.append(h) }
             if a.countriesKey == cKey { countries.formUnion(a.countries ?? []) }
@@ -185,10 +209,13 @@ final class ChallengeEngine {
         let mtbProgress = KlompenpadMatcher.progress(hits: mtb, counts: current.mtb.counts)
         let counts = BadgeRules.counts(activities, countries: countries.count)
         let sortedVisits = visits.mapValues { $0.sorted(by: >) }, cafeVisits = cafes.mapValues { $0.sorted(by: >) }
-        guard sortedVisits != trappistVisits || cafeVisits != boscafeVisits || progress != klompenpadProgress
+        let ferryCrossings = crossings.mapValues { $0.sorted(by: >) }
+        guard sortedVisits != trappistVisits || cafeVisits != boscafeVisits || ferryCrossings != self.ferryCrossings
+                || progress != klompenpadProgress
                 || mtbProgress != self.mtbProgress || countries != worldCountries || counts != badges else { return false }
         trappistVisits = sortedVisits
         boscafeVisits = cafeVisits
+        self.ferryCrossings = ferryCrossings
         klompenpadProgress = progress
         self.mtbProgress = mtbProgress
         worldCountries = countries

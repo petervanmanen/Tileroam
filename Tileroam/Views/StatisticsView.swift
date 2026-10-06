@@ -21,6 +21,7 @@ struct StatisticsView: View {
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
                 LabeledContent("Boscafés visited", value: store.boscafeVisits.count.formatted())
+                LabeledContent("Ferries taken", value: store.ferryCrossings.count.formatted())
                 LabeledContent("Klompenpaden walked", value: store.klompenpadenWalked.formatted())
                 LabeledContent("Mountain bike routes ridden", value: store.mtbRoutesRidden.formatted())
                 LabeledContent(TileZoom.explorer.title, value: store.tiles14.count.formatted())

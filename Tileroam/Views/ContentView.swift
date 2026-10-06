@@ -36,6 +36,7 @@ struct ContentView: View {
     @State private var selectedClimb: Climb?
     @State private var selectedTrappist: Trappist?
     @State private var selectedBoscafe: Boscafe?
+    @State private var selectedFerry: Ferry?
     @State private var selectedKlompenpad: Klompenpad?
     @State private var selectedMTBRoute: MTBRoute?
     @State private var locateRequest = 0
@@ -50,7 +51,7 @@ struct ContentView: View {
     private let sidePanelWidth: CGFloat = 380
 
     var body: some View {
-        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedTrappist: $selectedTrappist, selectedBoscafe: $selectedBoscafe, selectedKlompenpad: $selectedKlompenpad, selectedMTBRoute: $selectedMTBRoute,
+        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedTrappist: $selectedTrappist, selectedBoscafe: $selectedBoscafe, selectedFerry: $selectedFerry, selectedKlompenpad: $selectedKlompenpad, selectedMTBRoute: $selectedMTBRoute,
                         locateRequest: locateRequest, isFollowingUser: $isFollowingUser, locationDenied: $locationDenied,
                         plan: plan, planVersion: plan.version, leadingInset: isWide ? sidePanelWidth + 32 : 0)
             .ignoresSafeArea()
@@ -170,13 +171,14 @@ struct ContentView: View {
                 if phase == .background { store.saveCaches() }
             }
             .onChange(of: mode) {
-                selectedArea = nil; selectedClimb = nil; selectedTrappist = nil; selectedBoscafe = nil; selectedKlompenpad = nil; selectedMTBRoute = nil
+                selectedArea = nil; selectedClimb = nil; selectedTrappist = nil; selectedBoscafe = nil; selectedFerry = nil; selectedKlompenpad = nil; selectedMTBRoute = nil
             }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 selectedClimb = nil
                 selectedTrappist = nil
                 selectedBoscafe = nil
+                selectedFerry = nil
                 selectedKlompenpad = nil
                 selectedMTBRoute = nil
             }
@@ -268,6 +270,8 @@ struct ContentView: View {
             return String(localized: "\(store.trappistVisits.count) of \(store.trappists.count) Trappist breweries visited")
         case .boscafes:
             return String(localized: "\(store.boscafeVisits.count) of \(store.boscafes.count) boscafés visited")
+        case .ferries:
+            return String(localized: "\(store.ferryCrossings.count) of \(store.ferries.count) ferries taken")
         case .klompenpaden:
             return String(localized: "\(store.klompenpadenWalked) of \(store.klompenpaden.count) Klompenpaden walked")
         case .mtb:
@@ -385,6 +389,9 @@ struct ContentView: View {
             }
             if !plan.isPlanning, let boscafe = selectedBoscafe {
                 BoscafeCard(boscafe: boscafe, visits: store.boscafeVisits[boscafe.id] ?? [])
+            }
+            if !plan.isPlanning, let ferry = selectedFerry {
+                FerryCard(ferry: ferry, crossings: store.ferryCrossings[ferry.id] ?? [])
             }
             if !plan.isPlanning, let path = selectedKlompenpad {
                 KlompenpadCard(path: path, progress: store.klompenpadProgress[path.id] ?? 0)

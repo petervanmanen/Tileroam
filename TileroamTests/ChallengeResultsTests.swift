@@ -24,6 +24,7 @@ struct ChallengeResultsTests {
     private func current(_ trappists: [Trappist], boscafes: [Boscafe] = [], mtb: [MTBRoute] = []) -> ChallengeResults.Current {
         ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
                                  boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
+                                 ferries: [], ferriesKey: ChallengeResults.ferriesKey([]),
                                  paths: .init([Klompenpad]()), klompenpadKey: ChallengeResults.klompenpadKey([]),
                                  mtb: .init(mtb, spacing: MTBRoute.spacing), mtbKey: ChallengeResults.mtbKey(mtb))
     }
@@ -31,6 +32,7 @@ struct ChallengeResultsTests {
     private func store(_ r: ChallengeResults.Result, _ c: ChallengeResults.Current, in a: inout Activity) {
         if let t = r.trappists { a.trappists = t; a.trappistsKey = c.trappistsKey }
         if let b = r.boscafes { a.boscafes = b; a.boscafesKey = c.boscafesKey }
+        if let f = r.ferries { a.ferries = f; a.ferriesKey = c.ferriesKey }
         if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = c.klompenpadKey }
         if let h = r.mtbHits { a.mtbHits = h; a.mtbKey = c.mtbKey }
         if let co = r.countries { a.countries = co; a.countriesKey = ChallengeResults.countriesKey }
@@ -50,7 +52,7 @@ struct ChallengeResultsTests {
         let newer = current([])
         #expect(ChallengeResults.isPending(a, newer))
         let again = ChallengeResults.compute(a, newer)
-        #expect(again.trappists == [] && again.boscafes == nil && again.klompenpadHits == nil && again.mtbHits == nil && again.countries == nil)
+        #expect(again.trappists == [] && again.boscafes == nil && again.ferries == nil && again.klompenpadHits == nil && again.mtbHits == nil && again.countries == nil)
     }
 
     @Test func boscafesAreVisitedLikeBreweries() {
@@ -102,6 +104,7 @@ struct ChallengeEngineTests {
         let engine = ChallengeEngine()
         let boshut = Boscafe(id: "b", name: "B", place: "P", emoji: "🌲", lat: 52.24, lon: 5.16)
         let current = ChallengeResults.Current(trappists: [], trappistsKey: "t", boscafes: [boshut], boscafesKey: "b-now",
+                                               ferries: [], ferriesKey: "f",
                                                paths: .init([Klompenpad]()), klompenpadKey: "k",
                                                mtb: .init([MTBRoute](), spacing: MTBRoute.spacing), mtbKey: "m")
         func walk(_ id: String, key: String, days: Double) -> Activity {

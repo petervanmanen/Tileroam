@@ -219,6 +219,49 @@ struct BoscafeCard: View {
     }
 }
 
+struct FerryCard: View {
+    let ferry: Ferry
+    let crossings: [Date]
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text("⛴️")
+                .font(.system(size: 30))
+                .frame(width: 52, height: 52)
+                .background(.white, in: RoundedRectangle(cornerRadius: 10))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(ferry.name).font(.headline).lineLimit(2)
+                Text(details).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                if let last = crossings.first {
+                    Text(String(localized: "Taken \(crossings.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
+                        .font(.footnote).foregroundStyle(.green)
+                } else {
+                    Text("Not taken yet: cross on the ferry with your bike").font(.footnote).foregroundStyle(.secondary)
+                }
+                HStack(spacing: 12) {
+                    if let link = ferry.osmLink { Link("OpenStreetMap", destination: link) }
+                    if let website = ferry.websiteLink { Link("Website", destination: website) }
+                }
+                .font(.footnote)
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    /// "Lexmond – Culemborg · 350 m · operator"
+    private var details: String {
+        var parts = [String]()
+        if ferry.ownName != nil, let from = ferry.from, let to = ferry.to, from != to { parts.append("\(from) – \(to)") }
+        parts.append(Measurement(value: ferry.length, unit: UnitLength.meters)
+            .formatted(.measurement(width: .abbreviated, usage: .road)))
+        if let op = ferry.operator { parts.append(op) }
+        return parts.joined(separator: " · ")
+    }
+}
+
 struct KlompenpadCard: View {
     let path: Klompenpad
     /// Share of the main route walked (0…1).

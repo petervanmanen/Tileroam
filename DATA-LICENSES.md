@@ -38,6 +38,13 @@ uploaded with `Tools/upload_boscafes_r2.sh`) holds the names, places and locatio
 from public sources. Names and coordinates are facts; no logos or other content of the cafés are
 used.
 
+## Ferries
+
+The ferry challenge's list (`AssetPacks/Ferries/ferries.json`, an Apple-hosted asset pack, made by
+`Tools/build_ferries.py` from Geofabrik's extracts) is a Derivative Database of OpenStreetMap under
+the **ODbL 1.0**, © OpenStreetMap contributors: the ferry routes that take cyclists, with the
+nearest place names. The script and the extracts it names are the complete recipe to rebuild it.
+
 ## World countries
 
 `Tileroam/Resources/world.fmr` (made by `Tools/build_world_countries.py`) is simplified from
