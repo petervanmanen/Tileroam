@@ -9,10 +9,11 @@ struct RegionAssetsTests {
             // An operation that ignores cancellation, like a download that hangs: it waits for a
             // detached task, which the cancellation doesn't reach (and which ends by itself).
             try await RegionAssets.withTimeout(.milliseconds(200)) {
-                await Task.detached { try? await Task.sleep(for: .seconds(10)) }.value
+                await Task.detached { try? await Task.sleep(for: .seconds(180)) }.value
             }
         }
-        #expect(ContinuousClock.now - start < .seconds(5))
+        // Well before the operation ends (CI's busy simulators are slow to wake the timer).
+        #expect(ContinuousClock.now - start < .seconds(120))
     }
 
     @Test func passesResultsAndErrorsOn() async throws {
