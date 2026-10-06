@@ -880,12 +880,15 @@ final class ActivityStore {
 
         // "Saved" activities whose file isn't in the library (saved before 1.3 into a save folder
         // whose files never reached the library, or removed elsewhere): save them again, unless the
-        // library has another copy of the workout. Otherwise they'd never reach iCloud and the
-        // user's other devices.
+        // library has another copy of the workout, with GPS when the Strava activity has GPS (a
+        // Health export without a route doesn't count: issue of 1.8.2, where the Mac missed 787
+        // routes). Otherwise they'd never reach iCloud and the user's other devices.
         let present = await Task.detached(priority: .utility) { Library.names(in: Library.activitiesFolder, ext: "fit") }.value
         var resaved = 0
         for i in stravaActivities.indices {
-            guard let file = stravaActivities[i].exportedFile, !present.contains(file), !inFolder.contains(stravaActivities[i]) else { continue }
+            let a = stravaActivities[i]
+            guard let file = a.exportedFile, !present.contains(file),
+                  !(a.trackData.isEmpty ? inFolder : inFolderWithGPS).contains(a) else { continue }
             stravaActivities[i].exportedFile = nil
             resaved += 1
         }
@@ -923,6 +926,11 @@ final class ActivityStore {
         for (done, activity) in queue.enumerated() {
             if Task.isCancelled { return }
             stravaStatus = String(localized: "Strava detailed GPS: \(done) of \(queue.count)")
+            if activity.isSummary != true {
+                // The detailed track is on the device already: saved without an API call.
+                if let index = stravaActivities.firstIndex(where: { $0.id == activity.id }) { await export(index, stream: nil) }
+                continue
+            }
             guard let stravaID = StravaImport.stravaID(of: activity) else { continue }
             let stream = try await strava.stream(activityID: stravaID)
             let updated = await Task.detached(priority: .utility) {
