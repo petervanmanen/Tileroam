@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists**, **Klompenpaden** and **MTB** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists**, **Boscafés**, **Klompenpaden** and **MTB** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. The squares are zoom 14 tiles, about 1.5 km wide in the Netherlands: the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
@@ -92,6 +92,10 @@ Climbs are found by Tileroam from elevation data along OpenStreetMap's roads. Sh
 ## Trappist Challenge
 
 Turn on the **Trappists** challenge with the **+** at the end of the tabs to see the Trappist breweries on the map: Westmalle, Westvleteren, Chimay, Orval, Rochefort, La Trappe, Tre Fontane and Tynt Meadow. A brewery counts as visited when one of your activities passed within 200 m of it; it then gets a green ring and a check. Tap a brewery to see its abbey and when you were there. In planning mode, tap breweries on the Trappists tab to plan a route past them (within 200 m); a planned route also lists the new breweries it passes. The list of breweries and their logos are downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for new breweries once a day.
+
+## Boscafé Challenge
+
+Turn on the **Boscafés** challenge with the **+** to see 53 boscafés on the map: cafés, pavilions, tea gardens and inns in the woods and on the heaths of the Netherlands, from the Veluwe and the Utrechtse Heuvelrug to Brabant, Limburg, Twente and Drenthe. Each is shown with its emoji (🌲 ☕ 🍺 🍽️ 🥞 🫖). A boscafé counts as visited when one of your activities, a ride or a walk, passed within 200 m of it; it then gets a green ring and a check. Tap a boscafé to see when you were there. In planning mode, tap boscafés on the Boscafés tab to plan a route past them. The list is downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for changes once a day.
 
 ## Klompenpaden
 

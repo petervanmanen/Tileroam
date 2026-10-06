@@ -347,6 +347,34 @@
         }
       }
     },
+    "%lld boscafés": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld boscafés"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cafés en forêt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cafés del bosque"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Waldcafés"
+          }
+        }
+      }
+    },
     "%lld climbs": {
       "localizations": {
         "nl": {
@@ -1009,6 +1037,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld von %2$lld Trappistenbrauereien besucht"
+          }
+        }
+      }
+    },
+    "%lld of %lld boscafés visited": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld van %2$lld boscafés bezocht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld cafés en forêt visités sur %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld cafés del bosque visitados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Waldcafés besucht"
           }
         }
       }
@@ -2029,6 +2085,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Farbige Abzeichen hast du verdient; tippe auf eines, um zu sehen, was es braucht. Indoor- und virtuelle Aktivitäten zählen auch."
+          }
+        }
+      }
+    },
+    "Boscafé Challenge": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boscafé-uitdaging"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Défi des cafés en forêt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desafío de cafés del bosque"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waldcafé-Challenge"
+          }
+        }
+      }
+    },
+    "Boscafés visited": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boscafés bezocht"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafés en forêt visités"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafés del bosque visitados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besuchte Waldcafés"
           }
         }
       }
@@ -6505,6 +6617,34 @@
         }
       }
     },
+    "Not visited yet: ride or walk within 200 m of the boscafé": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet bezocht: fiets of wandel binnen 200 m van het boscafé"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore visité : passez à moins de 200 m du café"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no visitado: pasa a menos de 200 m del café"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht besucht: fahre oder gehe näher als 200 m am Waldcafé vorbei"
+          }
+        }
+      }
+    },
     "Not visited yet: ride within 200 m of the brewery": {
       "localizations": {
         "nl": {
@@ -9361,30 +9501,30 @@
         }
       }
     },
-    "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or Trappist breweries, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
+    "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs, Trappist breweries or boscafés, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen of trappistenbrouwerijen, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer."
+            "value": "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen, trappistenbrouwerijen of boscafés, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées ou brasseries trappistes non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur."
+            "value": "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées, brasseries trappistes ou cafés en forêt non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas o cervecerías trapenses sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador."
+            "value": "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas, cervecerías trapenses o cafés del bosque sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege oder Trappistenbrauereien, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
+            "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege, Trappistenbrauereien oder Waldcafés, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
           }
         }
       }
@@ -9441,6 +9581,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taylor"
+          }
+        }
+      }
+    },
+    "The Boscafé Challenge: visit 53 cafés in the woods": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De Boscafé-uitdaging: bezoek 53 cafés in het bos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le défi des cafés en forêt : visitez 53 cafés dans les bois"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El desafío de cafés del bosque: visita 53 cafés en el bosque"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Waldcafé-Challenge: besuche 53 Cafés im Wald"
           }
         }
       }
@@ -10907,6 +11075,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "nichts Neues"
+          }
+        }
+      }
+    },
+    "tab.boscafes": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boscafés"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafés forêt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cafés bosque"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waldcafés"
           }
         }
       }

@@ -65,6 +65,13 @@ final class ActivityStore {
     private(set) var trappists: [Trappist] = TrappistData.cached()
     /// For each visited brewery, when (newest first).
     private(set) var trappistVisits: [String: [Date]] = [:]
+
+    // Boscafé Challenge (see Boscafe, BoscafeData)
+    /// The boscafés, from R2 (the copy on the device until the download is checked).
+    private(set) var boscafes: [Boscafe] = BoscafeData.cached()
+    /// For each visited boscafé, when (newest first).
+    private(set) var boscafeVisits: [String: [Date]] = [:]
+
     /// What the refresh is doing, for the banner while there's no file count to show.
     private(set) var importPhase: String?
 
@@ -356,6 +363,7 @@ final class ActivityStore {
         isImporting = false
         importPhase = nil
         Task { await updateTrappists() }
+        Task { await updateBoscafes() }
         Task { await updateKlompenpaden() }
         Task { await updateMTBRoutes() }
         Task { await updateClimbs() }
@@ -389,6 +397,14 @@ final class ActivityStore {
         } else if logos() != before {
             version += 1 // redraw with the new logos
         }
+    }
+
+    /// Checks for a new list of boscafés (at most once a day; the copy on the device otherwise),
+    /// and matches the activities again when it changed.
+    func updateBoscafes() async {
+        guard let list = try? await BoscafeData.load(), list != boscafes else { return }
+        boscafes = list
+        matchChallenges()
     }
 
     /// Loads the mountain bike routes (downloading their asset pack the first time) and matches
@@ -446,6 +462,7 @@ final class ActivityStore {
 
     private var currentChallenges: ChallengeResults.Current {
         ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
+                                 boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
                                  paths: klompenpadPrepared, klompenpadKey: klompenpadKey,
                                  mtb: mtbPrepared, mtbKey: mtbKey)
     }
@@ -467,6 +484,7 @@ final class ActivityStore {
             func fill(_ a: inout Activity) {
                 guard let r = results[a.id] else { return } // deleted meanwhile: nothing to store
                 if let t = r.trappists { a.trappists = t; a.trappistsKey = current.trappistsKey }
+                if let b = r.boscafes { a.boscafes = b; a.boscafesKey = current.boscafesKey }
                 if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = current.klompenpadKey }
                 if let h = r.mtbHits { a.mtbHits = h; a.mtbKey = current.mtbKey }
                 if let c = r.countries { a.countries = c; a.countriesKey = ChallengeResults.countriesKey }
@@ -480,17 +498,20 @@ final class ActivityStore {
     }
 
     /// Adds up the stored results of the activities there are (so deleted ones drop out): visited
-    /// breweries, Klompenpaden and MTB route progress, countries, and the badges. Results computed
+    /// breweries and boscafés, Klompenpaden and MTB route progress, countries, and the badges. Results computed
     /// with an older key don't count until they're checked again.
     private func aggregateChallenges() {
         let current = currentChallenges
         let cKey = ChallengeResults.countriesKey
-        var visits = [String: [Date]]()
+        var visits = [String: [Date]](), cafes = [String: [Date]]()
         var paths = [[String: [Int]]](), mtb = [[String: [Int]]]()
         var countries = Set<String>()
         for a in activities where a.isOnMap {
             if a.trappistsKey == current.trappistsKey {
                 for id in a.trappists ?? [] { visits[id, default: []].append(a.startDate ?? .distantPast) }
+            }
+            if a.boscafesKey == current.boscafesKey {
+                for id in a.boscafes ?? [] { cafes[id, default: []].append(a.startDate ?? .distantPast) }
             }
             if a.klompenpadKey == current.klompenpadKey, let h = a.klompenpadHits { paths.append(h) }
             if a.mtbKey == current.mtbKey, let h = a.mtbHits { mtb.append(h) }
@@ -499,10 +520,11 @@ final class ActivityStore {
         let progress = KlompenpadMatcher.progress(hits: paths, counts: current.paths.counts)
         let mtbProgress = KlompenpadMatcher.progress(hits: mtb, counts: current.mtb.counts)
         let counts = BadgeRules.counts(activities, countries: countries.count)
-        let sortedVisits = visits.mapValues { $0.sorted(by: >) }
-        guard sortedVisits != trappistVisits || progress != klompenpadProgress || mtbProgress != self.mtbProgress
+        let sortedVisits = visits.mapValues { $0.sorted(by: >) }, cafeVisits = cafes.mapValues { $0.sorted(by: >) }
+        guard sortedVisits != trappistVisits || cafeVisits != boscafeVisits || progress != klompenpadProgress || mtbProgress != self.mtbProgress
                 || countries != worldCountries || counts != badges else { return }
         trappistVisits = sortedVisits
+        boscafeVisits = cafeVisits
         klompenpadProgress = progress
         self.mtbProgress = mtbProgress
         worldCountries = countries

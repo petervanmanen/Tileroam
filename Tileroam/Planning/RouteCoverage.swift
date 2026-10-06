@@ -11,6 +11,9 @@ struct RouteCoverage: Sendable, Equatable {
     /// Trappist breweries the route passes, and those of them not visited before.
     var trappists = Set<String>()
     var newTrappists = Set<String>()
+    /// Boscafés the route passes, and those of them not visited before.
+    var boscafes = Set<String>()
+    var newBoscafes = Set<String>()
 
     func newTiles(_ zoom: TileZoom) -> Set<Int64> {
         newTiles14
@@ -20,7 +23,8 @@ struct RouteCoverage: Sendable, Equatable {
 
     init(route: [GeoPoint], visitedTiles14: Set<Int64>, visitedMunicipalities: Set<String>,
          visitedPostcodes: Set<String>, regions: RegionData?, climbs knownClimbs: [Climb] = [], climbed: Set<String> = [],
-         trappists knownTrappists: [Trappist] = [], visitedTrappists: Set<String> = []) {
+         trappists knownTrappists: [Trappist] = [], visitedTrappists: Set<String> = [],
+         boscafes knownBoscafes: [Boscafe] = [], visitedBoscafes: Set<String> = []) {
         let dense = Geo.densified(route, spacing: 20, maxGap: 5_000)
         newTiles14 = TileGrid.tiles(for: dense, zoom: .explorer).subtracting(visitedTiles14)
         newMunicipalities = (regions?.municipalities.visited(by: dense) ?? []).subtracting(visitedMunicipalities)
@@ -31,6 +35,8 @@ struct RouteCoverage: Sendable, Equatable {
         newClimbs = climbs.subtracting(climbed)
         trappists = Set(TrappistMatcher.visited(by: route, among: knownTrappists))
         newTrappists = trappists.subtracting(visitedTrappists)
+        boscafes = Set(TrappistMatcher.visited(by: route, among: knownBoscafes))
+        newBoscafes = boscafes.subtracting(visitedBoscafes)
     }
 
     func contains(_ target: PlanTarget) -> Bool {
@@ -40,6 +46,7 @@ struct RouteCoverage: Sendable, Equatable {
         case .postcode(let c): newPostcodes.contains(c)
         case .climb(let id): climbs.contains(id)
         case .trappist(let id): trappists.contains(id)
+        case .boscafe(let id): boscafes.contains(id)
         }
     }
 
@@ -52,6 +59,7 @@ struct RouteCoverage: Sendable, Equatable {
         if !newPostcodes.isEmpty { parts.append(String(localized: "\(newPostcodes.count) postcodes")) }
         if !newClimbs.isEmpty { parts.append(String(localized: "\(newClimbs.count) climbs")) }
         if !newTrappists.isEmpty { parts.append(String(localized: "\(newTrappists.count) Trappist breweries")) }
+        if !newBoscafes.isEmpty { parts.append(String(localized: "\(newBoscafes.count) boscafés")) }
         return parts.isEmpty ? String(localized: "nothing new") : parts.joined(separator: " · ")
     }
 }

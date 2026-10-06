@@ -4,7 +4,7 @@ import UIKit
 /// A Trappist brewery of the Trappist Challenge. The list and the logos are on Cloudflare R2
 /// (`<server>/Trappist/`, see `TrappistData`). An activity visits a brewery by passing within
 /// `TrappistMatcher.radius` of it.
-struct Trappist: Codable, Sendable, Identifiable, Hashable {
+struct Trappist: Codable, Sendable, Identifiable, Hashable, ChallengePlace {
     let id: String
     let name: String
     let abbey: String
@@ -14,7 +14,6 @@ struct Trappist: Codable, Sendable, Identifiable, Hashable {
     let lat: Double
     let lon: Double
 
-    var point: GeoPoint { GeoPoint(lat: lat, lon: lon) }
     /// The brewery's logo, black on white, once downloaded.
     var icon: UIImage? { UIImage(contentsOfFile: TrappistData.iconFile(id).path(percentEncoded: false)) }
 }
@@ -52,15 +51,29 @@ enum TrappistData {
     }
 }
 
+/// A place to pass in a challenge (a Trappist brewery, a boscafé): visited by passing within
+/// `TrappistMatcher.radius` of it.
+protocol ChallengePlace: Sendable {
+    var id: String { get }
+    var name: String { get }
+    var lat: Double { get }
+    var lon: Double { get }
+}
+
+extension ChallengePlace {
+    var point: GeoPoint { GeoPoint(lat: lat, lon: lon) }
+}
+
+/// Matches tracks to challenge places: the Trappist breweries and the boscafés.
 enum TrappistMatcher {
     /// Raise when the rules below change: stored results are then computed again (see `ChallengeResults`).
     static let version = 1
-    /// Metres between a brewery and the track.
+    /// Metres between a place and the track.
     static let radius = 200.0
 
-    /// The breweries a track passes within `radius` of: measured to the track's segments, so a
+    /// The places a track passes within `radius` of: measured to the track's segments, so a
     /// sparse track (a Strava summary line) counts too.
-    static func visited(by track: [GeoPoint], among trappists: [Trappist]) -> [String] {
+    static func visited(by track: [GeoPoint], among trappists: [some ChallengePlace]) -> [String] {
         guard let first = track.first else { return [] }
         var box = (minLat: first.lat, maxLat: first.lat, minLon: first.lon, maxLon: first.lon)
         for p in track {
@@ -76,8 +89,8 @@ enum TrappistMatcher {
         }.map(\.id)
     }
 
-    /// For each brewery, the start dates of the activities that visited it, newest first.
-    static func visits(_ activities: [Activity], among trappists: [Trappist]) -> [String: [Date]] {
+    /// For each place, the start dates of the activities that visited it, newest first.
+    static func visits(_ activities: [Activity], among trappists: [some ChallengePlace]) -> [String: [Date]] {
         var result = [String: [Date]]()
         for a in activities where a.isOnMap {
             let track = a.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) }
