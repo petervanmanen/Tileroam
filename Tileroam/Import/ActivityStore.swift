@@ -100,6 +100,8 @@ final class ActivityStore {
     private var challengeTask: Task<Void, Never>?
     /// The Klompenpaden's checkpoints, for the current list.
     private var preparedPaths: (key: String, paths: KlompenpadMatcher.Prepared)?
+    /// Prepares the routes' checkpoints in the background (see `prepareRoutes`).
+    @ObservationIgnored private var preparingRoutes: Task<Void, Never>?
 
     // Strava source
     let stravaConfig = StravaConfig.bundled
@@ -362,6 +364,7 @@ final class ActivityStore {
         // which takes minutes the first time) runs on without the "Checking" banner, each on its own.
         isImporting = false
         importPhase = nil
+        matchChallenges() // the activities that arrived, now the refresh is done
         Task { await updateTrappists() }
         Task { await updateBoscafes() }
         Task { await updateKlompenpaden() }
@@ -444,36 +447,47 @@ final class ActivityStore {
         return key
     }
 
-    private var klompenpadPrepared: KlompenpadMatcher.Prepared {
-        let key = klompenpadKey
-        if let preparedPaths, preparedPaths.key == key { return preparedPaths.paths }
-        let paths = KlompenpadMatcher.Prepared(klompenpaden)
-        preparedPaths = (key, paths)
-        return paths
+    /// The current lists with their keys and the routes' checkpoints; nil while the checkpoints are
+    /// being prepared (`prepareRoutes` matches when they're ready).
+    private var currentChallenges: ChallengeResults.Current? {
+        let kKey = klompenpadKey, mKey = mtbKey
+        guard let paths = preparedPaths, paths.key == kKey, let mtb = preparedMTB, mtb.key == mKey else {
+            prepareRoutes()
+            return nil
+        }
+        return ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
+                                        boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
+                                        paths: paths.paths, klompenpadKey: kKey, mtb: mtb.paths, mtbKey: mKey)
     }
 
-    private var mtbPrepared: KlompenpadMatcher.Prepared {
-        let key = mtbKey
-        if let preparedMTB, preparedMTB.key == key { return preparedMTB.paths }
-        let paths = KlompenpadMatcher.Prepared(mtbRoutes, spacing: MTBRoute.spacing)
-        preparedMTB = (key, paths)
-        return paths
-    }
-
-    private var currentChallenges: ChallengeResults.Current {
-        ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
-                                 boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
-                                 paths: klompenpadPrepared, klompenpadKey: klompenpadKey,
-                                 mtb: mtbPrepared, mtbKey: mtbKey)
+    /// Prepares the checkpoints of the Klompenpaden and MTB routes in the background (seconds for
+    /// the 4,700 MTB routes on an iPad: on the main thread it froze the app), then matches.
+    private func prepareRoutes() {
+        guard preparingRoutes == nil else { return }
+        let kKey = klompenpadKey, mKey = mtbKey, paths = klompenpaden, routes = mtbRoutes
+        let needPaths = preparedPaths?.key != kKey, needRoutes = preparedMTB?.key != mKey
+        preparingRoutes = Task {
+            let (p, m) = await Task.detached(priority: .utility) {
+                (needPaths ? KlompenpadMatcher.Prepared(paths) : nil,
+                 needRoutes ? KlompenpadMatcher.Prepared(routes, spacing: MTBRoute.spacing) : nil)
+            }.value
+            if let p { preparedPaths = (kKey, p) }
+            if let m { preparedMTB = (mKey, m) }
+            preparingRoutes = nil
+            matchChallenges()
+        }
     }
 
     /// Checks the activities whose challenge results are missing or out of date (new ones, or all
     /// of them after a new list or new rules), stores the results with them, then adds everything
     /// up again. One pass at a time: activities that arrive meanwhile are picked up by the next.
+    /// While a refresh runs (activities downloading from iCloud, shown every 10 seconds) only the
+    /// stored results are added up: tiles and areas come first, and the checks, which take minutes
+    /// for hundreds of new activities, run in the background once the refresh is done.
     private func matchChallenges() {
-        aggregateChallenges()
-        guard challengeTask == nil else { return }
-        let current = currentChallenges
+        guard let current = currentChallenges else { return }
+        aggregateChallenges(current)
+        guard challengeTask == nil, !isImporting else { return }
         let pending = (folderActivities + stravaActivities).filter { ChallengeResults.isPending($0, current) }
         guard !pending.isEmpty else { return }
         challengeTask = Task {
@@ -500,8 +514,7 @@ final class ActivityStore {
     /// Adds up the stored results of the activities there are (so deleted ones drop out): visited
     /// breweries and boscafés, Klompenpaden and MTB route progress, countries, and the badges. Results computed
     /// with an older key don't count until they're checked again.
-    private func aggregateChallenges() {
-        let current = currentChallenges
+    private func aggregateChallenges(_ current: ChallengeResults.Current) {
         let cKey = ChallengeResults.countriesKey
         var visits = [String: [Date]](), cafes = [String: [Date]]()
         var paths = [[String: [Int]]](), mtb = [[String: [Int]]]()
