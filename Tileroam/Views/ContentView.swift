@@ -167,6 +167,7 @@ struct ContentView: View {
             #endif
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { Task { await store.refreshAll() } }
+                if phase == .background { store.saveCaches() }
             }
             .onChange(of: mode) {
                 selectedArea = nil; selectedClimb = nil; selectedTrappist = nil; selectedBoscafe = nil; selectedKlompenpad = nil; selectedMTBRoute = nil

@@ -95,3 +95,30 @@ struct ChallengeResultsTests {
         #expect(ChallengeResults.compute(walk, c).mtbHits == [:])
     }
 }
+
+@MainActor
+struct ChallengeEngineTests {
+    @Test func addsUpStoredResultsWithTheCurrentKeysOnly() {
+        let engine = ChallengeEngine()
+        let boshut = Boscafe(id: "b", name: "B", place: "P", emoji: "🌲", lat: 52.24, lon: 5.16)
+        let current = ChallengeResults.Current(trappists: [], trappistsKey: "t", boscafes: [boshut], boscafesKey: "b-now",
+                                               paths: .init([Klompenpad]()), klompenpadKey: "k",
+                                               mtb: .init([MTBRoute](), spacing: MTBRoute.spacing), mtbKey: "m")
+        func walk(_ id: String, key: String, days: Double) -> Activity {
+            var a = Importer.makeActivity(points: [GeoPoint(lat: 52.24, lon: 5.15), GeoPoint(lat: 52.24, lon: 5.17)],
+                                          id: id, cacheKey: "", name: "Walk", sport: "Walking",
+                                          startDate: Date(timeIntervalSince1970: days * 86_400), distance: 1_400)
+            a.boscafes = ["b"]
+            a.boscafesKey = key
+            return a
+        }
+        let activities = [walk("1", key: "b-now", days: 1), walk("2", key: "b-now", days: 3), walk("3", key: "b-old", days: 5)]
+        #expect(engine.aggregate(activities, current))
+        // The stale result (another list) doesn't count; visits newest first.
+        #expect(engine.boscafeVisits["b"] == [Date(timeIntervalSince1970: 3 * 86_400), Date(timeIntervalSince1970: 86_400)])
+        #expect(!engine.aggregate(activities, current)) // nothing changed
+        // A deleted activity drops out.
+        #expect(engine.aggregate(Array(activities.dropFirst()), current))
+        #expect(engine.boscafeVisits["b"]?.count == 1)
+    }
+}
