@@ -1,46 +1,8 @@
 import Foundation
 import os
 
-/// Persists access to user-selected (iCloud Drive) folders and lists their .fit files.
+/// The app's own folders (on the device and in iCloud Drive) and the .fit files in a folder.
 enum FolderAccess {
-    enum Slot {
-        /// Folder with .fit files to import (read only).
-        case source
-        /// The app's own folder where downloaded activities are saved.
-        case export
-
-        fileprivate var bookmarkKey: String { self == .source ? "folderBookmark" : "exportFolderBookmark" }
-        fileprivate var nameKey: String { self == .source ? "folderName" : "exportFolderName" }
-    }
-
-    static func savedFolderName(_ slot: Slot = .source) -> String? {
-        UserDefaults.standard.string(forKey: slot.nameKey)
-    }
-
-    static func save(_ url: URL, as slot: Slot = .source) throws {
-        let didAccess = url.startAccessingSecurityScopedResource()
-        defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
-        let bookmark = try url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
-        UserDefaults.standard.set(bookmark, forKey: slot.bookmarkKey)
-        UserDefaults.standard.set(url.lastPathComponent, forKey: slot.nameKey)
-    }
-
-    static func resolve(_ slot: Slot = .source) -> URL? {
-        #if DEBUG
-        // Lets the simulator point at a folder on the host: -FitFolder /path/to/folder
-        if slot == .source, let path = UserDefaults.standard.string(forKey: "FitFolder") {
-            return URL(filePath: path, directoryHint: .isDirectory)
-        }
-        #endif
-        guard let data = UserDefaults.standard.data(forKey: slot.bookmarkKey) else { return nil }
-        var stale = false
-        guard let url = try? URL(resolvingBookmarkData: data, options: [], relativeTo: nil, bookmarkDataIsStale: &stale) else {
-            return nil
-        }
-        if stale { try? save(url, as: slot) }
-        return url
-    }
-
     // MARK: Internal storage
 
     /// "On My iPhone" / "On My iPad", as the Files app names the device's own storage.
@@ -109,96 +71,6 @@ enum FolderAccess {
         }
         if let url { try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true) }
         iCloudURL.withLock { $0 = url }
-        return url
-    }
-
-    /// Forgets the save folder of earlier versions (copied into the library; `Library.migrate`).
-    static func clearSaveFolder() {
-        UserDefaults.standard.removeObject(forKey: Slot.export.bookmarkKey)
-        UserDefaults.standard.removeObject(forKey: Slot.export.nameKey)
-    }
-
-    // MARK: Import folders
-
-    /// A folder with .fit files to import. Activities from the first (legacy) folder keep their
-    /// plain relative path as id; others are prefixed with "<id>|" so file names can't collide.
-    struct ImportFolder: Codable, Identifiable, Sendable, Equatable {
-        var id: String
-        var name: String
-        var bookmark: Data
-
-        static let legacyID = "main"
-        static let internalID = "internal"
-        static let iCloudID = "icloud"
-
-        /// The import folder inside the app's own storage.
-        static let internalFolder = ImportFolder(id: internalID, name: "Tileroam", bookmark: Data())
-        /// Tileroam's folder in iCloud Drive, shared by the user's devices.
-        static let iCloudDrive = ImportFolder(id: iCloudID, name: "iCloud Drive", bookmark: Data())
-
-        var isInternal: Bool { id == Self.internalID }
-        /// Built in (internal storage or iCloud), not chosen by the user.
-        var isBuiltIn: Bool { id == Self.internalID || id == Self.iCloudID }
-
-        func activityID(for relativePath: String) -> String {
-            id == Self.legacyID ? relativePath : "\(id)|\(relativePath)"
-        }
-
-        func owns(_ activityID: String) -> Bool {
-            id == Self.legacyID ? !activityID.contains("|") : activityID.hasPrefix("\(id)|")
-        }
-    }
-
-    private static let importFoldersKey = "importFolders"
-
-    static func importFolders() -> [ImportFolder] {
-        #if DEBUG
-        if let path = UserDefaults.standard.string(forKey: "FitFolder") {
-            return [ImportFolder(id: ImportFolder.legacyID, name: URL(filePath: path).lastPathComponent, bookmark: Data())]
-        }
-        #endif
-        if let data = UserDefaults.standard.data(forKey: importFoldersKey),
-           let folders = try? JSONDecoder().decode([ImportFolder].self, from: data) {
-            return folders
-        }
-        // Migrate the single folder of earlier versions.
-        if let bookmark = UserDefaults.standard.data(forKey: Slot.source.bookmarkKey) {
-            let folder = ImportFolder(id: ImportFolder.legacyID, name: savedFolderName(.source) ?? "", bookmark: bookmark)
-            saveImportFolders([folder])
-            return [folder]
-        }
-        return []
-    }
-
-    private static func saveImportFolders(_ folders: [ImportFolder]) {
-        if let data = try? JSONEncoder().encode(folders) { UserDefaults.standard.set(data, forKey: importFoldersKey) }
-    }
-
-    /// Forgets all watched folders (they were copied into the library; `Library.migrate`).
-    static func clearImportFolders() {
-        UserDefaults.standard.removeObject(forKey: importFoldersKey)
-        UserDefaults.standard.removeObject(forKey: Slot.source.bookmarkKey)
-        UserDefaults.standard.removeObject(forKey: Slot.source.nameKey)
-    }
-
-    static func resolve(_ folder: ImportFolder) -> URL? {
-        if folder.isInternal { return internalImportFolder }
-        if folder.id == ImportFolder.iCloudID { return iCloudFolder }
-        #if DEBUG
-        if let path = UserDefaults.standard.string(forKey: "FitFolder") {
-            return URL(filePath: path, directoryHint: .isDirectory)
-        }
-        #endif
-        var stale = false
-        guard let url = try? URL(resolvingBookmarkData: folder.bookmark, options: [], relativeTo: nil,
-                                 bookmarkDataIsStale: &stale) else { return nil }
-        if stale, let fresh = try? url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil) {
-            var folders = importFolders()
-            if let i = folders.firstIndex(where: { $0.id == folder.id }) {
-                folders[i].bookmark = fresh
-                saveImportFolders(folders)
-            }
-        }
         return url
     }
 

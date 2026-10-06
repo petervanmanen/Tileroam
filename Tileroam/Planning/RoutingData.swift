@@ -1,4 +1,3 @@
-import BackgroundAssets
 import Foundation
 
 /// The on-device routing data: Valhalla tiles for the supported countries, built from
@@ -176,44 +175,14 @@ enum RoutingData {
 
     // MARK: Cleaning up
 
-    /// Removes the tiles of the build's other versions ("west-v1" next to "west-v2"), and the tile
-    /// folders from before R2 ("tiles-west", "tiles-benelux"; see `removeAssetPackData`).
+    /// Removes the tiles of the build's other versions ("west-v1" next to "west-v2").
     static func removeOtherVersions(_ index: RoutingIndex) {
         let routing = URL.applicationSupportDirectory.appending(path: "Routing", directoryHint: .isDirectory)
         let current = "\(index.name)-v\(index.version)"
         for item in (try? FileManager.default.contentsOfDirectory(atPath: routing.path(percentEncoded: false))) ?? []
-        where item != current && (item.hasPrefix("\(index.name)-v") || item.hasPrefix("tiles-")) {
+        where item != current && item.hasPrefix("\(index.name)-v") {
             try? FileManager.default.removeItem(at: routing.appending(path: item))
         }
-    }
-
-    /// Builds whose tiles came as Apple-hosted asset packs, before R2 (TestFlight versions of
-    /// October 2026): "benelux" and the first "west".
-    static let assetPackBuilds = ["benelux", "west"]
-
-    /// Removes the routing asset packs of earlier versions from the device, and the old tile
-    /// folders. Their IDs followed a 1° grid ("routing-west-n52e005"), so every possible ID in the
-    /// region is tried; only packs on the device are removed (needs iOS 26.4 to check).
-    static func removeAssetPackData() async {
-        if let index { removeOtherVersions(index) }
-        #if targetEnvironment(macCatalyst)
-        // The Mac app never had these packs (and asking AssetPackManager about pack IDs that
-        // don't exist for it fails there).
-        return
-        #else
-        guard #available(iOS 26.4, *) else { return }
-        for build in assetPackBuilds {
-            var ids = ["routing-\(build)-base"]
-            for lat in 40...60 {
-                for lon in -5...30 {
-                    ids.append("routing-\(build)-n\(String(format: "%02d", lat))\(lon < 0 ? "w" : "e")\(String(format: "%03d", abs(lon)))")
-                }
-            }
-            for id in ids where AssetPackManager.shared.assetPackIsAvailableLocally(withID: id) {
-                try? await AssetPackManager.shared.remove(assetPackWithID: id)
-            }
-        }
-        #endif
     }
 
     /// Valhalla's configuration (`Resources/valhalla.json`, made with the same Valhalla version as

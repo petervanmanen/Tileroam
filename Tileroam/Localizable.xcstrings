@@ -10061,34 +10061,6 @@
         }
       }
     },
-    "Tileroam now keeps its own copy of your %lld .fit files. The folders they came from aren't watched any more; import new files in Settings.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam bewaart nu een eigen kopie van je %lld .fit-bestanden. De mappen waar ze vandaan komen worden niet meer gevolgd; importeer nieuwe bestanden in Instellingen."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam garde maintenant sa propre copie de vos %lld fichiers .fit. Leurs dossiers d'origine ne sont plus surveillés ; importez les nouveaux fichiers dans Réglages."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam guarda ahora su propia copia de tus %lld archivos .fit. Sus carpetas de origen ya no se vigilan; importa los archivos nuevos en Ajustes."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam behält jetzt eine eigene Kopie deiner %lld .fit-Dateien. Ihre Ursprungsordner werden nicht mehr überwacht; importiere neue Dateien in den Einstellungen."
-          }
-        }
-      }
-    },
     "Tileroam route": {
       "localizations": {
         "nl": {

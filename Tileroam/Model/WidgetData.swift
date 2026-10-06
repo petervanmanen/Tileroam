@@ -31,8 +31,6 @@ enum WidgetData {
     static func saveTiles(_ tiles14: Set<Int64>) async {
         guard let container else { return }
         let changed = await Task.detached(priority: .utility) {
-            // Zoom 17 tiles were removed in 1.5.9.
-            try? FileManager.default.removeItem(at: container.appending(path: "tiles17.bin"))
             let url = container.appending(path: "tiles14.bin")
             let data = tiles14.sorted().withUnsafeBufferPointer { Data(buffer: $0) }
             guard (try? Data(contentsOf: url)) != data else { return false }
