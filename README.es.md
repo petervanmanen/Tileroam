@@ -14,7 +14,7 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 - **Insignias**: 18 insignias, de *¡100!*, *Century* y *Everester* a *Festive 500*, *Triatleta* y *Trotamundos* (50 países, calculados en el dispositivo). Las conseguidas aparecen en color, con cuántas veces; las actividades en interior también cuentan.
 - **Actividades**: una lista de todas las actividades, de la más reciente a la más antigua, con duración, distancia y potencia media (con medidor de potencia) o velocidad media.
 - **Municipios y códigos postales** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria, con visitados/total por país.
-- **Planificación de rutas** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
+- **Planificación de rutas** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos, o una ruta de A a B hasta un **punto final** que eliges. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
 - **Strava**: importa todo tu historial con GPS. Las actividades también se guardan como archivos `.fit` estándar en la carpeta que elijas.
 - **Duplicados fusionados**: el mismo entrenamiento registrado por varios dispositivos o apps (reloj, Zwift, Strava, HealthFit) cuenta una sola vez.
 - **Widgets**: *Teselas a tu alrededor* (un mapa de las teselas cerca de ti) y *Número de Eddington*, en la pantalla de inicio y la pantalla bloqueada.
@@ -152,7 +152,6 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 - Los municipios, códigos postales y la planificación cubren solo los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria. [docs/ROUTING.md](docs/ROUTING.md) explica cómo añadir países.
 - Luxemburgo no tiene límites de códigos postales como datos abiertos.
-- Las rutas son circulares; las rutas de ida de A a B aún no son compatibles.
 
 ## Privacidad
 

@@ -14,7 +14,7 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 - **Abzeichen**: 18 Abzeichen, von *100!*, *Century* und *Everester* bis *Festive 500*, *Triathlet* und *Weltenbummler* (50 Länder, auf dem Gerät ermittelt). Verdiente Abzeichen sind farbig, mit Anzahl; Indoor-Aktivitäten zählen auch.
 - **Aktivitäten**: eine Liste aller Aktivitäten, die neuesten zuerst, mit Dauer, Distanz und durchschnittlicher Leistung (mit Powermeter) oder Durchschnittsgeschwindigkeit.
 - **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich, mit besucht/gesamt pro Land.
-- **Routenplanung** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
+- **Routenplanung** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle, oder eine Route von A nach B zu einem **Zielpunkt**, den du wählst. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
 - **Strava**: Importiere deinen gesamten Verlauf mit GPS. Aktivitäten werden außerdem als Standard-`.fit`-Dateien in einem Ordner deiner Wahl gespeichert.
 - **Doppelte zusammengeführt**: Dasselbe Training, von mehreren Geräten oder Apps aufgezeichnet (Uhr, Zwift, Strava, HealthFit), zählt nur einmal.
 - **Widgets**: *Kacheln um dich herum* (eine Karte der Kacheln in deiner Nähe) und *Eddington-Zahl*, auf dem Home-Bildschirm und dem Sperrbildschirm.
@@ -152,7 +152,6 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 - Gemeinden, Postleitzahlen und Routenplanung decken nur die Niederlande, Belgien, Luxemburg, Deutschland, Frankreich, die Schweiz und Österreich ab. [docs/ROUTING.md](docs/ROUTING.md) beschreibt, wie man Länder hinzufügt.
 - Luxemburg hat keine offenen Postleitzahlgrenzen.
-- Routen sind Rundtouren; einfache Strecken von A nach B werden noch nicht unterstützt.
 
 ## Datenschutz
 

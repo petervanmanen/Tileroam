@@ -2,8 +2,9 @@ import Foundation
 
 /// The cycling router behind route planning (Valhalla on the device, see `ValhallaRouter`).
 protocol CyclingRouter: Sendable {
-    /// Visiting order for a round trip starting at `points[0]`: indices into `points`, starting with 0.
-    func tripOrder(_ points: [GeoPoint]) async throws -> [Int]
+    /// Visiting order starting at `points[0]`: indices into `points`, starting with 0. The route
+    /// returns to `points[0]`, or ends at `end` when given (point to point).
+    func tripOrder(_ points: [GeoPoint], end: GeoPoint?) async throws -> [Int]
     /// The cycling route through `points` in this order.
     func route(_ points: [GeoPoint]) async throws -> RoutedPath
 }
@@ -108,18 +109,31 @@ enum RoutingError: LocalizedError, Equatable {
     }
 }
 
-/// Orders the stops of a round trip from a cost matrix (distances between all points):
-/// nearest neighbour, then 2-opt and relocating single stops until nothing improves.
+/// Orders the stops of a route from a cost matrix (distances between all points): nearest
+/// neighbour, then 2-opt and relocating single stops until nothing improves.
 enum TripSolver {
     /// `cost[i][j]` is the cost from point i to point j; point 0 is the start and end.
     /// Returns the visiting order, starting with 0 (the return to 0 is implied).
     static func roundTrip(_ cost: [[Double]]) -> [Int] {
+        solve(cost, end: 0)
+    }
+
+    /// Point to point: from point 0 to point `end`, through all the others. Returns the visiting
+    /// order, starting with 0 and without `end` (which is implied last).
+    static func path(_ cost: [[Double]], end: Int) -> [Int] {
+        solve(cost, end: end)
+    }
+
+    /// The order of every point but `end` (unless it's 0), from 0, finishing with the leg to `end`.
+    private static func solve(_ cost: [[Double]], end: Int) -> [Int] {
         let n = cost.count
-        guard n > 2 else { return Array(0..<n) }
+        guard n > 0 else { return [] }
+        let stops = (1..<n).filter { $0 != end }
+        guard stops.count > 1 else { return [0] + stops }
 
         // Nearest neighbour from the start.
         var order = [0]
-        var left = Set(1..<n)
+        var left = Set(stops)
         while !left.isEmpty {
             let last = order[order.count - 1]
             let next = left.min { cost[last][$0] < cost[last][$1] || (cost[last][$0] == cost[last][$1] && $0 < $1) }!
@@ -128,9 +142,10 @@ enum TripSolver {
         }
 
         func total(_ o: [Int]) -> Double {
-            zip(o, o.dropFirst() + [0]).reduce(0) { $0 + cost[$1.0][$1.1] }
+            zip(o, o.dropFirst() + [end]).reduce(0) { $0 + cost[$1.0][$1.1] }
         }
 
+        let m = order.count
         var best = total(order)
         var improved = true
         var rounds = 0
@@ -138,8 +153,8 @@ enum TripSolver {
             improved = false
             rounds += 1
             // 2-opt: reverse a section (costs may be asymmetric, so compare whole tours).
-            for i in 1..<(n - 1) {
-                for j in (i + 1)..<n {
+            for i in 1..<(m - 1) {
+                for j in (i + 1)..<m {
                     var candidate = order
                     candidate[i...j].reverse()
                     let c = total(candidate)
@@ -151,8 +166,8 @@ enum TripSolver {
                 }
             }
             // Relocate one stop to another position.
-            for i in 1..<n {
-                for j in 1..<n where j != i {
+            for i in 1..<m {
+                for j in 1..<m where j != i {
                     var candidate = order
                     let stop = candidate.remove(at: i)
                     candidate.insert(stop, at: j)

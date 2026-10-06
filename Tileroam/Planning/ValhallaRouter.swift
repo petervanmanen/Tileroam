@@ -70,8 +70,10 @@ actor ValhallaRouter: CyclingRouter {
 
     /// The visiting order from straight-line distances. Valhalla's cycling matrix gives nearly the
     /// same order in the dense Benelux network but takes tens of seconds for 30 stops on a phone.
-    func tripOrder(_ points: [GeoPoint]) async throws -> [Int] {
-        TripSolver.roundTrip(points.map { a in points.map { b in Geo.distance(a, b) } })
+    func tripOrder(_ points: [GeoPoint], end: GeoPoint?) async throws -> [Int] {
+        guard let end else { return TripSolver.roundTrip(points.map { a in points.map { b in Geo.distance(a, b) } }) }
+        let all = points + [end]
+        return TripSolver.path(all.map { a in all.map { b in Geo.distance(a, b) } }, end: points.count)
     }
 
     func route(_ points: [GeoPoint]) async throws -> RoutedPath {
@@ -169,7 +171,7 @@ actor ValhallaRouter: CyclingRouter {
     }
 
     func forget() {}
-    func tripOrder(_ points: [GeoPoint]) async throws -> [Int] { throw CancellationError() }
+    func tripOrder(_ points: [GeoPoint], end: GeoPoint?) async throws -> [Int] { throw CancellationError() }
     func route(_ points: [GeoPoint]) async throws -> RoutedPath { throw CancellationError() }
 }
 #endif

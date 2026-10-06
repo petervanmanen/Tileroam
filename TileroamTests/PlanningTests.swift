@@ -80,6 +80,33 @@ struct PlanningTests {
         #expect(TripSolver.roundTrip([[0, 1], [1, 0]]) == [0, 1])
     }
 
+    @Test func tripSolverPointToPoint() {
+        // Stops on a line from 0 to the end at 10: visited in order, the end last (implied).
+        let x = [0.0, 7, 3, 10, 5]
+        let cost = x.map { a in x.map { b in abs(a - b) } }
+        #expect(TripSolver.path(cost, end: 3) == [0, 2, 4, 1])
+        // Only the start and the end.
+        #expect(TripSolver.path([[0, 1], [1, 0]], end: 1) == [0])
+    }
+
+    @Test func pointToPointRouteEndsAtTheEnd() async throws {
+        let start = GeoPoint(lat: 52.0, lon: 5.0), end = GeoPoint(lat: 52.0, lon: 5.3)
+        let boshut = Boscafe(id: "b", name: "B", place: "P", emoji: "🌲", lat: 52.0, lon: 5.15)
+        let target = try #require(TargetGeometry(.boscafe("b"), regions: nil, boscafes: [boshut]))
+        let router = StraightRouter()
+        let route = try await RoutePlanner.planRoute(
+            start: start, end: end, targets: [target], client: router,
+            coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedMunicipalities: [], visitedPostcodes: [],
+                                      regions: nil, boscafes: [boshut], visitedBoscafes: []) },
+            progress: { _ in })
+        let asked = try #require(await router.requested.first)
+        #expect(asked.first == start && asked.last == end && asked.count == 3)
+        #expect(route.coverage.boscafes == ["b"])
+        // The rough path for downloading map data ends there too.
+        #expect(RoutePlanner.approximateLoop(start: start, end: end, targets: [target]).last == end)
+        #expect(RoutePlanner.approximateLoop(start: start, targets: [target]).last == start)
+    }
+
     @Test func tripSolverHandlesManyStops() {
         // 50 stops on a circle in shuffled order: the tour must follow the circle.
         var rng = SystemRandomNumberGenerator()

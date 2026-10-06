@@ -24,8 +24,10 @@ final class PlanStore {
     private(set) var gpxURL: URL?
     /// Incremented whenever the map needs to redraw planning overlays.
     private(set) var version = 0
-    /// Where the round trip starts and ends; nil is the current location.
+    /// Where the route starts (and, for a round trip, ends); nil is the current location.
     private(set) var start: StartPoint?
+    /// Where the route ends, point to point; nil is a round trip back to the start (issue #50).
+    private(set) var end: StartPoint?
     /// The last starting points chosen, newest first.
     private(set) var recentStarts = RecentStarts.load()
 
@@ -121,6 +123,19 @@ final class PlanStore {
         version += 1
     }
 
+    /// Ends the route at `end`, or back at the start (a round trip) when nil.
+    func setEnd(_ end: StartPoint?, remember: Bool = true) {
+        self.end = end
+        if let end, remember {
+            recentStarts = RecentStarts.adding(end, to: recentStarts)
+            RecentStarts.save(recentStarts)
+        }
+        error = end.map { RoutingData.covers($0.point) } == false ? RoutingError.outsideRegion.localizedDescription : nil
+        waitingForWiFi = nil
+        if route?.source == .planned { routeIsOutdated = true }
+        version += 1
+    }
+
     func removeRecentStart(_ start: StartPoint) {
         recentStarts.removeAll { $0 == start }
         RecentStarts.save(recentStarts)
@@ -132,7 +147,7 @@ final class PlanStore {
     private var planning: Task<Void, Never>?
 
     func plan(with store: ActivityStore) async {
-        guard !selected.isEmpty, !isWorking else { return }
+        guard !selected.isEmpty || end != nil, !isWorking else { return }
         isWorking = true
         error = nil
         message = nil
@@ -161,7 +176,7 @@ final class PlanStore {
                 let here = try await location.get().coordinate
                 from = GeoPoint(lat: here.latitude, lon: here.longitude)
             }
-            try await plan(from: from, with: store)
+            try await plan(from: from, to: end?.point, with: store)
         } catch RoutingError.waitingForWiFi(let bytes) {
             waitingForWiFi = bytes
             self.error = RoutingError.waitingForWiFi(bytes: bytes).localizedDescription
@@ -189,19 +204,19 @@ final class PlanStore {
         await plan(with: store)
     }
 
-    func plan(from start: GeoPoint, with store: ActivityStore) async throws {
+    func plan(from start: GeoPoint, to end: GeoPoint? = nil, with store: ActivityStore) async throws {
         let regions: RegionData? = await store.loadedRegions()
         let targets = selected.sorted { $0.sortKey < $1.sortKey }
             .compactMap { TargetGeometry($0, regions: regions, climbs: store.climbs, trappists: store.trappists,
                                            boscafes: store.boscafes) }
         // The routing data covers the countries in RoutingData.countries.
-        guard RoutingData.covers(start),
+        guard RoutingData.covers(start), end.map(RoutingData.covers) ?? true,
               targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
             throw RoutingError.outsideRegion
         }
-        let points = [start] + targets.flatMap { $0.candidates() }
+        let points = [start] + (end.map { [$0] } ?? []) + targets.flatMap { $0.candidates() }
         // The stops in the order the route will take, to download only the tiles along it.
-        let loop = RoutePlanner.approximateLoop(start: start, targets: targets)
+        let loop = RoutePlanner.approximateLoop(start: start, end: end, targets: targets)
         let km = Int(RoutePlanner.length(loop) / 1000)
         guard km <= RoutePlanner.maxLoopKilometers else { throw RoutingError.tooLong(km: km) }
         let visited = (store.tiles14, store.visitedMunicipalities, store.visitedPostcodes)
@@ -212,7 +227,7 @@ final class PlanStore {
         func attempt() async throws -> PlannedRoute {
             try await Task.detached(priority: .userInitiated) {
                 try await RoutePlanner.planRoute(
-                    start: start, targets: targets, client: router,
+                    start: start, end: end, targets: targets, client: router,
                     coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0,
                                               visitedMunicipalities: visited.1, visitedPostcodes: visited.2, regions: regions,
                                               climbs: climbs, climbed: climbed, trappists: trappists, visitedTrappists: visitedTrappists,
@@ -259,7 +274,7 @@ final class PlanStore {
 
     #if DEBUG
     /// Simulator check without tapping: -PlanDemo YES plans a route near Utrecht,
-    /// -PlanGPX /path/file.gpx imports a GPX, -PlanStart "52.09,5.12" opens planning from that start.
+    /// -PlanGPX /path/file.gpx imports a GPX, -PlanStart "52.09,5.12" opens planning from that start, -PlanEnd "52.0,5.3" ends there.
     func runDebugDemo(with store: ActivityStore) async {
         if let text = UserDefaults.standard.string(forKey: "PlanStart") {
             let parts = text.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
@@ -268,6 +283,11 @@ final class PlanStore {
                 let point = GeoPoint(lat: parts[0], lon: parts[1])
                 setStart(await StartPoint.dropped(at: point), remember: false)
             }
+        }
+        // -PlanEnd "52.0,5.3": point to point, ending there.
+        if let text = UserDefaults.standard.string(forKey: "PlanEnd") {
+            let parts = text.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+            if parts.count == 2 { setEnd(await StartPoint.dropped(at: GeoPoint(lat: parts[0], lon: parts[1])), remember: false) }
         }
         if let path = UserDefaults.standard.string(forKey: "PlanGPX") {
             isPlanning = true
@@ -322,7 +342,7 @@ final class PlanStore {
         isWorking = true
         defer { isWorking = false; status = nil }
         do {
-            try await plan(from: start, with: store)
+            try await plan(from: start, to: end?.point, with: store)
             if let url = gpxURL { print("PLAN_DEMO_GPX \(url.path(percentEncoded: false))") }
         } catch {
             self.error = error.localizedDescription

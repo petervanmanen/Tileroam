@@ -356,7 +356,15 @@ T = {
     "Starting Point": ("Startpunt", "Point de départ", "Punto de partida", "Startpunkt"),
     "Recent": ("Recent", "Récents", "Recientes", "Zuletzt verwendet"),
     "Search for an address or place": ("Zoek een adres of plaats", "Rechercher une adresse ou un lieu", "Buscar una dirección o lugar", "Adresse oder Ort suchen"),
-    "Choose where the route starts and ends": ("Kies waar de route begint en eindigt", "Choisir où le parcours commence et se termine", "Elige dónde empieza y termina la ruta", "Wähle, wo die Route beginnt und endet"),
+    "Choose where the route starts": ("Kies waar de route begint", "Choisir où le parcours commence", "Elige dónde empieza la ruta", "Wähle, wo die Route beginnt"),
+    # Point to point (1.9, issue #50)
+    "End: %@": ("Einde: %@", "Arrivée : %@", "Final: %@", "Ziel: %@"),
+    "End: Back to Start": ("Einde: terug naar start", "Arrivée : retour au départ", "Final: volver al inicio", "Ziel: zurück zum Start"),
+    "Choose a round trip or where the route ends": ("Kies een rondrit of waar de route eindigt", "Choisir une boucle ou l’arrivée du parcours", "Elige una ruta circular o dónde termina la ruta", "Wähle eine Rundfahrt oder wo die Route endet"),
+    "Back to Start": ("Terug naar start", "Retour au départ", "Volver al inicio", "Zurück zum Start"),
+    "End Point": ("Eindpunt", "Point d’arrivée", "Punto final", "Zielpunkt"),
+    "A round trip, or choose a place below to ride from the start to there. You can drag the checkered flag to move it.": ("Een rondrit, of kies hieronder een plek om van de start daarheen te fietsen. Je kunt de geblokte vlag verslepen.", "Une boucle, ou choisissez un lieu ci-dessous pour rouler du départ jusque-là. Vous pouvez faire glisser le drapeau à damier.", "Una ruta circular, o elige un lugar abajo para ir del inicio hasta allí. Puedes arrastrar la bandera a cuadros.", "Eine Rundfahrt, oder wähle unten einen Ort, um vom Start dorthin zu fahren. Du kannst die Zielflagge verschieben."),
+    "Tap unvisited tiles, municipalities or postcodes to add them. The route goes from the start to the end; drag the flags to move them.": ("Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route gaat van de start naar het einde; versleep de vlaggen om ze te verplaatsen.", "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours va du départ à l’arrivée ; faites glisser les drapeaux pour les déplacer.", "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta va del inicio al final; arrastra las banderas para moverlas.", "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route führt vom Start zum Ziel; verschiebe die Flaggen, um sie zu verlegen."),
     "Or long-press the map to start there. You can drag the green flag to move it.": (
         "Of houd de kaart ingedrukt om daar te starten. Sleep de groene vlag om hem te verplaatsen.",
         "Ou touchez longuement la carte pour partir de là. Faites glisser le drapeau vert pour le déplacer.",

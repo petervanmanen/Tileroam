@@ -7,6 +7,7 @@ struct PlanPanel: View {
     @AppStorage("tileZoom") private var tileZoom: TileZoom = .explorer
     let onOpenGPX: () -> Void
     @State private var showStartPicker = false
+    @State private var showEndPicker = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -46,6 +47,10 @@ struct PlanPanel: View {
             StartPicker()
                 .environment(store).environment(plan)
         }
+        .sheet(isPresented: $showEndPicker) {
+            StartPicker(kind: .end)
+                .environment(store).environment(plan)
+        }
         #if DEBUG
         // Screenshots: -ShowStartPicker YES opens the starting point picker.
         .onAppear { if UserDefaults.standard.bool(forKey: "ShowStartPicker") { showStartPicker = true } }
@@ -71,16 +76,45 @@ struct PlanPanel: View {
         }
         .buttonStyle(.plain)
         .disabled(plan.isWorking)
-        .accessibilityHint("Choose where the route starts and ends")
+        .accessibilityHint("Choose where the route starts")
+    }
+
+    /// "End: Back to Start" (a round trip) or "End: <place>" (point to point); opens the picker.
+    private var endButton: some View {
+        Button {
+            showEndPicker = true
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: plan.end == nil ? "arrow.triangle.turn.up.right.circle" : "flag.checkered")
+                    .foregroundStyle(plan.end == nil ? Color.secondary : .red)
+                if let end = plan.end {
+                    Text("End: \(end.name)").lineLimit(1)
+                } else {
+                    Text("End: Back to Start")
+                }
+                Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.tertiary)
+            }
+            .font(.subheadline)
+        }
+        .buttonStyle(.plain)
+        .disabled(plan.isWorking)
+        .accessibilityHint("Choose a round trip or where the route ends")
     }
 
     private var selectionContent: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(plan.selectionSummary).font(.headline)
             startButton
-            Text("Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            endButton
+            Group {
+                if plan.end == nil {
+                    Text("Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.")
+                } else {
+                    Text("Tap unvisited tiles, municipalities or postcodes to add them. The route goes from the start to the end; drag the flags to move them.")
+                }
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
             HStack {
                 Button {
                     Task { await plan.plan(with: store) }
@@ -88,7 +122,7 @@ struct PlanPanel: View {
                     Label("Plan Route", systemImage: "bicycle")
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(plan.selected.isEmpty || plan.isWorking)
+                .disabled((plan.selected.isEmpty && plan.end == nil) || plan.isWorking)
                 Button("Open GPX…", action: onOpenGPX)
                     .buttonStyle(.bordered)
                     .disabled(plan.isWorking)
@@ -126,6 +160,7 @@ struct PlanPanel: View {
             }
             if route.source == .planned {
                 startButton
+                endButton
             }
             if plan.routeIsOutdated {
                 Text("Selection changed – plan again to include it.")
@@ -150,7 +185,7 @@ struct PlanPanel: View {
                 if plan.routeIsOutdated {
                     Button("Replan") { Task { await plan.plan(with: store) } }
                         .buttonStyle(.bordered)
-                        .disabled(plan.isWorking || plan.selected.isEmpty)
+                        .disabled(plan.isWorking || (plan.selected.isEmpty && plan.end == nil))
                 }
             } else {
                 Button("Open Another GPX…", action: onOpenGPX)
