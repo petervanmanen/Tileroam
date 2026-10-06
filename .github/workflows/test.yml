@@ -1,9 +1,11 @@
 name: Tests
 
+# Runs on pull requests only. The merge to main isn't tested again here: the TestFlight workflow
+# runs the same tests on the tagged commit before it uploads, so a release is tested twice (the
+# PR, then the exact build), not three times.
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
