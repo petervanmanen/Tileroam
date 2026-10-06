@@ -6,7 +6,7 @@ name: Asset packs
 on:
   push:
     branches: [main]
-    paths: ['AssetPacks/Regions/*.fmr', 'AssetPacks/Klompenpaden/klompenpaden.json', 'AssetPacks/MTB/mtb-routes.json']
+    paths: ['AssetPacks/Regions/*.fmr', 'AssetPacks/Klompenpaden/klompenpaden.json', 'AssetPacks/MTB/mtb-routes.json', 'AssetPacks/Ferries/ferries.json']
   workflow_dispatch:
     inputs:
       countries:
@@ -51,11 +51,12 @@ jobs:
             # The Klompenpaden list is a pack of its own.
             if git diff --quiet HEAD^ HEAD -- AssetPacks/Klompenpaden/klompenpaden.json; then :; else COUNTRIES="$COUNTRIES klompenpaden"; fi
             if git diff --quiet HEAD^ HEAD -- AssetPacks/MTB/mtb-routes.json; then :; else COUNTRIES="$COUNTRIES mtbroutes"; fi
+            if git diff --quiet HEAD^ HEAD -- AssetPacks/Ferries/ferries.json; then :; else COUNTRIES="$COUNTRIES ferries"; fi
             COUNTRIES=$(echo $COUNTRIES)
           else
             COUNTRIES="$INPUT_COUNTRIES"
           fi
-          [[ "$COUNTRIES" =~ ^[A-Z\ ]*( ?klompenpaden)?( ?mtbroutes)?$ ]] || { echo "Invalid countries: $COUNTRIES"; exit 1; }
+          [[ "$COUNTRIES" =~ ^[A-Z\ ]*( ?klompenpaden)?( ?mtbroutes)?( ?ferries)?$ ]] || { echo "Invalid countries: $COUNTRIES"; exit 1; }
           echo "COUNTRIES=$COUNTRIES" >> "$GITHUB_ENV"
           echo "Countries: ${COUNTRIES:-all}" >> "$GITHUB_STEP_SUMMARY"
 

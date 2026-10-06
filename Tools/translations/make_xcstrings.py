@@ -505,6 +505,16 @@ T = {
     "Estimated": ("Geschat", "Estimé", "Estimado", "Geschätzt"),
     "%lld m climbing": ("%lld hm klimmen", "%lld m de dénivelé", "%lld m de desnivel", "%lld Hm Anstieg"),
     "technical S%@": ("technisch S%@", "technique S%@", "técnica S%@", "technisch S%@"),
+    # Ferries (1.11, issue #54)
+    "Ferries": ("Veerponten", "Bacs", "Transbordadores", "Fähren"),
+    "tab.ferries": ("Ponten", "Bacs", "Ferris", "Fähren"),
+    "%lld of %lld ferries taken": ("%1$lld van %2$lld ponten genomen", "%1$lld bacs pris sur %2$lld", "%1$lld de %2$lld ferris tomados", "%1$lld von %2$lld Fähren genommen"),
+    "Ferries taken": ("Ponten genomen", "Bacs pris", "Ferris tomados", "Genommene Fähren"),
+    "Ferries: cross the rivers on the ferries that take your bike": ("Veerponten: steek de rivieren over met de ponten die je fiets meenemen", "Bacs : traversez les rivières sur les bacs qui prennent votre vélo", "Ferris: cruza los ríos en los ferris que llevan tu bici", "Fähren: überquere die Flüsse mit den Fähren, die dein Rad mitnehmen"),
+    "Ferry at %@": ("Pont bij %@", "Bac à %@", "Ferri en %@", "Fähre bei %@"),
+    "Ferry": ("Pont", "Bac", "Ferri", "Fähre"),
+    "Taken %lld times, last on %@": ("%1$lld keer genomen, laatst op %2$@", "Pris %1$lld fois, dernière le %2$@", "Tomado %1$lld veces, la última el %2$@", "%1$lld-mal genommen, zuletzt am %2$@"),
+    "Not taken yet: cross on the ferry with your bike": ("Nog niet genomen: steek met je fiets over met de pont", "Pas encore pris : traversez sur le bac avec votre vélo", "Aún no tomado: cruza en el ferri con tu bici", "Noch nicht genommen: setze mit deinem Rad über"),
     # Boscafé Challenge (1.8)
     "Boscafé Challenge": ("Boscafé-uitdaging", "Défi des cafés en forêt", "Desafío de cafés del bosque", "Waldcafé-Challenge"),
     "tab.boscafes": ("Boscafés", "Cafés forêt", "Cafés bosque", "Waldcafés"),

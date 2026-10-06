@@ -73,6 +73,8 @@ final class ActivityStore {
     var trappistVisits: [String: [Date]] { challenges.trappistVisits }
     var boscafes: [Boscafe] { challenges.boscafes }
     var boscafeVisits: [String: [Date]] { challenges.boscafeVisits }
+    var ferries: [Ferry] { challenges.ferries }
+    var ferryCrossings: [String: [Date]] { challenges.ferryCrossings }
     var klompenpaden: [Klompenpad] { challenges.klompenpaden }
     var klompenpadProgress: [String: Double] { challenges.klompenpadProgress }
     var klompenpadenWalked: Int { challenges.klompenpadenWalked }
@@ -260,6 +262,7 @@ final class ActivityStore {
         }
         Task { handle(await challenges.updateTrappists()) }
         Task { handle(await challenges.updateBoscafes()) }
+        Task { handle(await challenges.updateFerries()) }
         Task { handle(await challenges.updateKlompenpaden()) }
         Task { handle(await challenges.updateMTBRoutes()) }
     }

@@ -93,6 +93,7 @@ struct IntroView: View {
                 feature("mountain.2.fill", "Climbs from short steep hills to HC, and the ones you climbed")
                 feature("mug.fill", "The Trappist Challenge: ride past the Trappist breweries")
                 feature("tree.fill", "The Boscafé Challenge: visit the cafés in the woods")
+                feature("ferry.fill", "Ferries: cross the rivers on the ferries that take your bike")
                 feature("shoeprints.fill", "Klompenpaden: walk the 167 country paths of Gelderland and Utrecht")
                 feature("bicycle", "Mountain bike routes: the signposted MTB routes of OpenStreetMap")
                 feature("rosette", "18 badges, from 100! and Everester to Festive 500 and Globetrotter")

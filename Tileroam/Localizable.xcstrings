@@ -1097,6 +1097,34 @@
         }
       }
     },
+    "%lld of %lld ferries taken": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld van %2$lld ponten genomen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld bacs pris sur %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld ferris tomados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Fähren genommen"
+          }
+        }
+      }
+    },
     "%lld of %lld mountain bike routes ridden": {
       "localizations": {
         "nl": {
@@ -4797,6 +4825,146 @@
         }
       }
     },
+    "Ferries": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veerponten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacs"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transbordadores"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fähren"
+          }
+        }
+      }
+    },
+    "Ferries taken": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponten genomen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacs pris"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferris tomados"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genommene Fähren"
+          }
+        }
+      }
+    },
+    "Ferries: cross the rivers on the ferries that take your bike": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veerponten: steek de rivieren over met de ponten die je fiets meenemen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacs : traversez les rivières sur les bacs qui prennent votre vélo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferris: cruza los ríos en los ferris que llevan tu bici"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fähren: überquere die Flüsse mit den Fähren, die dein Rad mitnehmen"
+          }
+        }
+      }
+    },
+    "Ferry": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pont"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bac"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferri"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fähre"
+          }
+        }
+      }
+    },
+    "Ferry at %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pont bij %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bac à %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferri en %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fähre bei %@"
+          }
+        }
+      }
+    },
     "Festive 500": {
       "localizations": {
         "nl": {
@@ -6921,6 +7089,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Noch nicht gefahren"
+          }
+        }
+      }
+    },
+    "Not taken yet: cross on the ferry with your bike": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet genomen: steek met je fiets over met de pont"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore pris : traversez sur le bac avec votre vélo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no tomado: cruza en el ferri con tu bici"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht genommen: setze mit deinem Rad über"
           }
         }
       }
@@ -9865,6 +10061,34 @@
         }
       }
     },
+    "Taken %lld times, last on %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld keer genomen, laatst op %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pris %1$lld fois, dernière le %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tomado %1$lld veces, la última el %2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-mal genommen, zuletzt am %2$@"
+          }
+        }
+      }
+    },
     "Tap the route button, select unvisited tiles, municipalities or postcodes, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
       "localizations": {
         "nl": {
@@ -11586,6 +11810,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anstiege"
+          }
+        }
+      }
+    },
+    "tab.ferries": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacs"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferris"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fähren"
           }
         }
       }

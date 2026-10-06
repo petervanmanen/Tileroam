@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists**, **Boscafés**, **Klompenpaden** and **MTB** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists**, **Boscafés**, **Ferries**, **Klompenpaden** and **MTB** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. The squares are zoom 14 tiles, about 1.5 km wide in the Netherlands: the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
@@ -98,6 +98,10 @@ Turn on the **Trappists** challenge with the **+** at the end of the tabs to see
 ## Boscafé Challenge
 
 Turn on the **Boscafés** challenge with the **+** to see the boscafés on the map: cafés, pavilions, tea gardens and inns in the woods and on the heaths of the Netherlands, from the Veluwe and the Utrechtse Heuvelrug to Brabant, Limburg, Twente and Drenthe. Each is shown with its emoji (🌲 ☕ 🍺 🍽️ 🥞 🫖). A boscafé counts as visited when one of your activities, a ride or a walk, passed within 200 m of it; it then gets a green ring and a check. Tap a boscafé to see when you were there. In planning mode, tap boscafés on the Boscafés tab to plan a route past them. The list is downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for changes once a day.
+
+## Ferries
+
+Turn on the **Ferries** challenge with the **+** to see the ferries that take cyclists on the map: the pontjes over the Dutch rivers and canals and the ferries across the Rhine, the Danube and the lake narrows: about 900 crossings of up to 2 km in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria, from OpenStreetMap. Longer boat lines (island ferries, boat trips along a river or around a lake) aren't included: riding the path along the shore would look the same as taking the boat. A ferry counts as taken when one of your activities crosses on it: the track comes near both landings and the middle of the crossing (riding past a landing doesn't count). Taken ferries get a green ring and a check. Tap a ferry to see its name, length, operator, links and when you crossed. The list is downloaded once from Apple (about 0.2 MB).
 
 ## Klompenpaden
 

@@ -66,6 +66,9 @@ struct Activity: Codable, Sendable, Identifiable {
     /// Boscafés passed (`Boscafe.id`).
     var boscafes: [String]?
     var boscafesKey: String?
+    /// Ferries crossed (`Ferry.id`).
+    var ferries: [String]?
+    var ferriesKey: String?
     /// Klompenpaden: for each path touched, the indexes of its checkpoints passed
     /// (`KlompenpadMatcher.checkpoints`).
     var klompenpadHits: [String: [Int]]?

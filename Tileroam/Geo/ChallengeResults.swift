@@ -14,6 +14,7 @@ import Foundation
 enum ChallengeResults {
     static func trappistsKey(_ list: [Trappist]) -> String { "t\(TrappistMatcher.version)-\(fingerprint(list))" }
     static func boscafesKey(_ list: [Boscafe]) -> String { "b\(TrappistMatcher.version)-\(fingerprint(list))" }
+    static func ferriesKey(_ list: [Ferry]) -> String { "f\(FerryMatcher.version)-\(fingerprint(list))" }
     static func klompenpadKey(_ list: [Klompenpad]) -> String { "k\(KlompenpadMatcher.version)-\(fingerprint(list))" }
     static func mtbKey(_ list: [MTBRoute]) -> String { "m\(KlompenpadMatcher.version)-\(fingerprint(list))" }
     /// The bundled world map can only change with an app update: hashed once.
@@ -36,6 +37,7 @@ enum ChallengeResults {
     struct Result: Sendable {
         var trappists: [String]?
         var boscafes: [String]?
+        var ferries: [String]?
         var klompenpadHits: [String: [Int]]?
         var mtbHits: [String: [Int]]?
         var countries: [String]?
@@ -47,6 +49,8 @@ enum ChallengeResults {
         let trappistsKey: String
         let boscafes: [Boscafe]
         let boscafesKey: String
+        let ferries: [Ferry]
+        let ferriesKey: String
         let paths: KlompenpadMatcher.Prepared
         let klompenpadKey: String
         let mtb: KlompenpadMatcher.Prepared
@@ -63,6 +67,9 @@ enum ChallengeResults {
         if activity.boscafesKey != current.boscafesKey {
             result.boscafes = TrappistMatcher.visited(by: track, among: current.boscafes)
         }
+        if activity.ferriesKey != current.ferriesKey {
+            result.ferries = FerryMatcher.crossed(by: track, among: current.ferries)
+        }
         if activity.klompenpadKey != current.klompenpadKey { result.klompenpadHits = KlompenpadMatcher.hits(track, paths: current.paths) }
         if activity.mtbKey != current.mtbKey {
             result.mtbHits = MTBRoute.counts(activity) ? KlompenpadMatcher.hits(track, paths: current.mtb) : [:]
@@ -75,7 +82,7 @@ enum ChallengeResults {
 
     /// Whether an activity still needs checking.
     static func isPending(_ a: Activity, _ current: Current) -> Bool {
-        a.isOnMap && (a.trappistsKey != current.trappistsKey || a.boscafesKey != current.boscafesKey || a.klompenpadKey != current.klompenpadKey
+        a.isOnMap && (a.trappistsKey != current.trappistsKey || a.boscafesKey != current.boscafesKey || a.ferriesKey != current.ferriesKey || a.klompenpadKey != current.klompenpadKey
                       || a.mtbKey != current.mtbKey || a.countriesKey != countriesKey)
     }
 }

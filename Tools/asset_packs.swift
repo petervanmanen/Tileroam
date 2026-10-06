@@ -37,7 +37,7 @@ func neededBoundaryPacks() -> Set<String> {
             return (String(cc), String(id))
         })
     // Plus the route challenges' lists.
-    return Set(codes.map { renamed[$0] ?? "regions-\($0)" }).union(["klompenpaden", "mtbroutes"])
+    return Set(codes.map { renamed[$0] ?? "regions-\($0)" }).union(["klompenpaden", "mtbroutes", "ferries"])
 }
 
 // The routing data isn't in asset packs any more (it's on Cloudflare R2 since October 2026), so

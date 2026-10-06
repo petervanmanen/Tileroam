@@ -245,6 +245,7 @@ private struct SourcesView: View {
         (String(localized: "Badges"), "Country outlines: Natural Earth (public domain)"),
         (String(localized: "Trappist Challenge"), "Brewery logos © the Trappist breweries and abbeys, shown to identify each brewery; locations from public sources"),
         (String(localized: "Boscafé Challenge"), "Names and locations of the boscafés from public sources"),
+        (String(localized: "Ferries"), "Ferries that take cyclists: © OpenStreetMap contributors (ODbL), [openstreetmap.org](https://www.openstreetmap.org/copyright)"),
         (String(localized: "Mountain bike routes"), "Signposted mountain bike routes: © OpenStreetMap contributors (ODbL), [openstreetmap.org](https://www.openstreetmap.org/copyright)"),
         (String(localized: "Klompenpaden"), "Routes and names of the Klompenpaden: [www.klompenpaden.nl](https://www.klompenpaden.nl)"),
         (String(localized: "Elevation and climbs"), "Terrain Tiles (AWS Open Data): SRTM (NASA, public domain); EU-DEM, produced using Copernicus data and information funded by the European Union; climbs found by Tileroam on OpenStreetMap roads (ODbL)"),
