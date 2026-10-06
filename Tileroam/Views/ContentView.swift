@@ -164,6 +164,7 @@ struct ContentView: View {
             }
             #if DEBUG
             .task { await plan.runDebugDemo(with: store) }
+            .task { await RecapDemo.run(store) }
             .task { await runPreviewTour() }
             #endif
             .onChange(of: scenePhase) { _, phase in

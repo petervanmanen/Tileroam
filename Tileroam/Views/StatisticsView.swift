@@ -7,6 +7,8 @@ struct StatisticsView: View {
     /// The categories the user opened; all start closed, as one small row each.
     @State private var expanded: Set<String> = []
     @State private var shownBadge: Badge?
+    @State private var showsYearInReview = false
+    @State private var showsTileVideo = false
 
     private var year: Int { Calendar.current.component(.year, from: .now) }
 
@@ -15,6 +17,14 @@ struct StatisticsView: View {
         let visitedCountries = Country.sortedByName.filter { (municipalities[$0.code]?.visited ?? 0) > 0 }
         let thisYear = store.activities.filter { $0.startDate.map { Calendar.current.component(.year, from: $0) == year } ?? false }
         List {
+            Section {
+                Button { showsYearInReview = true } label: {
+                    Label("Year in Review", systemImage: "calendar.badge.checkmark")
+                }
+                Button { showsTileVideo = true } label: {
+                    Label("Tile History Video", systemImage: "film.stack")
+                }
+            }
             category("overview", "Overview", summary: String(localized: "\(store.tiles(.explorer).count) tiles")) {
                 // All countries of the world with activities (issue #38), not only those with municipalities.
                 LabeledContent("Countries visited", value: store.worldCountries.count.formatted())
@@ -84,6 +94,8 @@ struct StatisticsView: View {
             }
         }
         .navigationTitle("Statistics")
+        .sheet(isPresented: $showsYearInReview) { YearInReviewView().environment(store) }
+        .sheet(isPresented: $showsTileVideo) { TileVideoView().environment(store) }
         #if DEBUG
         // Screenshots: -StatisticsOpen "badges climbs" opens those categories.
         .onAppear {
