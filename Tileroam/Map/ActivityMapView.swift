@@ -5,7 +5,7 @@ import SwiftUI
 enum MapMode: String, CaseIterable, Identifiable {
     // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3; a
     // stored "activities" no longer decodes, so those users start on Tiles.)
-    case squares, gemeenten, postcodes, climbs, trappists, klompenpaden, mtb
+    case squares, gemeenten, postcodes, climbs, trappists, boscafes, klompenpaden, mtb
 
     var id: Self { self }
 
@@ -16,6 +16,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .postcodes: String(localized: "Postcodes")
         case .climbs: String(localized: "Climbs")
         case .trappists: String(localized: "Trappist Challenge")
+        case .boscafes: String(localized: "Boscafé Challenge")
         case .klompenpaden: String(localized: "Klompenpaden")
         case .mtb: String(localized: "Mountain bike routes")
         }
@@ -29,6 +30,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .postcodes: String(localized: "tab.postcodes", defaultValue: "Postcodes")
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
         case .trappists: String(localized: "tab.trappists", defaultValue: "Trappists")
+        case .boscafes: String(localized: "tab.boscafes", defaultValue: "Boscafés")
         case .klompenpaden: String(localized: "tab.klompenpaden", defaultValue: "Klompenpaden")
         case .mtb: String(localized: "tab.mtb", defaultValue: "MTB")
         }
@@ -42,6 +44,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .postcodes: "envelope"
         case .climbs: "mountain.2"
         case .trappists: "mug"
+        case .boscafes: "tree"
         case .klompenpaden: "shoeprints.fill"
         case .mtb: "bicycle"
         }
@@ -63,7 +66,7 @@ enum MapMode: String, CaseIterable, Identifiable {
 enum Challenges {
     /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
     static let key = "challenges"
-    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .klompenpaden, .mtb]
+    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .boscafes, .klompenpaden, .mtb]
 
     static func decode(_ raw: String) -> Set<MapMode> {
         Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).intersection(all)
@@ -127,6 +130,7 @@ struct ActivityMapView: UIViewRepresentable {
     @Binding var selectedArea: Area?
     @Binding var selectedClimb: Climb?
     @Binding var selectedTrappist: Trappist?
+    @Binding var selectedBoscafe: Boscafe?
     @Binding var selectedKlompenpad: Klompenpad?
     @Binding var selectedMTBRoute: MTBRoute?
     /// Incremented by the "my location" button.
@@ -364,7 +368,12 @@ struct ActivityMapView: UIViewRepresentable {
             case .trappists:
                 let marked = planning ? plan.selectedTrappists.union(coverage?.trappists ?? []) : []
                 map.addAnnotations(store.trappists.map {
-                    TrappistAnnotation(trappist: $0, visited: store.trappistVisits[$0.id] != nil, marked: marked.contains($0.id))
+                    PlaceAnnotation(place: $0, icon: $0.icon, visited: store.trappistVisits[$0.id] != nil, marked: marked.contains($0.id))
+                })
+            case .boscafes:
+                let marked = planning ? plan.selectedBoscafes.union(coverage?.boscafes ?? []) : []
+                map.addAnnotations(store.boscafes.map {
+                    PlaceAnnotation(place: $0, emoji: $0.emoji, visited: store.boscafeVisits[$0.id] != nil, marked: marked.contains($0.id))
                 })
             }
 
@@ -402,7 +411,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .climbs, .trappists, .klompenpaden, .mtb:
+            case .climbs, .trappists, .boscafes, .klompenpaden, .mtb:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -461,17 +470,24 @@ struct ActivityMapView: UIViewRepresentable {
         /// The chosen starting point; drag it to move the start.
         final class StartAnnotation: MKPointAnnotation {}
 
-        /// A Trappist brewery, drawn as its logo in a white badge: green ring and check once visited.
-        final class TrappistAnnotation: NSObject, MKAnnotation {
-            let trappist: Trappist
+        /// A Trappist brewery or a boscafé, drawn as its logo or emoji in a white badge: green ring
+        /// and check once visited.
+        final class PlaceAnnotation: NSObject, MKAnnotation {
+            let place: any ChallengePlace
+            /// A brewery's logo (nil until downloaded: its initial is drawn instead).
+            let icon: UIImage?
+            /// A boscafé's emoji.
+            let emoji: String?
             let visited: Bool
             /// Selected for a plan, or on the planned route: orange ring.
             let marked: Bool
-            var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: trappist.lat, longitude: trappist.lon) }
-            var title: String? { trappist.name }
+            var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon) }
+            var title: String? { place.name }
 
-            init(trappist: Trappist, visited: Bool, marked: Bool = false) {
-                self.trappist = trappist
+            init(place: any ChallengePlace, icon: UIImage? = nil, emoji: String? = nil, visited: Bool, marked: Bool = false) {
+                self.place = place
+                self.icon = icon
+                self.emoji = emoji
                 self.visited = visited
                 self.marked = marked
             }
@@ -485,12 +501,13 @@ struct ActivityMapView: UIViewRepresentable {
                     UIColor.white.setFill()
                     let circle = UIBezierPath(ovalIn: rect)
                     circle.fill()
-                    if let icon = trappist.icon {
+                    if let icon {
                         icon.draw(in: rect.insetBy(dx: 5, dy: 5))
                     } else {
-                        // Logo not downloaded yet: the brewery's initial.
-                        let text = String(trappist.name.prefix(1)) as NSString
-                        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.boldSystemFont(ofSize: 20), .foregroundColor: UIColor.black]
+                        // A boscafé's emoji, or a brewery's initial while its logo isn't downloaded.
+                        let text = (emoji ?? String(place.name.prefix(1))) as NSString
+                        let font = emoji != nil ? UIFont.systemFont(ofSize: 24) : UIFont.boldSystemFont(ofSize: 20)
+                        let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.black]
                         let s = text.size(withAttributes: attributes)
                         text.draw(at: CGPoint(x: (size.width - s.width) / 2, y: (size.height - s.height) / 2), withAttributes: attributes)
                     }
@@ -510,11 +527,11 @@ struct ActivityMapView: UIViewRepresentable {
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             guard !(annotation is MKUserLocation) else { return nil }
-            if let trappist = annotation as? TrappistAnnotation {
-                let view = mapView.dequeueReusableAnnotationView(withIdentifier: "trappist")
-                    ?? MKAnnotationView(annotation: annotation, reuseIdentifier: "trappist")
+            if let place = annotation as? PlaceAnnotation {
+                let view = mapView.dequeueReusableAnnotationView(withIdentifier: "place")
+                    ?? MKAnnotationView(annotation: annotation, reuseIdentifier: "place")
                 view.annotation = annotation
-                view.image = trappist.badge()
+                view.image = place.badge()
                 view.canShowCallout = false
                 view.displayPriority = .required
                 view.collisionMode = .circle
@@ -672,7 +689,9 @@ struct ActivityMapView: UIViewRepresentable {
                 case .climbs:
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
                 case .trappists:
-                    if let t = nearestTrappist(to: p, on: map) { parent.plan.toggle(.trappist(t.id)) }
+                    if let t = nearestPlace(parent.store.trappists, to: p, on: map) { parent.plan.toggle(.trappist(t.id)) }
+                case .boscafes:
+                    if let b = nearestPlace(parent.store.boscafes, to: p, on: map) { parent.plan.toggle(.boscafe(b.id)) }
                 case .klompenpaden, .mtb:
                     break // routes to ride or walk themselves, not planning targets
                 }
@@ -689,7 +708,11 @@ struct ActivityMapView: UIViewRepresentable {
             }
 
             if parent.mode == .trappists {
-                parent.selectedTrappist = nearestTrappist(to: p, on: map)
+                parent.selectedTrappist = nearestPlace(parent.store.trappists, to: p, on: map)
+                return
+            }
+            if parent.mode == .boscafes {
+                parent.selectedBoscafe = nearestPlace(parent.store.boscafes, to: p, on: map)
                 return
             }
 
@@ -720,10 +743,10 @@ struct ActivityMapView: UIViewRepresentable {
             return best?.0
         }
 
-        /// The brewery closest to a tap, within its badge (about 25 points on screen).
-        private func nearestTrappist(to p: GeoPoint, on map: MKMapView) -> Trappist? {
+        /// The brewery or boscafé closest to a tap, within its badge (about 25 points on screen).
+        private func nearestPlace<Place: ChallengePlace>(_ places: [Place], to p: GeoPoint, on map: MKMapView) -> Place? {
             let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
-            return parent.store.trappists.map { ($0, Geo.distance($0.point, p)) }
+            return places.map { ($0, Geo.distance($0.point, p)) }
                 .filter { $0.1 <= 25 * metresPerPoint }
                 .min { $0.1 < $1.1 }?.0
         }

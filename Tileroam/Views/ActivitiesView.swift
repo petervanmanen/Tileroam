@@ -191,6 +191,34 @@ struct TrappistCard: View {
     }
 }
 
+struct BoscafeCard: View {
+    let boscafe: Boscafe
+    let visits: [Date]
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text(boscafe.emoji)
+                .font(.system(size: 30))
+                .frame(width: 52, height: 52)
+                .background(.white, in: RoundedRectangle(cornerRadius: 10))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(boscafe.name).font(.headline).lineLimit(2)
+                Text(boscafe.place).font(.subheadline).foregroundStyle(.secondary)
+                if let last = visits.first {
+                    Text(String(localized: "Visited \(visits.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
+                        .font(.footnote).foregroundStyle(.green)
+                } else {
+                    Text("Not visited yet: ride or walk within 200 m of the boscafé").font(.footnote).foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}
+
 struct KlompenpadCard: View {
     let path: Klompenpad
     /// Share of the main route walked (0…1).

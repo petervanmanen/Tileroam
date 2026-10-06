@@ -92,6 +92,7 @@ struct IntroView: View {
                 feature("building.2.fill", "Challenges: municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
                 feature("mountain.2.fill", "Climbs from short steep hills to HC, and the ones you climbed")
                 feature("mug.fill", "The Trappist Challenge: ride past the Trappist breweries")
+                feature("tree.fill", "The Boscafé Challenge: visit 53 cafés in the woods")
                 feature("shoeprints.fill", "Klompenpaden: walk the 167 country paths of Gelderland and Utrecht")
                 feature("bicycle", "Mountain bike routes: the signposted MTB routes of OpenStreetMap")
                 feature("rosette", "18 badges, from 100! and Everester to Festive 500 and Globetrotter")
@@ -154,7 +155,7 @@ struct IntroView: View {
     private var planning: some View {
         IntroPage(symbol: "point.topleft.down.to.point.bottomright.curvepath", color: .purple,
                   title: "Plan Routes to New Places",
-                  text: "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or Trappist breweries, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.") {
+                  text: "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs, Trappist breweries or boscafés, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.") {
             VStack(alignment: .leading, spacing: 12) {
                 feature("hand.tap.fill", "Select as many places as you like, mixed types allowed")
                 feature("arrow.triangle.turn.up.right.diamond.fill", "Routes follow cycle-friendly roads")

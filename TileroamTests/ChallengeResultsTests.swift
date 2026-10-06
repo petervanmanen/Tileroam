@@ -16,18 +16,21 @@ struct ChallengeResultsTests {
         #expect(a == ChallengeResults.trappistsKey([westmalle])) // stable
         #expect(a != ChallengeResults.trappistsKey([]))           // another list
         #expect(a.hasPrefix("t\(TrappistMatcher.version)-"))      // a new version changes it
+        #expect(ChallengeResults.boscafesKey([]).hasPrefix("b\(TrappistMatcher.version)-"))
         #expect(ChallengeResults.klompenpadKey([]).hasPrefix("k\(KlompenpadMatcher.version)-"))
         #expect(ChallengeResults.countriesKey.hasPrefix("c\(CountryOutlines.worldVersion)-"))
     }
 
-    private func current(_ trappists: [Trappist], mtb: [MTBRoute] = []) -> ChallengeResults.Current {
+    private func current(_ trappists: [Trappist], boscafes: [Boscafe] = [], mtb: [MTBRoute] = []) -> ChallengeResults.Current {
         ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
+                                 boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
                                  paths: .init([Klompenpad]()), klompenpadKey: ChallengeResults.klompenpadKey([]),
                                  mtb: .init(mtb, spacing: MTBRoute.spacing), mtbKey: ChallengeResults.mtbKey(mtb))
     }
 
     private func store(_ r: ChallengeResults.Result, _ c: ChallengeResults.Current, in a: inout Activity) {
         if let t = r.trappists { a.trappists = t; a.trappistsKey = c.trappistsKey }
+        if let b = r.boscafes { a.boscafes = b; a.boscafesKey = c.boscafesKey }
         if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = c.klompenpadKey }
         if let h = r.mtbHits { a.mtbHits = h; a.mtbKey = c.mtbKey }
         if let co = r.countries { a.countries = co; a.countriesKey = ChallengeResults.countriesKey }
@@ -47,7 +50,21 @@ struct ChallengeResultsTests {
         let newer = current([])
         #expect(ChallengeResults.isPending(a, newer))
         let again = ChallengeResults.compute(a, newer)
-        #expect(again.trappists == [] && again.klompenpadHits == nil && again.mtbHits == nil && again.countries == nil)
+        #expect(again.trappists == [] && again.boscafes == nil && again.klompenpadHits == nil && again.mtbHits == nil && again.countries == nil)
+    }
+
+    @Test func boscafesAreVisitedLikeBreweries() {
+        // A walk 150 m south of De Boshut in Hilversum, east to west.
+        let boshut = Boscafe(id: "de-boshut-hilversum", name: "De Boshut", place: "Hilversum", emoji: "🌲", lat: 52.24173, lon: 5.1609)
+        let south = 150.0 / 111_000
+        var walk = Importer.makeActivity(points: [GeoPoint(lat: 52.24173 - south, lon: 5.15), GeoPoint(lat: 52.24173 - south, lon: 5.17)],
+                                         id: "walk", cacheKey: "", name: "Walk", sport: "Walking", startDate: .now, distance: nil)
+        let c = current([], boscafes: [boshut])
+        let r = ChallengeResults.compute(walk, c)
+        #expect(r.boscafes == ["de-boshut-hilversum"])
+        store(r, c, in: &walk)
+        #expect(!ChallengeResults.isPending(walk, c))
+        #expect(ChallengeResults.isPending(walk, current([]))) // another list: checked again
     }
 
     @Test func klompenpadProgressAddsUpStoredHits() {

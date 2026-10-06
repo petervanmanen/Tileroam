@@ -31,6 +31,13 @@ Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
 contributors. The script and the extracts it names are the complete recipe to
 rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
 
+## Boscafés
+
+The Boscafé Challenge's list (`AssetPacks/Boscafes/boscafes.json`, served from Cloudflare R2 and
+uploaded with `Tools/upload_boscafes_r2.sh`) holds the names, places and locations of 53 boscafés,
+from public sources. Names and coordinates are facts; no logos or other content of the cafés are
+used.
+
 ## World countries
 
 `Tileroam/Resources/world.fmr` (made by `Tools/build_world_countries.py`) is simplified from
