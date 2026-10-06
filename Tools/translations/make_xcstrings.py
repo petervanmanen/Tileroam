@@ -498,6 +498,7 @@ T = {
     "Climbed %lld times, last on %@": ("%1$lld keer beklommen, laatst op %2$@", "Gravie %1$lld fois, la dernière le %2$@", "Subida %1$lld veces, la última el %2$@", "%1$lld-mal gefahren, zuletzt am %2$@"),
     "Climbed (%lld)": ("Beklommen (%lld)", "Gravies (%lld)", "Hechas (%lld)", "Gefahren (%lld)"),
     "Climbs": ("Klimmen", "Montées", "Subidas", "Anstiege"),
+    "The download took too long.": ("Het downloaden duurde te lang.", "Le téléchargement a pris trop de temps.", "La descarga tardó demasiado.", "Der Download hat zu lange gedauert."),
     # Boscafé Challenge (1.8)
     "Boscafé Challenge": ("Boscafé-uitdaging", "Défi des cafés en forêt", "Desafío de cafés del bosque", "Waldcafé-Challenge"),
     "tab.boscafes": ("Boscafés", "Cafés forêt", "Cafés bosque", "Waldcafés"),

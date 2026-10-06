@@ -9641,6 +9641,34 @@
         }
       }
     },
+    "The download took too long.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het downloaden duurde te lang."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le téléchargement a pris trop de temps."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La descarga tardó demasiado."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Download hat zu lange gedauert."
+          }
+        }
+      }
+    },
     "The largest number E such that you covered at least E km on at least E days. Walking includes hikes.": {
       "localizations": {
         "nl": {
