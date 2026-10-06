@@ -5,7 +5,7 @@ import SwiftUI
 enum MapMode: String, CaseIterable, Identifiable {
     // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3; a
     // stored "activities" no longer decodes, so those users start on Tiles.)
-    case squares, gemeenten, postcodes, climbs, trappists, klompenpaden
+    case squares, gemeenten, postcodes, climbs, trappists, klompenpaden, mtb
 
     var id: Self { self }
 
@@ -17,6 +17,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .climbs: String(localized: "Climbs")
         case .trappists: String(localized: "Trappist Challenge")
         case .klompenpaden: String(localized: "Klompenpaden")
+        case .mtb: String(localized: "Mountain bike routes")
         }
     }
 
@@ -29,6 +30,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
         case .trappists: String(localized: "tab.trappists", defaultValue: "Trappists")
         case .klompenpaden: String(localized: "tab.klompenpaden", defaultValue: "Klompenpaden")
+        case .mtb: String(localized: "tab.mtb", defaultValue: "MTB")
         }
     }
 
@@ -41,6 +43,7 @@ enum MapMode: String, CaseIterable, Identifiable {
         case .climbs: "mountain.2"
         case .trappists: "mug"
         case .klompenpaden: "shoeprints.fill"
+        case .mtb: "bicycle"
         }
     }
 
@@ -60,7 +63,7 @@ enum MapMode: String, CaseIterable, Identifiable {
 enum Challenges {
     /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
     static let key = "challenges"
-    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .klompenpaden]
+    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .klompenpaden, .mtb]
 
     static func decode(_ raw: String) -> Set<MapMode> {
         Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).intersection(all)
@@ -125,6 +128,7 @@ struct ActivityMapView: UIViewRepresentable {
     @Binding var selectedClimb: Climb?
     @Binding var selectedTrappist: Trappist?
     @Binding var selectedKlompenpad: Klompenpad?
+    @Binding var selectedMTBRoute: MTBRoute?
     /// Incremented by the "my location" button.
     let locateRequest: Int
     @Binding var isFollowingUser: Bool
@@ -187,6 +191,7 @@ struct ActivityMapView: UIViewRepresentable {
         private var appliedTileZoom: TileZoom?
         private var appliedClimb: String?
         private var appliedKlompenpad: String?
+        private var appliedMTBRoute: String?
         private var appliedStyle: MapStyle?
 
         func applyStyle(_ map: MKMapView) {
@@ -285,7 +290,9 @@ struct ActivityMapView: UIViewRepresentable {
         func update(_ map: MKMapView) {
             guard appliedMode != parent.mode || appliedVersion != parent.version || appliedPlanVersion != parent.planVersion
                 || appliedTileZoom != parent.tileZoom || appliedClimb != parent.selectedClimb?.id
-                || appliedKlompenpad != parent.selectedKlompenpad?.id else { return }
+                || appliedKlompenpad != parent.selectedKlompenpad?.id
+                || appliedMTBRoute != parent.selectedMTBRoute?.id else { return }
+            appliedMTBRoute = parent.selectedMTBRoute?.id
             appliedClimb = parent.selectedClimb?.id
             appliedKlompenpad = parent.selectedKlompenpad?.id
             appliedTileZoom = parent.tileZoom
@@ -349,32 +356,11 @@ struct ActivityMapView: UIViewRepresentable {
             case .klompenpaden:
                 // Two colours (issue #41): walked green, not (yet) walked dark orange. The selected
                 // path keeps its colour, drawn thicker and on top; its card shows the progress.
-                var groups = [UIColor: [MKPolyline]]()
-                var selectedLines = [MKPolyline](), selectedColor = Self.klompenpadOpen
-                for path in store.klompenpaden {
-                    let color = (store.klompenpadProgress[path.id] ?? 0) >= KlompenpadMatcher.done ? UIColor.systemGreen : Self.klompenpadOpen
-                    let lines = path.pieces.map { piece in
-                        let coords = piece.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
-                        return MKPolyline(coordinates: coords, count: coords.count)
-                    }
-                    if path.id == parent.selectedKlompenpad?.id {
-                        selectedLines = lines
-                        selectedColor = color
-                    } else {
-                        groups[color, default: []] += lines
-                    }
-                }
-                for (color, lines) in groups {
-                    let multi = ClimbLines(lines)
-                    multi.color = color
-                    map.addOverlay(multi, level: .aboveRoads)
-                }
-                if !selectedLines.isEmpty {
-                    let multi = ClimbLines(selectedLines)
-                    multi.color = selectedColor
-                    multi.width = 8
-                    map.addOverlay(multi, level: .aboveRoads)
-                }
+                addRouteLines(store.klompenpaden, progress: store.klompenpadProgress, selected: parent.selectedKlompenpad?.id, to: map)
+            case .mtb:
+                // Like the Klompenpaden: ridden green, not (yet) ridden dark orange; the selected
+                // route thicker and on top.
+                addRouteLines(store.mtbRoutes, progress: store.mtbProgress, selected: parent.selectedMTBRoute?.id, to: map)
             case .trappists:
                 let marked = planning ? plan.selectedTrappists.union(coverage?.trappists ?? []) : []
                 map.addAnnotations(store.trappists.map {
@@ -416,7 +402,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .climbs, .trappists, .klompenpaden:
+            case .climbs, .trappists, .klompenpaden, .mtb:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -557,7 +543,38 @@ struct ActivityMapView: UIViewRepresentable {
             return view
         }
 
-        /// Climbs (or Klompenpaden) drawn in one colour.
+        /// A route challenge's routes: done (at least `KlompenpadMatcher.done`) green, others dark
+        /// orange; the selected one keeps its colour, thicker and on top.
+        private func addRouteLines<Route: ChallengeRoute>(_ routes: [Route], progress: [String: Double], selected: String?, to map: MKMapView) {
+            var groups = [UIColor: [MKPolyline]]()
+            var selectedLines = [MKPolyline](), selectedColor = Self.klompenpadOpen
+            for route in routes {
+                let color = (progress[route.id] ?? 0) >= KlompenpadMatcher.done ? UIColor.systemGreen : Self.klompenpadOpen
+                let lines = route.pieces.map { piece in
+                    let coords = piece.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
+                    return MKPolyline(coordinates: coords, count: coords.count)
+                }
+                if route.id == selected {
+                    selectedLines = lines
+                    selectedColor = color
+                } else {
+                    groups[color, default: []] += lines
+                }
+            }
+            for (color, lines) in groups {
+                let multi = ClimbLines(lines)
+                multi.color = color
+                map.addOverlay(multi, level: .aboveRoads)
+            }
+            if !selectedLines.isEmpty {
+                let multi = ClimbLines(selectedLines)
+                multi.color = selectedColor
+                multi.width = 8
+                map.addOverlay(multi, level: .aboveRoads)
+            }
+        }
+
+        /// Climbs (or a route challenge's routes) drawn in one colour.
         final class ClimbLines: MKMultiPolyline {
             var color = UIColor.systemRed
             var width: CGFloat = 4
@@ -656,14 +673,18 @@ struct ActivityMapView: UIViewRepresentable {
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
                 case .trappists:
                     if let t = nearestTrappist(to: p, on: map) { parent.plan.toggle(.trappist(t.id)) }
-                case .klompenpaden:
-                    break // walking paths: not for cycling routes
+                case .klompenpaden, .mtb:
+                    break // routes to ride or walk themselves, not planning targets
                 }
                 return
             }
 
             if parent.mode == .klompenpaden {
-                parent.selectedKlompenpad = nearestKlompenpad(to: p, on: map)
+                parent.selectedKlompenpad = nearestRoute(parent.store.klompenpaden, to: p, on: map)
+                return
+            }
+            if parent.mode == .mtb {
+                parent.selectedMTBRoute = nearestRoute(parent.store.mtbRoutes, to: p, on: map)
                 return
             }
 
@@ -680,15 +701,19 @@ struct ActivityMapView: UIViewRepresentable {
             parent.selectedArea = areas.area(at: p)
         }
 
-        /// The Klompenpad drawn closest to a tap, within about 25 points on screen.
-        private func nearestKlompenpad(to p: GeoPoint, on map: MKMapView) -> Klompenpad? {
+        /// The route (Klompenpad, MTB route) drawn closest to a tap, within about 25 points on screen.
+        private func nearestRoute<Route: ChallengeRoute>(_ routes: [Route], to p: GeoPoint, on map: MKMapView) -> Route? {
             let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
-            var best: (Klompenpad, Double)?
-            for path in parent.store.klompenpaden {
+            let limit = 25 * metresPerPoint
+            let dLat = limit / 111_000, dLon = dLat / max(cos(p.lat * .pi / 180), 0.2)
+            var best: (Route, Double)?
+            for path in routes {
                 for piece in path.pieces {
+                    // Skip pieces far from the tap without measuring every segment.
+                    guard piece.contains(where: { abs($0.lat - p.lat) < dLat * 40 && abs($0.lon - p.lon) < dLon * 40 }) else { continue }
                     for (a, b) in zip(piece, piece.dropFirst()) {
                         let d = TrappistMatcher.distance(from: p, toSegment: a, b)
-                        if d <= 25 * metresPerPoint, d < best?.1 ?? .infinity { best = (path, d) }
+                        if d <= limit, d < best?.1 ?? .infinity { best = (path, d) }
                     }
                 }
             }

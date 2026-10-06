@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists** and **Klompenpaden** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists**, **Klompenpaden** and **MTB** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. The squares are zoom 14 tiles, about 1.5 km wide in the Netherlands: the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
@@ -96,6 +96,10 @@ Turn on the **Trappists** challenge with the **+** at the end of the tabs to see
 ## Klompenpaden
 
 Turn on the **Klompenpaden** challenge with the **+** to see the 167 Klompenpaden of [www.klompenpaden.nl](https://www.klompenpaden.nl) on the map: walking paths through the countryside of Gelderland and Utrecht. A path is dark orange until you have walked it, and green once your activities cover at least 90% of its main route (within 30 m; several walks add up). Tap a path to see where it starts, its lengths, how much you have walked, and a link to its page on klompenpaden.nl. The list is downloaded once from Apple, like the municipality boundaries (about 70 KB). Klompenpaden are footpaths, so they aren't used for route planning.
+
+## Mountain bike routes
+
+Turn on the **MTB** challenge with the **+** to see the signposted mountain bike routes on the map: about 4,700 routes in the Netherlands, Belgium, Germany, France, Switzerland and Austria, from OpenStreetMap (routes that belong to a local, regional or national network; Luxembourg has none mapped yet). A route is dark orange until you have ridden it and green once your rides cover at least 90% of it (within 30 m; several rides add up; walks don't count). Tap a route to see its network, length, how much you have ridden, and links to OpenStreetMap and the route's own website. The routes are downloaded once from Apple (about 2 MB).
 
 ## Statistics
 

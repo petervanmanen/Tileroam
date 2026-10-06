@@ -38,6 +38,13 @@ rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
 the **public domain**. The app uses it on the device to count the countries of your activities
 (the Globetrotter badge).
 
+## Mountain bike routes
+
+The mountain bike route challenge's list (`AssetPacks/MTB/mtb-routes.json`, an Apple-hosted asset
+pack, made by `Tools/build_mtb_routes.py` from Geofabrik's extracts) is a Derivative Database of
+OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap contributors: the signposted MTB routes
+(route relations in a cycling network), simplified.
+
 ## Klompenpaden
 
 The Klompenpaden challenge's list (`AssetPacks/Klompenpaden/klompenpaden.json`, an Apple-hosted asset pack like the boundaries) holds the

@@ -73,6 +73,15 @@ final class ActivityStore {
     private(set) var klompenpaden: [Klompenpad] = KlompenpadData.cached()
     /// For each path with progress, the share of its main route walked (0…1).
     private(set) var klompenpadProgress: [String: Double] = [:]
+    // Mountain bike routes (see MTBRoute, MTBRouteData)
+    /// The routes, from the `mtbroutes` asset pack (empty until it's downloaded).
+    private(set) var mtbRoutes: [MTBRoute] = MTBRouteData.cached()
+    /// For each route with progress, the share ridden (0…1).
+    private(set) var mtbProgress: [String: Double] = [:]
+    private var preparedMTB: (key: String, paths: KlompenpadMatcher.Prepared)?
+    /// Routes ridden (at least `KlompenpadMatcher.done`).
+    var mtbRoutesRidden: Int { mtbProgress.values.count { $0 >= KlompenpadMatcher.done } }
+
     /// Paths walked (at least `KlompenpadMatcher.done`).
     var klompenpadenWalked: Int { klompenpadProgress.values.count { $0 >= KlompenpadMatcher.done } }
 
@@ -348,6 +357,7 @@ final class ActivityStore {
         importPhase = nil
         Task { await updateTrappists() }
         Task { await updateKlompenpaden() }
+        Task { await updateMTBRoutes() }
         Task { await updateClimbs() }
     }
 
@@ -381,6 +391,14 @@ final class ActivityStore {
         }
     }
 
+    /// Loads the mountain bike routes (downloading their asset pack the first time) and matches
+    /// again when they changed.
+    func updateMTBRoutes() async {
+        guard let list = try? await MTBRouteData.load(), list != mtbRoutes else { return }
+        mtbRoutes = list
+        matchChallenges()
+    }
+
     /// Loads the Klompenpaden list (downloading its asset pack the first time) and matches again
     /// when it changed.
     func updateKlompenpaden() async {
@@ -399,27 +417,39 @@ final class ActivityStore {
         return paths
     }
 
+    private var mtbPrepared: KlompenpadMatcher.Prepared {
+        let key = ChallengeResults.mtbKey(mtbRoutes)
+        if let preparedMTB, preparedMTB.key == key { return preparedMTB.paths }
+        let paths = KlompenpadMatcher.Prepared(mtbRoutes, spacing: MTBRoute.spacing)
+        preparedMTB = (key, paths)
+        return paths
+    }
+
+    private var currentChallenges: ChallengeResults.Current {
+        ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
+                                 paths: klompenpadPrepared, klompenpadKey: ChallengeResults.klompenpadKey(klompenpaden),
+                                 mtb: mtbPrepared, mtbKey: ChallengeResults.mtbKey(mtbRoutes))
+    }
+
     /// Checks the activities whose challenge results are missing or out of date (new ones, or all
     /// of them after a new list or new rules), stores the results with them, then adds everything
     /// up again. One pass at a time: activities that arrive meanwhile are picked up by the next.
     private func matchChallenges() {
         aggregateChallenges()
         guard challengeTask == nil else { return }
-        let tKey = ChallengeResults.trappistsKey(trappists), kKey = ChallengeResults.klompenpadKey(klompenpaden)
-        let pending = (folderActivities + stravaActivities).filter { ChallengeResults.isPending($0, trappistsKey: tKey, klompenpadKey: kKey) }
+        let current = currentChallenges
+        let pending = (folderActivities + stravaActivities).filter { ChallengeResults.isPending($0, current) }
         guard !pending.isEmpty else { return }
-        let list = trappists, paths = klompenpadPrepared
         challengeTask = Task {
             let results = await Task.detached(priority: .utility) {
-                Dictionary(pending.map { a in
-                    (a.id, ChallengeResults.compute(a, trappists: list, trappistsKey: tKey, paths: paths, klompenpadKey: kKey))
-                }, uniquingKeysWith: { a, _ in a })
+                Dictionary(pending.map { a in (a.id, ChallengeResults.compute(a, current)) }, uniquingKeysWith: { a, _ in a })
             }.value
             challengeTask = nil
             func fill(_ a: inout Activity) {
                 guard let r = results[a.id] else { return } // deleted meanwhile: nothing to store
-                if let t = r.trappists { a.trappists = t; a.trappistsKey = tKey }
-                if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = kKey }
+                if let t = r.trappists { a.trappists = t; a.trappistsKey = current.trappistsKey }
+                if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = current.klompenpadKey }
+                if let h = r.mtbHits { a.mtbHits = h; a.mtbKey = current.mtbKey }
                 if let c = r.countries { a.countries = c; a.countriesKey = ChallengeResults.countriesKey }
             }
             for i in folderActivities.indices { fill(&folderActivities[i]) }
@@ -431,25 +461,31 @@ final class ActivityStore {
     }
 
     /// Adds up the stored results of the activities there are (so deleted ones drop out): visited
-    /// breweries, Klompenpaden progress, countries, and the badges. Results computed with an older
-    /// key don't count until they're checked again.
+    /// breweries, Klompenpaden and MTB route progress, countries, and the badges. Results computed
+    /// with an older key don't count until they're checked again.
     private func aggregateChallenges() {
-        let tKey = ChallengeResults.trappistsKey(trappists), kKey = ChallengeResults.klompenpadKey(klompenpaden)
+        let current = currentChallenges
         let cKey = ChallengeResults.countriesKey
         var visits = [String: [Date]]()
-        var hits = [[String: [Int]]]()
+        var paths = [[String: [Int]]](), mtb = [[String: [Int]]]()
         var countries = Set<String>()
         for a in activities where a.isOnMap {
-            if a.trappistsKey == tKey { for id in a.trappists ?? [] { visits[id, default: []].append(a.startDate ?? .distantPast) } }
-            if a.klompenpadKey == kKey, let h = a.klompenpadHits { hits.append(h) }
+            if a.trappistsKey == current.trappistsKey {
+                for id in a.trappists ?? [] { visits[id, default: []].append(a.startDate ?? .distantPast) }
+            }
+            if a.klompenpadKey == current.klompenpadKey, let h = a.klompenpadHits { paths.append(h) }
+            if a.mtbKey == current.mtbKey, let h = a.mtbHits { mtb.append(h) }
             if a.countriesKey == cKey { countries.formUnion(a.countries ?? []) }
         }
-        let progress = KlompenpadMatcher.progress(hits: hits, counts: klompenpadPrepared.counts)
+        let progress = KlompenpadMatcher.progress(hits: paths, counts: current.paths.counts)
+        let mtbProgress = KlompenpadMatcher.progress(hits: mtb, counts: current.mtb.counts)
         let counts = BadgeRules.counts(activities, countries: countries.count)
         let sortedVisits = visits.mapValues { $0.sorted(by: >) }
-        guard sortedVisits != trappistVisits || progress != klompenpadProgress || countries != worldCountries || counts != badges else { return }
+        guard sortedVisits != trappistVisits || progress != klompenpadProgress || mtbProgress != self.mtbProgress
+                || countries != worldCountries || counts != badges else { return }
         trappistVisits = sortedVisits
         klompenpadProgress = progress
+        self.mtbProgress = mtbProgress
         worldCountries = countries
         badges = counts
         version += 1

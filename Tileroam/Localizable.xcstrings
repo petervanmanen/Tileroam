@@ -1013,6 +1013,34 @@
         }
       }
     },
+    "%lld of %lld mountain bike routes ridden": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld van %2$lld mountainbikeroutes gereden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld parcours VTT faits sur %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld rutas de BTT hechas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld Mountainbike-Routen gefahren"
+          }
+        }
+      }
+    },
     "%lld of 50 countries so far": {
       "localizations": {
         "nl": {
@@ -1413,6 +1441,34 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld%% of the route ridden": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% van de route gereden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% du parcours fait"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% de la ruta hecha"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% der Route gefahren"
           }
         }
       }
@@ -4993,6 +5049,34 @@
         }
       }
     },
+    "International route": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationale route"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours international"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruta internacional"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationale Route"
+          }
+        }
+      }
+    },
     "It downloads again the next time you plan a route.": {
       "localizations": {
         "nl": {
@@ -5217,6 +5301,34 @@
         }
       }
     },
+    "Local route": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lokale route"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours local"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruta local"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lokale Route"
+          }
+        }
+      }
+    },
     "Location Access Is Off": {
       "localizations": {
         "nl": {
@@ -5269,6 +5381,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Der Standortzugriff ist aus. Erlaube Tileroam in den Einstellungen, deinen Standort zu verwenden, um eine Route ab deinem Standort zu planen."
+          }
+        }
+      }
+    },
+    "MTB route": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mountainbikeroute"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours VTT"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruta de BTT"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MTB-Route"
           }
         }
       }
@@ -5609,6 +5749,90 @@
         }
       }
     },
+    "Mountain bike routes": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mountainbikeroutes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours VTT"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutas de BTT"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mountainbike-Routen"
+          }
+        }
+      }
+    },
+    "Mountain bike routes ridden": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mountainbikeroutes gereden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours VTT faits"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutas de BTT hechas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gefahrene Mountainbike-Routen"
+          }
+        }
+      }
+    },
+    "Mountain bike routes: the signposted MTB routes of OpenStreetMap": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mountainbikeroutes: de bewegwijzerde MTB-routes uit OpenStreetMap"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours VTT : les parcours VTT balisés d’OpenStreetMap"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutas de BTT: las rutas de BTT señalizadas de OpenStreetMap"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mountainbike-Routen: die ausgeschilderten MTB-Routen aus OpenStreetMap"
+          }
+        }
+      }
+    },
     "Municipalities": {
       "localizations": {
         "nl": {
@@ -5773,6 +5997,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mein Standort"
+          }
+        }
+      }
+    },
+    "National route": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nationale route"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours national"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruta nacional"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nationale Route"
           }
         }
       }
@@ -6193,6 +6445,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nicht erreicht: %@"
+          }
+        }
+      }
+    },
+    "Not ridden yet": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet gereden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore fait"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hecha"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht gefahren"
           }
         }
       }
@@ -7009,6 +7289,34 @@
         }
       }
     },
+    "Regional route": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regionale route"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parcours régional"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruta regional"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regionale Route"
+          }
+        }
+      }
+    },
     "Remove": {
       "localizations": {
         "nl": {
@@ -7173,6 +7481,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neu planen"
+          }
+        }
+      }
+    },
+    "Ridden": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gereden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fait"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hecha"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gefahren"
           }
         }
       }
@@ -10089,6 +10425,34 @@
         }
       }
     },
+    "Website": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Website"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Site web"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitio web"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Website"
+          }
+        }
+      }
+    },
     "Welcome to Tileroam": {
       "localizations": {
         "nl": {
@@ -10606,6 +10970,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klompenpaden"
+          }
+        }
+      }
+    },
+    "tab.mtb": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MTB"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VTT"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BTT"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MTB"
           }
         }
       }

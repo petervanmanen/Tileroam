@@ -5,7 +5,14 @@ import System
 /// A Klompenpad (www.klompenpaden.nl): a walking path through the countryside of Gelderland and
 /// Utrecht. The list is an asset pack (see `KlompenpadData`), made by Tools/build_klompenpaden.py. A path is walked when the user's
 /// activities cover its main route (`KlompenpadMatcher`).
-struct Klompenpad: Codable, Sendable, Identifiable, Hashable {
+/// A route challenge's route: Klompenpaden and mountain bike routes, matched by `KlompenpadMatcher`.
+protocol ChallengeRoute: Sendable {
+    var id: String { get }
+    /// The route, in one or more pieces.
+    var pieces: [[GeoPoint]] { get }
+}
+
+struct Klompenpad: Codable, Sendable, Identifiable, Hashable, ChallengeRoute {
     let id: String
     let name: String
     /// The village it starts from.
@@ -90,8 +97,9 @@ enum KlompenpadData {
     #endif
 }
 
-/// How much of each path the user has walked: the share of points along its main route (one
-/// every 50 m) that any activity passed within 30 m of, over all activities together.
+/// How much of each route the user has covered: the share of points along it (one every `spacing`
+/// metres) that any activity passed within 30 m of, over all activities together. For the
+/// Klompenpaden (every 50 m) and the mountain bike routes (every 100 m: they're long).
 enum KlompenpadMatcher {
     /// Raise when the rules below change: stored results are then computed again (see `ChallengeResults`).
     static let version = 1
@@ -100,8 +108,8 @@ enum KlompenpadMatcher {
     /// From this share a path counts as walked (GPS and the path's drawing differ a little).
     static let done = 0.9
 
-    static func checkpoints(_ path: Klompenpad) -> [GeoPoint] {
-        path.pieces.flatMap { Geo.densified($0, spacing: spacing, maxGap: .infinity) }
+    static func checkpoints(_ route: some ChallengeRoute, spacing: Double = spacing) -> [GeoPoint] {
+        route.pieces.flatMap { Geo.densified($0, spacing: spacing, maxGap: .infinity) }
     }
 
     /// The paths' checkpoints and boxes, made once per list.
@@ -113,10 +121,10 @@ enum KlompenpadMatcher {
         }
         let paths: [Path]
 
-        init(_ list: [Klompenpad]) {
+        init<Route: ChallengeRoute>(_ list: [Route], spacing: Double = KlompenpadMatcher.spacing) {
             let m = KlompenpadMatcher.tolerance / 111_000 * 2
             paths = list.map { p in
-                let points = KlompenpadMatcher.checkpoints(p)
+                let points = KlompenpadMatcher.checkpoints(p, spacing: spacing)
                 let lats = points.map(\.lat), lons = points.map(\.lon)
                 return Path(id: p.id, points: points, minLat: (lats.min() ?? 0) - m, maxLat: (lats.max() ?? 0) + m,
                             minLon: (lons.min() ?? 0) - m * 1.6, maxLon: (lons.max() ?? 0) + m * 1.6)
