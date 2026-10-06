@@ -82,7 +82,7 @@ struct ChallengeResultsTests {
         let points = (0...30).map { GeoPoint(lat: 50.5, lon: 5.9 + Double($0) * 0.0014) }
         let route = MTBRoute(id: "osm-1", name: "Test", ref: nil, network: "lcn", country: "BE", length: 3_000,
                              url: "https://www.openstreetmap.org/relation/1", website: nil, lat: 50.5, lon: 5.9,
-                             lines: [ClimbMatcherTests.encode(points)])
+                             lines: [ClimbMatcherTests.encode(points)], ascent: 12, grade: 0, signposted: false, technical: nil)
         let c = current([], mtb: [route])
         var ridden = ride(points)
         let r = ChallengeResults.compute(ridden, c)

@@ -269,6 +269,12 @@ struct MTBRouteCard: View {
             }
             Text("\(route.networkTitle) · \(Measurement(value: route.length / 1000, unit: UnitLength.kilometers).formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                 .font(.subheadline).foregroundStyle(.secondary)
+            if let difficulty = route.difficulty {
+                HStack(spacing: 8) {
+                    DifficultyBadge(difficulty: difficulty)
+                    Text(difficultyDetails).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
+                }
+            }
             ProgressView(value: min(progress, 1))
                 .tint(done ? .green : .orange)
             HStack {
@@ -286,5 +292,41 @@ struct MTBRouteCard: View {
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    /// "Signposted · 520 m climbing · technical S1.5"
+    private var difficultyDetails: String {
+        var parts = [route.signposted == true ? String(localized: "Signposted") : String(localized: "Estimated")]
+        if let ascent = route.ascent, ascent >= 1 {
+            parts.append(String(localized: "\(Int(ascent.rounded())) m climbing"))
+        }
+        if let technical = route.technical {
+            parts.append(String(localized: "technical S\(technical.formatted(.number.precision(.fractionLength(0...1))))"))
+        }
+        return parts.joined(separator: " · ")
+    }
+}
+
+/// An MTB route's difficulty in the usual colours: green, blue, red, black.
+struct DifficultyBadge: View {
+    let difficulty: MTBRoute.Difficulty
+
+    var body: some View {
+        Text(difficulty.title)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(Self.color(difficulty), in: Capsule())
+            .overlay(Capsule().strokeBorder(.white.opacity(difficulty == .veryHard ? 0.6 : 0), lineWidth: 1))
+    }
+
+    static func color(_ difficulty: MTBRoute.Difficulty) -> Color {
+        switch difficulty {
+        case .easy: .green
+        case .moderate: .blue
+        case .hard: .red
+        case .veryHard: .black
+        }
     }
 }

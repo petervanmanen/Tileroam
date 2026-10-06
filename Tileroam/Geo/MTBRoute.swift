@@ -24,6 +24,30 @@ struct MTBRoute: Codable, Sendable, Identifiable, Hashable, ChallengeRoute {
     let lon: Double
     /// Encoded polylines (precision 5).
     let lines: [String]
+    /// Metres of climbing (from the elevation model; nil in lists from before 1.10).
+    let ascent: Double?
+    /// How hard it is, 0–3 (see `Difficulty`), signposted or estimated (`Tools/build_mtb_routes.py`).
+    let grade: Int?
+    /// The grade is the route's own (signposted), not estimated from effort and paths.
+    let signposted: Bool?
+    /// The paths' average technical grade (mtb:scale, 0–6), when enough of them are tagged.
+    let technical: Double?
+
+    /// The usual MTB grading: green, blue, red, black.
+    enum Difficulty: Int, CaseIterable, Sendable {
+        case easy, moderate, hard, veryHard
+
+        var title: String {
+            switch self {
+            case .easy: String(localized: "Easy", comment: "MTB route difficulty (green)")
+            case .moderate: String(localized: "Moderate", comment: "MTB route difficulty (blue)")
+            case .hard: String(localized: "Hard", comment: "MTB route difficulty (red)")
+            case .veryHard: String(localized: "Very hard", comment: "MTB route difficulty (black)")
+            }
+        }
+    }
+
+    var difficulty: Difficulty? { grade.flatMap(Difficulty.init(rawValue:)) }
 
     var pieces: [[GeoPoint]] { lines.map(StravaImport.decodePolyline) }
     var link: URL? { URL(string: url) }
