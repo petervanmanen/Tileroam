@@ -956,13 +956,15 @@ final class ActivityStore {
         TrackCache.save(stravaActivities, .strava, folder: String(athleteID))
     }
 
-    /// Computes tiles and visited municipalities/postcodes for activities that don't have them
-    /// for the current countries, from their stored tracks (simplified to ~8 m; no re-parsing
-    /// or re-downloading needed).
     private var isBackfilling = false
 
+    /// Computes tiles and visited municipalities/postcodes for activities that don't have them
+    /// for the current countries, from their stored tracks (simplified to ~8 m; no re-parsing
+    /// or re-downloading needed). Tiles don't need the boundaries: without them (still loading, or
+    /// a download that failed) only the tiles are computed, so the map never waits for them.
     private func backfillDerived() {
-        guard let regions, !isBackfilling else { return }
+        guard !isBackfilling else { return }
+        guard let regions else { return backfillTiles() }
         let key = regions.key
         let missing = (folderActivities + stravaActivities)
             .filter { $0.regionsKey != key || $0.tiles14 == nil }
@@ -995,6 +997,33 @@ final class ActivityStore {
                 a.municipalities = c.municipalities
                 a.postalCodes = c.postalCodes
                 a.regionsKey = key
+            }
+            for i in folderActivities.indices { fill(&folderActivities[i]) }
+            for i in stravaActivities.indices { fill(&stravaActivities[i]) }
+            recompute()
+            TrackCache.save(folderActivities, folder: Self.folderCacheKey)
+            if let id = stravaAthleteID { saveStrava(id) }
+        }
+    }
+
+    /// The tiles of activities that have none, while the boundaries aren't loaded.
+    private func backfillTiles() {
+        let missing = (folderActivities + stravaActivities).filter { $0.tiles14 == nil }
+        guard !missing.isEmpty else { return }
+        isBackfilling = true
+        Task {
+            defer {
+                isBackfilling = false
+                backfillDerived() // the boundaries may have arrived meanwhile
+            }
+            let computed = await Task.detached(priority: .utility) {
+                Dictionary(missing.map { a in
+                    (a.id, Array(TileGrid.tiles(for: a.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) },
+                                                zoom: .explorer)).sorted())
+                }, uniquingKeysWith: { a, _ in a })
+            }.value
+            func fill(_ a: inout Activity) {
+                if a.tiles14 == nil, let tiles = computed[a.id] { a.tiles14 = tiles }
             }
             for i in folderActivities.indices { fill(&folderActivities[i]) }
             for i in stravaActivities.indices { fill(&stravaActivities[i]) }

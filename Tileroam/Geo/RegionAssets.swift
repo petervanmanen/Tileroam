@@ -1,5 +1,6 @@
 import BackgroundAssets
 import Foundation
+import Synchronization
 import System
 
 /// Municipality and postcode boundaries are Apple-hosted asset packs, one per country
@@ -21,8 +22,12 @@ enum RegionAssets {
         var failed: [String: String] = [:]
     }
 
+    /// How long one pack may take. The Mac app once waited for a download forever, and with it
+    /// the tiles of every new activity (issue fixed in 1.8.2).
+    static let timeout: Duration = .seconds(120)
+
     /// Downloads the packs of `countries` that aren't on the device yet: one at a time, each
-    /// retried once.
+    /// retried once, each within `timeout`.
     static func makeAvailable(_ countries: Set<String>) async -> Availability {
         #if DEBUG
         if localDirectory != nil { return Availability(available: countries) }
@@ -34,11 +39,14 @@ enum RegionAssets {
             for attempt in 0..<2 {
                 if attempt > 0 { try? await Task.sleep(for: .seconds(2)) }
                 do {
-                    let pack = try await manager.assetPack(withID: packID(country))
-                    if #available(iOS 26.4, *) {
-                        try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: false)
-                    } else {
-                        try await manager.ensureLocalAvailability(of: pack)
+                    let id = packID(country)
+                    try await withTimeout(timeout) {
+                        let pack = try await manager.assetPack(withID: id)
+                        if #available(iOS 26.4, *) {
+                            try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: false)
+                        } else {
+                            try await manager.ensureLocalAvailability(of: pack)
+                        }
                     }
                     lastError = nil
                     break
@@ -54,6 +62,34 @@ enum RegionAssets {
             }
         }
         return result
+    }
+
+    struct TimeoutError: LocalizedError {
+        var errorDescription: String? { String(localized: "The download took too long.") }
+    }
+
+    /// Runs `operation`, throwing `TimeoutError` when it takes longer than `limit`. Doesn't wait
+    /// for an operation that ignores cancellation: it's cancelled and left behind.
+    static func withTimeout(_ limit: Duration, _ operation: @escaping @Sendable () async throws -> Void) async throws {
+        let done = Mutex(false)
+        func claim() -> Bool { done.withLock { first in defer { first = true }; return !first } }
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            let work = Task {
+                do {
+                    try await operation()
+                    if claim() { continuation.resume() }
+                } catch {
+                    if claim() { continuation.resume(throwing: error) }
+                }
+            }
+            Task {
+                try? await Task.sleep(for: limit)
+                if claim() {
+                    work.cancel()
+                    continuation.resume(throwing: TimeoutError())
+                }
+            }
+        }
     }
 
     /// The contents of one boundary file from a downloaded pack.
