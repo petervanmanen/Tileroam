@@ -30,6 +30,16 @@ enum StravaExport {
                                   point: stream.points[i],
                                   altitude: i < stream.altitudes.count ? stream.altitudes[i] : nil)
             }
+        } else if !activity.trackData.isEmpty {
+            // The track the app already has (no API call): its points, spread evenly over the
+            // activity's time, as the stored track has no timestamps.
+            let points = activity.coordinates
+            let duration = activity.elapsedTime ?? activity.movingTime ?? Double(points.count)
+            let step = points.count > 1 ? duration / Double(points.count - 1) : 0
+            encoder.samples = points.indices.map { i in
+                FITEncoder.Sample(date: start.addingTimeInterval(Double(i) * step),
+                                  point: GeoPoint(lat: points[i].latitude, lon: points[i].longitude), altitude: nil)
+            }
         }
         return encoder.encode()
     }
