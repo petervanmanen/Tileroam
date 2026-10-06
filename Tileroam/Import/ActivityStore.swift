@@ -396,6 +396,7 @@ final class ActivityStore {
     func updateMTBRoutes() async {
         guard let list = try? await MTBRouteData.load(), list != mtbRoutes else { return }
         mtbRoutes = list
+        mtbKeyCache = nil
         matchChallenges()
     }
 
@@ -404,13 +405,31 @@ final class ActivityStore {
     func updateKlompenpaden() async {
         guard let list = try? await KlompenpadData.load(), list != klompenpaden else { return }
         klompenpaden = list
+        klompenpadKeyCache = nil
         matchChallenges()
     }
 
     // MARK: Challenge results (see ChallengeResults)
 
-    private var klompenpadPrepared: KlompenpadMatcher.Prepared {
+    // The lists' fingerprints, kept until the list changes: hashing the MTB routes (4 MB of JSON)
+    // on every count would make the main thread stutter.
+    @ObservationIgnored private var klompenpadKeyCache: String?
+    @ObservationIgnored private var mtbKeyCache: String?
+    private var klompenpadKey: String {
+        if let klompenpadKeyCache { return klompenpadKeyCache }
         let key = ChallengeResults.klompenpadKey(klompenpaden)
+        klompenpadKeyCache = key
+        return key
+    }
+    private var mtbKey: String {
+        if let mtbKeyCache { return mtbKeyCache }
+        let key = ChallengeResults.mtbKey(mtbRoutes)
+        mtbKeyCache = key
+        return key
+    }
+
+    private var klompenpadPrepared: KlompenpadMatcher.Prepared {
+        let key = klompenpadKey
         if let preparedPaths, preparedPaths.key == key { return preparedPaths.paths }
         let paths = KlompenpadMatcher.Prepared(klompenpaden)
         preparedPaths = (key, paths)
@@ -418,7 +437,7 @@ final class ActivityStore {
     }
 
     private var mtbPrepared: KlompenpadMatcher.Prepared {
-        let key = ChallengeResults.mtbKey(mtbRoutes)
+        let key = mtbKey
         if let preparedMTB, preparedMTB.key == key { return preparedMTB.paths }
         let paths = KlompenpadMatcher.Prepared(mtbRoutes, spacing: MTBRoute.spacing)
         preparedMTB = (key, paths)
@@ -427,8 +446,8 @@ final class ActivityStore {
 
     private var currentChallenges: ChallengeResults.Current {
         ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
-                                 paths: klompenpadPrepared, klompenpadKey: ChallengeResults.klompenpadKey(klompenpaden),
-                                 mtb: mtbPrepared, mtbKey: ChallengeResults.mtbKey(mtbRoutes))
+                                 paths: klompenpadPrepared, klompenpadKey: klompenpadKey,
+                                 mtb: mtbPrepared, mtbKey: mtbKey)
     }
 
     /// Checks the activities whose challenge results are missing or out of date (new ones, or all
