@@ -5,7 +5,8 @@
 #
 #   Tools/upload_boscafes_r2.sh
 #
-# To add or change a boscafé: edit AssetPacks/Boscafes/boscafes.json (id, name, place, emoji, lat,
+# To add or change a boscafé: Tools/import_boscafes.py <list in the editor's format>, or edit
+# AssetPacks/Boscafes/boscafes.json (id, name, place, emoji, lat,
 # lon) and upload. Apps pick up the new list within a day.
 #
 # Same R2 settings as Tools/upload_trappists_r2.sh: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,

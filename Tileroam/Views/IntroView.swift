@@ -92,7 +92,7 @@ struct IntroView: View {
                 feature("building.2.fill", "Challenges: municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
                 feature("mountain.2.fill", "Climbs from short steep hills to HC, and the ones you climbed")
                 feature("mug.fill", "The Trappist Challenge: ride past the Trappist breweries")
-                feature("tree.fill", "The Boscafé Challenge: visit 53 cafés in the woods")
+                feature("tree.fill", "The Boscafé Challenge: visit the cafés in the woods")
                 feature("shoeprints.fill", "Klompenpaden: walk the 167 country paths of Gelderland and Utrecht")
                 feature("bicycle", "Mountain bike routes: the signposted MTB routes of OpenStreetMap")
                 feature("rosette", "18 badges, from 100! and Everester to Festive 500 and Globetrotter")

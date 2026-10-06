@@ -9,7 +9,7 @@ struct BoscafeTests {
 
     @Test func repositoryData() throws {
         let list = try JSONDecoder().decode([Boscafe].self, from: Data(contentsOf: Self.file))
-        #expect(list.count == 53)
+        #expect(list.count == 54)
         #expect(Set(list.map(\.id)).count == list.count)
         // All in the Netherlands, each with an emoji.
         #expect(list.allSatisfy { (50.7...53.6).contains($0.lat) && (3.3...7.3).contains($0.lon) && !$0.emoji.isEmpty })
