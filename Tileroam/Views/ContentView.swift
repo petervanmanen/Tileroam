@@ -36,6 +36,7 @@ struct ContentView: View {
     @State private var selectedClimb: Climb?
     @State private var selectedTrappist: Trappist?
     @State private var selectedKlompenpad: Klompenpad?
+    @State private var selectedMTBRoute: MTBRoute?
     @State private var locateRequest = 0
     @State private var isFollowingUser = false
     @State private var locationDenied = false
@@ -48,7 +49,7 @@ struct ContentView: View {
     private let sidePanelWidth: CGFloat = 380
 
     var body: some View {
-        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedTrappist: $selectedTrappist, selectedKlompenpad: $selectedKlompenpad,
+        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedTrappist: $selectedTrappist, selectedKlompenpad: $selectedKlompenpad, selectedMTBRoute: $selectedMTBRoute,
                         locateRequest: locateRequest, isFollowingUser: $isFollowingUser, locationDenied: $locationDenied,
                         plan: plan, planVersion: plan.version, leadingInset: isWide ? sidePanelWidth + 32 : 0)
             .ignoresSafeArea()
@@ -166,12 +167,15 @@ struct ContentView: View {
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { Task { await store.refreshAll() } }
             }
-            .onChange(of: mode) { selectedArea = nil; selectedClimb = nil; selectedTrappist = nil; selectedKlompenpad = nil }
+            .onChange(of: mode) {
+                selectedArea = nil; selectedClimb = nil; selectedTrappist = nil; selectedKlompenpad = nil; selectedMTBRoute = nil
+            }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 selectedClimb = nil
                 selectedTrappist = nil
                 selectedKlompenpad = nil
+                selectedMTBRoute = nil
             }
     }
 
@@ -261,6 +265,8 @@ struct ContentView: View {
             return String(localized: "\(store.trappistVisits.count) of \(store.trappists.count) Trappist breweries visited")
         case .klompenpaden:
             return String(localized: "\(store.klompenpadenWalked) of \(store.klompenpaden.count) Klompenpaden walked")
+        case .mtb:
+            return String(localized: "\(store.mtbRoutesRidden) of \(store.mtbRoutes.count) mountain bike routes ridden")
         }
     }
 
@@ -374,6 +380,9 @@ struct ContentView: View {
             }
             if !plan.isPlanning, let path = selectedKlompenpad {
                 KlompenpadCard(path: path, progress: store.klompenpadProgress[path.id] ?? 0)
+            }
+            if !plan.isPlanning, let route = selectedMTBRoute {
+                MTBRouteCard(route: route, progress: store.mtbProgress[route.id] ?? 0)
             }
             if store.isImporting, store.progress.total > 0 {
                 VStack(alignment: .leading, spacing: 4) {

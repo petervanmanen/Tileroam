@@ -35,7 +35,8 @@ codesign -f -s - --entitlements $ROOT/Tools/screenshots-mac.entitlements $APP
 # app would ask for permission).
 COMMON=(-AppleLanguages "(en)" -AppleLocale en_GB -WindowSize 1440x900
         -RegionsDir $CONTAINER/Data/Regions -KlompenpadenFile $CONTAINER/Data/klompenpaden.json
-        -challenges gemeenten,postcodes,climbs,trappists,klompenpaden)
+        -MTBRoutesFile $CONTAINER/Data/mtb-routes.json
+        -challenges gemeenten,postcodes,climbs,trappists,klompenpaden,mtb)
 
 pid=
 quit() { [[ -n $pid ]] && kill $pid 2>/dev/null || true; pid=; sleep 2 }
@@ -71,7 +72,7 @@ shot warmup 15 -hasSeenIntro YES -mapMode squares
 mkdir -p "$CONTAINER/Data/Documents/Import/Sample Rides" $CONTAINER/Data/Regions
 cp $ROOT/Tileroam/SampleRides/*.fit "$CONTAINER/Data/Documents/Import/Sample Rides/"
 cp $ROOT/AssetPacks/Regions/* $CONTAINER/Data/Regions/
-cp $ROOT/AssetPacks/Klompenpaden/klompenpaden.json $CONTAINER/Data/
+cp $ROOT/AssetPacks/Klompenpaden/klompenpaden.json $ROOT/AssetPacks/MTB/mtb-routes.json $CONTAINER/Data/
 shot warmup2 30 -hasSeenIntro YES -mapMode squares                                # imports the rides
 shot warmup3 25 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
 shot warmup4 20 -hasSeenIntro YES -mapMode trappists -MapCenter 50.8,4.2,3.9

@@ -65,3 +65,21 @@ struct KlompenpadTests {
         #expect(!Challenges.visibleModes("").contains(.klompenpaden))
     }
 }
+
+struct MTBRouteTests {
+    static let source = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        .appending(path: "AssetPacks/MTB/mtb-routes.json")
+
+    @Test func repositoryList() throws {
+        let list = try JSONDecoder().decode([MTBRoute].self, from: Data(contentsOf: Self.source))
+        #expect(list.count > 4_000)
+        #expect(Set(list.map(\.id)).count == list.count)
+        #expect(list.allSatisfy { !$0.pieces.isEmpty && $0.link != nil && $0.length >= 1_000 })
+        #expect(Set(list.map(\.country)) == ["NL", "BE", "DE", "FR", "CH", "AT"]) // Luxembourg has none signposted
+    }
+
+    @Test func challengeIsOffByDefault() {
+        #expect(MapMode.mtb.isChallenge)
+        #expect(!Challenges.visibleModes("").contains(.mtb))
+    }
+}

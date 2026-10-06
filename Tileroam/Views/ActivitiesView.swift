@@ -221,3 +221,42 @@ struct KlompenpadCard: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
+
+struct MTBRouteCard: View {
+    let route: MTBRoute
+    /// Share of the route ridden (0…1).
+    let progress: Double
+
+    var body: some View {
+        let done = progress >= KlompenpadMatcher.done
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                Image(systemName: done ? "checkmark.circle.fill" : "bicycle")
+                    .foregroundStyle(done ? Color.green : .secondary)
+                Text(route.name).font(.headline).lineLimit(2)
+                Spacer()
+                if let link = route.link {
+                    Link("OpenStreetMap", destination: link).font(.footnote)
+                }
+            }
+            Text("\(route.networkTitle) · \(Measurement(value: route.length / 1000, unit: UnitLength.kilometers).formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0)))))")
+                .font(.subheadline).foregroundStyle(.secondary)
+            ProgressView(value: min(progress, 1))
+                .tint(done ? .green : .orange)
+            HStack {
+                Text(done ? String(localized: "Ridden")
+                     : progress > 0 ? String(localized: "\(Int((progress * 100).rounded()))% of the route ridden")
+                     : String(localized: "Not ridden yet"))
+                    .font(.footnote)
+                    .foregroundStyle(done ? .green : .secondary)
+                Spacer()
+                if let website = route.websiteLink {
+                    Link("Website", destination: website).font(.footnote)
+                }
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}

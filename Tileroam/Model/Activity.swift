@@ -67,6 +67,9 @@ struct Activity: Codable, Sendable, Identifiable {
     /// (`KlompenpadMatcher.checkpoints`).
     var klompenpadHits: [String: [Int]]?
     var klompenpadKey: String?
+    /// Mountain bike routes: the same, per route (`MTBRoute`, checkpoints every 100 m; rides only).
+    var mtbHits: [String: [Int]]?
+    var mtbKey: String?
     /// Countries of the world the track passes (ISO codes, `CountryOutlines.world`), for Globetrotter.
     var countries: [String]?
     var countriesKey: String?

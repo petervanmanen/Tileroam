@@ -14,6 +14,7 @@ import Foundation
 enum ChallengeResults {
     static func trappistsKey(_ list: [Trappist]) -> String { "t\(TrappistMatcher.version)-\(fingerprint(list))" }
     static func klompenpadKey(_ list: [Klompenpad]) -> String { "k\(KlompenpadMatcher.version)-\(fingerprint(list))" }
+    static func mtbKey(_ list: [MTBRoute]) -> String { "m\(KlompenpadMatcher.version)-\(fingerprint(list))" }
     /// The bundled world map can only change with an app update: hashed once.
     static let countriesKey: String = {
         let data = Bundle.main.url(forResource: "world", withExtension: "fmr").flatMap { try? Data(contentsOf: $0) } ?? Data()
@@ -34,16 +35,31 @@ enum ChallengeResults {
     struct Result: Sendable {
         var trappists: [String]?
         var klompenpadHits: [String: [Int]]?
+        var mtbHits: [String: [Int]]?
         var countries: [String]?
     }
 
+    /// The keys of the current lists, and the routes' prepared checkpoints.
+    struct Current: Sendable {
+        let trappists: [Trappist]
+        let trappistsKey: String
+        let paths: KlompenpadMatcher.Prepared
+        let klompenpadKey: String
+        let mtb: KlompenpadMatcher.Prepared
+        let mtbKey: String
+    }
+
     /// The results one activity is missing: only the parts whose key differs are computed.
-    static func compute(_ activity: Activity, trappists: [Trappist], trappistsKey: String,
-                        paths: KlompenpadMatcher.Prepared, klompenpadKey: String) -> Result {
+    static func compute(_ activity: Activity, _ current: Current) -> Result {
         let track = activity.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) }
         var result = Result()
-        if activity.trappistsKey != trappistsKey { result.trappists = TrappistMatcher.visited(by: track, among: trappists) }
-        if activity.klompenpadKey != klompenpadKey { result.klompenpadHits = KlompenpadMatcher.hits(track, paths: paths) }
+        if activity.trappistsKey != current.trappistsKey {
+            result.trappists = TrappistMatcher.visited(by: track, among: current.trappists)
+        }
+        if activity.klompenpadKey != current.klompenpadKey { result.klompenpadHits = KlompenpadMatcher.hits(track, paths: current.paths) }
+        if activity.mtbKey != current.mtbKey {
+            result.mtbHits = MTBRoute.counts(activity) ? KlompenpadMatcher.hits(track, paths: current.mtb) : [:]
+        }
         if activity.countriesKey != countriesKey {
             result.countries = (CountryOutlines.world?.countries(visitedBy: [track]) ?? []).sorted()
         }
@@ -51,7 +67,8 @@ enum ChallengeResults {
     }
 
     /// Whether an activity still needs checking.
-    static func isPending(_ a: Activity, trappistsKey: String, klompenpadKey: String) -> Bool {
-        a.isOnMap && (a.trappistsKey != trappistsKey || a.klompenpadKey != klompenpadKey || a.countriesKey != countriesKey)
+    static func isPending(_ a: Activity, _ current: Current) -> Bool {
+        a.isOnMap && (a.trappistsKey != current.trappistsKey || a.klompenpadKey != current.klompenpadKey
+                      || a.mtbKey != current.mtbKey || a.countriesKey != countriesKey)
     }
 }
