@@ -2,7 +2,7 @@ import MapKit
 import SwiftUI
 
 /// Chooses where a planned route starts: the current location, a recent place, or a searched
-/// address or place (long-pressing the map works too). With `kind: .end`, where it ends: back at
+/// address or place (or long-press the map: "Start Here"). With `kind: .end`, where it ends: back at
 /// the start (a round trip) or a place (point to point, issue #50).
 struct StartPicker: View {
     enum Kind { case start, end }
@@ -26,7 +26,7 @@ struct StartPicker: View {
                                 dismiss()
                             }
                         } footer: {
-                            Text("Or long-press the map to start there. You can drag the green flag to move it.")
+                            Text("Or long-press the map and choose Start Here. You can drag the green flag to move it.")
                         }
                     } else {
                         Section {
@@ -39,7 +39,7 @@ struct StartPicker: View {
                                 dismiss()
                             }
                         } footer: {
-                            Text("A round trip, or choose a place below to ride from the start to there. You can drag the checkered flag to move it.")
+                            Text("A round trip, or choose a place below to ride from the start to there; or long-press the map and choose End Here. You can drag the checkered flag to move it.")
                         }
                     }
                     if !plan.recentStarts.isEmpty {

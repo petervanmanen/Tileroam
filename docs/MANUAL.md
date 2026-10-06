@@ -56,11 +56,11 @@ Like Towns, but for postcode areas. Available for Belgium, France, Germany, the 
 2. Tap unvisited tiles, municipalities or postcodes to select them. You can mix types, using the tabs to switch between them (turn on the Towns or Postcodes challenge to see their tab).
 3. Choose where to start (optional). The route starts and ends at your current location, unless you choose a different **starting point**:
    - tap **Start: My Location** in the panel to search for an address or place, or pick a recent starting point;
-   - or long-press the map to start there. Drag the green flag to move it.
+   - or long-press the map and choose **Start Here**. Drag the green flag to move it.
 
    This lets you plan tonight for tomorrow's ride from home, or from a station or car park. Tileroam remembers your last five starting points on this device.
 
-   For a ride from A to B, tap **End: Back to Start** and choose an **end point** the same way (search, or a recent place). A checkered flag marks it on the map; drag it to move it. Choose **Back to Start** again for a round trip. With an end point you can also plan without selecting anything: the shortest cycling route from the start to the end.
+   For a ride from A to B, tap **End: Back to Start** and choose an **end point** the same way (search, or a recent place), or long-press the map and choose **End Here**. A checkered flag marks it on the map; drag it to move it. Choose **Back to Start** again for a round trip. With an end point you can also plan without selecting anything: the shortest cycling route from the start to the end.
 4. Tap **Plan Route**. Tileroam plans a cycling round trip from the starting point past all selected items (or a route to the end point), and shows:
    - the distance;
    - the estimated time;

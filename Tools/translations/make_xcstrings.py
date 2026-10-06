@@ -167,11 +167,7 @@ T = {
 
     # Planning
     "Route planning failed: %@": ("Routeplanning mislukt: %@", "Échec de la planification : %@", "Error al planificar la ruta: %@", "Routenplanung fehlgeschlagen: %@"),
-    "Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.": (
-        "Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route begint en eindigt bij het startpunt; houd de kaart ingedrukt om daar te starten.",
-        "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours part du point de départ et y revient ; touchez longuement la carte pour partir de là.",
-        "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta empieza y termina en el punto de partida; mantén pulsado el mapa para empezar allí.",
-        "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet am Startpunkt; halte die Karte gedrückt, um dort zu starten."),
+    "Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start or end there.": ("Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route begint en eindigt bij het startpunt; houd de kaart ingedrukt om daar te starten of te eindigen.", "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours commence et se termine au point de départ ; appuyez longuement sur la carte pour partir ou arriver à cet endroit.", "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta empieza y termina en el punto de partida; mantén pulsado el mapa para empezar o terminar allí.", "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet am Startpunkt; halte die Karte gedrückt, um dort zu starten oder zu enden."),
     "Open GPX…": ("Open GPX…", "Ouvrir un GPX…", "Abrir GPX…", "GPX öffnen…"),
     "Clear": ("Wis", "Effacer", "Borrar", "Löschen"),
     "Plan Route": ("Plan route", "Planifier", "Planificar ruta", "Route planen"),
@@ -358,18 +354,16 @@ T = {
     "Search for an address or place": ("Zoek een adres of plaats", "Rechercher une adresse ou un lieu", "Buscar una dirección o lugar", "Adresse oder Ort suchen"),
     "Choose where the route starts": ("Kies waar de route begint", "Choisir où le parcours commence", "Elige dónde empieza la ruta", "Wähle, wo die Route beginnt"),
     # Point to point (1.9, issue #50)
+    "Start Here": ("Start hier", "Partir d’ici", "Empezar aquí", "Hier starten"),
+    "End Here": ("Eindig hier", "Arriver ici", "Terminar aquí", "Hier enden"),
     "End: %@": ("Einde: %@", "Arrivée : %@", "Final: %@", "Ziel: %@"),
     "End: Back to Start": ("Einde: terug naar start", "Arrivée : retour au départ", "Final: volver al inicio", "Ziel: zurück zum Start"),
     "Choose a round trip or where the route ends": ("Kies een rondrit of waar de route eindigt", "Choisir une boucle ou l’arrivée du parcours", "Elige una ruta circular o dónde termina la ruta", "Wähle eine Rundfahrt oder wo die Route endet"),
     "Back to Start": ("Terug naar start", "Retour au départ", "Volver al inicio", "Zurück zum Start"),
     "End Point": ("Eindpunt", "Point d’arrivée", "Punto final", "Zielpunkt"),
-    "A round trip, or choose a place below to ride from the start to there. You can drag the checkered flag to move it.": ("Een rondrit, of kies hieronder een plek om van de start daarheen te fietsen. Je kunt de geblokte vlag verslepen.", "Une boucle, ou choisissez un lieu ci-dessous pour rouler du départ jusque-là. Vous pouvez faire glisser le drapeau à damier.", "Una ruta circular, o elige un lugar abajo para ir del inicio hasta allí. Puedes arrastrar la bandera a cuadros.", "Eine Rundfahrt, oder wähle unten einen Ort, um vom Start dorthin zu fahren. Du kannst die Zielflagge verschieben."),
+    "A round trip, or choose a place below to ride from the start to there; or long-press the map and choose End Here. You can drag the checkered flag to move it.": ("Een rondrit, of kies hieronder een plek om van de start daarheen te fietsen; of houd de kaart ingedrukt en kies Eindig hier. Je kunt de geblokte vlag verslepen.", "Une boucle, ou choisissez un lieu ci-dessous pour rouler du départ jusque-là ; ou appuyez longuement sur la carte et choisissez Arriver ici. Vous pouvez faire glisser le drapeau à damier.", "Una ruta circular, o elige un lugar abajo para ir del inicio hasta allí; o mantén pulsado el mapa y elige Terminar aquí. Puedes arrastrar la bandera a cuadros.", "Eine Rundfahrt, oder wähle unten einen Ort, um vom Start dorthin zu fahren; oder halte die Karte gedrückt und wähle Hier enden. Du kannst die Zielflagge verschieben."),
     "Tap unvisited tiles, municipalities or postcodes to add them. The route goes from the start to the end; drag the flags to move them.": ("Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route gaat van de start naar het einde; versleep de vlaggen om ze te verplaatsen.", "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours va du départ à l’arrivée ; faites glisser les drapeaux pour les déplacer.", "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta va del inicio al final; arrastra las banderas para moverlas.", "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route führt vom Start zum Ziel; verschiebe die Flaggen, um sie zu verlegen."),
-    "Or long-press the map to start there. You can drag the green flag to move it.": (
-        "Of houd de kaart ingedrukt om daar te starten. Sleep de groene vlag om hem te verplaatsen.",
-        "Ou touchez longuement la carte pour partir de là. Faites glisser le drapeau vert pour le déplacer.",
-        "O mantén pulsado el mapa para empezar allí. Arrastra la bandera verde para moverla.",
-        "Oder halte die Karte gedrückt, um dort zu starten. Ziehe die grüne Flagge, um sie zu verschieben."),
+    "Or long-press the map and choose Start Here. You can drag the green flag to move it.": ("Of houd de kaart ingedrukt en kies Start hier. Je kunt de groene vlag verslepen.", "Ou appuyez longuement sur la carte et choisissez Partir d’ici. Vous pouvez faire glisser le drapeau vert.", "O mantén pulsado el mapa y elige Empezar aquí. Puedes arrastrar la bandera verde.", "Oder halte die Karte gedrückt und wähle Hier starten. Du kannst die grüne Flagge verschieben."),
     "This place couldn't be found. Try another search.": ("Deze plaats is niet gevonden. Probeer een andere zoekopdracht.", "Ce lieu est introuvable. Essayez une autre recherche.", "No se encontró este lugar. Prueba otra búsqueda.", "Dieser Ort wurde nicht gefunden. Versuche eine andere Suche."),
     "Main roads": ("Hoofdwegen", "Routes principales", "Carreteras principales", "Hauptstraßen"),
     "Shared by all areas": ("Gedeeld door alle gebieden", "Communes à toutes les zones", "Compartidas por todas las zonas", "Von allen Gebieten genutzt"),

@@ -1669,30 +1669,30 @@
         }
       }
     },
-    "A round trip, or choose a place below to ride from the start to there. You can drag the checkered flag to move it.": {
+    "A round trip, or choose a place below to ride from the start to there; or long-press the map and choose End Here. You can drag the checkered flag to move it.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Een rondrit, of kies hieronder een plek om van de start daarheen te fietsen. Je kunt de geblokte vlag verslepen."
+            "value": "Een rondrit, of kies hieronder een plek om van de start daarheen te fietsen; of houd de kaart ingedrukt en kies Eindig hier. Je kunt de geblokte vlag verslepen."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une boucle, ou choisissez un lieu ci-dessous pour rouler du départ jusque-là. Vous pouvez faire glisser le drapeau à damier."
+            "value": "Une boucle, ou choisissez un lieu ci-dessous pour rouler du départ jusque-là ; ou appuyez longuement sur la carte et choisissez Arriver ici. Vous pouvez faire glisser le drapeau à damier."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una ruta circular, o elige un lugar abajo para ir del inicio hasta allí. Puedes arrastrar la bandera a cuadros."
+            "value": "Una ruta circular, o elige un lugar abajo para ir del inicio hasta allí; o mantén pulsado el mapa y elige Terminar aquí. Puedes arrastrar la bandera a cuadros."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eine Rundfahrt, oder wähle unten einen Ort, um vom Start dorthin zu fahren. Du kannst die Zielflagge verschieben."
+            "value": "Eine Rundfahrt, oder wähle unten einen Ort, um vom Start dorthin zu fahren; oder halte die Karte gedrückt und wähle Hier enden. Du kannst die Zielflagge verschieben."
           }
         }
       }
@@ -4545,6 +4545,34 @@
         }
       }
     },
+    "End Here": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eindig hier"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arriver ici"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminar aquí"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier enden"
+          }
+        }
+      }
+    },
     "End Point": {
       "localizations": {
         "nl": {
@@ -7149,30 +7177,30 @@
         }
       }
     },
-    "Or long-press the map to start there. You can drag the green flag to move it.": {
+    "Or long-press the map and choose Start Here. You can drag the green flag to move it.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Of houd de kaart ingedrukt om daar te starten. Sleep de groene vlag om hem te verplaatsen."
+            "value": "Of houd de kaart ingedrukt en kies Start hier. Je kunt de groene vlag verslepen."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ou touchez longuement la carte pour partir de là. Faites glisser le drapeau vert pour le déplacer."
+            "value": "Ou appuyez longuement sur la carte et choisissez Partir d’ici. Vous pouvez faire glisser le drapeau vert."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "O mantén pulsado el mapa para empezar allí. Arrastra la bandera verde para moverla."
+            "value": "O mantén pulsado el mapa y elige Empezar aquí. Puedes arrastrar la bandera verde."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Oder halte die Karte gedrückt, um dort zu starten. Ziehe die grüne Flagge, um sie zu verschieben."
+            "value": "Oder halte die Karte gedrückt und wähle Hier starten. Du kannst die grüne Flagge verschieben."
           }
         }
       }
@@ -8885,6 +8913,34 @@
         }
       }
     },
+    "Start Here": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start hier"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partir d’ici"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar aquí"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier starten"
+          }
+        }
+      }
+    },
     "Start: %@": {
       "localizations": {
         "nl": {
@@ -9725,30 +9781,30 @@
         }
       }
     },
-    "Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.": {
+    "Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start or end there.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route begint en eindigt bij het startpunt; houd de kaart ingedrukt om daar te starten."
+            "value": "Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route begint en eindigt bij het startpunt; houd de kaart ingedrukt om daar te starten of te eindigen."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours part du point de départ et y revient ; touchez longuement la carte pour partir de là."
+            "value": "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours commence et se termine au point de départ ; appuyez longuement sur la carte pour partir ou arriver à cet endroit."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta empieza y termina en el punto de partida; mantén pulsado el mapa para empezar allí."
+            "value": "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta empieza y termina en el punto de partida; mantén pulsado el mapa para empezar o terminar allí."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet am Startpunkt; halte die Karte gedrückt, um dort zu starten."
+            "value": "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route beginnt und endet am Startpunkt; halte die Karte gedrückt, um dort zu starten oder zu enden."
           }
         }
       }

@@ -108,7 +108,7 @@ struct PlanPanel: View {
             endButton
             Group {
                 if plan.end == nil {
-                    Text("Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start there.")
+                    Text("Tap unvisited tiles, municipalities or postcodes to add them. The route starts and ends at the starting point; long-press the map to start or end there.")
                 } else {
                     Text("Tap unvisited tiles, municipalities or postcodes to add them. The route goes from the start to the end; drag the flags to move them.")
                 }
