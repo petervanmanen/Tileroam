@@ -14,7 +14,7 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 - **Badges**: 18 badges, from *100!*, *Century* and *Everester* to *Festive 500*, *Triathlete* and *Globetrotter* (50 countries, worked out on the device). Earned badges are in colour, with how often; indoor activities count too.
 - **Activities**: a list of all activities, newest first, with duration, distance and average power (with a power meter) or average speed.
 - **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria, with visited/total per country.
-- **Route planning** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
+- **Route planning** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them, or a route from A to B to an **end point** you choose. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
 - **Strava**: import your full history with GPS. Activities are also saved as standard `.fit` files in a folder of your choice.
 - **Duplicates merged**: the same workout recorded by several devices or apps (watch, Zwift, Strava, HealthFit) counts once.
 - **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
@@ -152,7 +152,6 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 - Municipalities, postcodes and route planning cover the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria only. [docs/ROUTING.md](docs/ROUTING.md) describes how to add countries.
 - Luxembourg has no open postcode boundaries.
-- Routes are round trips; one-way routes from A to B aren't supported yet.
 
 ## Privacy
 

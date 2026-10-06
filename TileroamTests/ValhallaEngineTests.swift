@@ -34,7 +34,7 @@ struct ValhallaEngineTests {
     @Test func ordersARoundTrip() async throws {
         let router = ValhallaRouter()
         let points = [Self.luxembourg, Self.bertrange, GeoPoint(lat: 49.5950, lon: 6.1000), GeoPoint(lat: 49.6300, lon: 6.0800)]
-        let order = try await router.tripOrder(points)
+        let order = try await router.tripOrder(points, end: nil)
         #expect(order.first == 0)
         #expect(Set(order) == [0, 1, 2, 3])
     }

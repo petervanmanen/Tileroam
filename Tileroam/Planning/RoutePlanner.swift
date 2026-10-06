@@ -27,7 +27,8 @@ struct PlannedRoute: Sendable {
     }
 }
 
-/// Plans the shortest cycling round trip from a start point through all targets.
+/// Plans the shortest cycling route from a start point through all targets: a round trip back to
+/// the start, or point to point when there's an end.
 ///
 /// A target counts as visited when the route passes any point inside it, so each target
 /// offers many candidate points and the planner picks the ones that keep the route short.
@@ -46,14 +47,21 @@ enum RoutePlanner {
     /// message.
     static let maxLoopKilometers = 500
 
-    /// The round trip's stops in visiting order, start to start, as `plan` will order them: one
-    /// point per target (the candidate nearest the start), ordered on straight-line distances.
-    /// Used before routing, to know which map tiles the route will need and how long it is.
-    static func approximateLoop(start: GeoPoint, targets: [TargetGeometry]) -> [GeoPoint] {
+    /// The route's stops in visiting order, start to end (the start again for a round trip), as
+    /// `plan` will order them: one point per target (the candidate nearest the start), ordered on
+    /// straight-line distances. Used before routing, to know which map tiles the route will need
+    /// and how long it is.
+    static func approximateLoop(start: GeoPoint, end: GeoPoint? = nil, targets: [TargetGeometry]) -> [GeoPoint] {
         let initial = targets.compactMap { $0.candidates().min { Geo.distance($0, start) < Geo.distance($1, start) } }
         let points = [start] + initial
-        let order = points.count > 2 ? TripSolver.roundTrip(points.map { a in points.map { b in Geo.distance(a, b) } }) : Array(points.indices)
-        return order.map { points[$0] } + [start]
+        let order: [Int]
+        if let end {
+            let all = points + [end]
+            order = TripSolver.path(all.map { a in all.map { b in Geo.distance(a, b) } }, end: points.count)
+        } else {
+            order = points.count > 2 ? TripSolver.roundTrip(points.map { a in points.map { b in Geo.distance(a, b) } }) : Array(points.indices)
+        }
+        return order.map { points[$0] } + [end ?? start]
     }
 
     static func length(_ path: [GeoPoint]) -> Double {
@@ -61,7 +69,7 @@ enum RoutePlanner {
     }
 
     /// Targets in visiting order, each with the point the route should pass.
-    static func plan(start: GeoPoint, targets: [TargetGeometry], client: any CyclingRouter,
+    static func plan(start: GeoPoint, end: GeoPoint? = nil, targets: [TargetGeometry], client: any CyclingRouter,
                      progress: @MainActor @Sendable (String) -> Void) async throws -> [(target: TargetGeometry, point: GeoPoint)] {
         let candidates = targets.map { t in
             t.candidates().sorted { Geo.distance($0, start) < Geo.distance($1, start) }
@@ -73,24 +81,24 @@ enum RoutePlanner {
         let initial = usable.map { candidates[$0][0] }
         let order: [Int]
         if usable.count > 1 {
-            order = try await client.tripOrder([start] + initial).dropFirst().map { usable[$0 - 1] }
+            order = try await client.tripOrder([start] + initial, end: end).dropFirst().map { usable[$0 - 1] }
         } else {
             order = usable
         }
 
         // 2. Move each waypoint to the candidate that keeps the detour smallest.
-        let chosen = refine(start: start, candidates: order.map { candidates[$0] }, distance: Geo.distance)
+        let chosen = refine(start: start, end: end, candidates: order.map { candidates[$0] }, distance: Geo.distance)
         return zip(order, chosen).map { (targets[$0.0], candidates[$0.0][$0.1]) }
     }
 
     /// Chooses one candidate per target (in visiting order) minimizing distance to the neighbours.
     /// Returns the index of the chosen candidate for each target.
-    static func refine(start: GeoPoint, candidates: [[GeoPoint]],
+    static func refine(start: GeoPoint, end: GeoPoint? = nil, candidates: [[GeoPoint]],
                        distance: (GeoPoint, GeoPoint) -> Double, passes: Int = 3) -> [Int] {
         var chosen = candidates.map { _ in 0 }
         guard !candidates.isEmpty else { return [] }
         func point(_ i: Int) -> GeoPoint {
-            i < 0 || i >= candidates.count ? start : candidates[i][chosen[i]]
+            i < 0 ? start : i >= candidates.count ? end ?? start : candidates[i][chosen[i]]
         }
         for _ in 0..<passes {
             for i in candidates.indices {
@@ -111,10 +119,10 @@ enum RoutePlanner {
     }
 
     /// Full planning: order, waypoints, route, and replacing waypoints that snap outside their target.
-    static func planRoute(start: GeoPoint, targets: [TargetGeometry], client: any CyclingRouter,
+    static func planRoute(start: GeoPoint, end: GeoPoint? = nil, targets: [TargetGeometry], client: any CyclingRouter,
                           coverage: @Sendable ([GeoPoint]) -> RouteCoverage,
                           progress: @MainActor @Sendable (String) -> Void) async throws -> PlannedRoute {
-        let planned = try await plan(start: start, targets: targets, client: client, progress: progress)
+        let planned = try await plan(start: start, end: end, targets: targets, client: client, progress: progress)
         let ordered = planned.map(\.target)
         var waypoints = planned.map(\.point)
 
@@ -128,7 +136,7 @@ enum RoutePlanner {
                 points.append(waypoints[i])
                 points += target.climbVia
             }
-            let r = try await client.route(points + [start])
+            let r = try await client.route(points + [end ?? start])
             route = r
             // Waypoints are snapped to the nearest cycle road; if that moved one out of its
             // target, try the candidate closest to the snapped point that is still inside.

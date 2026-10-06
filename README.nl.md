@@ -14,7 +14,7 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 - **Badges**: 18 badges, van *100!*, *Century* en *Everester* tot *Festive 500*, *Triatleet* en *Wereldreiziger* (50 landen, op het apparaat bepaald). Verdiende badges staan in kleur, met hoe vaak; indooractiviteiten tellen ook.
 - **Activiteiten**: een lijst van alle activiteiten, nieuwste eerst, met duur, afstand en gemiddeld vermogen (met een vermogensmeter) of gemiddelde snelheid.
 - **Gemeenten en postcodes** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk, met bezocht/totaal per land.
-- **Routeplanning** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit langs al die plekken. Hij start vanaf je locatie, of vanaf een **startpunt** dat je zoekt of op de kaart ingedrukt houdt (recente startpunten worden onthouden). Routes worden **op het apparaat** berekend, dus plannen werkt ook offline zodra een gebied is gedownload. Deel de route als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
+- **Routeplanning** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit langs al die plekken, of een route van A naar B met een **eindpunt** dat je kiest. Hij start vanaf je locatie, of vanaf een **startpunt** dat je zoekt of op de kaart ingedrukt houdt (recente startpunten worden onthouden). Routes worden **op het apparaat** berekend, dus plannen werkt ook offline zodra een gebied is gedownload. Deel de route als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
 - **Strava**: importeer je volledige geschiedenis met gps. Activiteiten worden ook als standaard `.fit`-bestanden bewaard in een map naar keuze.
 - **Dubbele activiteiten samengevoegd**: dezelfde training die door meerdere apparaten of apps is vastgelegd (horloge, Zwift, Strava, HealthFit) telt één keer.
 - **Widgets**: *Tegels om je heen* (een kaart van de tegels bij jou in de buurt) en *Eddington-getal*, op het beginscherm en toegangsscherm.
@@ -152,7 +152,6 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 - Gemeenten, postcodes en routeplanning dekken alleen Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk. [docs/ROUTING.md](docs/ROUTING.md) beschrijft hoe je landen toevoegt.
 - Luxemburg heeft geen open postcodegrenzen.
-- Routes zijn rondritten; enkele routes van A naar B worden nog niet ondersteund.
 
 ## Privacy
 

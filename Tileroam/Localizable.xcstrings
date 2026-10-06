@@ -1669,6 +1669,34 @@
         }
       }
     },
+    "A round trip, or choose a place below to ride from the start to there. You can drag the checkered flag to move it.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Een rondrit, of kies hieronder een plek om van de start daarheen te fietsen. Je kunt de geblokte vlag verslepen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une boucle, ou choisissez un lieu ci-dessous pour rouler du départ jusque-là. Vous pouvez faire glisser le drapeau à damier."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una ruta circular, o elige un lugar abajo para ir del inicio hasta allí. Puedes arrastrar la bandera a cuadros."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Rundfahrt, oder wähle unten einen Ort, um vom Start dorthin zu fahren. Du kannst die Zielflagge verschieben."
+          }
+        }
+      }
+    },
     "Activities": {
       "localizations": {
         "nl": {
@@ -2029,6 +2057,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jeden Werktag eine Aktivität, keine am Wochenende davor oder danach"
+          }
+        }
+      }
+    },
+    "Back to Start": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terug naar start"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour au départ"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver al inicio"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurück zum Start"
           }
         }
       }
@@ -2537,30 +2593,58 @@
         }
       }
     },
-    "Choose where the route starts and ends": {
+    "Choose a round trip or where the route ends": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kies waar de route begint en eindigt"
+            "value": "Kies een rondrit of waar de route eindigt"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choisir où le parcours commence et se termine"
+            "value": "Choisir une boucle ou l’arrivée du parcours"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Elige dónde empieza y termina la ruta"
+            "value": "Elige una ruta circular o dónde termina la ruta"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wähle, wo die Route beginnt und endet"
+            "value": "Wähle eine Rundfahrt oder wo die Route endet"
+          }
+        }
+      }
+    },
+    "Choose where the route starts": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies waar de route begint"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir où le parcours commence"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige dónde empieza la ruta"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle, wo die Route beginnt"
           }
         }
       }
@@ -4457,6 +4541,90 @@
           "stringUnit": {
             "state": "translated",
             "value": "Höhe und Anstiege"
+          }
+        }
+      }
+    },
+    "End Point": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eindpunt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point d’arrivée"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punto final"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zielpunkt"
+          }
+        }
+      }
+    },
+    "End: %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einde: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrivée : %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Final: %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziel: %@"
+          }
+        }
+      }
+    },
+    "End: Back to Start": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einde: terug naar start"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrivée : retour au départ"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Final: volver al inicio"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziel: zurück zum Start"
           }
         }
       }
@@ -9525,6 +9693,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege, Trappistenbrauereien oder Waldcafés, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
+          }
+        }
+      }
+    },
+    "Tap unvisited tiles, municipalities or postcodes to add them. The route goes from the start to the end; drag the flags to move them.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tik op onbezochte tegels, gemeenten of postcodes om ze toe te voegen. De route gaat van de start naar het einde; versleep de vlaggen om ze te verplaatsen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touchez des tuiles, communes ou codes postaux non visités pour les ajouter. Le parcours va du départ à l’arrivée ; faites glisser les drapeaux pour les déplacer."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca teselas, municipios o códigos postales sin visitar para añadirlos. La ruta va del inicio al final; arrastra las banderas para moverlas."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen, um sie hinzuzufügen. Die Route führt vom Start zum Ziel; verschiebe die Flaggen, um sie zu verlegen."
           }
         }
       }

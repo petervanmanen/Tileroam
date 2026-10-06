@@ -14,7 +14,7 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 - **Badges** : 18 badges, de *100 !*, *Century* et *Everester* à *Festive 500*, *Triathlète* et *Globe-trotter* (50 pays, calculés sur l’appareil). Les badges obtenus sont en couleur, avec leur nombre ; les activités en salle comptent aussi.
 - **Activités** : la liste de toutes les activités, des plus récentes aux plus anciennes, avec durée, distance et puissance moyenne (avec un capteur de puissance) ou vitesse moyenne.
 - **Communes et codes postaux** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche, avec visités/total par pays.
-- **Planification d’itinéraire** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte qui les relie tous. Elle part de votre position, ou d’un **point de départ** que vous recherchez ou choisissez par un appui long sur la carte (les départs récents sont mémorisés). Les itinéraires sont calculés **sur l’appareil**, donc la planification fonctionne aussi hors ligne une fois la zone téléchargée. Partagez l’itinéraire en **GPX** ou enregistrez-le dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
+- **Planification d’itinéraire** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte qui les relie tous, ou un trajet de A à B vers un **point d’arrivée** de votre choix. Elle part de votre position, ou d’un **point de départ** que vous recherchez ou choisissez par un appui long sur la carte (les départs récents sont mémorisés). Les itinéraires sont calculés **sur l’appareil**, donc la planification fonctionne aussi hors ligne une fois la zone téléchargée. Partagez l’itinéraire en **GPX** ou enregistrez-le dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
 - **Strava** : importez tout votre historique avec le GPS. Les activités sont aussi enregistrées en fichiers `.fit` standard dans le dossier de votre choix.
 - **Doublons fusionnés** : une même séance enregistrée par plusieurs appareils ou apps (montre, Zwift, Strava, HealthFit) ne compte qu’une fois.
 - **Widgets** : *Tuiles autour de vous* (une carte des tuiles près de vous) et *Nombre d’Eddington*, sur l’écran d’accueil et l’écran verrouillé.
@@ -152,7 +152,6 @@ xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platf
 
 - Les communes, codes postaux et la planification couvrent uniquement les Pays-Bas, la Belgique, le Luxembourg, l’Allemagne, la France, la Suisse et l’Autriche. [docs/ROUTING.md](docs/ROUTING.md) explique comment ajouter des pays.
 - Le Luxembourg n’a pas de limites de codes postaux en données ouvertes.
-- Les itinéraires sont des boucles ; les trajets simples de A à B ne sont pas encore pris en charge.
 
 ## Confidentialité
 

@@ -91,7 +91,7 @@ struct ClimbDataTests {
 /// A router that follows the points straight, to see what the planner asks for.
 actor StraightRouter: CyclingRouter {
     private(set) var requested = [[GeoPoint]]()
-    func tripOrder(_ points: [GeoPoint]) async throws -> [Int] { Array(points.indices) }
+    func tripOrder(_ points: [GeoPoint], end: GeoPoint?) async throws -> [Int] { Array(points.indices) }
     func route(_ points: [GeoPoint]) async throws -> RoutedPath {
         requested.append(points)
         let dense = Geo.densified(points, spacing: 20, maxGap: 100_000)

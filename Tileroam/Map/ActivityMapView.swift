@@ -383,6 +383,12 @@ struct ActivityMapView: UIViewRepresentable {
                 pin.title = start.name
                 map.addAnnotation(pin)
             }
+            if planning, let end = plan.end {
+                let pin = EndAnnotation()
+                pin.coordinate = CLLocationCoordinate2D(latitude: end.lat, longitude: end.lon)
+                pin.title = end.name
+                map.addAnnotation(pin)
+            }
 
             if planning, let route = plan.route {
                 hasFocused = true // don't move away from the route
@@ -469,6 +475,8 @@ struct ActivityMapView: UIViewRepresentable {
 
         /// The chosen starting point; drag it to move the start.
         final class StartAnnotation: MKPointAnnotation {}
+        /// The chosen end of a point-to-point route; drag it to move the end.
+        final class EndAnnotation: MKPointAnnotation {}
 
         /// A Trappist brewery or a boscafé, drawn as its logo or emoji in a white badge: green ring
         /// and check once visited.
@@ -537,12 +545,14 @@ struct ActivityMapView: UIViewRepresentable {
                 view.collisionMode = .circle
                 return view
             }
-            if annotation is StartAnnotation {
-                let view = mapView.dequeueReusableAnnotationView(withIdentifier: "start") as? MKMarkerAnnotationView
-                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "start")
+            if annotation is StartAnnotation || annotation is EndAnnotation {
+                let isEnd = annotation is EndAnnotation
+                let id = isEnd ? "end" : "start"
+                let view = mapView.dequeueReusableAnnotationView(withIdentifier: id) as? MKMarkerAnnotationView
+                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: id)
                 view.annotation = annotation
-                view.glyphImage = UIImage(systemName: "flag.fill")
-                view.markerTintColor = .systemGreen
+                view.glyphImage = UIImage(systemName: isEnd ? "flag.checkered" : "flag.fill")
+                view.markerTintColor = isEnd ? .systemRed : .systemGreen
                 view.titleVisibility = .adaptive
                 view.canShowCallout = false
                 view.isDraggable = true
@@ -639,8 +649,9 @@ struct ActivityMapView: UIViewRepresentable {
 
         func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView,
                      didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
-            guard newState == .ending, let pin = view.annotation as? StartAnnotation else { return }
-            setStart(at: GeoPoint(lat: pin.coordinate.latitude, lon: pin.coordinate.longitude))
+            guard newState == .ending, let pin = view.annotation as? MKPointAnnotation else { return }
+            let point = GeoPoint(lat: pin.coordinate.latitude, lon: pin.coordinate.longitude)
+            if pin is EndAnnotation { setEnd(at: point) } else if pin is StartAnnotation { setStart(at: point) }
         }
 
         /// Planning mode: long-press the map to start the round trip there.
@@ -659,6 +670,15 @@ struct ActivityMapView: UIViewRepresentable {
             Task {
                 let named = await StartPoint.dropped(at: point)
                 if plan.start?.point == point { plan.setStart(named) }
+            }
+        }
+
+        private func setEnd(at point: GeoPoint) {
+            let plan = parent.plan
+            plan.setEnd(StartPoint(name: StartPoint.coordinateName(point), point), remember: false)
+            Task {
+                let named = await StartPoint.dropped(at: point)
+                if plan.end?.point == point { plan.setEnd(named) }
             }
         }
 
