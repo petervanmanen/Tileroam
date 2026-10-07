@@ -84,17 +84,46 @@ extension GeoPoint {
 struct TileMapImage: @unchecked Sendable {
     let snapshot: MKMapSnapshotter.Snapshot
     let size: CGSize
+    /// The snapshot, muted and faded towards white, so the tiles stand out (green tiles on the
+    /// map's green woods and fields were hard to see).
+    let base: UIImage
 
-    /// A snapshot of `region` at `size` pixels (scale 1), standard map, light.
+    // Colours with enough contrast on that map.
+    /// Tiles visited before: strong blue, with a darker edge.
+    static let tileFill = UIColor(red: 0.12, green: 0.36, blue: 0.86, alpha: 0.72)
+    static let tileEdge = UIColor(red: 0.04, green: 0.18, blue: 0.52, alpha: 0.9)
+    /// New tiles: bright orange.
+    static let newFill = UIColor(red: 1.0, green: 0.45, blue: 0.0, alpha: 0.95)
+    static let newEdge = UIColor(red: 0.75, green: 0.25, blue: 0.0, alpha: 1)
+    /// The max square's outline.
+    static let squareStroke = UIColor(red: 0.86, green: 0.04, blue: 0.24, alpha: 1)
+
+    /// A snapshot of `region` at `size` pixels (scale 1): standard map, muted colours, light.
     static func make(region: MKCoordinateRegion, size: CGSize) async throws -> TileMapImage {
         let options = MKMapSnapshotter.Options()
         options.region = region
         options.size = size
         options.scale = 1
         options.pointOfInterestFilter = .excludingAll
+        options.preferredConfiguration = MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
         options.traitCollection = UITraitCollection(userInterfaceStyle: .light)
         let snapshot = try await MKMapSnapshotter(options: options).start()
-        return TileMapImage(snapshot: snapshot, size: size)
+        let base = UIGraphicsImageRenderer(size: size, format: .init(for: .init(displayScale: 1))).image { context in
+            snapshot.image.draw(at: .zero)
+            UIColor.white.withAlphaComponent(0.4).setFill()
+            context.fill(CGRect(origin: .zero, size: size), blendMode: .normal) // plain fill() copies over the map
+        }
+        return TileMapImage(snapshot: snapshot, size: size, base: base)
+    }
+
+    /// Fills a tile and outlines it.
+    func draw(_ key: Int64, in context: CGContext, fill: UIColor, edge: UIColor) {
+        let rect = rect(key).insetBy(dx: 0.5, dy: 0.5)
+        context.setFillColor(fill.cgColor)
+        context.fill(rect)
+        context.setStrokeColor(edge.cgColor)
+        context.setLineWidth(1)
+        context.stroke(rect)
     }
 
     /// A tile's rectangle in the picture (origin top left).
