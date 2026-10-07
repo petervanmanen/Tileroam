@@ -9,7 +9,8 @@ struct TileHistory: Sendable {
         let date: Date
     }
 
-    /// Every visited tile once, in the order it was first visited.
+    /// Every visited tile once, in the order it was first visited: activity by activity, and
+    /// within an activity in the order its track reaches them, so the video draws the route.
     let entries: [Entry]
 
     init(activities: [Activity]) {
@@ -17,11 +18,28 @@ struct TileHistory: Sendable {
         var entries = [Entry]()
         let dated = activities.filter(\.isOnMap).sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
         for a in dated {
-            for key in a.tiles14 ?? [] where seen.insert(key).inserted {
+            for key in Self.alongTrack(a) where seen.insert(key).inserted {
                 entries.append(Entry(key: key, date: a.startDate ?? .distantPast))
             }
         }
         self.entries = entries
+    }
+
+    /// An activity's tiles in the order its track reaches them (`tiles14` is sorted by key, which
+    /// would fill a ride in row by row from the side); tiles the walk misses come last.
+    static func alongTrack(_ activity: Activity) -> [Int64] {
+        let tiles = activity.tiles14 ?? []
+        guard !tiles.isEmpty else { return [] }
+        let wanted = Set(tiles)
+        var ordered = [Int64](), found = Set<Int64>()
+        let points = activity.coordinates.map { GeoPoint(lat: $0.latitude, lon: $0.longitude) }
+        // Every gap filled (a sparse Strava summary line too): only the activity's own tiles count.
+        for p in Geo.densified(points, spacing: TileZoom.explorer.trackSpacing, maxGap: .infinity) {
+            if let key = TileGrid.key(lat: p.lat, lon: p.lon, zoom: .explorer), wanted.contains(key), found.insert(key).inserted {
+                ordered.append(key)
+            }
+        }
+        return ordered + tiles.filter { !found.contains($0) }
     }
 
     var keys: Set<Int64> { Set(entries.map(\.key)) }
@@ -90,10 +108,10 @@ struct TileMapImage: @unchecked Sendable {
 
     // Colours with enough contrast on that map.
     /// Tiles visited before: strong blue, with a darker edge.
-    static let tileFill = UIColor(red: 0.12, green: 0.36, blue: 0.86, alpha: 0.72)
-    static let tileEdge = UIColor(red: 0.04, green: 0.18, blue: 0.52, alpha: 0.9)
+    static let tileFill = UIColor(red: 0.12, green: 0.36, blue: 0.86, alpha: 0.6)
+    static let tileEdge = UIColor(red: 0.04, green: 0.18, blue: 0.52, alpha: 0.7)
     /// New tiles: bright orange.
-    static let newFill = UIColor(red: 1.0, green: 0.45, blue: 0.0, alpha: 0.95)
+    static let newFill = UIColor(red: 1.0, green: 0.45, blue: 0.0, alpha: 0.85)
     static let newEdge = UIColor(red: 0.75, green: 0.25, blue: 0.0, alpha: 1)
     /// The max square's outline.
     static let squareStroke = UIColor(red: 0.86, green: 0.04, blue: 0.24, alpha: 1)
@@ -110,7 +128,7 @@ struct TileMapImage: @unchecked Sendable {
         let snapshot = try await MKMapSnapshotter(options: options).start()
         let base = UIGraphicsImageRenderer(size: size, format: .init(for: .init(displayScale: 1))).image { context in
             snapshot.image.draw(at: .zero)
-            UIColor.white.withAlphaComponent(0.4).setFill()
+            UIColor.white.withAlphaComponent(0.3).setFill()
             context.fill(CGRect(origin: .zero, size: size), blendMode: .normal) // plain fill() copies over the map
         }
         return TileMapImage(snapshot: snapshot, size: size, base: base)

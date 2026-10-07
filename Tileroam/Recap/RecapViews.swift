@@ -54,7 +54,8 @@ struct TileVideoView: View {
     private func render() async {
         error = nil
         progress = 0
-        let history = TileHistory(activities: store.activities)
+        let activities = store.activities
+        let history = await Task.detached(priority: .userInitiated) { TileHistory(activities: activities) }.value
         do {
             video = try await TileVideo.render(history) { value in
                 Task { @MainActor in progress = value }
