@@ -91,6 +91,7 @@ struct IntroView: View {
                 feature("square.grid.3x3.fill", "Map tiles, with your max square and cluster")
                 feature("building.2.fill", "Challenges: municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria")
                 feature("mountain.2.fill", "Climbs from short steep hills to HC, and the ones you climbed")
+                feature("scribble.variable", "The snake: your longest line of tiles, side by side without diagonals, arcade style")
                 feature("flag.2.crossed.fill", "Your own challenges: places to visit or routes to ride, from a file")
                 feature("rosette", "18 badges, from 100! and Everester to Festive 500 and Globetrotter")
                 feature("bicycle", "Your Eddington number, also as a widget")
