@@ -31,6 +31,7 @@ struct StatisticsView: View {
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
                 LabeledContent(TileZoom.explorer.title, value: store.tiles14.count.formatted())
+                LabeledContent("Longest snake", value: store.snake.map { $0.tiles.count.formatted() } ?? "…")
             }
 
             category("eddington", "Eddington Number", summary: store.eddingtonCycling.number.formatted()) {

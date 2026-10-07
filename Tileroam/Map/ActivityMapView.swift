@@ -7,10 +7,12 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
     // the built-in Trappist, boscafé, ferry, Klompenpaden and MTB modes in 1.13, for the user's own
     // challenges. A stored mode that no longer decodes starts the user on Tiles.)
     case squares, gemeenten, postcodes, climbs
+    /// The longest snake of visited tiles (`Snake`).
+    case snake
     /// A challenge of the user (`CustomChallenge.id`).
     case custom(String)
 
-    static let builtIn: [MapMode] = [.squares, .gemeenten, .postcodes, .climbs]
+    static let builtIn: [MapMode] = [.squares, .gemeenten, .postcodes, .climbs, .snake]
 
     init?(rawValue: String) {
         switch rawValue {
@@ -18,6 +20,7 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
         case "gemeenten": self = .gemeenten
         case "postcodes": self = .postcodes
         case "climbs": self = .climbs
+        case "snake": self = .snake
         default:
             guard rawValue.hasPrefix("custom:"), CustomChallenge.isValidID(String(rawValue.dropFirst(7))) else { return nil }
             self = .custom(String(rawValue.dropFirst(7)))
@@ -30,6 +33,7 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
         case .gemeenten: "gemeenten"
         case .postcodes: "postcodes"
         case .climbs: "climbs"
+        case .snake: "snake"
         case .custom(let id): "custom:\(id)"
         }
     }
@@ -46,6 +50,7 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
         case .gemeenten: String(localized: "Municipalities", comment: "Map mode: municipalities (gemeenten, communes, Gemeinden…)")
         case .postcodes: String(localized: "Postcodes")
         case .climbs: String(localized: "Climbs")
+        case .snake: String(localized: "Snake", comment: "Map mode: the longest snake of visited tiles")
         case .custom(let id): store.challenge(id)?.name ?? id
         }
     }
@@ -58,6 +63,7 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
         case .gemeenten: String(localized: "tab.municipalities", defaultValue: "Towns")
         case .postcodes: String(localized: "tab.postcodes", defaultValue: "Postcodes")
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
+        case .snake: String(localized: "tab.snake", defaultValue: "Snake")
         case .custom(let id): store.challenge(id)?.tab ?? id
         }
     }
@@ -69,6 +75,7 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
         case .gemeenten: "building.2"
         case .postcodes: "envelope"
         case .climbs: "mountain.2"
+        case .snake: "scribble.variable"
         case .custom: nil
         }
     }
@@ -92,7 +99,7 @@ enum Challenges {
     static let key = "challenges"
     /// The user's challenges seen before (`turnOnNew`).
     private static let seenKey = "seenChallenges"
-    static let builtIn: [MapMode] = [.gemeenten, .postcodes, .climbs]
+    static let builtIn: [MapMode] = [.gemeenten, .postcodes, .climbs, .snake]
 
     /// The built-in challenges and the user's.
     @MainActor
@@ -354,6 +361,7 @@ struct ActivityMapView: UIViewRepresentable {
             appliedClimb = parent.selectedClimb?.id
             appliedTileZoom = parent.tileZoom
             if appliedMode != parent.mode, parent.mode == .climbs { loadClimbs(map) }
+            if appliedMode != parent.mode, parent.mode != .snake { shownSnake = nil } // show it again next time
             appliedMode = parent.mode
             appliedVersion = parent.version
             appliedPlanVersion = parent.planVersion
@@ -371,6 +379,11 @@ struct ActivityMapView: UIViewRepresentable {
                 map.addOverlay(TilesOverlay(zoom: zoom, visited: store.tiles(zoom), stats: store.tileStats(zoom),
                                             selected: planning ? plan.selectedTiles(zoom) : [],
                                             highlight: coverage?.newTiles(zoom) ?? []), level: .aboveRoads)
+            case .snake:
+                // Pac-Man style (SnakeOverlay): over the labels, so the screen is black.
+                map.addOverlay(SnakeOverlay(zoom: parent.tileZoom, visited: store.tiles(parent.tileZoom), snake: store.snake?.tiles ?? []),
+                               level: .aboveLabels)
+                showSnake(store.snake, on: map)
             case .gemeenten, .postcodes:
                 guard let (areas, visitedCodes) = parent.mode.areas(in: store) else { break }
                 if areaGeometryKey != store.regions?.key {
@@ -468,6 +481,13 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
+            case .snake:
+                ready = store.snake != nil
+                if let tiles = store.snake?.tiles, !tiles.isEmpty {
+                    let c = tiles.map(TileGrid.cell(of:))
+                    center = TileGrid.coordinate(x: Double(c.map(\.x).reduce(0, +)) / Double(c.count) + 0.5,
+                                                 y: Double(c.map(\.y).reduce(0, +)) / Double(c.count) + 0.5, zoom: parent.tileZoom)
+                }
             case .climbs, .custom:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
@@ -495,6 +515,19 @@ struct ActivityMapView: UIViewRepresentable {
         /// through the map's `layoutMargins` (set from `leadingInset`), so that is not added here.
         private func show(_ rect: MKMapRect, on map: MKMapView, padding: UIEdgeInsets, animated: Bool) {
             map.setVisibleMapRect(rect, edgePadding: padding, animated: animated)
+        }
+
+        // MARK: Snake
+
+        /// The snake shown whole, once each time the Snake tab opens (or the snake changes).
+        private var shownSnake: [Int64]?
+
+        private func showSnake(_ snake: Snake?, on map: MKMapView) {
+            guard let snake, !snake.tiles.isEmpty, shownSnake != snake.tiles, !parent.plan.isPlanning,
+                  let rect = SnakeOverlay(zoom: parent.tileZoom, visited: [], snake: snake.tiles).snakeRect else { return }
+            shownSnake = snake.tiles
+            hasFocused = true
+            show(rect, on: map, padding: UIEdgeInsets(top: 140, left: 30, bottom: 90, right: 30), animated: true)
         }
 
         // MARK: Planned route
@@ -690,6 +723,8 @@ struct ActivityMapView: UIViewRepresentable {
                 return r
             case let areas as AreaOverlay:
                 return AreaRenderer(overlay: areas)
+            case let snake as SnakeOverlay:
+                return SnakeRenderer(overlay: snake)
             default:
                 return MKOverlayRenderer(overlay: overlay)
             }
@@ -777,6 +812,8 @@ struct ActivityMapView: UIViewRepresentable {
                     }
                 case .climbs:
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
+                case .snake:
+                    break // the arcade screen has no planning; tiles are planned on the Tiles tab
                 case .custom(let id):
                     // Places to plan a route to; routes and crossings are to ride themselves.
                     if let challenge = store.challenge(id), challenge.isPlanningTarget,

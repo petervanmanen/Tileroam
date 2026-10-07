@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes** and **Climbs** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges; they're off at first, to keep the bar short. Your own challenges (see below) get a tab of their own, on as soon as they arrive. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs** and **Snake** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges; they're off at first, to keep the bar short. Your own challenges (see below) get a tab of their own, on as soon as they arrive. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. The squares are zoom 14 tiles, about 1.5 km wide in the Netherlands: the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
@@ -90,6 +90,12 @@ A climb counts as climbed when an activity rides almost all of it uphill, from t
 To **ride a climb on a planned route**, select it in planning mode on the Climbs tab: the route rides it uphill. A planned route or an opened GPX also shows which climbs it includes, and which are new.
 
 Climbs are found by Tileroam from elevation data along OpenStreetMap's roads. Short steep hills often come out less steep than signposted, because the elevation data is about 30 m coarse.
+
+## The snake
+
+Turn on the **Snake** challenge with the **+** to see your longest snake: a line of visited tiles from tile to tile, going only horizontally and vertically (no diagonals), never visiting a tile twice. The map turns into an arcade screen: black, with a dot on every tile you visited, the snake as a blue maze corridor, Pac-Man at its head and a ghost at its tail. The map zooms to show the whole snake.
+
+The header says how long the snake is and how long it could be at most. Finding the longest snake is a famously hard problem (the longest path in a grid): for small groups of tiles Tileroam tries every snake; for big ones it grows a snake, then extends its ends, folds in detours and turns its ends around until nothing helps. It also works out an upper bound (tiles alternate colours like a chessboard, and the snake can't go out along a side branch and come back): when the snake reaches it, the header says it's the longest possible. The longest snake is also in Statistics.
 
 ## Your own challenges
 

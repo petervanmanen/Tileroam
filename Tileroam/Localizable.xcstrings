@@ -5543,6 +5543,62 @@
         }
       }
     },
+    "Longest snake": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langste slang"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus long serpent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpiente más larga"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Längste Schlange"
+          }
+        }
+      }
+    },
+    "Looking for the longest snake…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langste slang zoeken…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche du plus long serpent…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscando la serpiente más larga…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Längste Schlange wird gesucht…"
+          }
+        }
+      }
+    },
     "Main roads": {
       "localizations": {
         "nl": {
@@ -8539,6 +8595,90 @@
         }
       }
     },
+    "Snake": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slang"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpiente"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlange"
+          }
+        }
+      }
+    },
+    "Snake: %lld of at most %lld tiles": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slang: %1$lld van hooguit %2$lld tegels"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpent : %1$lld tuiles sur %2$lld au plus"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpiente: %1$lld de como mucho %2$lld teselas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlange: %1$lld von höchstens %2$lld Kacheln"
+          }
+        }
+      }
+    },
+    "Snake: %lld tiles, the longest possible": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slang: %lld tegels, de langst mogelijke"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpent : %lld tuiles, le plus long possible"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpiente: %lld teselas, la más larga posible"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlange: %lld Kacheln, die längstmögliche"
+          }
+        }
+      }
+    },
     "Snowboarding": {
       "localizations": {
         "nl": {
@@ -9767,6 +9907,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Die Daten für die Routenplanung konnten nicht geladen werden: %@"
+          }
+        }
+      }
+    },
+    "The snake: your longest line of tiles, side by side without diagonals, arcade style": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De slang: je langste lijn tegels, naast elkaar zonder diagonalen, in arcadestijl"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le serpent : votre plus longue ligne de tuiles, côte à côte sans diagonales, style arcade"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La serpiente: tu línea de teselas más larga, una junto a otra sin diagonales, estilo arcade"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Schlange: deine längste Reihe von Kacheln, nebeneinander ohne Diagonalen, im Arcade-Stil"
           }
         }
       }
@@ -11457,6 +11625,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Routen"
+          }
+        }
+      }
+    },
+    "tab.snake": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snake"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slang"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serpiente"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlange"
           }
         }
       }

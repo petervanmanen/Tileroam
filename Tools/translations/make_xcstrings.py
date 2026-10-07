@@ -9,6 +9,19 @@ LANGS = ["nl", "fr", "es", "de"]
 
 # key: (nl, fr, es, de)
 T = {
+    # The snake challenge
+    "Snake": ("Slang", "Serpent", "Serpiente", "Schlange"),
+    "Longest snake": ("Langste slang", "Plus long serpent", "Serpiente más larga", "Längste Schlange"),
+    "Looking for the longest snake…": ("Langste slang zoeken…", "Recherche du plus long serpent…", "Buscando la serpiente más larga…", "Längste Schlange wird gesucht…"),
+    "Snake: %lld tiles, the longest possible": ("Slang: %lld tegels, de langst mogelijke", "Serpent : %lld tuiles, le plus long possible",
+                                                 "Serpiente: %lld teselas, la más larga posible", "Schlange: %lld Kacheln, die längstmögliche"),
+    "Snake: %lld of at most %lld tiles": ("Slang: %1$lld van hooguit %2$lld tegels", "Serpent : %1$lld tuiles sur %2$lld au plus",
+                                           "Serpiente: %1$lld de como mucho %2$lld teselas", "Schlange: %1$lld von höchstens %2$lld Kacheln"),
+    "The snake: your longest line of tiles, side by side without diagonals, arcade style": (
+        "De slang: je langste lijn tegels, naast elkaar zonder diagonalen, in arcadestijl",
+        "Le serpent : votre plus longue ligne de tuiles, côte à côte sans diagonales, style arcade",
+        "La serpiente: tu línea de teselas más larga, una junto a otra sin diagonales, estilo arcade",
+        "Die Schlange: deine längste Reihe von Kacheln, nebeneinander ohne Diagonalen, im Arcade-Stil"),
     # Challenges of the user (challenges/README.md)
     "Completed": ("Voltooid", "Terminé", "Completada", "Geschafft"),
     "\"%@\" is missing.": ("“%@” ontbreekt.", "« %@ » manque.", "Falta «%@».", "„%@“ fehlt."),
@@ -923,6 +936,7 @@ TABS = {
     "tab.municipalities": ("Towns", "Gemeenten", "Communes", "Municipios", "Gemeinden"),
     "tab.postcodes": ("Postcodes", "Postcodes", "Codes post.", "C. postales", "PLZ"),
     "tab.climbs": ("Climbs", "Klimmen", "Montées", "Subidas", "Anstiege"),
+    "tab.snake": ("Snake", "Slang", "Serpent", "Serpiente", "Schlange"),
 }
 
 # Plural keys: key -> {lang: (one, other)}; "en" included.
