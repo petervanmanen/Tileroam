@@ -103,7 +103,7 @@ struct PlanPanel: View {
 
     private var selectionContent: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(plan.selectionSummary).font(.headline)
+            Text(plan.selectionSummary(store)).font(.headline)
             startButton
             endButton
             Group {

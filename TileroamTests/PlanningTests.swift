@@ -91,17 +91,18 @@ struct PlanningTests {
 
     @Test func pointToPointRouteEndsAtTheEnd() async throws {
         let start = GeoPoint(lat: 52.0, lon: 5.0), end = GeoPoint(lat: 52.0, lon: 5.3)
-        let boshut = Boscafe(id: "b", name: "B", place: "P", emoji: "🌲", lat: 52.0, lon: 5.15)
-        let target = try #require(TargetGeometry(.boscafe("b"), regions: nil, boscafes: [boshut]))
+        let cafes = try ChallengeFixtures.challenge(["format": 1, "id": "cafes", "name": "Cafés", "kind": "locations"],
+                                                    features: [ChallengeFixtures.point("b", "B", lat: 52.0, lon: 5.15)])
+        let target = try #require(TargetGeometry(.place("cafes", "b"), regions: nil, challenges: [cafes]))
         let router = StraightRouter()
         let route = try await RoutePlanner.planRoute(
             start: start, end: end, targets: [target], client: router,
             coverage: { RouteCoverage(route: $0, visitedTiles14: [], visitedMunicipalities: [], visitedPostcodes: [],
-                                      regions: nil, boscafes: [boshut], visitedBoscafes: []) },
+                                      regions: nil, challenges: [(cafes, [])]) },
             progress: { _ in })
         let asked = try #require(await router.requested.first)
         #expect(asked.first == start && asked.last == end && asked.count == 3)
-        #expect(route.coverage.boscafes == ["b"])
+        #expect(route.coverage.places["cafes"] == ["b"])
         // The rough path for downloading map data ends there too.
         #expect(RoutePlanner.approximateLoop(start: start, end: end, targets: [target]).last == end)
         #expect(RoutePlanner.approximateLoop(start: start, targets: [target]).last == start)

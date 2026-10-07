@@ -2,54 +2,74 @@ import CoreLocation
 import MapKit
 import SwiftUI
 
-enum MapMode: String, CaseIterable, Identifiable {
-    // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3; a
-    // stored "activities" no longer decodes, so those users start on Tiles.)
-    case squares, gemeenten, postcodes, climbs, trappists, boscafes, ferries, klompenpaden, mtb
+enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
+    // (A Routes mode with all rides drawn in sport colours, "activities", was removed in 1.5.3;
+    // the built-in Trappist, boscafé, ferry, Klompenpaden and MTB modes in 1.13, for the user's own
+    // challenges. A stored mode that no longer decodes starts the user on Tiles.)
+    case squares, gemeenten, postcodes, climbs
+    /// A challenge of the user (`CustomChallenge.id`).
+    case custom(String)
 
-    var id: Self { self }
+    static let builtIn: [MapMode] = [.squares, .gemeenten, .postcodes, .climbs]
 
-    var title: String {
+    init?(rawValue: String) {
+        switch rawValue {
+        case "squares": self = .squares
+        case "gemeenten": self = .gemeenten
+        case "postcodes": self = .postcodes
+        case "climbs": self = .climbs
+        default:
+            guard rawValue.hasPrefix("custom:"), CustomChallenge.isValidID(String(rawValue.dropFirst(7))) else { return nil }
+            self = .custom(String(rawValue.dropFirst(7)))
+        }
+    }
+
+    var rawValue: String {
+        switch self {
+        case .squares: "squares"
+        case .gemeenten: "gemeenten"
+        case .postcodes: "postcodes"
+        case .climbs: "climbs"
+        case .custom(let id): "custom:\(id)"
+        }
+    }
+
+    var id: String { rawValue }
+
+    /// The challenge's id, for a challenge of the user.
+    var challengeID: String? { if case .custom(let id) = self { id } else { nil } }
+
+    @MainActor
+    func title(in store: ActivityStore) -> String {
         switch self {
         case .squares: String(localized: "Tiles")
         case .gemeenten: String(localized: "Municipalities", comment: "Map mode: municipalities (gemeenten, communes, Gemeinden…)")
         case .postcodes: String(localized: "Postcodes")
         case .climbs: String(localized: "Climbs")
-        case .trappists: String(localized: "Trappist Challenge")
-        case .boscafes: String(localized: "Boscafé Challenge")
-        case .ferries: String(localized: "Ferries")
-        case .klompenpaden: String(localized: "Klompenpaden")
-        case .mtb: String(localized: "Mountain bike routes")
+        case .custom(let id): store.challenge(id)?.name ?? id
         }
     }
 
-    /// Short name for the segmented control at the top of the map.
-    var tabTitle: String {
+    /// Short name for the chips at the top of the map.
+    @MainActor
+    func tabTitle(in store: ActivityStore) -> String {
         switch self {
         case .squares: String(localized: "tab.tiles", defaultValue: "Tiles")
         case .gemeenten: String(localized: "tab.municipalities", defaultValue: "Towns")
         case .postcodes: String(localized: "tab.postcodes", defaultValue: "Postcodes")
         case .climbs: String(localized: "tab.climbs", defaultValue: "Climbs")
-        case .trappists: String(localized: "tab.trappists", defaultValue: "Trappists")
-        case .boscafes: String(localized: "tab.boscafes", defaultValue: "Boscafés")
-        case .ferries: String(localized: "tab.ferries", defaultValue: "Ferries")
-        case .klompenpaden: String(localized: "tab.klompenpaden", defaultValue: "Klompenpaden")
-        case .mtb: String(localized: "tab.mtb", defaultValue: "MTB")
+        case .custom(let id): store.challenge(id)?.tab ?? id
         }
     }
 
-    /// SF Symbol for Settings → Challenges.
-    var symbol: String {
+    /// SF Symbol for Settings → Challenges (a challenge of the user shows its emoji instead).
+    var symbol: String? {
         switch self {
         case .squares: "square.grid.3x3"
         case .gemeenten: "building.2"
         case .postcodes: "envelope"
         case .climbs: "mountain.2"
-        case .trappists: "mug"
-        case .boscafes: "tree"
-        case .ferries: "ferry"
-        case .klompenpaden: "shoeprints.fill"
-        case .mtb: "bicycle"
+        case .custom: nil
         }
     }
 
@@ -64,30 +84,52 @@ enum MapMode: String, CaseIterable, Identifiable {
     }
 }
 
-/// The map modes besides Tiles are challenges the user turns on (Settings, or the
-/// Challenges menu at the end of the mode bar). All are off by default, so the bar stays short.
+/// The map modes besides Tiles are challenges the user turns on (Settings, or the Challenges
+/// menu at the end of the mode bar): the built-in ones are off by default, so the bar stays
+/// short; the user's own are on when they first appear.
 enum Challenges {
     /// UserDefaults key (synced through SettingsSync): the turned-on modes, comma-separated.
     static let key = "challenges"
-    static let all: [MapMode] = [.gemeenten, .postcodes, .climbs, .trappists, .boscafes, .ferries, .klompenpaden, .mtb]
+    /// The user's challenges seen before (`turnOnNew`).
+    private static let seenKey = "seenChallenges"
+    static let builtIn: [MapMode] = [.gemeenten, .postcodes, .climbs]
+
+    /// The built-in challenges and the user's.
+    @MainActor
+    static func all(_ store: ActivityStore) -> [MapMode] {
+        builtIn + store.customChallenges.map { .custom($0.id) }
+    }
 
     static func decode(_ raw: String) -> Set<MapMode> {
-        Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).intersection(all)
+        Set(raw.split(separator: ",").compactMap { MapMode(rawValue: String($0)) }).subtracting([.squares])
     }
 
+    /// The built-in challenges first, in their order, then the user's.
     static func encode(_ modes: Set<MapMode>) -> String {
-        all.filter(modes.contains).map(\.rawValue).joined(separator: ",")
+        (builtIn.filter(modes.contains) + modes.filter { $0.challengeID != nil }.sorted { $0.rawValue < $1.rawValue })
+            .map(\.rawValue).joined(separator: ",")
     }
 
-    /// The modes in the bar: Tiles and the turned-on challenges.
-    static func visibleModes(_ raw: String) -> [MapMode] {
+    /// The modes in the bar: Tiles and the turned-on challenges that exist (`custom`: the ids of
+    /// the user's challenges).
+    static func visibleModes(_ raw: String, custom: [String] = []) -> [MapMode] {
         let on = decode(raw)
-        return MapMode.allCases.filter { $0 == .squares || on.contains($0) }
+        return [.squares] + (builtIn + custom.map { .custom($0) }).filter(on.contains)
+    }
+
+    /// Turns on the challenges of the user not seen before.
+    static func turnOnNew(_ ids: [String], defaults: UserDefaults = .standard) {
+        let seen = Set((defaults.string(forKey: seenKey) ?? "").split(separator: ",").map(String.init))
+        let new = ids.filter { !seen.contains($0) }
+        guard !new.isEmpty else { return }
+        defaults.set(seen.union(new).sorted().joined(separator: ","), forKey: seenKey)
+        let on = decode(defaults.string(forKey: key) ?? "").union(new.map { .custom($0) })
+        defaults.set(encode(on), forKey: key)
     }
 }
 
 extension MapMode {
-    var isChallenge: Bool { Challenges.all.contains(self) }
+    var isChallenge: Bool { self != .squares }
 }
 
 /// Base map shown under the overlays.
@@ -132,11 +174,8 @@ struct ActivityMapView: UIViewRepresentable {
     let version: Int
     @Binding var selectedArea: Area?
     @Binding var selectedClimb: Climb?
-    @Binding var selectedTrappist: Trappist?
-    @Binding var selectedBoscafe: Boscafe?
-    @Binding var selectedFerry: Ferry?
-    @Binding var selectedKlompenpad: Klompenpad?
-    @Binding var selectedMTBRoute: MTBRoute?
+    /// A tapped place or route of a challenge of the user.
+    @Binding var selectedItem: ChallengeSelection?
     /// Incremented by the "my location" button.
     let locateRequest: Int
     @Binding var isFollowingUser: Bool
@@ -211,8 +250,7 @@ struct ActivityMapView: UIViewRepresentable {
         private var appliedPlanVersion = -1
         private var appliedTileZoom: TileZoom?
         private var appliedClimb: String?
-        private var appliedKlompenpad: String?
-        private var appliedMTBRoute: String?
+        private var appliedItem: ChallengeSelection?
         private var appliedStyle: MapStyle?
 
         func applyStyle(_ map: MKMapView) {
@@ -311,11 +349,9 @@ struct ActivityMapView: UIViewRepresentable {
         func update(_ map: MKMapView) {
             guard appliedMode != parent.mode || appliedVersion != parent.version || appliedPlanVersion != parent.planVersion
                 || appliedTileZoom != parent.tileZoom || appliedClimb != parent.selectedClimb?.id
-                || appliedKlompenpad != parent.selectedKlompenpad?.id
-                || appliedMTBRoute != parent.selectedMTBRoute?.id else { return }
-            appliedMTBRoute = parent.selectedMTBRoute?.id
+                || appliedItem != parent.selectedItem else { return }
+            appliedItem = parent.selectedItem
             appliedClimb = parent.selectedClimb?.id
-            appliedKlompenpad = parent.selectedKlompenpad?.id
             appliedTileZoom = parent.tileZoom
             if appliedMode != parent.mode, parent.mode == .climbs { loadClimbs(map) }
             appliedMode = parent.mode
@@ -374,28 +410,22 @@ struct ActivityMapView: UIViewRepresentable {
                     multi.width = 7
                     map.addOverlay(multi, level: .aboveRoads)
                 }
-            case .klompenpaden:
-                // Two colours (issue #41): walked green, not (yet) walked dark orange. The selected
-                // path keeps its colour, drawn thicker and on top; its card shows the progress.
-                addRouteLines(store.klompenpaden, progress: store.klompenpadProgress, selected: parent.selectedKlompenpad?.id, to: map)
-            case .mtb:
-                // Like the Klompenpaden: ridden green, not (yet) ridden dark orange; the selected
-                // route thicker and on top.
-                addRouteLines(store.mtbRoutes, progress: store.mtbProgress, selected: parent.selectedMTBRoute?.id, to: map)
-            case .trappists:
-                let marked = planning ? plan.selectedTrappists.union(coverage?.trappists ?? []) : []
-                map.addAnnotations(store.trappists.map {
-                    PlaceAnnotation(place: $0, icon: $0.icon, visited: store.trappistVisits[$0.id] != nil, marked: marked.contains($0.id))
-                })
-            case .boscafes:
-                let marked = planning ? plan.selectedBoscafes.union(coverage?.boscafes ?? []) : []
-                map.addAnnotations(store.boscafes.map {
-                    PlaceAnnotation(place: $0, emoji: $0.emoji, visited: store.boscafeVisits[$0.id] != nil, marked: marked.contains($0.id))
-                })
-            case .ferries:
-                map.addAnnotations(store.ferries.map {
-                    PlaceAnnotation(place: $0, emoji: "⛴️", visited: store.ferryCrossings[$0.id] != nil)
-                })
+            case .custom(let id):
+                guard let challenge = store.challenge(id) else { break }
+                let progress = store.challengeProgress(id)
+                if challenge.isCoverRoutes {
+                    // Two colours (issue #41): done green, not (yet) done dark orange. The selected
+                    // route keeps its colour, drawn thicker and on top; its card shows the progress.
+                    let selected = parent.selectedItem?.challenge == id ? parent.selectedItem?.item : nil
+                    addRouteLines(challenge, progress: progress, selected: selected, to: map)
+                } else {
+                    // Places, and crossings at their middle, as badges with the emoji.
+                    let marked = planning ? plan.selectedPlaces(id).union(coverage?.places[id] ?? []) : []
+                    map.addAnnotations(challenge.items.map {
+                        PlaceAnnotation(challenge: id, item: $0, emoji: $0.icon ?? challenge.icon,
+                                        visited: progress.isDone($0.id, in: challenge), marked: marked.contains($0.id))
+                    })
+                }
             }
 
             if planning, let start = plan.start {
@@ -438,7 +468,7 @@ struct ActivityMapView: UIViewRepresentable {
                         return TileGrid.coordinate(x: Double(c.x) + 0.5, y: Double(c.y) + 0.5, zoom: zoom)
                     })
                 }
-            case .climbs, .trappists, .boscafes, .ferries, .klompenpaden, .mtb:
+            case .climbs, .custom:
                 center = MapFocus.densestCenter(store.mapActivities.flatMap { a in
                     a.coordinates.enumerated().filter { $0.offset % 10 == 0 }.map { GeoPoint(lat: $0.element.latitude, lon: $0.element.longitude) }
                 })
@@ -499,29 +529,27 @@ struct ActivityMapView: UIViewRepresentable {
         /// The chosen end of a point-to-point route; drag it to move the end.
         final class EndAnnotation: MKPointAnnotation {}
 
-        /// A Trappist brewery or a boscafé, drawn as its logo or emoji in a white badge: green ring
-        /// and check once visited.
+        /// A place of a challenge (or a crossing, at its middle), drawn as its emoji in a white
+        /// badge: green ring and check once visited.
         final class PlaceAnnotation: NSObject, MKAnnotation {
-            let place: any ChallengePlace
-            /// A brewery's logo (nil until downloaded: its initial is drawn instead).
-            let icon: UIImage?
-            /// A boscafé's emoji.
-            let emoji: String?
+            let challenge: String
+            let item: ChallengeItem
+            let emoji: String
             let visited: Bool
             /// Selected for a plan, or on the planned route: orange ring.
             let marked: Bool
-            var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon) }
-            var title: String? { place.name }
+            var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: item.point.lat, longitude: item.point.lon) }
+            var title: String? { item.name }
 
-            init(place: any ChallengePlace, icon: UIImage? = nil, emoji: String? = nil, visited: Bool, marked: Bool = false) {
-                self.place = place
-                self.icon = icon
+            init(challenge: String, item: ChallengeItem, emoji: String, visited: Bool, marked: Bool = false) {
+                self.challenge = challenge
+                self.item = item
                 self.emoji = emoji
                 self.visited = visited
                 self.marked = marked
             }
 
-            /// The badge, rendered once per brewery and state.
+            /// The badge, rendered once per place and state.
             func badge() -> UIImage {
                 let size = CGSize(width: 46, height: 46)
                 return UIGraphicsImageRenderer(size: size).image { _ in
@@ -530,16 +558,10 @@ struct ActivityMapView: UIViewRepresentable {
                     UIColor.white.setFill()
                     let circle = UIBezierPath(ovalIn: rect)
                     circle.fill()
-                    if let icon {
-                        icon.draw(in: rect.insetBy(dx: 5, dy: 5))
-                    } else {
-                        // A boscafé's emoji, or a brewery's initial while its logo isn't downloaded.
-                        let text = (emoji ?? String(place.name.prefix(1))) as NSString
-                        let font = emoji != nil ? UIFont.systemFont(ofSize: 24) : UIFont.boldSystemFont(ofSize: 20)
-                        let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.black]
-                        let s = text.size(withAttributes: attributes)
-                        text.draw(at: CGPoint(x: (size.width - s.width) / 2, y: (size.height - s.height) / 2), withAttributes: attributes)
-                    }
+                    let text = emoji as NSString
+                    let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 24), .foregroundColor: UIColor.black]
+                    let s = text.size(withAttributes: attributes)
+                    text.draw(at: CGPoint(x: (size.width - s.width) / 2, y: (size.height - s.height) / 2), withAttributes: attributes)
                     ring.setStroke()
                     circle.lineWidth = marked ? 4 : 3
                     circle.stroke()
@@ -596,13 +618,13 @@ struct ActivityMapView: UIViewRepresentable {
             return view
         }
 
-        /// A route challenge's routes: done (at least `KlompenpadMatcher.done`) green, others dark
+        /// A route challenge's routes: done (at least the challenge's coverage) green, others dark
         /// orange; the selected one keeps its colour, thicker and on top.
-        private func addRouteLines<Route: ChallengeRoute>(_ routes: [Route], progress: [String: Double], selected: String?, to map: MKMapView) {
+        private func addRouteLines(_ challenge: CustomChallenge, progress: ChallengeProgress, selected: String?, to map: MKMapView) {
             var groups = [UIColor: [MKPolyline]]()
-            var selectedLines = [MKPolyline](), selectedColor = Self.klompenpadOpen
-            for route in routes {
-                let color = (progress[route.id] ?? 0) >= KlompenpadMatcher.done ? UIColor.systemGreen : Self.klompenpadOpen
+            var selectedLines = [MKPolyline](), selectedColor = Self.routeOpen
+            for route in challenge.items {
+                let color = progress.isDone(route.id, in: challenge) ? UIColor.systemGreen : Self.routeOpen
                 let lines = route.pieces.map { piece in
                     let coords = piece.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
                     return MKPolyline(coordinates: coords, count: coords.count)
@@ -635,8 +657,8 @@ struct ActivityMapView: UIViewRepresentable {
 
         /// A selected climb: no category uses blue.
         static let selectedClimbColor = UIColor.systemBlue
-        /// A Klompenpad not (yet) walked.
-        static let klompenpadOpen = UIColor(red: 0.85, green: 0.35, blue: 0.0, alpha: 1)
+        /// A route not (yet) done.
+        static let routeOpen = UIColor(red: 0.85, green: 0.35, blue: 0.0, alpha: 1)
 
         static func color(for category: Climb.Category) -> UIColor {
             switch category {
@@ -729,7 +751,7 @@ struct ActivityMapView: UIViewRepresentable {
 
         @objc func handleTap(_ recognizer: UITapGestureRecognizer) {
             guard let map = recognizer.view as? MKMapView else { return }
-            // Taps on stop markers show their callout instead. Breweries, boscafés and ferries are
+            // Taps on stop markers show their callout instead. The places of challenges are
             // chosen here, by the nearest one (issue #66: a selected badge used to block every
             // later tap, so another one or the empty map didn't change the card).
             if map.selectedAnnotations.contains(where: { !($0 is MKUserLocation) && !($0 is PlaceAnnotation) }) { return }
@@ -755,35 +777,20 @@ struct ActivityMapView: UIViewRepresentable {
                     }
                 case .climbs:
                     if let climb = nearestClimb(to: p, on: map) { parent.plan.toggle(.climb(climb.id)) }
-                case .trappists:
-                    if let t = nearestPlace(parent.store.trappists, to: p, on: map) { parent.plan.toggle(.trappist(t.id)) }
-                case .boscafes:
-                    if let b = nearestPlace(parent.store.boscafes, to: p, on: map) { parent.plan.toggle(.boscafe(b.id)) }
-                case .klompenpaden, .mtb, .ferries:
-                    break // routes and crossings to ride themselves, not planning targets
+                case .custom(let id):
+                    // Places to plan a route to; routes and crossings are to ride themselves.
+                    if let challenge = store.challenge(id), challenge.isPlanningTarget,
+                       let place = nearestPlace(challenge.items, to: p, on: map) {
+                        parent.plan.toggle(.place(id, place.id))
+                    }
                 }
                 return
             }
 
-            if parent.mode == .klompenpaden {
-                parent.selectedKlompenpad = nearestRoute(parent.store.klompenpaden, to: p, on: map)
-                return
-            }
-            if parent.mode == .mtb {
-                parent.selectedMTBRoute = nearestRoute(parent.store.mtbRoutes, to: p, on: map)
-                return
-            }
-
-            if parent.mode == .trappists {
-                parent.selectedTrappist = nearestPlace(parent.store.trappists, to: p, on: map)
-                return
-            }
-            if parent.mode == .boscafes {
-                parent.selectedBoscafe = nearestPlace(parent.store.boscafes, to: p, on: map)
-                return
-            }
-            if parent.mode == .ferries {
-                parent.selectedFerry = nearestPlace(parent.store.ferries, to: p, on: map)
+            if case .custom(let id) = parent.mode {
+                guard let challenge = store.challenge(id) else { return }
+                let item = challenge.isCoverRoutes ? nearestRoute(challenge.items, to: p, on: map) : nearestPlace(challenge.items, to: p, on: map)
+                parent.selectedItem = item.map { ChallengeSelection(challenge: id, item: $0.id) }
                 return
             }
 
@@ -795,18 +802,18 @@ struct ActivityMapView: UIViewRepresentable {
             parent.selectedArea = areas.area(at: p)
         }
 
-        /// The route (Klompenpad, MTB route) drawn closest to a tap, within about 25 points on screen.
-        private func nearestRoute<Route: ChallengeRoute>(_ routes: [Route], to p: GeoPoint, on map: MKMapView) -> Route? {
+        /// The route drawn closest to a tap, within about 25 points on screen.
+        private func nearestRoute(_ routes: [ChallengeItem], to p: GeoPoint, on map: MKMapView) -> ChallengeItem? {
             let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
             let limit = 25 * metresPerPoint
             let dLat = limit / 111_000, dLon = dLat / max(cos(p.lat * .pi / 180), 0.2)
-            var best: (Route, Double)?
+            var best: (ChallengeItem, Double)?
             for path in routes {
                 for piece in path.pieces {
                     // Skip pieces far from the tap without measuring every segment.
                     guard piece.contains(where: { abs($0.lat - p.lat) < dLat * 40 && abs($0.lon - p.lon) < dLon * 40 }) else { continue }
                     for (a, b) in zip(piece, piece.dropFirst()) {
-                        let d = TrappistMatcher.distance(from: p, toSegment: a, b)
+                        let d = PlaceMatcher.distance(from: p, toSegment: a, b)
                         if d <= limit, d < best?.1 ?? .infinity { best = (path, d) }
                     }
                 }
@@ -814,8 +821,8 @@ struct ActivityMapView: UIViewRepresentable {
             return best?.0
         }
 
-        /// The brewery or boscafé closest to a tap, within its badge (about 25 points on screen).
-        private func nearestPlace<Place: ChallengePlace>(_ places: [Place], to p: GeoPoint, on map: MKMapView) -> Place? {
+        /// The place closest to a tap, within its badge (about 25 points on screen).
+        private func nearestPlace(_ places: [ChallengeItem], to p: GeoPoint, on map: MKMapView) -> ChallengeItem? {
             let metresPerPoint = map.visibleMapRect.width / max(map.bounds.width, 1) * MKMetersPerMapPointAtLatitude(p.lat)
             return places.map { ($0, Geo.distance($0.point, p)) }
                 .filter { $0.1 <= 25 * metresPerPoint }
@@ -835,4 +842,10 @@ struct ActivityMapView: UIViewRepresentable {
             return best?.0
         }
     }
+}
+
+/// A place or route of a challenge of the user, tapped on the map.
+struct ChallengeSelection: Hashable, Sendable {
+    let challenge: String
+    let item: String
 }

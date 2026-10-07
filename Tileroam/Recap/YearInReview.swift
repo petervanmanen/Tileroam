@@ -17,9 +17,9 @@ struct YearInReview: Sendable {
     var newPostcodes = 0
     var newCountries = [String]()
     var newClimbs = 0
-    var newTrappists = 0
-    var newBoscafes = 0
-    var newFerries = 0
+    /// The user's challenges with something new this year: places visited, routes crossed or
+    /// done for the first time.
+    var challenges = [(name: String, count: Int)]()
     /// Badges earned (again) this year.
     var badges = [Badge]()
     var eddington = (before: 0, after: 0)
@@ -29,7 +29,26 @@ struct YearInReview: Sendable {
         Set(activities.compactMap { $0.startDate.map { calendar.component(.year, from: $0) } }).sorted(by: >)
     }
 
-    init(year: Int, activities: [Activity], history: TileHistory, calendar: Calendar = .current) {
+    /// What the year in review needs of a challenge of the user.
+    struct Challenge: Sendable {
+        let id: String
+        let name: String
+        let key: String
+        /// Cover routes: the share that makes a route done, and checkpoints per route.
+        let coverage: Double?
+        let counts: [String: Int]
+
+        @MainActor
+        init(_ challenge: CustomChallenge, store: ActivityStore) {
+            id = challenge.id
+            name = challenge.name
+            key = challenge.key
+            coverage = challenge.isCoverRoutes ? challenge.coverage : nil
+            counts = challenge.isCoverRoutes ? store.challenges.routeCounts(challenge.id) : [:]
+        }
+    }
+
+    init(year: Int, activities: [Activity], history: TileHistory, challenges: [Challenge] = [], calendar: Calendar = .current) {
         self.year = year
         guard let start = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
               let end = calendar.date(from: DateComponents(year: year + 1, month: 1, day: 1)) else { return }
@@ -57,9 +76,21 @@ struct YearInReview: Sendable {
         newPostcodes = new(\.postalCodes).count
         newCountries = new(\.countries).sorted()
         newClimbs = new(\.climbs).count
-        newTrappists = new(\.trappists).count
-        newBoscafes = new(\.boscafes).count
-        newFerries = new(\.ferries).count
+        for c in challenges {
+            func hits(_ a: Activity) -> ChallengeHits? { a.challengeHits?[c.id].flatMap { $0.key == c.key ? $0 : nil } }
+            let count: Int
+            if let coverage = c.coverage {
+                // Routes done by the end of the year that weren't done before it.
+                func done(_ list: [Activity]) -> Set<String> {
+                    let progress = RouteMatcher.progress(hits: list.filter(\.isOnMap).compactMap { hits($0)?.checkpoints }, counts: c.counts)
+                    return Set(progress.filter { $0.value >= coverage }.keys)
+                }
+                count = done(upToEnd).subtracting(done(before)).count
+            } else {
+                count = new { hits($0)?.ids }.count
+            }
+            if count > 0 { self.challenges.append((c.name, count)) }
+        }
 
         func countries(_ list: [Activity]) -> Int { Set(list.filter(\.isOnMap).flatMap { $0.countries ?? [] }).count }
         let badgesBefore = BadgeRules.counts(before, countries: countries(before), calendar: calendar)

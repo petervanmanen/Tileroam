@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Builds AssetPacks/MTB/mtb-routes.json, the mountain bike route challenge's list (the `mtbroutes`
-asset pack), from OpenStreetMap: the signposted MTB routes of the routing countries.
+"""Builds AssetPacks/MTB/mtb-routes.json, the mountain bike routes' list (Tools/make_challenges.py
+mtb-routes makes the challenge file from it; until 1.12 it was the `mtbroutes` asset pack), from OpenStreetMap: the signposted MTB routes of the routing countries.
 
 Signposted: relations with route=mtb and type=route that belong to a network (network=lcn, rcn,
 ncn, icn or mtb: in OpenStreetMap the routes of a network are the signposted ones). Left out:

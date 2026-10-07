@@ -69,18 +69,21 @@ final class ActivityStore {
     let regionStore = RegionStore()
     let strava = StravaSync()
 
-    var trappists: [Trappist] { challenges.trappists }
-    var trappistVisits: [String: [Date]] { challenges.trappistVisits }
-    var boscafes: [Boscafe] { challenges.boscafes }
-    var boscafeVisits: [String: [Date]] { challenges.boscafeVisits }
-    var ferries: [Ferry] { challenges.ferries }
-    var ferryCrossings: [String: [Date]] { challenges.ferryCrossings }
-    var klompenpaden: [Klompenpad] { challenges.klompenpaden }
-    var klompenpadProgress: [String: Double] { challenges.klompenpadProgress }
-    var klompenpadenWalked: Int { challenges.klompenpadenWalked }
-    var mtbRoutes: [MTBRoute] { challenges.mtbRoutes }
-    var mtbProgress: [String: Double] { challenges.mtbProgress }
-    var mtbRoutesRidden: Int { challenges.mtbRoutesRidden }
+    /// The user's challenges, and their progress (see `ChallengeEngine`).
+    var customChallenges: [CustomChallenge] { challenges.challenges }
+    var challengeProblems: [ChallengeEngine.Problem] { challenges.problems }
+    func challenge(_ id: String) -> CustomChallenge? { challenges.challenge(id) }
+    func challengeProgress(_ id: String) -> ChallengeProgress { challenges.progress(of: id) }
+    /// The location challenges with the places visited, for route planning.
+    var planningChallenges: [(challenge: CustomChallenge, visited: Set<String>)] {
+        customChallenges.filter(\.isPlanningTarget).map { ($0, Set(challengeProgress($0.id).visits.keys)) }
+    }
+    /// Deletes a challenge's file (on all devices, with iCloud).
+    func removeChallenge(_ challenge: CustomChallenge) async {
+        await challenges.remove(challenge)
+        matchChallenges()
+        version += 1
+    }
     var badges: [Badge: Int] { challenges.badges }
     var worldCountries: Set<String> { challenges.worldCountries }
 
@@ -251,20 +254,16 @@ final class ActivityStore {
         recompute()
     }
 
-    /// Checks the lists for updates, each on its own; a changed list means checking again.
+    /// Reads the challenge files again; a changed file means checking again. New challenges are
+    /// turned on, so they show up in the bar.
     private func updateChallengeLists() {
-        func handle(_ change: ChallengeEngine.Change) {
-            switch change {
-            case .list: matchChallenges() // a new list has a new key: every activity is checked again
-            case .logos: version += 1 // redraw with the new logos
-            case .none: break
-            }
+        Task {
+            await RetiredChallengeData.removeOnce()
+            guard await challenges.reload() else { return }
+            Challenges.turnOnNew(customChallenges.map(\.id))
+            version += 1
+            matchChallenges() // a changed file has a new key: every activity is checked again for it
         }
-        Task { handle(await challenges.updateTrappists()) }
-        Task { handle(await challenges.updateBoscafes()) }
-        Task { handle(await challenges.updateFerries()) }
-        Task { handle(await challenges.updateKlompenpaden()) }
-        Task { handle(await challenges.updateMTBRoutes()) }
     }
 
     // MARK: Challenge results (see ChallengeEngine, ChallengeResults)
@@ -284,7 +283,7 @@ final class ActivityStore {
             guard let results = await challenges.check(all, current) else { return }
             func fill(_ a: inout Activity) {
                 guard let r = results[a.id] else { return } // deleted meanwhile: nothing to store
-                ChallengeEngine.store(r, current, in: &a)
+                ChallengeResults.store(r, current, in: &a)
             }
             for i in folderActivities.indices { fill(&folderActivities[i]) }
             strava.update(fill)

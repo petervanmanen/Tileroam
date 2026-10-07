@@ -2,7 +2,8 @@
 """Converts a boscafé list in the editor's format ([{"title": "Name, Place", "icon": "🌲",
 "lat": …, "lng": …}]) into AssetPacks/Boscafes/boscafes.json, the app's format (id, name, place,
 emoji, lat, lon). Ids are made from name and place, so a café keeps its id (and its visits)
-as long as its title stays the same. Then upload with Tools/upload_boscafes_r2.sh.
+as long as its title stays the same. Then make the challenge file with
+Tools/make_challenges.py boscafes.
 
     Tools/import_boscafes.py ../temp/boscafe/boscafes.json
 """

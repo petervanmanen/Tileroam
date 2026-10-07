@@ -9,7 +9,8 @@
 # Build the Debug app for the simulator first (build/Build/Products/Debug-iphonesimulator).
 # Uses the Debug-only launch arguments -RegionsDir, -challenges, -mapMode, -FocusZoom, -MapCenter,
 # -PlanDemo, -ShowStatistics, -StatisticsOpen, -ShowSettings and -hasSeenIntro. Climbs and the
-# Trappist breweries come from R2 (tiles.petervanmanen.nl), so it needs an internet connection.
+# The challenges are the files in challenges/ (Tools/make_challenges.py makes them); climbs come
+# from R2 (tiles.petervanmanen.nl), so it needs an internet connection.
 # The README images are made from these captures by Tools/update_screenshots.sh, which runs it all.
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
@@ -49,8 +50,8 @@ C=$(xcrun simctl get_app_container "$D" $BID data)
 mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
 # All challenges on, so the bar at the top shows every tab.
-COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -KlompenpadenFile $ROOT/AssetPacks/Klompenpaden/klompenpaden.json -MTBRoutesFile $ROOT/AssetPacks/MTB/mtb-routes.json -BoscafesFile $ROOT/AssetPacks/Boscafes/boscafes.json -FerriesFile $ROOT/AssetPacks/Ferries/ferries.json -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB
-        -challenges gemeenten,postcodes,climbs,trappists,boscafes,ferries,klompenpaden,mtb)
+COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -ChallengesFolder $ROOT/challenges -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB
+        -challenges gemeenten,postcodes,climbs,custom:trappist-breweries,custom:boscafes,custom:ferries,custom:klompenpaden,custom:mtb-routes)
 
 # The simulator is slow to launch apps (system libraries load lazily), so the waits are long.
 shot() { # name, wait, args…
@@ -65,12 +66,12 @@ shot() { # name, wait, args…
 # Trappist breweries' logos.
 shot warmup       25 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS
 shot warmup2      25 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
-shot warmup3      20 -hasSeenIntro YES -mapMode trappists -MapCenter 50.8,4.2,3.9
+shot warmup3      20 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
 shot 01-tiles     16 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS
 shot 02-towns     16 -hasSeenIntro YES -mapMode gemeenten -FocusZoom $(( FOCUS - 1 ))
 shot 03-postcodes 16 -hasSeenIntro YES -mapMode postcodes -FocusZoom $FOCUS
 shot 04-climbs    18 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
-shot 05-trappists 16 -hasSeenIntro YES -mapMode trappists -MapCenter 50.8,4.2,3.9
+shot 05-trappists 16 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
 shot 06-plan      35 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -PlanDemo YES
 shot 07-badges    40 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -ShowStatistics YES -StatisticsOpen badges
 shot 00-intro     15 -hasSeenIntro NO

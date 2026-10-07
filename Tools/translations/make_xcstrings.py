@@ -9,6 +9,71 @@ LANGS = ["nl", "fr", "es", "de"]
 
 # key: (nl, fr, es, de)
 T = {
+    # Challenges of the user (challenges/README.md)
+    "Completed": ("Voltooid", "Terminé", "Completada", "Geschafft"),
+    "\"%@\" is missing.": ("“%@” ontbreekt.", "« %@ » manque.", "Falta «%@».", "„%@“ fehlt."),
+    "\"%@\" isn't valid.": ("“%@” is niet geldig.", "« %@ » n’est pas valide.", "«%@» no es válido.", "„%@“ ist ungültig."),
+    "%@: %lld": ("%1$@: %2$lld", "%1$@ : %2$lld", "%1$@: %2$lld", "%1$@: %2$lld"),
+    "%@: %lld of %lld": ("%1$@: %2$lld van %3$lld", "%1$@ : %2$lld sur %3$lld", "%1$@: %2$lld de %3$lld", "%1$@: %2$lld von %3$lld"),
+    "%lld features skipped: no id or name, or not a Point or line.": (
+        "%lld features overgeslagen: geen id of naam, of geen Point of lijn.",
+        "%lld éléments ignorés : sans id ni nom, ou ni Point ni ligne.",
+        "%lld elementos omitidos: sin id o nombre, o no son Point ni línea.",
+        "%lld Features übersprungen: keine ID oder kein Name, oder kein Point und keine Linie."),
+    "%lld%% of the route covered": ("%lld%% van de route afgelegd", "%lld %% du parcours couvert", "%lld %% de la ruta recorrida", "%lld %% der Route geschafft"),
+    "Crossed %lld times, last on %@": (
+        "%1$lld keer overgestoken, laatst op %2$@", "Traversé %1$lld fois, la dernière le %2$@",
+        "Cruzado %1$lld veces, la última el %2$@", "%1$lld-mal überquert, zuletzt am %2$@"),
+    "Delete Challenge": ("Verwijder uitdaging", "Supprimer le défi", "Eliminar desafío", "Challenge löschen"),
+    "Format %lld needs a newer version of Tileroam.": (
+        "Formaat %lld vraagt een nieuwere versie van Tileroam.", "Le format %lld nécessite une version plus récente de Tileroam.",
+        "El formato %lld necesita una versión más reciente de Tileroam.", "Format %lld braucht eine neuere Version von Tileroam."),
+    "Its file is deleted from %@. Your activities stay.": (
+        "Het bestand wordt verwijderd uit %@. Je activiteiten blijven.", "Son fichier est supprimé de %@. Vos activités restent.",
+        "Su archivo se elimina de %@. Tus actividades se quedan.", "Die Datei wird aus %@ gelöscht. Deine Aktivitäten bleiben."),
+    "Not crossed yet: go from one end to the other": (
+        "Nog niet overgestoken: ga van de ene kant naar de andere", "Pas encore traversé : allez d’un bout à l’autre",
+        "Aún no cruzado: ve de un extremo al otro", "Noch nicht überquert: von einem Ende zum anderen"),
+    "Not downloaded from iCloud yet.": ("Nog niet gedownload uit iCloud.", "Pas encore téléchargé depuis iCloud.",
+                                        "Aún no descargado de iCloud.", "Noch nicht aus iCloud geladen."),
+    "Not started yet: cover %lld%% of the route": (
+        "Nog niet begonnen: leg %lld%% van de route af", "Pas encore commencé : couvrez %lld %% du parcours",
+        "Aún sin empezar: recorre el %lld %% de la ruta", "Noch nicht begonnen: schaffe %lld %% der Route"),
+    "Not visited yet: pass within %lld m": (
+        "Nog niet bezocht: kom binnen %lld m", "Pas encore visité : passez à moins de %lld m",
+        "Aún no visitado: pasa a menos de %lld m", "Noch nicht besucht: komm bis auf %lld m heran"),
+    "On My iPhone › Tileroam › %@": ("Op mijn iPhone › Tileroam › %@", "Sur mon iPhone › Tileroam › %@",
+                                    "En mi iPhone › Tileroam › %@", "Auf meinem iPhone › Tileroam › %@"),
+    "On My Mac › Tileroam › %@": ("Op mijn Mac › Tileroam › %@", "Sur mon Mac › Tileroam › %@",
+                                 "En mi Mac › Tileroam › %@", "Auf meinem Mac › Tileroam › %@"),
+    "Same id as %@: \"%@\".": ("Zelfde id als %1$@: “%2$@”.", "Même id que %1$@ : « %2$@ ».",
+                               "Mismo id que %1$@: «%2$@».", "Gleiche ID wie %1$@: „%2$@“."),
+    "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or places of your challenges, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": (
+        "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen of plekken van je uitdagingen, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer.",
+        "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées ou lieux de vos défis non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur.",
+        "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas o lugares de tus desafíos sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador.",
+        "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege oder Orte deiner Challenges, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."),
+    "The file has no \"tileroam\" block.": ("Het bestand heeft geen “tileroam”-blok.", "Le fichier n’a pas de bloc « tileroam ».",
+                                           "El archivo no tiene bloque «tileroam».", "Die Datei hat keinen „tileroam“-Block."),
+    "The file has no usable places or routes.": ("Het bestand heeft geen bruikbare plekken of routes.", "Le fichier n’a aucun lieu ni parcours utilisable.",
+                                                 "El archivo no tiene lugares ni rutas utilizables.", "Die Datei hat keine nutzbaren Orte oder Routen."),
+    "The file isn't a GeoJSON FeatureCollection.": ("Het bestand is geen GeoJSON-FeatureCollection.", "Le fichier n’est pas une FeatureCollection GeoJSON.",
+                                                    "El archivo no es una FeatureCollection GeoJSON.", "Die Datei ist keine GeoJSON-FeatureCollection."),
+    "The file isn't valid JSON.": ("Het bestand is geen geldige JSON.", "Le fichier n’est pas du JSON valide.",
+                                   "El archivo no es JSON válido.", "Die Datei ist kein gültiges JSON."),
+    "Tiles are always on the map. Challenges you hide still count. Add your own: put a challenge file (.geojson) in %@. [How to make one](%@)": (
+        "Tegels staan altijd op de kaart. Verborgen uitdagingen tellen nog mee. Zelf toevoegen: zet een uitdagingsbestand (.geojson) in %1$@. [Zo maak je er een](%2$@)",
+        "Les tuiles sont toujours sur la carte. Les défis masqués comptent toujours. Ajoutez les vôtres : placez un fichier de défi (.geojson) dans %1$@. [Comment en faire un](%2$@)",
+        "Las teselas siempre están en el mapa. Los desafíos ocultos siguen contando. Añade los tuyos: pon un archivo de desafío (.geojson) en %1$@. [Cómo hacer uno](%2$@)",
+        "Kacheln sind immer auf der Karte. Ausgeblendete Challenges zählen trotzdem. Eigene hinzufügen: lege eine Challenge-Datei (.geojson) in %1$@. [So erstellst du eine](%2$@)"),
+    "Your own challenges, from the files in %@.": ("Je eigen uitdagingen, uit de bestanden in %@.", "Vos propres défis, issus des fichiers de %@.",
+                                                   "Tus propios desafíos, de los archivos de %@.", "Deine eigenen Challenges, aus den Dateien in %@."),
+    "Your own challenges: places to visit or routes to ride, from a file": (
+        "Je eigen uitdagingen: plekken om te bezoeken of routes om te fietsen, uit een bestand",
+        "Vos propres défis : des lieux à visiter ou des parcours à faire, depuis un fichier",
+        "Tus propios desafíos: lugares que visitar o rutas que recorrer, desde un archivo",
+        "Deine eigenen Challenges: Orte zum Besuchen oder Routen zum Fahren, aus einer Datei"),
+    "×%lld": ("×%lld", "×%lld", "×%lld", "×%lld"),
     # Map modes & header
     "Tiles": ("Tegels", "Tuiles", "Teselas", "Kacheln"),
     "Routes": ("Routes", "Parcours", "Rutas", "Routen"),
@@ -507,7 +572,6 @@ T = {
     "technical S%@": ("technisch S%@", "technique S%@", "técnica S%@", "technisch S%@"),
     # Ferries (1.11, issue #54)
     "Ferries": ("Veerponten", "Bacs", "Transbordadores", "Fähren"),
-    "tab.ferries": ("Ponten", "Bacs", "Ferris", "Fähren"),
     "%lld of %lld ferries taken": ("%1$lld van %2$lld ponten genomen", "%1$lld bacs pris sur %2$lld", "%1$lld de %2$lld ferris tomados", "%1$lld von %2$lld Fähren genommen"),
     "Ferries taken": ("Ponten genomen", "Bacs pris", "Ferris tomados", "Genommene Fähren"),
     "Ferries: cross the rivers on the ferries that take your bike": ("Veerponten: steek de rivieren over met de ponten die je fiets meenemen", "Bacs : traversez les rivières sur les bacs qui prennent votre vélo", "Ferris: cruza los ríos en los ferris que llevan tu bici", "Fähren: überquere die Flüsse mit den Fähren, die dein Rad mitnehmen"),
@@ -544,7 +608,6 @@ T = {
     "Tileroam": ("Tileroam", "Tileroam", "Tileroam", "Tileroam"),
     # Boscafé Challenge (1.8)
     "Boscafé Challenge": ("Boscafé-uitdaging", "Défi des cafés en forêt", "Desafío de cafés del bosque", "Waldcafé-Challenge"),
-    "tab.boscafes": ("Boscafés", "Cafés forêt", "Cafés bosque", "Waldcafés"),
     "%lld of %lld boscafés visited": ("%1$lld van %2$lld boscafés bezocht", "%1$lld cafés en forêt visités sur %2$lld", "%1$lld de %2$lld cafés del bosque visitados", "%1$lld von %2$lld Waldcafés besucht"),
     "%lld boscafés": ("%lld boscafés", "%lld cafés en forêt", "%lld cafés del bosque", "%lld Waldcafés"),
     "Boscafés visited": ("Boscafés bezocht", "Cafés en forêt visités", "Cafés del bosque visitados", "Besuchte Waldcafés"),
@@ -552,7 +615,6 @@ T = {
     "The Boscafé Challenge: visit the cafés in the woods": ("De Boscafé-uitdaging: bezoek de cafés in het bos", "Le défi des cafés en forêt : visitez les cafés dans les bois", "El desafío de cafés del bosque: visita los cafés del bosque", "Die Waldcafé-Challenge: besuche die Cafés im Wald"),
     "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs, Trappist breweries or boscafés, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": ("Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen, trappistenbrouwerijen of boscafés, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer.", "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées, brasseries trappistes ou cafés en forêt non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur.", "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas, cervecerías trapenses o cafés del bosque sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador.", "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege, Trappistenbrauereien oder Waldcafés, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."),
     "Mountain bike routes": ("Mountainbikeroutes", "Parcours VTT", "Rutas de BTT", "Mountainbike-Routen"),
-    "tab.mtb": ("MTB", "VTT", "BTT", "MTB"),
     "Local route": ("Lokale route", "Parcours local", "Ruta local", "Lokale Route"),
     "Regional route": ("Regionale route", "Parcours régional", "Ruta regional", "Regionale Route"),
     "National route": ("Nationale route", "Parcours national", "Ruta nacional", "Nationale Route"),
@@ -569,7 +631,6 @@ T = {
     "Reading your activities…": ("Je activiteiten lezen…", "Lecture de vos activités…", "Leyendo tus actividades…", "Deine Aktivitäten werden gelesen…"),
     "Saving to iCloud…": ("Opslaan in iCloud…", "Enregistrement dans iCloud…", "Guardando en iCloud…", "In iCloud sichern…"),
     "Klompenpaden": ("Klompenpaden", "Klompenpaden", "Klompenpaden", "Klompenpaden"),
-    "tab.klompenpaden": ("Klompenpaden", "Klompenpaden", "Klompenpaden", "Klompenpaden"),
     "%lld of %lld Klompenpaden walked": ("%1$lld van %2$lld klompenpaden gelopen", "%1$lld Klompenpaden parcourus sur %2$lld", "%1$lld de %2$lld Klompenpaden recorridos", "%1$lld von %2$lld Klompenpaden gelaufen"),
     "From %@ · %@": ("Vanuit %1$@ · %2$@", "Depuis %1$@ · %2$@", "Desde %1$@ · %2$@", "Ab %1$@ · %2$@"),
     "Walked": ("Gelopen", "Parcouru", "Recorrido", "Gelaufen"),
@@ -639,7 +700,6 @@ T = {
     "Complete activities in 50 countries": ("Activiteiten in 50 landen", "Des activités dans 50 pays", "Actividades en 50 países", "Aktivitäten in 50 Ländern"),
     "Complete 100 Zwift activities": ("Doe 100 Zwift-activiteiten", "Terminez 100 activités Zwift", "Completa 100 actividades en Zwift", "Absolviere 100 Zwift-Aktivitäten"),
     "Trappist Challenge": ("Trappistenuitdaging", "Défi trappiste", "Desafío trapense", "Trappisten-Challenge"),
-    "tab.trappists": ("Trappisten", "Trappistes", "Trapenses", "Trappisten"),
     "%lld of %lld Trappist breweries visited": ("%1$lld van %2$lld trappistenbrouwerijen bezocht", "%1$lld brasseries trappistes visitées sur %2$lld", "%1$lld de %2$lld cervecerías trapenses visitadas", "%1$lld von %2$lld Trappistenbrauereien besucht"),
     "Visited %lld times, last on %@": ("%1$lld keer bezocht, laatst op %2$@", "Visitée %1$lld fois, dernière le %2$@", "Visitada %1$lld veces, la última el %2$@", "%1$lld-mal besucht, zuletzt am %2$@"),
     "Not visited yet: ride within 200 m of the brewery": ("Nog niet bezocht: rijd binnen 200 m van de brouwerij", "Pas encore visitée : passez à moins de 200 m de la brasserie", "Aún no visitada: pasa a menos de 200 m de la cervecería", "Noch nicht besucht: fahre näher als 200 m an der Brauerei vorbei"),

@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var stravaFileCount = 0
     @State private var showStorage = false
     @AppStorage(Challenges.key) private var challenges = ""
+    @State private var challengeToRemove: CustomChallenge?
     let onChooseFolder: (PickerPurpose) -> Void
     let onShowIntro: () -> Void
 
@@ -55,21 +56,41 @@ struct SettingsView: View {
                 #endif
 
                 Section {
-                    ForEach(Challenges.all) { mode in
-                        Toggle(isOn: Binding(
-                            get: { Challenges.decode(challenges).contains(mode) },
-                            set: { on in
-                                var set = Challenges.decode(challenges)
-                                if on { set.insert(mode) } else { set.remove(mode) }
-                                challenges = Challenges.encode(set)
-                            })) {
-                            Label(mode.title, systemImage: mode.symbol)
+                    ForEach(Challenges.builtIn) { mode in
+                        challengeToggle(mode) { Label(mode.title(in: store), systemImage: mode.symbol ?? "flag") }
+                    }
+                    ForEach(store.customChallenges) { challenge in
+                        challengeToggle(.custom(challenge.id)) {
+                            Label { Text(challenge.name) } icon: { Text(challenge.icon) }
+                        }
+                        .swipeActions {
+                            Button("Delete", role: .destructive) { challengeToRemove = challenge }
+                        }
+                    }
+                    ForEach(store.challengeProblems) { problem in
+                        Label {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(problem.fileName).font(.subheadline)
+                                Text(problem.message).font(.footnote).foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: problem.isWarning ? "exclamationmark.circle" : "exclamationmark.triangle.fill")
+                                .foregroundStyle(problem.isWarning ? Color.secondary : .orange)
                         }
                     }
                 } header: {
                     Text("Challenges")
                 } footer: {
-                    Text("Tiles are always on the map. Challenges you hide still count.")
+                    Text(challengesFooter)
+                }
+                .confirmationDialog(Text("Delete “\(challengeToRemove?.name ?? "")”?"),
+                                    isPresented: Binding(get: { challengeToRemove != nil }, set: { if !$0 { challengeToRemove = nil } }),
+                                    titleVisibility: .visible) {
+                    Button("Delete Challenge", role: .destructive) {
+                        if let challenge = challengeToRemove { Task { await store.removeChallenge(challenge) } }
+                    }
+                } message: {
+                    Text("Its file is deleted from \(ChallengeFiles.location). Your activities stay.")
                 }
 
                 Section {
@@ -96,6 +117,24 @@ struct SettingsView: View {
 }
 
 extension SettingsView {
+    /// With a link to the format (Markdown, so the link is tappable).
+    private var challengesFooter: AttributedString {
+        let text = String(localized: "Tiles are always on the map. Challenges you hide still count. Add your own: put a challenge file (.geojson) in \(ChallengeFiles.location). [How to make one](\(ChallengeFiles.formatURL.absoluteString))")
+        return (try? AttributedString(markdown: text)) ?? AttributedString(text)
+    }
+
+    private func challengeToggle<L: View>(_ mode: MapMode, @ViewBuilder label: () -> L) -> some View {
+        Toggle(isOn: Binding(
+            get: { Challenges.decode(challenges).contains(mode) },
+            set: { on in
+                var set = Challenges.decode(challenges)
+                if on { set.insert(mode) } else { set.remove(mode) }
+                challenges = Challenges.encode(set)
+            })) {
+            label()
+        }
+    }
+
     #if STRAVA
     @ViewBuilder
     private var stravaSection: some View {
@@ -233,7 +272,13 @@ struct PoweredByStrava: View {
 
 /// Data sources and licenses (required attribution).
 private struct SourcesView: View {
-    private let sources: [(String, String)] = [
+    @Environment(ActivityStore.self) private var store
+
+    private var sources: [(String, String)] {
+        builtIn + store.customChallenges.compactMap { c in c.attribution.map { (c.name, $0) } }
+    }
+
+    private let builtIn: [(String, String)] = [
         (Country.named("NL")!.name, "© CBS, Kadaster (CC BY 4.0) – gemeenten 2025, postcode4 2024 via PDOK"),
         (Country.named("BE")!.name, "© NGI-IGN, bpost – municipalities and postal codes via Opendatasoft"),
         (Country.named("LU")!.name, "© ACT Luxembourg (CC0)"),
@@ -243,11 +288,6 @@ private struct SourcesView: View {
         (Country.named("AT")!.name, "© Statistik Austria (CC BY 4.0)"),
         (String(localized: "Route planning"), "© OpenStreetMap contributors (ODbL), via Geofabrik; routing by Valhalla (MIT) on the device"),
         (String(localized: "Badges"), "Country outlines: Natural Earth (public domain)"),
-        (String(localized: "Trappist Challenge"), "Brewery logos © the Trappist breweries and abbeys, shown to identify each brewery; locations from public sources"),
-        (String(localized: "Boscafé Challenge"), "Names and locations of the boscafés from public sources"),
-        (String(localized: "Ferries"), "Ferries that take cyclists: © OpenStreetMap contributors (ODbL), [openstreetmap.org](https://www.openstreetmap.org/copyright)"),
-        (String(localized: "Mountain bike routes"), "Signposted mountain bike routes: © OpenStreetMap contributors (ODbL), [openstreetmap.org](https://www.openstreetmap.org/copyright)"),
-        (String(localized: "Klompenpaden"), "Routes and names of the Klompenpaden: [www.klompenpaden.nl](https://www.klompenpaden.nl)"),
         (String(localized: "Elevation and climbs"), "Terrain Tiles (AWS Open Data): SRTM (NASA, public domain); EU-DEM, produced using Copernicus data and information funded by the European Union; climbs found by Tileroam on OpenStreetMap roads (ODbL)"),
     ] + (FeatureFlags.strava ? [("Strava", String(localized: "Activity data from Strava when connected"))] : [])
 
@@ -255,7 +295,7 @@ private struct SourcesView: View {
         List(sources, id: \.0) { source in
             VStack(alignment: .leading, spacing: 4) {
                 Text(source.0).font(.headline)
-                // Markdown, for links such as www.klompenpaden.nl (the texts aren't translated).
+                // Markdown, for links such as openstreetmap.org (the texts aren't translated).
                 Text((try? AttributedString(markdown: source.1)) ?? AttributedString(source.1))
                     .font(.footnote).foregroundStyle(.secondary)
             }

@@ -1,0 +1,12 @@
+{"type": "FeatureCollection",
+ "tileroam": {"format": 1, "id": "trappist-breweries", "name": "Trappist breweries", "tab": "Trappists", "kind": "locations", "icon": "🍺", "radius": 200, "description": "Ride past the breweries of the Trappist abbeys.", "attribution": "Names and locations of the breweries from public sources"},
+ "features": [
+  {"type":"Feature","id":"westmalle","geometry":{"type":"Point","coordinates":[4.65667,51.28472]},"properties":{"name":"Brouwerij der Trappisten van Westmalle","subtitle":"Abdij Onze-Lieve-Vrouw van het Heilig Hart · Westmalle"}},
+  {"type":"Feature","id":"westvleteren","geometry":{"type":"Point","coordinates":[2.72167,50.895]},"properties":{"name":"Brouwerij Westvleteren","subtitle":"Sint-Sixtusabdij · Westvleteren"}},
+  {"type":"Feature","id":"chimay","geometry":{"type":"Point","coordinates":[4.33611,49.98222]},"properties":{"name":"Bières de Chimay","subtitle":"Abbaye Notre-Dame de Scourmont · Forges (Chimay)"}},
+  {"type":"Feature","id":"orval","geometry":{"type":"Point","coordinates":[5.34889,49.63972]},"properties":{"name":"Brasserie d'Orval","subtitle":"Abbaye Notre-Dame d'Orval · Villers-devant-Orval"}},
+  {"type":"Feature","id":"rochefort","geometry":{"type":"Point","coordinates":[5.22036,50.17803]},"properties":{"name":"Brasserie de Rochefort","subtitle":"Abbaye Notre-Dame de Saint-Rémy · Rochefort"}},
+  {"type":"Feature","id":"la-trappe","geometry":{"type":"Point","coordinates":[5.12972,51.54361]},"properties":{"name":"Bierbrouwerij De Koningshoeven (La Trappe)","subtitle":"Abdij Onze Lieve Vrouw van Koningshoeven · Berkel-Enschot"}},
+  {"type":"Feature","id":"tre-fontane","geometry":{"type":"Point","coordinates":[12.48333,41.83444]},"properties":{"name":"Birrificio Tre Fontane","subtitle":"Abbazia delle Tre Fontane · Rome"}},
+  {"type":"Feature","id":"tynt-meadow","geometry":{"type":"Point","coordinates":[-1.323072,52.741352]},"properties":{"name":"Tynt Meadow Brewery","subtitle":"Mount Saint Bernard Abbey · Coalville"}}
+ ]}

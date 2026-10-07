@@ -1,6 +1,6 @@
 # Privacy Policy
 
-*Last updated: 2 October 2026*
+*Last updated: 7 October 2026*
 
 Tileroam is an iPhone and iPad app that shows which map tiles, municipalities and postcodes you have visited, based on your own activity files. It is built so that your data stays with you.
 
@@ -29,13 +29,16 @@ You can start a planned route somewhere other than your location:
 
 ### Map data downloads
 - **Municipality and postcode boundaries** are downloaded from Apple's servers (App Store asset packs) when they are first needed. Apple handles these downloads like app downloads.
-- **Route planning map data, climbs and the Trappist breweries** are downloaded from the developer's storage at Cloudflare (Cloudflare R2): map data in small pieces of about 25 × 25 km for the area around a route you plan, and climbs per area of about 70 × 110 km for where you ride, the map you look at and your plans. The list of Trappist breweries and their logos (a few kilobytes, checked at most once a day) come from there too; that request contains nothing about you or your location. Like any download, such a request reveals your IP address and which map pieces are fetched, and so roughly the area you plan in. The storage keeps no access logs, and the developer doesn't record or receive these requests. Cloudflare's handling is covered by [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
+- **Route planning map data and climbs** are downloaded from the developer's storage at Cloudflare (Cloudflare R2): map data in small pieces of about 25 × 25 km for the area around a route you plan, and climbs per area of about 70 × 110 km for where you ride, the map you look at and your plans. Like any download, such a request reveals your IP address and which map pieces are fetched, and so roughly the area you plan in. The storage keeps no access logs, and the developer doesn't record or receive these requests. Cloudflare's handling is covered by [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
 
 You can see and remove the route planning map data in Settings → Storage.
 
+### Your own challenges
+Challenges you add are files you put in the Challenges folder (iCloud Drive › Tileroam › Challenges, or on your device without iCloud). Tileroam reads them and checks your activities against them on your device; nothing about them is sent anywhere. Links in a challenge open in your browser only when you tap them.
+
 ### iCloud
 If you are signed in to iCloud, Tileroam stores two things in your own iCloud account, so all your devices have them:
-- **Files:** your activities and planned routes, in the "iCloud Drive › Tileroam" folder, while "Sync with iCloud" is on (Settings → Activities).
+- **Files:** your activities, planned routes and challenges, in the "iCloud Drive › Tileroam" folder, while "Sync with iCloud" is on (Settings → Activities).
 - **Deleted activities:** the names of activity files you deleted and the numbers of deleted Strava activities, in iCloud's key-value store, so your other devices delete them too.
 - **Settings:** a few settings, such as the tile zoom and map style.
 

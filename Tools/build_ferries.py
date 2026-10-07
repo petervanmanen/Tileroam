@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Builds AssetPacks/Ferries/ferries.json, the ferry challenge's list (the `ferries` asset pack),
-from OpenStreetMap: the ferries of the routing countries that take cyclists (issue #54).
+"""Builds AssetPacks/Ferries/ferries.json, the ferries' list (Tools/make_challenges.py ferries makes
+the challenge file from it; until 1.12 it was the `ferries` asset pack), from OpenStreetMap: the ferries of the routing countries that take cyclists (issue #54).
 
 Ferries: ways tagged route=ferry, joined where they meet (a crossing is often drawn in pieces),
 between 30 m and 2 km long: the pontjes and ferries across rivers, canals and lake narrows. Longer

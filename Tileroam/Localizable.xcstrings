@@ -1,6 +1,62 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "\"%@\" is missing.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” ontbreekt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "« %@ » manque."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falta «%@»."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„%@“ fehlt."
+          }
+        }
+      }
+    },
+    "\"%@\" isn't valid.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” is niet geldig."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "« %@ » n’est pas valide."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» no es válido."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„%@“ ist ungültig."
+          }
+        }
+      }
+    },
     "%@ %@": {
       "localizations": {
         "nl": {
@@ -85,6 +141,62 @@
         }
       }
     },
+    "%@: %lld": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ : %2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld"
+          }
+        }
+      }
+    },
+    "%@: %lld of %lld": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld van %3$lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ : %2$lld sur %3$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld de %3$lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld von %3$lld"
+          }
+        }
+      }
+    },
     "%lld / %lld": {
       "localizations": {
         "nl": {
@@ -165,34 +277,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld / %2$lld Postleitzahlen besucht"
-          }
-        }
-      }
-    },
-    "%lld Trappist breweries": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld trappistenbrouwerijen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld brasseries trappistes"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld cervecerías trapenses"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld Trappistenbrauereien"
           }
         }
       }
@@ -347,34 +431,6 @@
         }
       }
     },
-    "%lld boscafés": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld boscafés"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld cafés en forêt"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld cafés del bosque"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld Waldcafés"
-          }
-        }
-      }
-    },
     "%lld climbs": {
       "localizations": {
         "nl": {
@@ -431,58 +487,30 @@
         }
       }
     },
-    "%lld ferries": {
+    "%lld features skipped: no id or name, or not a Point or line.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld ponten"
+            "value": "%lld features overgeslagen: geen id of naam, of geen Point of lijn."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld bacs"
+            "value": "%lld éléments ignorés : sans id ni nom, ou ni Point ni ligne."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld ferris"
+            "value": "%lld elementos omitidos: sin id o nombre, o no son Point ni línea."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld Fähren"
-          }
-        }
-      }
-    },
-    "%lld m climbing": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld hm klimmen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld m de dénivelé"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld m de desnivel"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld Hm Anstieg"
+            "value": "%lld Features übersprungen: keine ID oder kein Name, oder kein Point und keine Linie."
           }
         }
       }
@@ -1041,146 +1069,6 @@
         }
       }
     },
-    "%lld of %lld Klompenpaden walked": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld van %2$lld klompenpaden gelopen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld Klompenpaden parcourus sur %2$lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld de %2$lld Klompenpaden recorridos"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld von %2$lld Klompenpaden gelaufen"
-          }
-        }
-      }
-    },
-    "%lld of %lld Trappist breweries visited": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld van %2$lld trappistenbrouwerijen bezocht"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld brasseries trappistes visitées sur %2$lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld de %2$lld cervecerías trapenses visitadas"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld von %2$lld Trappistenbrauereien besucht"
-          }
-        }
-      }
-    },
-    "%lld of %lld boscafés visited": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld van %2$lld boscafés bezocht"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld cafés en forêt visités sur %2$lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld de %2$lld cafés del bosque visitados"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld von %2$lld Waldcafés besucht"
-          }
-        }
-      }
-    },
-    "%lld of %lld ferries taken": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld van %2$lld ponten genomen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld bacs pris sur %2$lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld de %2$lld ferris tomados"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld von %2$lld Fähren genommen"
-          }
-        }
-      }
-    },
-    "%lld of %lld mountain bike routes ridden": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld van %2$lld mountainbikeroutes gereden"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld parcours VTT faits sur %2$lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld de %2$lld rutas de BTT hechas"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld von %2$lld Mountainbike-Routen gefahren"
-          }
-        }
-      }
-    },
     "%lld of 50 countries so far": {
       "localizations": {
         "nl": {
@@ -1296,100 +1184,6 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "%lld Postleitzahlen"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "%lld squadratinhos": {
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinho"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinhos"
-                }
-              }
-            }
-          }
-        },
-        "nl": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinho"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinho’s"
-                }
-              }
-            }
-          }
-        },
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinho"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinhos"
-                }
-              }
-            }
-          }
-        },
-        "es": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinho"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld squadratinhos"
-                }
-              }
-            }
-          }
-        },
-        "de": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld Squadratinho"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld Squadratinhos"
                 }
               }
             }
@@ -1585,46 +1379,18 @@
         }
       }
     },
-    "%lld%% of the route ridden": {
+    "%lld%% of the route covered": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld%% van de route gereden"
+            "value": "%lld%% van de route afgelegd"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld %% du parcours fait"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld %% de la ruta hecha"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld %% der Route gefahren"
-          }
-        }
-      }
-    },
-    "%lld%% of the route walked": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld%% van de route gelopen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld %% du parcours effectué"
+            "value": "%lld %% du parcours couvert"
           }
         },
         "es": {
@@ -1636,7 +1402,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld %% der Route gelaufen"
+            "value": "%lld %% der Route geschafft"
           }
         }
       }
@@ -1809,34 +1575,6 @@
         }
       }
     },
-    "Activities without GPS (indoor workouts, or workouts synced into Apple Health without a route) are counted but can't be drawn.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activiteiten zonder gps (binnentrainingen of trainingen die zonder route in Apple Gezondheid zijn gezet) tellen mee maar kunnen niet getekend worden."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les activités sans GPS (séances en intérieur ou synchronisées dans Santé sans tracé) sont comptées mais ne peuvent pas être dessinées."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las actividades sin GPS (entrenamientos en interior o sincronizados con Salud sin ruta) se cuentan pero no se pueden dibujar."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktivitäten ohne GPS (Indoor-Training oder ohne Route in Apple Health synchronisiert) werden gezählt, können aber nicht gezeichnet werden."
-          }
-        }
-      }
-    },
     "Activity cache": {
       "localizations": {
         "nl": {
@@ -1889,34 +1627,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktivitätsdaten von Strava, wenn verbunden"
-          }
-        }
-      }
-    },
-    "Activity files": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activiteitbestanden"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fichiers d'activité"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Archivos de actividad"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktivitätsdateien"
           }
         }
       }
@@ -2253,62 +1963,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abzeichen: %@"
-          }
-        }
-      }
-    },
-    "Boscafé Challenge": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boscafé-uitdaging"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Défi des cafés en forêt"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desafío de cafés del bosque"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Waldcafé-Challenge"
-          }
-        }
-      }
-    },
-    "Boscafés visited": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boscafés bezocht"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cafés en forêt visités"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cafés del bosque visitados"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Besuchte Waldcafés"
           }
         }
       }
@@ -3349,6 +3003,34 @@
         }
       }
     },
+    "Completed": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltooid"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completada"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschafft"
+          }
+        }
+      }
+    },
     "Connect Strava": {
       "localizations": {
         "nl": {
@@ -3741,6 +3423,34 @@
         }
       }
     },
+    "Crossed %lld times, last on %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld keer overgestoken, laatst op %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traversé %1$lld fois, la dernière le %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cruzado %1$lld veces, la última el %2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-mal überquert, zuletzt am %2$@"
+          }
+        }
+      }
+    },
     "Cycle 100 km in one activity": {
       "localizations": {
         "nl": {
@@ -4027,6 +3737,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktivität löschen"
+          }
+        }
+      }
+    },
+    "Delete Challenge": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwijder uitdaging"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer le défi"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar desafío"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Challenge löschen"
           }
         }
       }
@@ -4853,34 +4591,6 @@
         }
       }
     },
-    "Estimated": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geschat"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estimé"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estimado"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geschätzt"
-          }
-        }
-      }
-    },
     "Everester": {
       "localizations": {
         "nl": {
@@ -4933,146 +4643,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Every day I'm hustling"
-          }
-        }
-      }
-    },
-    "Ferries": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Veerponten"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bacs"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transbordadores"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fähren"
-          }
-        }
-      }
-    },
-    "Ferries taken": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ponten genomen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bacs pris"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ferris tomados"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Genommene Fähren"
-          }
-        }
-      }
-    },
-    "Ferries: cross the rivers on the ferries that take your bike": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Veerponten: steek de rivieren over met de ponten die je fiets meenemen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bacs : traversez les rivières sur les bacs qui prennent votre vélo"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ferris: cruza los ríos en los ferris que llevan tu bici"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fähren: überquere die Flüsse mit den Fähren, die dein Rad mitnehmen"
-          }
-        }
-      }
-    },
-    "Ferry": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pont"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bac"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ferri"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fähre"
-          }
-        }
-      }
-    },
-    "Ferry at %@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pont bij %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bac à %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ferri en %@"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fähre bei %@"
           }
         }
       }
@@ -5217,30 +4787,30 @@
         }
       }
     },
-    "From %@ · %@": {
+    "Format %lld needs a newer version of Tileroam.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vanuit %1$@ · %2$@"
+            "value": "Formaat %lld vraagt een nieuwere versie van Tileroam."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Depuis %1$@ · %2$@"
+            "value": "Le format %lld nécessite une version plus récente de Tileroam."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Desde %1$@ · %2$@"
+            "value": "El formato %lld necesita una versión más reciente de Tileroam."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ab %1$@ · %2$@"
+            "value": "Format %lld braucht eine neuere Version von Tileroam."
           }
         }
       }
@@ -5749,34 +5319,6 @@
         }
       }
     },
-    "International route": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Internationale route"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours international"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruta internacional"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Internationale Route"
-          }
-        }
-      }
-    },
     "It downloads again the next time you plan a route.": {
       "localizations": {
         "nl": {
@@ -5833,86 +5375,30 @@
         }
       }
     },
-    "Klompenpaden": {
+    "Its file is deleted from %@. Your activities stay.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Klompenpaden"
+            "value": "Het bestand wordt verwijderd uit %@. Je activiteiten blijven."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Klompenpaden"
+            "value": "Son fichier est supprimé de %@. Vos activités restent."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Klompenpaden"
+            "value": "Su archivo se elimina de %@. Tus actividades se quedan."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Klompenpaden"
-          }
-        }
-      }
-    },
-    "Klompenpaden walked": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden gelopen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden parcourus"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden recorridos"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gelaufene Klompenpaden"
-          }
-        }
-      }
-    },
-    "Klompenpaden: walk the 167 country paths of Gelderland and Utrecht": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden: loop de 167 klompenpaden van Gelderland en Utrecht"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden : parcourez les 167 sentiers ruraux de Gueldre et d’Utrecht"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden: recorre los 167 senderos rurales de Güeldres y Utrecht"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden: lauf die 167 Landwege in Gelderland und Utrecht"
+            "value": "Die Datei wird aus %@ gelöscht. Deine Aktivitäten bleiben."
           }
         }
       }
@@ -6001,34 +5487,6 @@
         }
       }
     },
-    "Local route": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lokale route"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours local"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruta local"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lokale Route"
-          }
-        }
-      }
-    },
     "Location Access Is Off": {
       "localizations": {
         "nl": {
@@ -6081,34 +5539,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Der Standortzugriff ist aus. Erlaube Tileroam in den Einstellungen, deinen Standort zu verwenden, um eine Route ab deinem Standort zu planen."
-          }
-        }
-      }
-    },
-    "MTB route": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mountainbikeroute"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours VTT"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruta de BTT"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MTB-Route"
           }
         }
       }
@@ -6449,34 +5879,6 @@
         }
       }
     },
-    "Max square %lld×%lld · cluster %lld": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Max. vierkant %1$lld×%2$lld · cluster %3$lld"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Carré max %1$lld×%2$lld · cluster %3$lld"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuadrado máx. %1$lld×%2$lld · clúster %3$lld"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Max-Quadrat %1$lld×%2$lld · Cluster %3$lld"
-          }
-        }
-      }
-    },
     "Mode": {
       "localizations": {
         "nl": {
@@ -6533,90 +5935,6 @@
         }
       }
     },
-    "Mountain bike routes": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mountainbikeroutes"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours VTT"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rutas de BTT"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mountainbike-Routen"
-          }
-        }
-      }
-    },
-    "Mountain bike routes ridden": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mountainbikeroutes gereden"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours VTT faits"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rutas de BTT hechas"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gefahrene Mountainbike-Routen"
-          }
-        }
-      }
-    },
-    "Mountain bike routes: the signposted MTB routes of OpenStreetMap": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mountainbikeroutes: de bewegwijzerde MTB-routes uit OpenStreetMap"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours VTT : les parcours VTT balisés d’OpenStreetMap"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rutas de BTT: las rutas de BTT señalizadas de OpenStreetMap"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mountainbike-Routen: die ausgeschilderten MTB-Routen aus OpenStreetMap"
-          }
-        }
-      }
-    },
     "Municipalities": {
       "localizations": {
         "nl": {
@@ -6669,34 +5987,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gemeinden und Postleitzahlen"
-          }
-        }
-      }
-    },
-    "Municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemeenten en postcodes in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Communes et codes postaux aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Municipios y códigos postales en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemeinden und Postleitzahlen in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich"
           }
         }
       }
@@ -6781,34 +6071,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mein Standort"
-          }
-        }
-      }
-    },
-    "National route": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nationale route"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours national"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruta nacional"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nationale Route"
           }
         }
       }
@@ -7205,6 +6467,62 @@
         }
       }
     },
+    "Not crossed yet: go from one end to the other": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet overgestoken: ga van de ene kant naar de andere"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore traversé : allez d’un bout à l’autre"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no cruzado: ve de un extremo al otro"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht überquert: von einem Ende zum anderen"
+          }
+        }
+      }
+    },
+    "Not downloaded from iCloud yet.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nog niet gedownload uit iCloud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas encore téléchargé depuis iCloud."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no descargado de iCloud."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht aus iCloud geladen."
+          }
+        }
+      }
+    },
     "Not earned yet": {
       "localizations": {
         "nl": {
@@ -7261,58 +6579,30 @@
         }
       }
     },
-    "Not ridden yet": {
+    "Not started yet: cover %lld%% of the route": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nog niet gereden"
+            "value": "Nog niet begonnen: leg %lld%% van de route af"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas encore fait"
+            "value": "Pas encore commencé : couvrez %lld %% du parcours"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aún no hecha"
+            "value": "Aún sin empezar: recorre el %lld %% de la ruta"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Noch nicht gefahren"
-          }
-        }
-      }
-    },
-    "Not taken yet: cross on the ferry with your bike": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nog niet genomen: steek met je fiets over met de pont"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas encore pris : traversez sur le bac avec votre vélo"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aún no tomado: cruza en el ferri con tu bici"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Noch nicht genommen: setze mit deinem Rad über"
+            "value": "Noch nicht begonnen: schaffe %lld %% der Route"
           }
         }
       }
@@ -7345,86 +6635,30 @@
         }
       }
     },
-    "Not visited yet: ride or walk within 200 m of the boscafé": {
+    "Not visited yet: pass within %lld m": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nog niet bezocht: fiets of wandel binnen 200 m van het boscafé"
+            "value": "Nog niet bezocht: kom binnen %lld m"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas encore visité : passez à moins de 200 m du café"
+            "value": "Pas encore visité : passez à moins de %lld m"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aún no visitado: pasa a menos de 200 m del café"
+            "value": "Aún no visitado: pasa a menos de %lld m"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Noch nicht besucht: fahre oder gehe näher als 200 m am Waldcafé vorbei"
-          }
-        }
-      }
-    },
-    "Not visited yet: ride within 200 m of the brewery": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nog niet bezocht: rijd binnen 200 m van de brouwerij"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas encore visitée : passez à moins de 200 m de la brasserie"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aún no visitada: pasa a menos de 200 m de la cervecería"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Noch nicht besucht: fahre näher als 200 m an der Brauerei vorbei"
-          }
-        }
-      }
-    },
-    "Not walked yet": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nog niet gelopen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas encore parcouru"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aún no recorrido"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Noch nicht gelaufen"
+            "value": "Noch nicht besucht: komm bis auf %lld m heran"
           }
         }
       }
@@ -7537,6 +6771,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auf meinem iPhone"
+          }
+        }
+      }
+    },
+    "On My iPhone › Tileroam › %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Op mijn iPhone › Tileroam › %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur mon iPhone › Tileroam › %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En mi iPhone › Tileroam › %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf meinem iPhone › Tileroam › %@"
           }
         }
       }
@@ -8157,34 +7419,6 @@
         }
       }
     },
-    "Regional route": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Regionale route"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours régional"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruta regional"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Regionale Route"
-          }
-        }
-      }
-    },
     "Remove": {
       "localizations": {
         "nl": {
@@ -8349,34 +7583,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Neu planen"
-          }
-        }
-      }
-    },
-    "Ridden": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gereden"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fait"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hecha"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gefahren"
           }
         }
       }
@@ -8549,34 +7755,6 @@
         }
       }
     },
-    "Routes": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Routes"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcours"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rutas"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Routen"
-          }
-        }
-      }
-    },
     "Routes follow cycle-friendly roads": {
       "localizations": {
         "nl": {
@@ -8713,6 +7891,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Laufen"
+          }
+        }
+      }
+    },
+    "Same id as %@: \"%@\".": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zelfde id als %1$@: “%2$@”."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Même id que %1$@ : « %2$@ »."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mismo id que %1$@: «%2$@»."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gleiche ID wie %1$@: „%2$@“."
           }
         }
       }
@@ -8937,34 +8143,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sieh, wo du überall warst, und stell dich Herausforderungen mit deinen Fahrten, Läufen und Wanderungen."
-          }
-        }
-      }
-    },
-    "See everywhere you have been: every map tile, municipality and postcode area you have visited on your rides, runs and walks.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zie overal waar je bent geweest: elke kaarttegel, gemeente en elk postcodegebied dat je hebt bezocht tijdens je ritten, hardlooprondes en wandelingen."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voyez partout où vous êtes allé : chaque tuile, commune et zone de code postal visitée lors de vos sorties à vélo, courses et marches."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mira todo lo que has recorrido: cada tesela del mapa, municipio y código postal que has visitado en tus salidas en bici, carreras y paseos."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sieh, wo du überall warst: jede Kartenkachel, Gemeinde und jedes Postleitzahlgebiet, das du auf Radtouren, Läufen und Wanderungen besucht hast."
           }
         }
       }
@@ -9277,62 +8455,6 @@
         }
       }
     },
-    "Show on map": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toon op kaart"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afficher sur la carte"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar en el mapa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auf Karte zeigen"
-          }
-        }
-      }
-    },
-    "Signposted": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bewegwijzerd"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Balisé"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Señalizado"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ausgeschildert"
-          }
-        }
-      }
-    },
     "Silent night": {
       "localizations": {
         "nl": {
@@ -9497,34 +8619,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Squadratinho %1$lld/%2$lld"
-          }
-        }
-      }
-    },
-    "Squadratinhos (17)": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Squadratinhos (17)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Squadratinhos (17)"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Squadratinhos (17)"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Squadratinhos (17)"
           }
         }
       }
@@ -10229,34 +9323,6 @@
         }
       }
     },
-    "Switch between tiles, routes, municipalities and postcodes at the top of the map. Settings has your statistics, iCloud sync and imports.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wissel bovenaan de kaart tussen tegels, routes, gemeenten en postcodes. In Instellingen vind je je statistieken, iCloud-synchronisatie en importeren."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passez des tuiles aux parcours, communes et codes postaux en haut de la carte. Les Réglages contiennent vos statistiques, la synchronisation iCloud et l'import."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cambia entre teselas, rutas, municipios y códigos postales en la parte superior del mapa. En Ajustes están tus estadísticas, la sincronización con iCloud y la importación."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wechsle oben auf der Karte zwischen Kacheln, Routen, Gemeinden und Postleitzahlen. In den Einstellungen findest du Statistiken, iCloud-Synchronisierung und Import."
-          }
-        }
-      }
-    },
     "Sync Now": {
       "localizations": {
         "nl": {
@@ -10313,86 +9379,30 @@
         }
       }
     },
-    "Taken %lld times, last on %@": {
+    "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or places of your challenges, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld keer genomen, laatst op %2$@"
+            "value": "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen of plekken van je uitdagingen, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pris %1$lld fois, dernière le %2$@"
+            "value": "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées ou lieux de vos défis non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tomado %1$lld veces, la última el %2$@"
+            "value": "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas o lugares de tus desafíos sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld-mal genommen, zuletzt am %2$@"
-          }
-        }
-      }
-    },
-    "Tap the route button, select unvisited tiles, municipalities or postcodes, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tik op de routeknop, kies onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit vanaf je locatie. Exporteer hem als GPX voor je fietscomputer."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Touchez le bouton parcours, choisissez des tuiles, communes ou codes postaux non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toca el botón de ruta, elige teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden oder Postleitzahlen, und Tileroam plant die kürzeste Radrundfahrt ab deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
-          }
-        }
-      }
-    },
-    "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs, Trappist breweries or boscafés, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen, trappistenbrouwerijen of boscafés, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées, brasseries trappistes ou cafés en forêt non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas, cervecerías trapenses o cafés del bosque sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege, Trappistenbrauereien oder Waldcafés, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
+            "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege oder Orte deiner Challenges, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
           }
         }
       }
@@ -10481,62 +9491,6 @@
         }
       }
     },
-    "The Boscafé Challenge: visit the cafés in the woods": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De Boscafé-uitdaging: bezoek de cafés in het bos"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le défi des cafés en forêt : visitez les cafés dans les bois"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El desafío de cafés del bosque: visita los cafés del bosque"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die Waldcafé-Challenge: besuche die Cafés im Wald"
-          }
-        }
-      }
-    },
-    "The Trappist Challenge: ride past the Trappist breweries": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De Trappistenuitdaging: fiets langs de trappistenbrouwerijen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le défi trappiste : passez devant les brasseries trappistes"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El desafío trapense: pasa por las cervecerías trapenses"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die Trappisten-Challenge: fahre an den Trappistenbrauereien vorbei"
-          }
-        }
-      }
-    },
     "The download took too long.": {
       "localizations": {
         "nl": {
@@ -10561,6 +9515,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "Der Download hat zu lange gedauert."
+          }
+        }
+      }
+    },
+    "The file has no \"tileroam\" block.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het bestand heeft geen “tileroam”-blok."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le fichier n’a pas de bloc « tileroam »."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo no tiene bloque «tileroam»."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Datei hat keinen „tileroam“-Block."
+          }
+        }
+      }
+    },
+    "The file has no usable places or routes.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het bestand heeft geen bruikbare plekken of routes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le fichier n’a aucun lieu ni parcours utilisable."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo no tiene lugares ni rutas utilizables."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Datei hat keine nutzbaren Orte oder Routen."
+          }
+        }
+      }
+    },
+    "The file isn't a GeoJSON FeatureCollection.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het bestand is geen GeoJSON-FeatureCollection."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le fichier n’est pas une FeatureCollection GeoJSON."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo no es una FeatureCollection GeoJSON."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Datei ist keine GeoJSON-FeatureCollection."
+          }
+        }
+      }
+    },
+    "The file isn't valid JSON.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het bestand is geen geldige JSON."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le fichier n’est pas du JSON valide."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo no es JSON válido."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Datei ist kein gültiges JSON."
           }
         }
       }
@@ -11041,62 +10107,6 @@
         }
       }
     },
-    "Tileroam keeps your activities and planned routes on this device (%@ › Activities and › Routes). Sign in to iCloud with iCloud Drive on to share them with your other devices. Imported files are copied once: the folder they came from isn't watched.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam bewaart je activiteiten en geplande routes op dit apparaat (%@ › Activities en › Routes). Log in bij iCloud met iCloud Drive aan om ze met je andere apparaten te delen. Geïmporteerde bestanden worden één keer gekopieerd: de map waar ze vandaan komen wordt niet gevolgd."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam garde vos activités et parcours planifiés sur cet appareil (%@ › Activities et › Routes). Connectez-vous à iCloud avec iCloud Drive activé pour les partager avec vos autres appareils. Les fichiers importés sont copiés une fois : leur dossier d'origine n'est pas surveillé."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam guarda tus actividades y rutas planificadas en este dispositivo (%@ › Activities y › Routes). Inicia sesión en iCloud con iCloud Drive activado para compartirlas con tus otros dispositivos. Los archivos importados se copian una vez: su carpeta de origen no se vigila."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam speichert deine Aktivitäten und geplanten Routen auf diesem Gerät (%@ › Activities und › Routes). Melde dich mit aktiviertem iCloud Drive bei iCloud an, um sie mit deinen anderen Geräten zu teilen. Importierte Dateien werden einmal kopiert: Ihr Ursprungsordner wird nicht überwacht."
-          }
-        }
-      }
-    },
-    "Tileroam keeps your activities and planned routes on this device (%@ › Activities and › Routes). With iCloud sync, they're also in %@, without duplicates, so your other devices have them. Turning it off keeps both copies. Imported files are copied once: the folder they came from isn't watched.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam bewaart je activiteiten en geplande routes op dit apparaat (%1$@ › Activities en › Routes). Met iCloud-synchronisatie staan ze ook in %2$@, zonder dubbelen, zodat je andere apparaten ze hebben. Uitzetten houdt beide kopieën. Geïmporteerde bestanden worden één keer gekopieerd: de map waar ze vandaan komen wordt niet gevolgd."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam garde vos activités et parcours planifiés sur cet appareil (%1$@ › Activities et › Routes). Avec la synchronisation iCloud, ils sont aussi dans %2$@, sans doublons, pour vos autres appareils. La désactiver garde les deux copies. Les fichiers importés sont copiés une fois : leur dossier d'origine n'est pas surveillé."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam guarda tus actividades y rutas planificadas en este dispositivo (%1$@ › Activities y › Routes). Con la sincronización de iCloud también están en %2$@, sin duplicados, para tus otros dispositivos. Desactivarla conserva ambas copias. Los archivos importados se copian una vez: su carpeta de origen no se vigila."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tileroam speichert deine Aktivitäten und geplanten Routen auf diesem Gerät (%1$@ › Activities und › Routes). Mit iCloud-Synchronisierung sind sie auch in %2$@, ohne Duplikate, für deine anderen Geräte. Ausschalten behält beide Kopien. Importierte Dateien werden einmal kopiert: Ihr Ursprungsordner wird nicht überwacht."
-          }
-        }
-      }
-    },
     "Tileroam route": {
       "localizations": {
         "nl": {
@@ -11181,86 +10191,30 @@
         }
       }
     },
-    "Tiles (zoom 14) and squadratinhos (zoom 17), with your max square and cluster": {
+    "Tiles are always on the map. Challenges you hide still count. Add your own: put a challenge file (.geojson) in %@. [How to make one](%@)": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tegels (zoom 14) en squadratinhos (zoom 17), met je max. vierkant en cluster"
+            "value": "Tegels staan altijd op de kaart. Verborgen uitdagingen tellen nog mee. Zelf toevoegen: zet een uitdagingsbestand (.geojson) in %1$@. [Zo maak je er een](%2$@)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tuiles (zoom 14) et squadratinhos (zoom 17), avec votre carré max et votre cluster"
+            "value": "Les tuiles sont toujours sur la carte. Les défis masqués comptent toujours. Ajoutez les vôtres : placez un fichier de défi (.geojson) dans %1$@. [Comment en faire un](%2$@)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teselas (zoom 14) y squadratinhos (zoom 17), con tu cuadrado máximo y clúster"
+            "value": "Las teselas siempre están en el mapa. Los desafíos ocultos siguen contando. Añade los tuyos: pon un archivo de desafío (.geojson) en %1$@. [Cómo hacer uno](%2$@)"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kacheln (Zoom 14) und Squadratinhos (Zoom 17), mit Max-Quadrat und Cluster"
-          }
-        }
-      }
-    },
-    "Tiles are always at the top of the map. Choose which other challenges are there too; the + at the end of that bar does the same. Everything is still counted, also for challenges you don't show.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tegels staan altijd boven aan de kaart. Kies welke andere uitdagingen daar ook staan; de + aan het eind van die balk doet hetzelfde. Alles wordt gewoon geteld, ook voor uitdagingen die je niet toont."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les tuiles sont toujours en haut de la carte. Choisissez les autres défis à y afficher ; le + au bout de cette barre fait de même. Tout reste compté, même pour les défis que vous n’affichez pas."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las teselas están siempre en la parte superior del mapa. Elige qué otros desafíos aparecen también; el + al final de esa barra hace lo mismo. Todo se sigue contando, también en los desafíos que no muestras."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kacheln stehen immer oben auf der Karte. Wähle, welche anderen Herausforderungen dort auch stehen; das + am Ende dieser Leiste tut dasselbe. Gezählt wird trotzdem alles, auch für Herausforderungen, die du nicht anzeigst."
-          }
-        }
-      }
-    },
-    "Tiles are always on the map. Challenges you hide still count.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tegels staan altijd op de kaart. Uitdagingen die je verbergt tellen gewoon mee."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les tuiles sont toujours sur la carte. Les défis masqués comptent quand même."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las teselas están siempre en el mapa. Los desafíos que ocultas siguen contando."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kacheln sind immer auf der Karte. Ausgeblendete Herausforderungen zählen trotzdem."
+            "value": "Kacheln sind immer auf der Karte. Ausgeblendete Challenges zählen trotzdem. Eigene hinzufügen: lege eine Challenge-Datei (.geojson) in %1$@. [So erstellst du eine](%2$@)"
           }
         }
       }
@@ -11345,34 +10299,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tracks, Kacheln und Gebiete aus deinen .fit-Dateien, damit sie nicht bei jedem Start neu gelesen werden. Leeren liest alle Dateien neu ein."
-          }
-        }
-      }
-    },
-    "Trappist Challenge": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trappistenuitdaging"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Défi trappiste"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desafío trapense"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trappisten-Challenge"
           }
         }
       }
@@ -11601,34 +10527,6 @@
         }
       }
     },
-    "Walked": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gelopen"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parcouru"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recorrido"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gelaufen"
-          }
-        }
-      }
-    },
     "Walking": {
       "localizations": {
         "nl": {
@@ -11653,34 +10551,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gehen"
-          }
-        }
-      }
-    },
-    "Website": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Website"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Site web"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sitio web"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Website"
           }
         }
       }
@@ -11737,34 +10607,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mit detailliertem GPS"
-          }
-        }
-      }
-    },
-    "Without GPS": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonder gps"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sans GPS"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin GPS"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ohne GPS"
           }
         }
       }
@@ -12087,6 +10929,62 @@
         }
       }
     },
+    "Your own challenges, from the files in %@.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je eigen uitdagingen, uit de bestanden in %@."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos propres défis, issus des fichiers de %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus propios desafíos, de los archivos de %@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine eigenen Challenges, aus den Dateien in %@."
+          }
+        }
+      }
+    },
+    "Your own challenges: places to visit or routes to ride, from a file": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je eigen uitdagingen: plekken om te bezoeken of routes om te fietsen, uit een bestand"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos propres défis : des lieux à visiter ou des parcours à faire, depuis un fichier"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus propios desafíos: lugares que visitar o rutas que recorrer, desde un archivo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine eigenen Challenges: Orte zum Besuchen oder Routen zum Fahren, aus einer Datei"
+          }
+        }
+      }
+    },
     "Your tiles, in the order you first visited them, on the map of the country with your largest cluster.": {
       "localizations": {
         "nl": {
@@ -12139,62 +11037,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zoom 14"
-          }
-        }
-      }
-    },
-    "Zoom 14 tiles (~1.5 km in the Netherlands) are the explorer tiles of VeloViewer, StatsHunters and rideeverytile.com. Zoom 17 squadratinhos (~190 m) are used by Squadrats. Both are always counted; this setting chooses which one the map, statistics and route planning use.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom 14-tegels (~1,5 km in Nederland) zijn de explorer tiles van VeloViewer, StatsHunters en rideeverytile.com. Zoom 17-squadratinhos (~190 m) worden gebruikt door Squadrats. Beide worden altijd geteld; deze instelling bepaalt welke de kaart, statistieken en routeplanning gebruiken."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les tuiles zoom 14 (~1,5 km aux Pays-Bas) sont les explorer tiles de VeloViewer, StatsHunters et rideeverytile.com. Les squadratinhos zoom 17 (~190 m) sont utilisés par Squadrats. Les deux sont toujours comptés ; ce réglage choisit celui qu’utilisent la carte, les statistiques et la planification."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las teselas de zoom 14 (~1,5 km en los Países Bajos) son las explorer tiles de VeloViewer, StatsHunters y rideeverytile.com. Los squadratinhos de zoom 17 (~190 m) los usa Squadrats. Siempre se cuentan ambos; este ajuste elige cuál usan el mapa, las estadísticas y la planificación."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom-14-Kacheln (~1,5 km in den Niederlanden) sind die Explorer-Tiles von VeloViewer, StatsHunters und rideeverytile.com. Zoom-17-Squadratinhos (~190 m) nutzt Squadrats. Beide werden immer gezählt; diese Einstellung bestimmt, welche Karte, Statistik und Routenplanung verwenden."
-          }
-        }
-      }
-    },
-    "Zoom 17": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom 17"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom 17"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom 17"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom 17"
           }
         }
       }
@@ -12479,34 +11321,6 @@
         }
       }
     },
-    "tab.boscafes": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boscafés"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cafés forêt"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cafés bosque"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Waldcafés"
-          }
-        }
-      }
-    },
     "tab.climbs": {
       "extractionState": "manual",
       "localizations": {
@@ -12538,90 +11352,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anstiege"
-          }
-        }
-      }
-    },
-    "tab.ferries": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ponten"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bacs"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ferris"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fähren"
-          }
-        }
-      }
-    },
-    "tab.klompenpaden": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klompenpaden"
-          }
-        }
-      }
-    },
-    "tab.mtb": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MTB"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "VTT"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "BTT"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MTB"
           }
         }
       }
@@ -12766,58 +11496,30 @@
         }
       }
     },
-    "tab.trappists": {
+    "×%lld": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trappisten"
+            "value": "×%lld"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trappistes"
+            "value": "×%lld"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trapenses"
+            "value": "×%lld"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trappisten"
-          }
-        }
-      }
-    },
-    "technical S%@": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "technisch S%@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "technique S%@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "técnica S%@"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "technisch S%@"
+            "value": "×%lld"
           }
         }
       }

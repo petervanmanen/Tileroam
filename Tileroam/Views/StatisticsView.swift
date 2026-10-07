@@ -30,10 +30,6 @@ struct StatisticsView: View {
                 LabeledContent("Countries visited", value: store.worldCountries.count.formatted())
                 LabeledContent("Municipalities visited", value: store.visitedMunicipalities.count.formatted())
                 LabeledContent("Postcodes visited", value: store.visitedPostcodes.count.formatted())
-                LabeledContent("Boscafés visited", value: store.boscafeVisits.count.formatted())
-                LabeledContent("Ferries taken", value: store.ferryCrossings.count.formatted())
-                LabeledContent("Klompenpaden walked", value: store.klompenpadenWalked.formatted())
-                LabeledContent("Mountain bike routes ridden", value: store.mtbRoutesRidden.formatted())
                 LabeledContent(TileZoom.explorer.title, value: store.tiles14.count.formatted())
             }
 
@@ -62,6 +58,21 @@ struct StatisticsView: View {
                     NavigationLink("All Climbs") { ClimbsView() }
                 } footer: {
                     Text("Climbs are found from elevation data along the roads; Cat 4 to HC as on Strava, and short steep hills. Gradients of short hills are often lower than signposted.")
+                }
+            }
+
+            if !store.customChallenges.isEmpty {
+                category("challenges", "Challenges", summary: store.customChallenges.count.formatted()) {
+                    ForEach(store.customChallenges) { challenge in
+                        let done = store.challengeProgress(challenge.id).done(in: challenge)
+                        LabeledContent {
+                            Text("\(done) / \(challenge.items.count)").monospacedDigit()
+                        } label: {
+                            Label { Text(challenge.name) } icon: { Text(challenge.icon) }
+                        }
+                    }
+                } footer: {
+                    Text("Your own challenges, from the files in \(ChallengeFiles.location).")
                 }
             }
 

@@ -13,7 +13,7 @@
 #   Tools/update_screenshots.sh iphone     # only the iPhone captures and the README
 #
 # Needs the routing tile extract for the plan shot (AssetPacks/build/routing/routing-west.tar,
-# see docs/ROUTING.md) and an internet connection (climbs and Trappist breweries come from R2).
+# see docs/ROUTING.md) and an internet connection (climbs come from R2), and the challenge files in challenges/ (Tools/make_challenges.py).
 # Check the images afterwards (the skill app-store-screenshots lists what to look for), then
 # commit them.
 set -euo pipefail
