@@ -18,6 +18,18 @@ struct RecapTests {
         #expect(history.tiles(before: ISO8601DateFormatter().date(from: "2025-01-01T00:00:00Z")!) == [1, 2])
     }
 
+    @Test func tilesComeInTheOrderTheTrackReachesThem() {
+        // A ride from east to west: the tiles must come east first, not sorted by key.
+        let points = (0...20).map { GeoPoint(lat: 52.09, lon: 5.30 - Double($0) * 0.01) }
+        var a = Importer.makeActivity(points: points, id: "w", cacheKey: "", name: "Ride", sport: "Cycling",
+                                      startDate: .now, distance: 15_000)
+        a.tiles14 = Array(TileGrid.tiles(for: points, zoom: .explorer)).sorted()
+        let ordered = TileHistory.alongTrack(a)
+        #expect(Set(ordered) == Set(a.tiles14!))
+        let xs = ordered.map { TileGrid.cell(of: $0).x }
+        #expect(xs == xs.sorted(by: >)) // east (larger x) to west
+    }
+
     @Test func yearCountsWhatWasNew() {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "UTC")!
