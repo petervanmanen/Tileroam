@@ -63,7 +63,7 @@ enum TileVideo {
                                     bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
         else { throw RenderError.writer("context") }
         flipped(layer)
-        let base = map.snapshot.image.cgImage
+        let base = map.base.cgImage
         var drawn = 0
         var recent = [(rect: CGRect, frame: Int)]()
         let finalStats = SquareStats(visited: history.keys)
@@ -71,11 +71,9 @@ enum TileVideo {
         for frame in 0..<total {
             // Tiles appear evenly over the growing part (by count, not by date: no long pauses).
             let upTo = frame >= growFrames ? entries.count : Int(Double(entries.count) * Double(frame + 1) / Double(growFrames))
-            layer.setFillColor(UIColor.systemGreen.withAlphaComponent(0.55).cgColor)
             while drawn < upTo {
-                let rect = map.rect(entries[drawn].key)
-                layer.fill(rect.insetBy(dx: 0.5, dy: 0.5))
-                recent.append((rect, frame))
+                map.draw(entries[drawn].key, in: layer, fill: TileMapImage.tileFill, edge: TileMapImage.tileEdge)
+                recent.append((map.rect(entries[drawn].key), frame))
                 drawn += 1
             }
             recent.removeAll { frame - $0.frame > highlightFrames }
@@ -94,14 +92,14 @@ enum TileVideo {
                 flipped(context)
                 for (rect, born) in recent {
                     let fade = 1 - Double(frame - born) / Double(highlightFrames)
-                    context.setFillColor(UIColor.systemOrange.withAlphaComponent(0.9 * fade).cgColor)
+                    context.setFillColor(TileMapImage.newFill.withAlphaComponent(0.95 * fade).cgColor)
                     context.fill(rect.insetBy(dx: 0.5, dy: 0.5))
                 }
                 if frame >= growFrames, let origin = finalStats.maxSquareOrigin, finalStats.maxSquare > 0 {
                     let a = map.rect(TileGrid.key(x: origin.x, y: origin.y))
                     let b = map.rect(TileGrid.key(x: origin.x + finalStats.maxSquare - 1, y: origin.y + finalStats.maxSquare - 1))
-                    context.setStrokeColor(UIColor.systemOrange.cgColor)
-                    context.setLineWidth(6)
+                    context.setStrokeColor(TileMapImage.squareStroke.cgColor)
+                    context.setLineWidth(8)
                     context.stroke(a.union(b))
                 }
                 let date = drawn > 0 ? entries[drawn - 1].date : (entries.first?.date ?? .now)
@@ -139,7 +137,7 @@ enum TileVideo {
         draw(month, at: 120, size: 64, weight: .bold, color: .black)
         var line = String(localized: "\(tiles) tiles")
         if let maxSquare { line += " · " + String(localized: "max square \(maxSquare)×\(maxSquare)") }
-        draw(line, at: 205, size: 52, weight: .semibold, color: UIColor(red: 0.1, green: 0.55, blue: 0.25, alpha: 1))
+        draw(line, at: 205, size: 52, weight: .semibold, color: TileMapImage.tileEdge)
     }
 
     private static func draw(_ text: String, at y: CGFloat, size points: CGFloat, weight: UIFont.Weight, color: UIColor) {

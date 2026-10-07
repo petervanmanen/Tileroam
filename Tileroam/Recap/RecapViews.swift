@@ -143,19 +143,18 @@ struct YearInReviewCard: View {
     static let size = CGSize(width: 1080, height: 1350)
     static let mapSize = CGSize(width: 1000, height: 640)
 
-    /// The map around the year's new tiles (orange), with the earlier ones in green.
+    /// The map around the year's new tiles (orange), with the earlier ones in blue.
     static func mapImage(_ review: YearInReview) async -> UIImage? {
         let shown = review.newTiles.isEmpty ? Array(review.earlierTiles) : review.newTiles
         guard !shown.isEmpty else { return nil }
         let region = TileHistory.region(around: shown, aspect: mapSize.width / mapSize.height)
         guard let map = try? await TileMapImage.make(region: region, size: mapSize) else { return nil }
         let earlier = review.earlierTiles, new = review.newTiles
-        return UIGraphicsImageRenderer(size: mapSize, format: .init(for: .init(displayScale: 1))).image { _ in
-            map.snapshot.image.draw(at: .zero)
-            UIColor.systemGreen.withAlphaComponent(0.45).setFill()
-            for key in earlier { UIRectFillUsingBlendMode(map.rect(key).insetBy(dx: 0.5, dy: 0.5), .normal) }
-            UIColor.systemOrange.withAlphaComponent(0.85).setFill()
-            for key in new { UIRectFillUsingBlendMode(map.rect(key).insetBy(dx: 0.5, dy: 0.5), .normal) }
+        return UIGraphicsImageRenderer(size: mapSize, format: .init(for: .init(displayScale: 1))).image { renderer in
+            let context = renderer.cgContext
+            map.base.draw(at: .zero)
+            for key in earlier { map.draw(key, in: context, fill: TileMapImage.tileFill, edge: TileMapImage.tileEdge) }
+            for key in new { map.draw(key, in: context, fill: TileMapImage.newFill, edge: TileMapImage.newEdge) }
         }
     }
 
@@ -174,7 +173,7 @@ struct YearInReviewCard: View {
             }
             Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 18) {
                 GridRow {
-                    number(review.newTiles.count, "new tiles", color: .orange)
+                    number(review.newTiles.count, "new tiles", color: Color(uiColor: TileMapImage.newEdge))
                     number(review.activities, "activities")
                     number(Int(review.distanceKm.rounded()), "km")
                 }

@@ -114,7 +114,7 @@ Turn on the **MTB** challenge with the **+** to see the signposted mountain bike
 ## Statistics
 
 At the top of Statistics:
-- **Year in Review** shows a card for a year (pick it at the top): the tiles you added that year in orange on the map, with the earlier ones in green, and how the year went: new tiles, activities, kilometres, max square and Eddington number (with how much they grew), new municipalities, postcodes, countries and climbs, Trappist breweries, boscafés and ferries, and the badges you earned. Share it as an image.
+- **Year in Review** shows a card for a year (pick it at the top): the tiles you added that year in orange on the map, with the earlier ones in blue, and how the year went: new tiles, activities, kilometres, max square and Eddington number (with how much they grew), new municipalities, postcodes, countries and climbs, Trappist breweries, boscafés and ferries, and the badges you earned. Share it as an image.
 - **Tile History Video** makes a video of about 20 seconds (1080 × 1920): your tiles appear on the map in the order you first visited them, with the month and the count running, and it ends on your max square. It shows the country of your largest cluster. Share it or save it to Photos.
 
 Tap the **chart** button for the categories below. Each is one small row with a summary; tap it to open it.

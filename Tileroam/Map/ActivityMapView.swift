@@ -554,6 +554,11 @@ struct ActivityMapView: UIViewRepresentable {
             }
         }
 
+        /// Badges have no callout: their card shows instead (`handleTap`), so they don't stay selected.
+        func mapView(_ mapView: MKMapView, didSelect annotation: any MKAnnotation) {
+            if annotation is PlaceAnnotation { mapView.deselectAnnotation(annotation, animated: false) }
+        }
+
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             guard !(annotation is MKUserLocation) else { return nil }
             if let place = annotation as? PlaceAnnotation {
@@ -724,8 +729,10 @@ struct ActivityMapView: UIViewRepresentable {
 
         @objc func handleTap(_ recognizer: UITapGestureRecognizer) {
             guard let map = recognizer.view as? MKMapView else { return }
-            // Taps on stop markers show their callout instead.
-            if map.selectedAnnotations.contains(where: { !($0 is MKUserLocation) }) { return }
+            // Taps on stop markers show their callout instead. Breweries, boscafés and ferries are
+            // chosen here, by the nearest one (issue #66: a selected badge used to block every
+            // later tap, so another one or the empty map didn't change the card).
+            if map.selectedAnnotations.contains(where: { !($0 is MKUserLocation) && !($0 is PlaceAnnotation) }) { return }
             let c = map.convert(recognizer.location(in: map), toCoordinateFrom: map)
             let p = GeoPoint(lat: c.latitude, lon: c.longitude)
             let store = parent.store
