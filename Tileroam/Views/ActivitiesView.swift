@@ -159,57 +159,47 @@ struct ClimbCard: View {
     }
 }
 
-struct TrappistCard: View {
-    let trappist: Trappist
-    let visits: [Date]
+/// A tapped place or route of a challenge of the user: what it is, and when the user visited it
+/// or how much of it they covered.
+struct ChallengeItemCard: View {
+    let challenge: CustomChallenge
+    let item: ChallengeItem
+    let progress: ChallengeProgress
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            if let icon = trappist.icon {
-                Image(uiImage: icon)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(4)
-                    .frame(width: 52, height: 52)
-                    .background(.white, in: RoundedRectangle(cornerRadius: 10))
-                    .accessibilityHidden(true)
-            }
-            VStack(alignment: .leading, spacing: 4) {
-                Text(trappist.name).font(.headline).lineLimit(2)
-                Text("\(trappist.abbey) · \(trappist.place)").font(.subheadline).foregroundStyle(.secondary)
-                if let last = visits.first {
-                    Text(String(localized: "Visited \(visits.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
-                        .font(.footnote).foregroundStyle(.green)
-                } else {
-                    Text("Not visited yet: ride within 200 m of the brewery").font(.footnote).foregroundStyle(.secondary)
-                }
-            }
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-    }
-}
-
-struct BoscafeCard: View {
-    let boscafe: Boscafe
-    let visits: [Date]
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Text(boscafe.emoji)
+            Text(item.icon ?? challenge.icon)
                 .font(.system(size: 30))
                 .frame(width: 52, height: 52)
                 .background(.white, in: RoundedRectangle(cornerRadius: 10))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
-                Text(boscafe.name).font(.headline).lineLimit(2)
-                Text(boscafe.place).font(.subheadline).foregroundStyle(.secondary)
-                if let last = visits.first {
-                    Text(String(localized: "Visited \(visits.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
+                Text(item.name).font(.headline).lineLimit(2)
+                if !details.isEmpty {
+                    Text(details).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                }
+                if let difficulty = item.difficulty { DifficultyBadge(difficulty: difficulty) }
+                if challenge.isCoverRoutes {
+                    let share = progress.coverage[item.id] ?? 0, done = share >= challenge.coverage
+                    ProgressView(value: min(share, 1)).tint(done ? .green : .orange)
+                    Text(done ? String(localized: "Completed")
+                         : share > 0 ? String(localized: "\(Int((share * 100).rounded()))% of the route covered")
+                         : String(localized: "Not started yet: cover \(Int((challenge.coverage * 100).rounded()))% of the route"))
+                        .font(.footnote)
+                        .foregroundStyle(done ? .green : .secondary)
+                } else if let visits = progress.visits[item.id], let last = visits.first {
+                    Text(challenge.kind == .locations
+                         ? String(localized: "Visited \(visits.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))")
+                         : String(localized: "Crossed \(visits.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
                         .font(.footnote).foregroundStyle(.green)
                 } else {
-                    Text("Not visited yet: ride or walk within 200 m of the boscafé").font(.footnote).foregroundStyle(.secondary)
+                    Text(challenge.kind == .locations
+                         ? String(localized: "Not visited yet: pass within \(Int(challenge.radius)) m")
+                         : String(localized: "Not crossed yet: go from one end to the other"))
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
+                if let link = item.link {
+                    Link(link.host(percentEncoded: false) ?? link.absoluteString, destination: link).font(.footnote).lineLimit(1)
                 }
             }
         }
@@ -217,142 +207,23 @@ struct BoscafeCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
-}
 
-struct FerryCard: View {
-    let ferry: Ferry
-    let crossings: [Date]
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Text("⛴️")
-                .font(.system(size: 30))
-                .frame(width: 52, height: 52)
-                .background(.white, in: RoundedRectangle(cornerRadius: 10))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(ferry.name).font(.headline).lineLimit(2)
-                Text(details).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
-                if let last = crossings.first {
-                    Text(String(localized: "Taken \(crossings.count) times, last on \(last.formatted(date: .abbreviated, time: .omitted))"))
-                        .font(.footnote).foregroundStyle(.green)
-                } else {
-                    Text("Not taken yet: cross on the ferry with your bike").font(.footnote).foregroundStyle(.secondary)
-                }
-                HStack(spacing: 12) {
-                    if let link = ferry.osmLink { Link("OpenStreetMap", destination: link) }
-                    if let website = ferry.websiteLink { Link("Website", destination: website) }
-                }
-                .font(.footnote)
-            }
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-    }
-
-    /// "Lexmond – Culemborg · 350 m · operator"
+    /// "Subtitle · 12 km"
     private var details: String {
-        var parts = [String]()
-        if ferry.ownName != nil, let from = ferry.from, let to = ferry.to, from != to { parts.append("\(from) – \(to)") }
-        parts.append(Measurement(value: ferry.length, unit: UnitLength.meters)
-            .formatted(.measurement(width: .abbreviated, usage: .road)))
-        if let op = ferry.operator { parts.append(op) }
-        return parts.joined(separator: " · ")
-    }
-}
-
-struct KlompenpadCard: View {
-    let path: Klompenpad
-    /// Share of the main route walked (0…1).
-    let progress: Double
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline) {
-                Image(systemName: progress >= KlompenpadMatcher.done ? "checkmark.circle.fill" : "shoeprints.fill")
-                    .foregroundStyle(progress >= KlompenpadMatcher.done ? Color.green : .secondary)
-                Text(path.name).font(.headline).lineLimit(1)
-                Spacer()
-                if let link = path.link {
-                    Link("klompenpaden.nl", destination: link).font(.footnote)
-                }
-            }
-            Text("From \(path.start) · \(path.lengthsText)").font(.subheadline).foregroundStyle(.secondary)
-            ProgressView(value: min(progress, 1))
-                .tint(progress >= KlompenpadMatcher.done ? .green : .orange)
-            Text(progress >= KlompenpadMatcher.done ? String(localized: "Walked")
-                 : progress > 0 ? String(localized: "\(Int((progress * 100).rounded()))% of the route walked")
-                 : String(localized: "Not walked yet"))
-                .font(.footnote)
-                .foregroundStyle(progress >= KlompenpadMatcher.done ? .green : .secondary)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-    }
-}
-
-struct MTBRouteCard: View {
-    let route: MTBRoute
-    /// Share of the route ridden (0…1).
-    let progress: Double
-
-    var body: some View {
-        let done = progress >= KlompenpadMatcher.done
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline) {
-                Image(systemName: done ? "checkmark.circle.fill" : "bicycle")
-                    .foregroundStyle(done ? Color.green : .secondary)
-                Text(route.name).font(.headline).lineLimit(2)
-                Spacer()
-                if let link = route.link {
-                    Link("OpenStreetMap", destination: link).font(.footnote)
-                }
-            }
-            Text("\(route.networkTitle) · \(Measurement(value: route.length / 1000, unit: UnitLength.kilometers).formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0)))))")
-                .font(.subheadline).foregroundStyle(.secondary)
-            if let difficulty = route.difficulty {
-                HStack(spacing: 8) {
-                    DifficultyBadge(difficulty: difficulty)
-                    Text(difficultyDetails).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
-                }
-            }
-            ProgressView(value: min(progress, 1))
-                .tint(done ? .green : .orange)
-            HStack {
-                Text(done ? String(localized: "Ridden")
-                     : progress > 0 ? String(localized: "\(Int((progress * 100).rounded()))% of the route ridden")
-                     : String(localized: "Not ridden yet"))
-                    .font(.footnote)
-                    .foregroundStyle(done ? .green : .secondary)
-                Spacer()
-                if let website = route.websiteLink {
-                    Link("Website", destination: website).font(.footnote)
-                }
-            }
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-    }
-
-    /// "Signposted · 520 m climbing · technical S1.5"
-    private var difficultyDetails: String {
-        var parts = [route.signposted == true ? String(localized: "Signposted") : String(localized: "Estimated")]
-        if let ascent = route.ascent, ascent >= 1 {
-            parts.append(String(localized: "\(Int(ascent.rounded())) m climbing"))
-        }
-        if let technical = route.technical {
-            parts.append(String(localized: "technical S\(technical.formatted(.number.precision(.fractionLength(0...1))))"))
+        var parts = item.subtitle.map { [$0] } ?? []
+        if item.length >= 1000 {
+            parts.append(Measurement(value: item.length / 1000, unit: UnitLength.kilometers)
+                .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0...1)))))
+        } else if item.length > 0 {
+            parts.append(Measurement(value: item.length, unit: UnitLength.meters).formatted(.measurement(width: .abbreviated, usage: .road)))
         }
         return parts.joined(separator: " · ")
     }
 }
 
-/// An MTB route's difficulty in the usual colours: green, blue, red, black.
+/// A route's difficulty in the usual colours: green, blue, red, black.
 struct DifficultyBadge: View {
-    let difficulty: MTBRoute.Difficulty
+    let difficulty: ChallengeItem.Difficulty
 
     var body: some View {
         Text(difficulty.title)
@@ -364,7 +235,7 @@ struct DifficultyBadge: View {
             .overlay(Capsule().strokeBorder(.white.opacity(difficulty == .veryHard ? 0.6 : 0), lineWidth: 1))
     }
 
-    static func color(_ difficulty: MTBRoute.Difficulty) -> Color {
+    static func color(_ difficulty: ChallengeItem.Difficulty) -> Color {
         switch difficulty {
         case .easy: .green
         case .moderate: .blue

@@ -6,9 +6,6 @@
 #
 #   Tools/build_asset_packs.sh            # all countries
 #   Tools/build_asset_packs.sh NL BE      # some countries
-#   Tools/build_asset_packs.sh klompenpaden   # the Klompenpaden list (AssetPacks/Klompenpaden)
-#   Tools/build_asset_packs.sh mtbroutes      # the mountain bike routes (AssetPacks/MTB)
-#   Tools/build_asset_packs.sh ferries        # the ferries (AssetPacks/Ferries)
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 ROOT=${0:A:h:h}
@@ -19,32 +16,10 @@ mkdir -p $OUT/manifests
 
 countries=("$@")
 if (( ${#countries} == 0 )); then
-  countries=(${(u)$(ls $SRC/*.fmr | xargs -n1 basename | cut -d- -f1)} klompenpaden mtbroutes ferries)
+  countries=(${(u)$(ls $SRC/*.fmr | xargs -n1 basename | cut -d- -f1)})
 fi
 
 for cc in $countries; do
-  # The challenges' route lists (Tools/build_klompenpaden.py, Tools/build_mtb_routes.py): one
-  # small pack each, the JSON file from its folder.
-  case $cc in
-    klompenpaden) src=$ROOT/AssetPacks/Klompenpaden; file=klompenpaden.json ;;
-    mtbroutes)    src=$ROOT/AssetPacks/MTB;          file=mtb-routes.json ;;
-    ferries)      src=$ROOT/AssetPacks/Ferries;      file=ferries.json ;;
-    *)            src= ;;
-  esac
-  if [[ -n $src ]]; then
-    cat > $OUT/manifests/$cc.json <<JSON
-{
-  "assetPackID": "$cc",
-  "downloadPolicy": { "onDemand": {} },
-  "fileSelectors": [ { "file": "$file" } ],
-  "platforms": [ "iOS", "macOS" ]
-}
-JSON
-    rm -f $OUT/$cc.aar
-    (cd $src && xcrun ba-package package $OUT/manifests/$cc.json --output-path $OUT/$cc.aar --quiet)
-    echo "$cc  $(du -h $OUT/$cc.aar | cut -f1)"
-    continue
-  fi
   files=($SRC/$cc-*.fmr(N))
   (( ${#files} )) || { echo "no files for $cc" >&2; exit 1 }
   selectors=$(for f in $files; do printf '{ "file": "%s" },' ${f:t}; done)

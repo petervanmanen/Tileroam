@@ -50,25 +50,23 @@ final class PlanStore {
         Set(selected.compactMap { if case .climb(let id) = $0 { id } else { nil } })
     }
 
-    var selectedTrappists: Set<String> {
-        Set(selected.compactMap { if case .trappist(let id) = $0 { id } else { nil } })
+    /// The selected places of a location challenge.
+    func selectedPlaces(_ challenge: String) -> Set<String> {
+        Set(selected.compactMap { if case .place(challenge, let id) = $0 { id } else { nil } })
     }
 
-    var selectedBoscafes: Set<String> {
-        Set(selected.compactMap { if case .boscafe(let id) = $0 { id } else { nil } })
-    }
-
-    var selectionSummary: String {
+    func selectionSummary(_ store: ActivityStore) -> String {
         let t14 = selectedTiles(.explorer).count
         let m = selectedMunicipalities.count, p = selectedPostcodes.count, c = selectedClimbs.count
-        let b = selectedTrappists.count, f = selectedBoscafes.count
         var parts = [String]()
         if t14 > 0 { parts.append(TileZoom.explorer.countLabel(t14)) }
         if m > 0 { parts.append(String(localized: "\(m) municipalities")) }
         if p > 0 { parts.append(String(localized: "\(p) postcodes")) }
         if c > 0 { parts.append(String(localized: "\(c) climbs")) }
-        if b > 0 { parts.append(String(localized: "\(b) Trappist breweries")) }
-        if f > 0 { parts.append(String(localized: "\(f) boscafés")) }
+        for challenge in store.customChallenges {
+            let count = selectedPlaces(challenge.id).count
+            if count > 0 { parts.append(String(localized: "\(challenge.name): \(count)")) }
+        }
         return parts.isEmpty ? String(localized: "Nothing selected") : String(localized: "Selected: \(parts.joined(separator: " · "))")
     }
 
@@ -207,8 +205,7 @@ final class PlanStore {
     func plan(from start: GeoPoint, to end: GeoPoint? = nil, with store: ActivityStore) async throws {
         let regions: RegionData? = await store.loadedRegions()
         let targets = selected.sorted { $0.sortKey < $1.sortKey }
-            .compactMap { TargetGeometry($0, regions: regions, climbs: store.climbs, trappists: store.trappists,
-                                           boscafes: store.boscafes) }
+            .compactMap { TargetGeometry($0, regions: regions, climbs: store.climbs, challenges: store.customChallenges) }
         // The routing data covers the countries in RoutingData.countries.
         guard RoutingData.covers(start), end.map(RoutingData.covers) ?? true,
               targets.allSatisfy({ $0.candidates().contains(where: RoutingData.covers) }) else {
@@ -221,8 +218,7 @@ final class PlanStore {
         guard km <= RoutePlanner.maxLoopKilometers else { throw RoutingError.tooLong(km: km) }
         let visited = (store.tiles14, store.visitedMunicipalities, store.visitedPostcodes)
         let climbs = await store.climbs(around: loop), climbed = Set(store.climbed.keys)
-        let trappists = store.trappists, visitedTrappists = Set(store.trappistVisits.keys)
-        let boscafes = store.boscafes, visitedBoscafes = Set(store.boscafeVisits.keys)
+        let places = store.planningChallenges
         let router = self.router
         func attempt() async throws -> PlannedRoute {
             try await Task.detached(priority: .userInitiated) {
@@ -230,8 +226,7 @@ final class PlanStore {
                     start: start, end: end, targets: targets, client: router,
                     coverage: { RouteCoverage(route: $0, visitedTiles14: visited.0,
                                               visitedMunicipalities: visited.1, visitedPostcodes: visited.2, regions: regions,
-                                              climbs: climbs, climbed: climbed, trappists: trappists, visitedTrappists: visitedTrappists,
-                                              boscafes: boscafes, visitedBoscafes: visitedBoscafes) },
+                                              climbs: climbs, climbed: climbed, challenges: places) },
                     progress: { [weak self] in self?.status = $0 })
             }.value
         }
@@ -369,13 +364,11 @@ final class PlanStore {
         let visited = (store.tiles14, store.visitedMunicipalities, store.visitedPostcodes)
         let points = gpx.points
         let climbs = await store.climbs(around: points), climbed = Set(store.climbed.keys)
-        let trappists = store.trappists, visitedTrappists = Set(store.trappistVisits.keys)
-        let boscafes = store.boscafes, visitedBoscafes = Set(store.boscafeVisits.keys)
+        let places = store.planningChallenges
         let coverage = await Task.detached(priority: .userInitiated) {
             RouteCoverage(route: points, visitedTiles14: visited.0,
                           visitedMunicipalities: visited.1, visitedPostcodes: visited.2, regions: regions,
-                          climbs: climbs, climbed: climbed, trappists: trappists, visitedTrappists: visitedTrappists,
-                                              boscafes: boscafes, visitedBoscafes: visitedBoscafes)
+                          climbs: climbs, climbed: climbed, challenges: places)
         }.value
         let distance = zip(points, points.dropFirst()).reduce(0) { $0 + Geo.distance($1.0, $1.1) }
         let name = gpx.name ?? url.deletingPathExtension().lastPathComponent

@@ -17,3 +17,19 @@ Tileroam/StravaSecrets.plist
 
 Tileroam/StravaConfig.plist
 AssetPacks/build/
+
+# Challenge files (challenges/README.md): only the sample is in git. Make the others with
+# Tools/make_challenges.py.
+challenges/*.geojson
+challenges/*.json
+!challenges/trappist-breweries.geojson
+!challenges/schema.json
+# The lists of the challenges that were built in until 1.12 (sources for Tools/make_challenges.py).
+AssetPacks/Trappist/
+AssetPacks/Boscafes/
+AssetPacks/Ferries/
+AssetPacks/Klompenpaden/*
+!AssetPacks/Klompenpaden/source/
+AssetPacks/Klompenpaden/source/*
+!AssetPacks/Klompenpaden/source/fetch_klompenpaden.py
+AssetPacks/MTB/

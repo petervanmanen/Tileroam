@@ -8,10 +8,9 @@ enum PlanTarget: Hashable, Sendable {
     case postcode(String)
     /// `Climb.id`: ridden uphill, bottom to top.
     case climb(String)
-    /// `Trappist.id`: passed within `TrappistMatcher.radius`.
-    case trappist(String)
-    /// `Boscafe.id`: passed within `TrappistMatcher.radius`.
-    case boscafe(String)
+    /// A place of a challenge of the user (`CustomChallenge.id`, `ChallengeItem.id`): passed
+    /// within the challenge's radius.
+    case place(String, String)
 
     var sortKey: String {
         switch self {
@@ -19,8 +18,7 @@ enum PlanTarget: Hashable, Sendable {
         case .municipality(let c): "1\(c)"
         case .postcode(let c): "2\(c)"
         case .climb(let id): "3\(id)"
-        case .trappist(let id): "4\(id)"
-        case .boscafe(let id): "5\(id)"
+        case .place(let challenge, let id): "4\(challenge)/\(id)"
         }
     }
 }
@@ -33,19 +31,22 @@ struct TargetGeometry: Sendable {
     let area: Area?
     /// Set for climbs.
     let climb: Climb?
-    /// Set for Trappist breweries and boscafés.
+    /// Set for the places of challenges.
     let place: GeoPoint?
+    /// Metres from `place` that count as passing it.
+    let radius: Double
 
-    init?(_ target: PlanTarget, regions: RegionData?, climbs: [String: Climb] = [:], trappists: [Trappist] = [],
-          boscafes: [Boscafe] = []) {
+    init?(_ target: PlanTarget, regions: RegionData?, climbs: [String: Climb] = [:], challenges: [CustomChallenge] = []) {
         self.target = target
         climb = if case .climb(let id) = target { climbs[id] } else { nil }
-        let place: (any ChallengePlace)? = switch target {
-        case .trappist(let id): trappists.first { $0.id == id }
-        case .boscafe(let id): boscafes.first { $0.id == id }
-        default: nil
+        var item: ChallengeItem?
+        if case .place(let challengeID, let id) = target, let challenge = challenges.first(where: { $0.id == challengeID }) {
+            item = challenge.item(id)
+            radius = challenge.radius
+        } else {
+            radius = 0
         }
-        self.place = place?.point
+        self.place = item?.point
         switch target {
         case .tile(let zoom, let key):
             let c = TileGrid.cell(of: key)
@@ -63,9 +64,9 @@ struct TargetGeometry: Sendable {
             guard let climb else { return nil }
             name = climb.title
             area = nil
-        case .trappist, .boscafe:
-            guard let place else { return nil }
-            name = place.name
+        case .place:
+            guard let item else { return nil }
+            name = item.name
             area = nil
         }
     }
@@ -89,7 +90,7 @@ struct TargetGeometry: Sendable {
         switch target {
         case .tile(let zoom, let key): TileGrid.key(lat: p.lat, lon: p.lon, zoom: zoom) == key
         case .climb: climb.map { Geo.distance($0.bottom, p) < 60 } ?? false
-        case .trappist, .boscafe: place.map { Geo.distance($0, p) <= TrappistMatcher.radius } ?? false
+        case .place: place.map { Geo.distance($0, p) <= radius } ?? false
         default: area?.contains(p) ?? false
         }
     }
@@ -99,11 +100,12 @@ struct TargetGeometry: Sendable {
         switch target {
         case .climb:
             return climb.map { [$0.bottom] } ?? []
-        case .trappist, .boscafe:
-            // The place, then a ring 120 m around it: abbeys and boscafés often lie back from the
-            // road, and the router snaps a point to the nearest road.
+        case .place:
+            // The place, then a ring around it (120 m, within the radius): places such as abbeys
+            // and cafés in the woods often lie back from the road, and the router snaps a point to
+            // the nearest road.
             guard let p = place else { return [] }
-            let dLat = 120 / 111_000.0, dLon = dLat / max(cos(p.lat * .pi / 180), 0.2)
+            let dLat = min(120, radius * 0.6) / 111_000.0, dLon = dLat / max(cos(p.lat * .pi / 180), 0.2)
             return [p] + (0..<8).map { k in
                 let a = Double(k) * .pi / 4
                 return GeoPoint(lat: p.lat + dLat * sin(a), lon: p.lon + dLon * cos(a))

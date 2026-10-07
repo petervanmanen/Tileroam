@@ -31,19 +31,28 @@ Derivative Database of OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap
 contributors. The script and the extracts it names are the complete recipe to
 rebuild it; planned routes are © OpenStreetMap contributors (ODbL).
 
-## Boscafés
+## Challenges
 
-The Boscafé Challenge's list (`AssetPacks/Boscafes/boscafes.json`, served from Cloudflare R2 and
-uploaded with `Tools/upload_boscafes_r2.sh`) holds the names, places and locations of the boscafés,
-from public sources. Names and coordinates are facts; no logos or other content of the cafés are
-used.
+Challenges are files the user adds (`challenges/README.md`); the app has none built in. The
+example in this repository, `challenges/trappist-breweries.geojson`, holds the names, abbeys,
+places and locations of the Trappist breweries, from public sources: facts, with an emoji instead
+of the breweries' logos.
 
-## Ferries
+Until version 1.12 the app had five challenges built in. Their lists are no longer in the
+repository (they're in its history, up to commit 701a62d), and `Tools/make_challenges.py` makes
+challenge files of them, kept out of git:
 
-The ferry challenge's list (`AssetPacks/Ferries/ferries.json`, an Apple-hosted asset pack, made by
-`Tools/build_ferries.py` from Geofabrik's extracts) is a Derivative Database of OpenStreetMap under
-the **ODbL 1.0**, © OpenStreetMap contributors: the ferry routes that take cyclists, with the
-nearest place names. The script and the extracts it names are the complete recipe to rebuild it.
+- **Boscafés**: names, places and locations of the boscafés, from public sources.
+- **Ferries** (`Tools/build_ferries.py`) and **mountain bike routes** (`Tools/build_mtb_routes.py`),
+  from Geofabrik's OpenStreetMap extracts: Derivative Databases of OpenStreetMap under the
+  **ODbL 1.0**, © OpenStreetMap contributors. The scripts and the extracts they name are the
+  complete recipe to rebuild them.
+- **Klompenpaden**: names, start points, lengths and routes from
+  [www.klompenpaden.nl](https://www.klompenpaden.nl)
+  (`AssetPacks/Klompenpaden/source/fetch_klompenpaden.py`). The routes and names belong to
+  Klompenpaden; they're for your own use only.
+
+A challenge file's `attribution` is shown in the app under Settings → Sources & Licenses.
 
 ## World countries
 
@@ -51,21 +60,6 @@ nearest place names. The script and the extracts it names are the complete recip
 [Natural Earth](https://www.naturalearthdata.com)'s admin-0 countries at 1:50 million, which are in
 the **public domain**. The app uses it on the device to count the countries of your activities
 (the Globetrotter badge).
-
-## Mountain bike routes
-
-The mountain bike route challenge's list (`AssetPacks/MTB/mtb-routes.json`, an Apple-hosted asset
-pack, made by `Tools/build_mtb_routes.py` from Geofabrik's extracts) is a Derivative Database of
-OpenStreetMap under the **ODbL 1.0**, © OpenStreetMap contributors: the signposted MTB routes
-(route relations in a cycling network), simplified.
-
-## Klompenpaden
-
-The Klompenpaden challenge's list (`AssetPacks/Klompenpaden/klompenpaden.json`, an Apple-hosted asset pack like the boundaries) holds the
-names, start points, lengths and main routes of the Klompenpaden, taken from
-[www.klompenpaden.nl](https://www.klompenpaden.nl) (`AssetPacks/Klompenpaden/source`). The routes
-and names belong to Klompenpaden; the app names the source under Settings → Sources & Licenses
-and links each path to its page there.
 
 ## Elevation and climbs
 

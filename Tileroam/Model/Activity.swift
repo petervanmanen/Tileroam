@@ -58,24 +58,10 @@ struct Activity: Codable, Sendable, Identifiable {
     var isZwift: Bool?
 
     // Challenge results, computed once per activity (see `ChallengeResults`). Each is valid for
-    // its key: the matcher's version and a fingerprint of the list or map it was computed with;
-    // a different key means it is computed again.
-    /// Trappist breweries passed (`Trappist.id`).
-    var trappists: [String]?
-    var trappistsKey: String?
-    /// Boscafés passed (`Boscafe.id`).
-    var boscafes: [String]?
-    var boscafesKey: String?
-    /// Ferries crossed (`Ferry.id`).
-    var ferries: [String]?
-    var ferriesKey: String?
-    /// Klompenpaden: for each path touched, the indexes of its checkpoints passed
-    /// (`KlompenpadMatcher.checkpoints`).
-    var klompenpadHits: [String: [Int]]?
-    var klompenpadKey: String?
-    /// Mountain bike routes: the same, per route (`MTBRoute`, checkpoints every 100 m; rides only).
-    var mtbHits: [String: [Int]]?
-    var mtbKey: String?
+    // its key: the matchers' version and a fingerprint of the challenge file or map it was
+    // computed with; a different key means it is computed again.
+    /// The user's challenges (`CustomChallenge`), by challenge id.
+    var challengeHits: [String: ChallengeHits]?
     /// Countries of the world the track passes (ISO codes, `CountryOutlines.world`), for Globetrotter.
     var countries: [String]?
     var countriesKey: String?

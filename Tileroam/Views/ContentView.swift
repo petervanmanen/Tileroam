@@ -34,11 +34,7 @@ struct ContentView: View {
     @State private var pickAfterSettings: PickerPurpose?
     @State private var selectedArea: Area?
     @State private var selectedClimb: Climb?
-    @State private var selectedTrappist: Trappist?
-    @State private var selectedBoscafe: Boscafe?
-    @State private var selectedFerry: Ferry?
-    @State private var selectedKlompenpad: Klompenpad?
-    @State private var selectedMTBRoute: MTBRoute?
+    @State private var selectedItem: ChallengeSelection?
     @State private var locateRequest = 0
     @State private var isFollowingUser = false
     @State private var locationDenied = false
@@ -51,7 +47,7 @@ struct ContentView: View {
     private let sidePanelWidth: CGFloat = 380
 
     var body: some View {
-        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedTrappist: $selectedTrappist, selectedBoscafe: $selectedBoscafe, selectedFerry: $selectedFerry, selectedKlompenpad: $selectedKlompenpad, selectedMTBRoute: $selectedMTBRoute,
+        ActivityMapView(mode: mode, mapStyle: mapStyle, tileZoom: tileZoom, store: store, version: store.version, selectedArea: $selectedArea, selectedClimb: $selectedClimb, selectedItem: $selectedItem,
                         locateRequest: locateRequest, isFollowingUser: $isFollowingUser, locationDenied: $locationDenied,
                         plan: plan, planVersion: plan.version, leadingInset: isWide ? sidePanelWidth + 32 : 0)
             .ignoresSafeArea()
@@ -158,9 +154,14 @@ struct ContentView: View {
                 #endif
             }
             .task { await store.refreshAll() }
-            // A challenge turned off (here or on another device) while its tab shows: back to Tiles.
+            // A challenge turned off (here or on another device), or whose file was removed, while
+            // its tab shows: back to Tiles.
             .onChange(of: challenges) { _, raw in
                 if mode.isChallenge, !Challenges.decode(raw).contains(mode) { mode = .squares }
+            }
+            .onChange(of: store.customChallenges.map(\.id)) { _, ids in
+                if let id = mode.challengeID, !ids.contains(id) { mode = .squares }
+                if let item = selectedItem, store.challenge(item.challenge)?.item(item.item) == nil { selectedItem = nil }
             }
             #if DEBUG
             .task { await plan.runDebugDemo(with: store) }
@@ -172,16 +173,12 @@ struct ContentView: View {
                 if phase == .background { store.saveCaches() }
             }
             .onChange(of: mode) {
-                selectedArea = nil; selectedClimb = nil; selectedTrappist = nil; selectedBoscafe = nil; selectedFerry = nil; selectedKlompenpad = nil; selectedMTBRoute = nil
+                selectedArea = nil; selectedClimb = nil; selectedItem = nil
             }
             .onChange(of: plan.isPlanning) { _, planning in
                 selectedArea = nil
                 selectedClimb = nil
-                selectedTrappist = nil
-                selectedBoscafe = nil
-                selectedFerry = nil
-                selectedKlompenpad = nil
-                selectedMTBRoute = nil
+                selectedItem = nil
             }
     }
 
@@ -208,7 +205,7 @@ struct ContentView: View {
 
     private var headerContent: some View {
         VStack(spacing: 8) {
-            ModeChips(modes: Challenges.visibleModes(challenges), selection: $mode, challenges: $challenges)
+            ModeChips(modes: Challenges.visibleModes(challenges, custom: store.customChallenges.map(\.id)), selection: $mode, challenges: $challenges)
             HStack(alignment: .center, spacing: 10) {
                 Text(statsText)
                     .font(.footnote.weight(.medium))
@@ -267,16 +264,10 @@ struct ContentView: View {
             return String(localized: "\(store.visitedPostcodes.count) / \(areas.all.count) postcodes visited")
         case .climbs:
             return String(localized: "\(store.climbed.count) climbs climbed · \(store.climbs.count) on the map")
-        case .trappists:
-            return String(localized: "\(store.trappistVisits.count) of \(store.trappists.count) Trappist breweries visited")
-        case .boscafes:
-            return String(localized: "\(store.boscafeVisits.count) of \(store.boscafes.count) boscafés visited")
-        case .ferries:
-            return String(localized: "\(store.ferryCrossings.count) of \(store.ferries.count) ferries taken")
-        case .klompenpaden:
-            return String(localized: "\(store.klompenpadenWalked) of \(store.klompenpaden.count) Klompenpaden walked")
-        case .mtb:
-            return String(localized: "\(store.mtbRoutesRidden) of \(store.mtbRoutes.count) mountain bike routes ridden")
+        case .custom(let id):
+            guard let challenge = store.challenge(id) else { return "" }
+            let done = store.challengeProgress(id).done(in: challenge)
+            return String(localized: "\(challenge.name): \(done) of \(challenge.items.count)")
         }
     }
 
@@ -385,20 +376,9 @@ struct ContentView: View {
             if !plan.isPlanning, let climb = selectedClimb {
                 ClimbCard(climb: climb, climbed: store.climbed[climb.id] ?? [])
             }
-            if !plan.isPlanning, let trappist = selectedTrappist {
-                TrappistCard(trappist: trappist, visits: store.trappistVisits[trappist.id] ?? [])
-            }
-            if !plan.isPlanning, let boscafe = selectedBoscafe {
-                BoscafeCard(boscafe: boscafe, visits: store.boscafeVisits[boscafe.id] ?? [])
-            }
-            if !plan.isPlanning, let ferry = selectedFerry {
-                FerryCard(ferry: ferry, crossings: store.ferryCrossings[ferry.id] ?? [])
-            }
-            if !plan.isPlanning, let path = selectedKlompenpad {
-                KlompenpadCard(path: path, progress: store.klompenpadProgress[path.id] ?? 0)
-            }
-            if !plan.isPlanning, let route = selectedMTBRoute {
-                MTBRouteCard(route: route, progress: store.mtbProgress[route.id] ?? 0)
+            if !plan.isPlanning, let selection = selectedItem, let challenge = store.challenge(selection.challenge),
+               let item = challenge.item(selection.item) {
+                ChallengeItemCard(challenge: challenge, item: item, progress: store.challengeProgress(challenge.id))
             }
             if store.isImporting, store.progress.total > 0 {
                 VStack(alignment: .leading, spacing: 4) {
@@ -472,7 +452,7 @@ extension ContentView {
         guard UserDefaults.standard.bool(forKey: "PreviewTour") else { return }
         _ = await store.loadedRegions()
         try? await Task.sleep(for: .seconds(6)) // map tiles and overlays finish drawing
-        challenges = Challenges.encode(Set(Challenges.all))
+        challenges = Challenges.encode(Set(Challenges.all(store)))
         print("PREVIEW_TOUR_START \(Date.now.timeIntervalSince1970)")
         try? await Task.sleep(for: .seconds(3))
         mode = .gemeenten
@@ -495,6 +475,7 @@ extension ContentView {
 /// The map modes as chips that scroll sideways when they don't fit (five no longer fit a
 /// segmented control on an iPhone).
 private struct ModeChips: View {
+    @Environment(ActivityStore.self) private var store
     let modes: [MapMode]
     @Binding var selection: MapMode
     /// Challenges.key's value: which challenges are in the bar.
@@ -508,7 +489,7 @@ private struct ModeChips: View {
                         Button {
                             withAnimation(.snappy) { selection = mode }
                         } label: {
-                            Text(mode.tabTitle)
+                            Text(mode.tabTitle(in: store))
                                 .font(.subheadline.weight(selection == mode ? .semibold : .regular))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
@@ -528,6 +509,8 @@ private struct ModeChips: View {
             }
             .background(.quaternary.opacity(0.6), in: Capsule())
             .onChange(of: selection, initial: true) { _, mode in withAnimation { proxy.scrollTo(mode, anchor: .center) } }
+            // The user's challenges arrive after launch: show the selected one once its chip is there.
+            .onChange(of: modes) { withAnimation { proxy.scrollTo(selection, anchor: .center) } }
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Mode")
         }
@@ -537,8 +520,8 @@ private struct ModeChips: View {
     private var challengesMenu: some View {
         Menu {
             Section("Challenges") {
-                ForEach(Challenges.all) { mode in
-                    Toggle(mode.title, isOn: Binding(
+                ForEach(Challenges.all(store)) { mode in
+                    Toggle(mode.title(in: store), isOn: Binding(
                         get: { Challenges.decode(challenges).contains(mode) },
                         set: { on in
                             var set = Challenges.decode(challenges)

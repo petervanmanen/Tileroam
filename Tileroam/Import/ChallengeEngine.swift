@@ -1,43 +1,38 @@
+import CryptoKit
 import Foundation
 import Observation
 
-/// The challenges that check activities against a list (see `ChallengeResults`): the Trappist
-/// breweries, the boscafés, the ferries, the Klompenpaden and the mountain bike routes. Holds the lists, checks
-/// activities whose stored results are missing or out of date, and adds the stored results up
-/// (visits, progress, countries for Globetrotter, badges). `ActivityStore` owns the activities and
-/// decides when to check; this type knows how.
+/// The user's challenges (`CustomChallenge`, read from the Challenges folder by `ChallengeFiles`):
+/// holds them, checks activities whose stored results are missing or out of date, and adds the
+/// stored results up (progress per challenge, countries for Globetrotter, badges). `ActivityStore`
+/// owns the activities and decides when to check; this type knows how.
 @MainActor
 @Observable
 final class ChallengeEngine {
-    /// The breweries, from R2 (the copy on the device until the download is checked).
-    private(set) var trappists: [Trappist] = TrappistData.cached()
-    /// For each visited brewery, when (newest first).
-    private(set) var trappistVisits: [String: [Date]] = [:]
-    /// The boscafés, from R2 (the copy on the device until the download is checked).
-    private(set) var boscafes: [Boscafe] = BoscafeData.cached()
-    /// For each visited boscafé, when (newest first).
-    private(set) var boscafeVisits: [String: [Date]] = [:]
-    /// The ferries, from the `ferries` asset pack (empty until it's downloaded).
-    private(set) var ferries: [Ferry] = FerryData.cached()
-    /// For each ferry taken, when (newest first).
-    private(set) var ferryCrossings: [String: [Date]] = [:]
-    /// The paths, from the `klompenpaden` asset pack (empty until it's downloaded).
-    private(set) var klompenpaden: [Klompenpad] = KlompenpadData.cached()
-    /// For each path with progress, the share of its main route walked (0…1).
-    private(set) var klompenpadProgress: [String: Double] = [:]
-    /// The routes, from the `mtbroutes` asset pack (empty until it's downloaded).
-    private(set) var mtbRoutes: [MTBRoute] = MTBRouteData.cached()
-    /// For each route with progress, the share ridden (0…1).
-    private(set) var mtbProgress: [String: Double] = [:]
+    /// The challenges, in the order of their names.
+    private(set) var challenges: [CustomChallenge] = []
+    /// Files that couldn't be read, or only partly.
+    private(set) var problems: [Problem] = []
+    /// Per challenge id.
+    private(set) var progress: [String: ChallengeProgress] = [:]
     /// How often each badge was earned (see `BadgeRules`); indoor activities count too.
     private(set) var badges: [Badge: Int] = [:]
     /// The countries of the world with activities (not virtual ones), for Globetrotter.
     private(set) var worldCountries: Set<String> = []
 
-    /// Paths walked (at least `KlompenpadMatcher.done`).
-    var klompenpadenWalked: Int { klompenpadProgress.values.count { $0 >= KlompenpadMatcher.done } }
-    /// Routes ridden (at least `KlompenpadMatcher.done`).
-    var mtbRoutesRidden: Int { mtbProgress.values.count { $0 >= KlompenpadMatcher.done } }
+    struct Problem: Identifiable, Sendable, Equatable {
+        let fileName: String
+        let message: String
+        /// The challenge is used anyway (some features were skipped).
+        let isWarning: Bool
+        var id: String { fileName }
+    }
+
+    func challenge(_ id: String) -> CustomChallenge? { challenges.first { $0.id == id } }
+    func progress(of id: String) -> ChallengeProgress { progress[id] ?? ChallengeProgress() }
+
+    /// Checkpoints per route of a cover-route challenge, once prepared.
+    func routeCounts(_ id: String) -> [String: Int] { prepared[id]?.counts ?? [:] }
 
     /// Called when the routes' checkpoints are ready, so the owner can check its activities.
     @ObservationIgnored var onPrepared: () -> Void = {}
@@ -45,114 +40,98 @@ final class ChallengeEngine {
     /// A check pass is running (one at a time).
     @ObservationIgnored private(set) var isChecking = false
 
-    // MARK: Lists
+    // MARK: Files
 
-    enum Change { case none, list, logos }
+    /// The files read before, by name: reading a file again is quick, parsing a big one isn't.
+    @ObservationIgnored private var parsed: [String: Parsed] = [:]
 
-    /// Checks for a new list of Trappist breweries (at most once a day) and their logos.
-    func updateTrappists() async -> Change {
-        func logos() -> Int {
-            trappists.filter { FileManager.default.fileExists(atPath: TrappistData.iconFile($0.id).path(percentEncoded: false)) }.count
+    private struct Parsed: Sendable {
+        let digest: String
+        let challenge: CustomChallenge?
+        let problem: Problem?
+    }
+
+    /// Reads the Challenges folder again. Returns whether the challenges changed.
+    func reload() async -> Bool {
+        let previous = parsed
+        let (list, problems, cache) = await Task.detached(priority: .utility) {
+            let (files, unreadable) = ChallengeFiles.read()
+            var cache = [String: Parsed](), list = [CustomChallenge](), problems = [Problem]()
+            for (name, data) in files.sorted(by: { $0.key < $1.key }) {
+                let digest = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+                let entry = previous[name].flatMap { $0.digest == digest ? $0 : nil } ?? Self.parse(data, name: name, digest: digest)
+                cache[name] = entry
+                if let p = entry.problem { problems.append(p) }
+                guard let c = entry.challenge else { continue }
+                if let other = list.first(where: { $0.id == c.id }) {
+                    problems.append(Problem(fileName: name, message: String(localized: "Same id as \(other.fileName): \"\(c.id)\"."), isWarning: false))
+                } else {
+                    list.append(c)
+                }
+            }
+            problems += unreadable.map { Problem(fileName: $0, message: String(localized: "Not downloaded from iCloud yet."), isWarning: false) }
+            return (list.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }, problems, cache)
+        }.value
+        parsed = cache
+        if problems != self.problems { self.problems = problems }
+        guard list.map(\.key) != challenges.map(\.key) || list.map(\.fileName) != challenges.map(\.fileName) else { return false }
+        challenges = list
+        progress = progress.filter { id, _ in list.contains { $0.id == id } }
+        return true
+    }
+
+    nonisolated private static func parse(_ data: Data, name: String, digest: String) -> Parsed {
+        do {
+            let (challenge, skipped) = try CustomChallenge.parse(data, fileName: name)
+            let warning = skipped > 0
+                ? Problem(fileName: name, message: String(localized: "\(skipped) features skipped: no id or name, or not a Point or line."), isWarning: true)
+                : nil
+            return Parsed(digest: digest, challenge: challenge, problem: warning)
+        } catch {
+            return Parsed(digest: digest, challenge: nil,
+                          problem: Problem(fileName: name, message: error.localizedDescription, isWarning: false))
         }
-        let before = logos()
-        guard let list = try? await TrappistData.load() else { return .none }
-        if list != trappists {
-            trappists = list
-            return .list // a new list has a new key: every activity is checked again
-        }
-        return logos() != before ? .logos : .none
     }
 
-    /// Checks for a new list of boscafés (at most once a day).
-    func updateBoscafes() async -> Change {
-        guard let list = try? await BoscafeData.load(), list != boscafes else { return .none }
-        boscafes = list
-        return .list
+    /// Deletes a challenge's file (on all devices, with iCloud).
+    func remove(_ challenge: CustomChallenge) async {
+        let name = challenge.fileName
+        await Task.detached(priority: .userInitiated) { ChallengeFiles.remove(name) }.value
+        _ = await reload()
     }
 
-    /// Loads the ferries (downloading their asset pack the first time).
-    func updateFerries() async -> Change {
-        guard let list = try? await FerryData.load(), list != ferries else { return .none }
-        ferries = list
-        ferriesKeyCache = nil
-        return .list
-    }
+    // MARK: Prepared routes
 
-    /// Loads the mountain bike routes (downloading their asset pack the first time).
-    func updateMTBRoutes() async -> Change {
-        guard let list = try? await MTBRouteData.load(), list != mtbRoutes else { return .none }
-        mtbRoutes = list
-        mtbKeyCache = nil
-        return .list
-    }
+    /// The cover routes' checkpoints, per challenge id, with the key they were made for.
+    @ObservationIgnored private var prepared: [String: RouteMatcher.Prepared] = [:]
+    @ObservationIgnored private var preparedKeys: [String: String] = [:]
+    @ObservationIgnored private var preparing: Task<Void, Never>?
 
-    /// Loads the Klompenpaden (downloading their asset pack the first time).
-    func updateKlompenpaden() async -> Change {
-        guard let list = try? await KlompenpadData.load(), list != klompenpaden else { return .none }
-        klompenpaden = list
-        klompenpadKeyCache = nil
-        return .list
-    }
-
-    // MARK: Keys and prepared routes
-
-    // The lists' fingerprints, kept until the list changes: hashing the MTB routes (4 MB of JSON)
-    // on every count would make the main thread stutter.
-    @ObservationIgnored private var klompenpadKeyCache: String?
-    @ObservationIgnored private var mtbKeyCache: String?
-    @ObservationIgnored private var ferriesKeyCache: String?
-    private var ferriesKey: String {
-        if let ferriesKeyCache { return ferriesKeyCache }
-        let key = ChallengeResults.ferriesKey(ferries)
-        ferriesKeyCache = key
-        return key
-    }
-    private var klompenpadKey: String {
-        if let klompenpadKeyCache { return klompenpadKeyCache }
-        let key = ChallengeResults.klompenpadKey(klompenpaden)
-        klompenpadKeyCache = key
-        return key
-    }
-    private var mtbKey: String {
-        if let mtbKeyCache { return mtbKeyCache }
-        let key = ChallengeResults.mtbKey(mtbRoutes)
-        mtbKeyCache = key
-        return key
-    }
-
-    /// The Klompenpaden's and MTB routes' checkpoints, for the current lists.
-    @ObservationIgnored private var preparedPaths: (key: String, paths: KlompenpadMatcher.Prepared)?
-    @ObservationIgnored private var preparedMTB: (key: String, paths: KlompenpadMatcher.Prepared)?
-    @ObservationIgnored private var preparingRoutes: Task<Void, Never>?
-
-    /// The current lists with their keys and the routes' checkpoints; nil while the checkpoints are
-    /// being prepared (`onPrepared` is called when they're ready).
+    /// The challenges with their routes' checkpoints; nil while the checkpoints are being
+    /// prepared (`onPrepared` is called when they're ready).
     var current: ChallengeResults.Current? {
-        let kKey = klompenpadKey, mKey = mtbKey
-        guard let paths = preparedPaths, paths.key == kKey, let mtb = preparedMTB, mtb.key == mKey else {
-            prepareRoutes()
+        let routes = challenges.filter(\.isCoverRoutes)
+        guard routes.allSatisfy({ preparedKeys[$0.id] == $0.key }) else {
+            prepareRoutes(routes)
             return nil
         }
-        return ChallengeResults.Current(trappists: trappists, trappistsKey: ChallengeResults.trappistsKey(trappists),
-                                        boscafes: boscafes, boscafesKey: ChallengeResults.boscafesKey(boscafes),
-                                        ferries: ferries, ferriesKey: ferriesKey,
-                                        paths: paths.paths, klompenpadKey: kKey, mtb: mtb.paths, mtbKey: mKey)
+        return ChallengeResults.Current(challenges: challenges, prepared: prepared.filter { id, _ in routes.contains { $0.id == id } })
     }
 
-    /// Prepares the checkpoints of the Klompenpaden and MTB routes in the background (seconds for
-    /// the 4,700 MTB routes on an iPad: on the main thread it froze the app).
-    private func prepareRoutes() {
-        guard preparingRoutes == nil else { return }
-        let kKey = klompenpadKey, mKey = mtbKey, paths = klompenpaden, routes = mtbRoutes
-        let needPaths = preparedPaths?.key != kKey, needRoutes = preparedMTB?.key != mKey
-        preparingRoutes = Task {
-            let (p, m) = await Task.detached(priority: .utility) {
-                (needPaths ? KlompenpadMatcher.Prepared(paths) : nil,
-                 needRoutes ? KlompenpadMatcher.Prepared(routes, spacing: MTBRoute.spacing) : nil)
+    /// Prepares the checkpoints of the cover routes in the background (seconds for thousands of
+    /// routes on an iPad: on the main thread it froze the app).
+    private func prepareRoutes(_ routes: [CustomChallenge]) {
+        guard preparing == nil else { return }
+        let needed = routes.filter { preparedKeys[$0.id] != $0.key }
+        preparing = Task {
+            let made = await Task.detached(priority: .utility) {
+                needed.map { ($0.id, $0.key, RouteMatcher.Prepared($0.items, spacing: $0.spacing)) }
             }.value
-            if let p { preparedPaths = (kKey, p) }
-            if let m { preparedMTB = (mKey, m) }
-            preparingRoutes = nil
+            for (id, key, p) in made {
+                prepared[id] = p
+                preparedKeys[id] = key
+            }
+            preparing = nil
             onPrepared()
         }
     }
@@ -172,52 +151,32 @@ final class ChallengeEngine {
         }.value
     }
 
-    /// Stores a result with its activity, under the keys it was computed with.
-    nonisolated static func store(_ r: ChallengeResults.Result, _ current: ChallengeResults.Current, in a: inout Activity) {
-        if let t = r.trappists { a.trappists = t; a.trappistsKey = current.trappistsKey }
-        if let b = r.boscafes { a.boscafes = b; a.boscafesKey = current.boscafesKey }
-        if let f = r.ferries { a.ferries = f; a.ferriesKey = current.ferriesKey }
-        if let h = r.klompenpadHits { a.klompenpadHits = h; a.klompenpadKey = current.klompenpadKey }
-        if let h = r.mtbHits { a.mtbHits = h; a.mtbKey = current.mtbKey }
-        if let c = r.countries { a.countries = c; a.countriesKey = ChallengeResults.countriesKey }
-    }
-
-    /// Adds up the stored results of the activities there are (so deleted ones drop out): visited
-    /// breweries and boscafés, Klompenpaden and MTB route progress, countries, and the badges.
-    /// Results computed with an older key don't count until they're checked again. Returns whether
-    /// anything changed.
+    /// Adds up the stored results of the activities there are (so deleted ones drop out): places
+    /// visited, routes crossed or covered, countries, and the badges. Results computed with an
+    /// older key don't count until they're checked again. Returns whether anything changed.
     func aggregate(_ activities: [Activity], _ current: ChallengeResults.Current) -> Bool {
         let cKey = ChallengeResults.countriesKey
-        var visits = [String: [Date]](), cafes = [String: [Date]](), crossings = [String: [Date]]()
-        var paths = [[String: [Int]]](), mtb = [[String: [Int]]]()
+        var visits = [String: [String: [Date]]](), hits = [String: [[String: [Int]]]]()
         var countries = Set<String>()
         for a in activities where a.isOnMap {
-            if a.trappistsKey == current.trappistsKey {
-                for id in a.trappists ?? [] { visits[id, default: []].append(a.startDate ?? .distantPast) }
+            if let stored = a.challengeHits {
+                for c in current.challenges {
+                    guard let h = stored[c.id], h.key == c.key else { continue }
+                    for id in h.ids ?? [] { visits[c.id, default: [:]][id, default: []].append(a.startDate ?? .distantPast) }
+                    if let cp = h.checkpoints, !cp.isEmpty { hits[c.id, default: []].append(cp) }
+                }
             }
-            if a.boscafesKey == current.boscafesKey {
-                for id in a.boscafes ?? [] { cafes[id, default: []].append(a.startDate ?? .distantPast) }
-            }
-            if a.ferriesKey == current.ferriesKey {
-                for id in a.ferries ?? [] { crossings[id, default: []].append(a.startDate ?? .distantPast) }
-            }
-            if a.klompenpadKey == current.klompenpadKey, let h = a.klompenpadHits { paths.append(h) }
-            if a.mtbKey == current.mtbKey, let h = a.mtbHits { mtb.append(h) }
             if a.countriesKey == cKey { countries.formUnion(a.countries ?? []) }
         }
-        let progress = KlompenpadMatcher.progress(hits: paths, counts: current.paths.counts)
-        let mtbProgress = KlompenpadMatcher.progress(hits: mtb, counts: current.mtb.counts)
+        var progress = [String: ChallengeProgress]()
+        for c in current.challenges {
+            let coverage = c.isCoverRoutes
+                ? RouteMatcher.progress(hits: hits[c.id] ?? [], counts: current.prepared[c.id]?.counts ?? [:]) : [:]
+            progress[c.id] = ChallengeProgress(visits: (visits[c.id] ?? [:]).mapValues { $0.sorted(by: >) }, coverage: coverage)
+        }
         let counts = BadgeRules.counts(activities, countries: countries.count)
-        let sortedVisits = visits.mapValues { $0.sorted(by: >) }, cafeVisits = cafes.mapValues { $0.sorted(by: >) }
-        let ferryCrossings = crossings.mapValues { $0.sorted(by: >) }
-        guard sortedVisits != trappistVisits || cafeVisits != boscafeVisits || ferryCrossings != self.ferryCrossings
-                || progress != klompenpadProgress
-                || mtbProgress != self.mtbProgress || countries != worldCountries || counts != badges else { return false }
-        trappistVisits = sortedVisits
-        boscafeVisits = cafeVisits
-        self.ferryCrossings = ferryCrossings
-        klompenpadProgress = progress
-        self.mtbProgress = mtbProgress
+        guard progress != self.progress || countries != worldCountries || counts != badges else { return false }
+        self.progress = progress
         worldCountries = countries
         badges = counts
         return true

@@ -30,7 +30,7 @@ Indoor and virtual activities, such as Zwift, Rouvy or a treadmill, count in you
 
 ## The map
 
-Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes**, **Climbs**, **Trappists**, **Boscafés**, **Ferries**, **Klompenpaden** and **MTB** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges. They're off at first, to keep the bar short. Your activities still count for every challenge, shown or not.
+Use the tabs at the top to switch views. **Tiles** is always there. **Towns**, **Postcodes** and **Climbs** are *challenges* you turn on yourself, with the **+** at the end of the tabs or under Settings → Challenges; they're off at first, to keep the bar short. Your own challenges (see below) get a tab of their own, on as soon as they arrive. Your activities still count for every challenge, shown or not.
 
 ### Tiles
 The map is divided into squares. A square turns green once you have passed through it. The squares are zoom 14 tiles, about 1.5 km wide in the Netherlands: the "explorer tiles" used by VeloViewer, StatsHunters and rideeverytile.com.
@@ -91,25 +91,17 @@ To **ride a climb on a planned route**, select it in planning mode on the Climbs
 
 Climbs are found by Tileroam from elevation data along OpenStreetMap's roads. Short steep hills often come out less steep than signposted, because the elevation data is about 30 m coarse.
 
-## Trappist Challenge
+## Your own challenges
 
-Turn on the **Trappists** challenge with the **+** at the end of the tabs to see the Trappist breweries on the map: Westmalle, Westvleteren, Chimay, Orval, Rochefort, La Trappe, Tre Fontane and Tynt Meadow. A brewery counts as visited when one of your activities passed within 200 m of it; it then gets a green ring and a check. Tap a brewery to see its abbey and when you were there. In planning mode, tap breweries on the Trappists tab to plan a route past them (within 200 m); a planned route also lists the new breweries it passes. The list of breweries and their logos are downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for new breweries once a day.
+A challenge of your own is a set of places to visit (breweries, cafés, viewpoints) or routes to ride, run or walk (trails, walking paths, ferries), in a file you put in **iCloud Drive › Tileroam › Challenges** (or *On My iPhone › Tileroam › Challenges* without iCloud). Tileroam reads the folder when it opens, and each challenge gets a tab with its emoji on the map. The format, and how to make a file, are in [challenges/README.md](../challenges/README.md); [trappist-breweries.geojson](../challenges/trappist-breweries.geojson) is an example to start from.
 
-## Boscafé Challenge
+- **Places** count as visited when one of your activities passes within the challenge's radius (200 m unless the file says otherwise). They get a green ring and a check; tap one to see when you were there. In planning mode, tap places you haven't visited to plan a route past them; a planned route also lists the new places it passes.
+- **Routes** are dark orange until done and green after. A route to *cover* (a walking path, a trail) is done when your activities together cover 90% of it (within 30 m; several activities add up); its card shows how far you are. A route to *cross* (a ferry) is done when one activity goes from one end to the other; riding along the bank doesn't count.
+- A challenge can count only some sports, for example rides for mountain bike routes.
 
-Turn on the **Boscafés** challenge with the **+** to see the boscafés on the map: cafés, pavilions, tea gardens and inns in the woods and on the heaths of the Netherlands, from the Veluwe and the Utrechtse Heuvelrug to Brabant, Limburg, Twente and Drenthe. Each is shown with its emoji (🌲 ☕ 🍺 🍽️ 🥞 🫖). A boscafé counts as visited when one of your activities, a ride or a walk, passed within 200 m of it; it then gets a green ring and a check. Tap a boscafé to see when you were there. In planning mode, tap boscafés on the Boscafés tab to plan a route past them. The list is downloaded the first time (a few kilobytes) and kept on your device; Tileroam checks for changes once a day.
+Settings → Challenges lists your challenges: turn them on or off, or swipe one away to delete its file. A file Tileroam can't use is listed there with the reason. Statistics shows your progress per challenge, and the Year in Review what was new that year.
 
-## Ferries
-
-Turn on the **Ferries** challenge with the **+** to see the ferries that take cyclists on the map: the pontjes over the Dutch rivers and canals and the ferries across the Rhine, the Danube and the lake narrows: about 900 crossings of up to 2 km in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria, from OpenStreetMap. Longer boat lines (island ferries, boat trips along a river or around a lake) aren't included: riding the path along the shore would look the same as taking the boat. A ferry counts as taken when one of your activities crosses on it: the track comes near both landings and the middle of the crossing (riding past a landing doesn't count). Taken ferries get a green ring and a check. Tap a ferry to see its name, length, operator, links and when you crossed. The list is downloaded once from Apple (about 0.2 MB).
-
-## Klompenpaden
-
-Turn on the **Klompenpaden** challenge with the **+** to see the 167 Klompenpaden of [www.klompenpaden.nl](https://www.klompenpaden.nl) on the map: walking paths through the countryside of Gelderland and Utrecht. A path is dark orange until you have walked it, and green once your activities cover at least 90% of its main route (within 30 m; several walks add up). Tap a path to see where it starts, its lengths, how much you have walked, and a link to its page on klompenpaden.nl. The list is downloaded once from Apple, like the municipality boundaries (about 70 KB). Klompenpaden are footpaths, so they aren't used for route planning.
-
-## Mountain bike routes
-
-Turn on the **MTB** challenge with the **+** to see the signposted mountain bike routes on the map: about 4,700 routes in the Netherlands, Belgium, Germany, France, Switzerland and Austria, from OpenStreetMap (routes that belong to a local, regional or national network; Luxembourg has none mapped yet). A route is dark orange until you have ridden it and green once your rides cover at least 90% of it (within 30 m; several rides add up; walks don't count). Tap a route to see its network, length, how much you have ridden, and links to OpenStreetMap and the route's own website. The card also shows how hard the route is: **easy**, **moderate**, **hard** or **very hard** (green, blue, red, black). Where the route is graded on its signs (in France, Switzerland and Austria, or when tagged on OpenStreetMap) that grade is shown as *signposted*; otherwise it's *estimated* from the length, the metres of climbing and, where the paths are tagged, their technical grade (S0–S5). The routes are downloaded once from Apple (about 2 MB).
+Until version 1.12, Tileroam had the Trappist breweries, the boscafés, the ferries, the Klompenpaden and the mountain bike routes built in. They're challenge files now; their visits are counted again once you add the files.
 
 ## Statistics
 

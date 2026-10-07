@@ -125,8 +125,9 @@ struct YearInReviewView: View {
         image = nil
         defer { isMaking = false }
         let activities = store.activities
+        let challenges = store.customChallenges.map { YearInReview.Challenge($0, store: store) }
         let review = await Task.detached(priority: .userInitiated) {
-            YearInReview(year: shown, activities: activities, history: TileHistory(activities: activities))
+            YearInReview(year: shown, activities: activities, history: TileHistory(activities: activities), challenges: challenges)
         }.value
         let map = await YearInReviewCard.mapImage(review)
         guard year == shown else { return }
@@ -213,12 +214,10 @@ struct YearInReviewCard: View {
         }
     }
 
-    /// "3 Trappist breweries · 5 boscafés · 12 ferries · Badges: Century, Everester"
+    /// "Trappist breweries: 3 · Ferries: 12 · Badges: Century, Everester"
     private var extras: String {
         var parts = [String]()
-        if review.newTrappists > 0 { parts.append(String(localized: "\(review.newTrappists) Trappist breweries")) }
-        if review.newBoscafes > 0 { parts.append(String(localized: "\(review.newBoscafes) boscafés")) }
-        if review.newFerries > 0 { parts.append(String(localized: "\(review.newFerries) ferries")) }
+        for (name, count) in review.challenges { parts.append(String(localized: "\(name): \(count)")) }
         if !review.badges.isEmpty {
             parts.append(String(localized: "Badges: \(review.badges.map(\.title).formatted(.list(type: .and)))"))
         }
@@ -238,7 +237,8 @@ enum RecapDemo {
         let activities = store.activities
         let history = TileHistory(activities: activities)
         if let year = YearInReview.years(activities).first {
-            let review = YearInReview(year: year, activities: activities, history: history)
+            let review = YearInReview(year: year, activities: activities, history: history,
+                                      challenges: store.customChallenges.map { YearInReview.Challenge($0, store: store) })
             let renderer = ImageRenderer(content: YearInReviewCard(review: review, map: await YearInReviewCard.mapImage(review)))
             renderer.scale = 1
             if let data = renderer.uiImage?.pngData() {
