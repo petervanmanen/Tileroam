@@ -23,12 +23,6 @@ struct ChallengesTests {
 }
 
 struct CustomModeTests {
-    @Test func snakeIsABuiltInChallenge() {
-        #expect(MapMode(rawValue: "snake") == .snake && MapMode.snake.isChallenge)
-        #expect(Challenges.visibleModes("snake,climbs") == [.squares, .climbs, .snake])
-        #expect(!Challenges.visibleModes("").contains(.snake)) // off by default, like the other built-in ones
-    }
-
     @Test func customModesRoundTrip() {
         #expect(MapMode(rawValue: "custom:trappist-breweries") == .custom("trappist-breweries"))
         #expect(MapMode.custom("ferries").rawValue == "custom:ferries")

@@ -11,12 +11,6 @@ final class ActivityStore {
     private var statsTask: Task<Void, Never>?
     /// Max square/cluster have been computed for the current activities.
     private(set) var statsReady = false
-    /// The snake challenge: the longest snake of visited tiles (see `SnakeFinder`), nil until
-    /// computed for the current tiles.
-    private(set) var snake: Snake?
-    private var snakeTask: Task<Void, Never>?
-    /// The tiles `snake` (or the snake being computed) is for.
-    private var snakeTiles: Set<Int64>?
     private(set) var visitedMunicipalities: Set<String> = []
     private(set) var visitedPostcodes: Set<String> = []
     private(set) var eddingtonCycling = Eddington()
@@ -602,17 +596,6 @@ final class ActivityStore {
             statsReady = true
             version += 1
             await WidgetData.saveTiles(visited14)
-        }
-        // The snake takes a second or two for thousands of tiles: only when the tiles changed.
-        if snakeTiles != visited14 {
-            snakeTiles = visited14
-            snakeTask?.cancel()
-            snakeTask = Task {
-                let snake = await Task.detached(priority: .utility) { SnakeFinder.longest(visited14) }.value
-                guard !Task.isCancelled else { return }
-                self.snake = snake
-                version += 1
-            }
         }
         matchChallenges()
         eddingtonCycling = Eddington(activities: activities, sports: Eddington.cyclingSports)
