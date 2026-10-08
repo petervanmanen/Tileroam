@@ -1,5 +1,9 @@
 # Climbs
 
+> **Switched off since 1.15.** The Climbs challenge is behind `FeatureFlags.climbs` (false): no tab, no
+> statistics, no climbs in planning, and nothing is downloaded or matched (`ClimbData.index` is nil).
+> Set the flag to true to bring it back; users' Climbs setting is kept in the meantime.
+
 Tileroam knows the climbs on the roads of the route planning countries: which ones the user has climbed, which there are, and it can plan routes over them.
 
 Climbs aren't a thing in OpenStreetMap, and commercial climb lists can't be used, so Tileroam **finds them itself** from an open elevation model along OpenStreetMap's roads. The result for the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria (climbs version 2, October 2026): 264,471 climbs in 176 areas of 1° × 1°, 23.8 MB compressed: 194 HC, 232 Cat 1, 2,929 Cat 2, 12,812 Cat 3, 46,823 Cat 4 and 201,481 hills. (Version 1, in app 1.4, had the first four countries: 77,020 climbs.)

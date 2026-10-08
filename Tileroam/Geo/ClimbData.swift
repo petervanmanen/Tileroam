@@ -5,9 +5,11 @@ import Foundation
 /// downloads the areas around the user's activities, the map they look at and their plans, and
 /// keeps them in `Application Support/Climbs/<build>-v<version>`. See docs/CLIMBS.md.
 enum ClimbData {
-    /// The bundled index of areas (`Resources/climbs-<build>.json`).
+    /// The bundled index of areas (`Resources/climbs-<build>.json`); nil while the Climbs
+    /// challenge is switched off (`FeatureFlags.climbs`), so nothing is downloaded or matched.
     static let index: ClimbIndex? = {
-        guard let url = Bundle.main.url(forResource: "climbs-\(RoutingData.build)", withExtension: "json"),
+        guard FeatureFlags.climbs,
+              let url = Bundle.main.url(forResource: "climbs-\(RoutingData.build)", withExtension: "json"),
               let data = try? Data(contentsOf: url) else { return nil }
         return try? JSONDecoder().decode(ClimbIndex.self, from: data)
     }()

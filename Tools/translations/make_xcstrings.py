@@ -9,19 +9,13 @@ LANGS = ["nl", "fr", "es", "de"]
 
 # key: (nl, fr, es, de)
 T = {
-    # The snake challenge
-    "Snake": ("Slang", "Serpent", "Serpiente", "Schlange"),
-    "Longest snake": ("Langste slang", "Plus long serpent", "Serpiente más larga", "Längste Schlange"),
-    "Looking for the longest snake…": ("Langste slang zoeken…", "Recherche du plus long serpent…", "Buscando la serpiente más larga…", "Längste Schlange wird gesucht…"),
-    "Snake: %lld tiles, the longest possible": ("Slang: %lld tegels, de langst mogelijke", "Serpent : %lld tuiles, le plus long possible",
-                                                 "Serpiente: %lld teselas, la más larga posible", "Schlange: %lld Kacheln, die längstmögliche"),
-    "Snake: %lld of at most %lld tiles": ("Slang: %1$lld van hooguit %2$lld tegels", "Serpent : %1$lld tuiles sur %2$lld au plus",
-                                           "Serpiente: %1$lld de como mucho %2$lld teselas", "Schlange: %1$lld von höchstens %2$lld Kacheln"),
-    "The snake: your longest line of tiles, side by side without diagonals, arcade style": (
-        "De slang: je langste lijn tegels, naast elkaar zonder diagonalen, in arcadestijl",
-        "Le serpent : votre plus longue ligne de tuiles, côte à côte sans diagonales, style arcade",
-        "La serpiente: tu línea de teselas más larga, una junto a otra sin diagonales, estilo arcade",
-        "Die Schlange: deine längste Reihe von Kacheln, nebeneinander ohne Diagonalen, im Arcade-Stil"),
+    # The Climbs challenge switched off (FeatureFlags.climbs)
+    "m climbed": ("hoogtemeters", "m de dénivelé", "m de desnivel", "Höhenmeter"),
+    "Tap the route button, select unvisited tiles, municipalities, postcodes or places of your challenges, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": (
+        "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes of plekken van je uitdagingen, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer.",
+        "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux ou lieux de vos défis non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur.",
+        "Toca el botón de ruta, elige teselas, municipios, códigos postales o lugares de tus desafíos sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador.",
+        "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen oder Orte deiner Challenges, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."),
     # Challenges of the user (challenges/README.md)
     "Completed": ("Voltooid", "Terminé", "Completada", "Geschafft"),
     "\"%@\" is missing.": ("“%@” ontbreekt.", "« %@ » manque.", "Falta «%@».", "„%@“ fehlt."),
@@ -656,7 +650,7 @@ T = {
     "Challenges: municipalities and postcodes in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria": ("Uitdagingen: gemeenten en postcodes in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk", "Défis : communes et codes postaux aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche", "Desafíos: municipios y códigos postales en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria", "Herausforderungen: Gemeinden und Postleitzahlen in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich"),
     "Climbs from short steep hills to HC, and the ones you climbed": ("Klimmen van korte steile heuvels tot HC, en welke je beklommen hebt", "Des montées, des courtes côtes raides au HC, et celles que vous avez gravies", "Subidas, de repechos cortos a HC, y las que has hecho", "Anstiege von kurzen steilen Rampen bis HC, und welche du gefahren bist"),
     "The Trappist Challenge: ride past the Trappist breweries": ("De Trappistenuitdaging: fiets langs de trappistenbrouwerijen", "Le défi trappiste : passez devant les brasseries trappistes", "El desafío trapense: pasa por las cervecerías trapenses", "Die Trappisten-Challenge: fahre an den Trappistenbrauereien vorbei"),
-    "18 badges, from 100! and Everester to Festive 500 and Globetrotter": ("18 badges, van 100! en Everester tot Festive 500 en Wereldreiziger", "18 badges, de 100 ! et Everester à Festive 500 et Globe-trotter", "18 insignias, de ¡100! y Everester a Festive 500 y Trotamundos", "18 Abzeichen, von 100! und Everester bis Festive 500 und Weltenbummler"),
+    "18 badges, from 100! and Everester to Christmas 500 and Globetrotter": ("18 badges, van 100! en Everester tot Kerst 500 en Wereldreiziger", "18 badges, de 100 ! et Everester à Noël 500 et Globe-trotter", "18 insignias, de ¡100! y Everester a Navidad 500 y Trotamundos", "18 Abzeichen, von 100! und Everester bis Weihnachts-500 und Weltenbummler"),
     "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or Trappist breweries, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": ("Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes, klimmen of trappistenbrouwerijen, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer.", "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux, montées ou brasseries trappistes non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur.", "Toca el botón de ruta, elige teselas, municipios, códigos postales, subidas o cervecerías trapenses sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador.", "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen, Anstiege oder Trappistenbrauereien, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."),
     "Tiles are at the top of the map; add the challenges you like with the +. The chart button has your statistics and badges, Settings your iCloud sync and imports.": ("Tegels staan boven aan de kaart; voeg de uitdagingen die je wilt toe met de +. De grafiekknop heeft je statistieken en badges, Instellingen je iCloud-synchronisatie en imports.", "Les tuiles sont en haut de la carte ; ajoutez les défis de votre choix avec le +. Le bouton graphique contient vos statistiques et badges, les Réglages la synchronisation iCloud et les imports.", "Las teselas están arriba en el mapa; añade los desafíos que quieras con el +. El botón de gráfico tiene tus estadísticas e insignias, y Ajustes la sincronización con iCloud y las importaciones.", "Kacheln stehen oben auf der Karte; füge mit dem + die Herausforderungen hinzu, die du willst. Die Diagrammtaste hat deine Statistiken und Abzeichen, die Einstellungen iCloud-Sync und Importe."),
     "Could Not Read": ("Kon niet lezen", "Illisibles", "No se pudieron leer", "Nicht lesbar"),
@@ -691,7 +685,7 @@ T = {
     "Half Marathon": ("Halve marathon", "Semi-marathon", "Media maratón", "Halbmarathon"),
     "Silent night": ("Stille nacht", "Douce nuit", "Noche de paz", "Stille Nacht"),
     "Giant leap": ("Reuzensprong", "Pas de géant", "Gran salto", "Riesensprung"),
-    "Festive 500": ("Festive 500", "Festive 500", "Festive 500", "Festive 500"),
+    "Christmas 500": ("Kerst 500", "Noël 500", "Navidad 500", "Weihnachts-500"),
     "Globetrotter": ("Wereldreiziger", "Globe-trotter", "Trotamundos", "Weltenbummler"),
     "Taylor": ("Taylor", "Taylor", "Taylor", "Taylor"),
     "Cycle 100 km in one activity": ("Fiets 100 km in één activiteit", "Roulez 100 km en une activité", "Pedalea 100 km en una actividad", "Fahre 100 km in einer Aktivität"),
@@ -936,7 +930,6 @@ TABS = {
     "tab.municipalities": ("Towns", "Gemeenten", "Communes", "Municipios", "Gemeinden"),
     "tab.postcodes": ("Postcodes", "Postcodes", "Codes post.", "C. postales", "PLZ"),
     "tab.climbs": ("Climbs", "Klimmen", "Montées", "Subidas", "Anstiege"),
-    "tab.snake": ("Snake", "Slang", "Serpent", "Serpiente", "Schlange"),
 }
 
 # Plural keys: key -> {lang: (one, other)}; "en" included.

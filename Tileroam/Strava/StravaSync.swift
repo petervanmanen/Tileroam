@@ -138,21 +138,42 @@ final class StravaSync {
 
     /// Handles the webhook events the token service queued since the last time: access revoked
     /// (forget everything and delete the saved files), activities deleted on Strava (delete their
-    /// copies). Returns false when the connection is gone.
+    /// copies). Strava confirms each event first: anyone can post one to the token service
+    /// (issue #68). Returns false when the connection is gone.
     private func applyEvents(_ client: StravaClient, athleteID: Int) async -> Bool {
         let sinceKey = Self.eventsSinceKey(athleteID)
         guard let events = try? await client.events(since: UserDefaults.standard.integer(forKey: sinceKey)),
               let last = events.map(\.time).max() else { return true }
-        UserDefaults.standard.set(last, forKey: sinceKey)
         let change = StravaEventChanges(events)
         if change.revoked {
-            forget()
-            await deleteFiles()
-            error = String(localized: "Strava access was revoked. Tileroam removed the activities it saved from Strava.")
-            return false
+            switch await client.isAccessRevoked() {
+            case true?:
+                UserDefaults.standard.set(last, forKey: sinceKey)
+                forget()
+                await deleteFiles()
+                error = String(localized: "Strava access was revoked. Tileroam removed the activities it saved from Strava.")
+                return false
+            case nil: return true // no answer: the events are read again next time
+            case false?: break // still connected: the event wasn't Strava's
+            }
         }
-        guard !change.removedActivities.isEmpty else { return true }
-        let removed = change.removedActivities
+        // Only activities on this device (in the list or as a saved file) are checked with Strava.
+        let listed = Set(activities.compactMap(StravaImport.stravaID(of:)))
+        let candidates = change.removedActivities
+        let saved = await Task.detached(priority: .utility) {
+            let names = StravaExport.ownFiles(of: candidates)
+            return candidates.filter { id in names.contains { $0.hasSuffix("-Strava-\(id).fit") } }
+        }.value
+        var removed = Set<Int>(), unanswered = false
+        for id in candidates.filter({ listed.contains($0) || saved.contains($0) }).sorted() {
+            switch await client.isDeleted(activityID: id) {
+            case true?: removed.insert(id)
+            case nil: unanswered = true
+            case false?: break // still on Strava: the event wasn't Strava's
+            }
+        }
+        if !unanswered { UserDefaults.standard.set(last, forKey: sinceKey) }
+        guard !removed.isEmpty else { return true }
         activities.removeAll { StravaImport.stravaID(of: $0).map(removed.contains) ?? false }
         await Task.detached(priority: .utility) {
             Library.delete(names: StravaExport.ownFiles(of: removed))

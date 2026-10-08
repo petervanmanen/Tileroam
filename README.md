@@ -4,22 +4,20 @@
 
 Tileroam is an iPhone and iPad app that shows everywhere you have been on your rides, runs and walks: every map tile, municipality and postcode area you have visited. It reads `.fit` files from one or more iCloud Drive folders (for example exports from HealthFit, Garmin or Wahoo) and can import your history from Strava. It also plans cycling routes to places you haven't been yet.
 
-![Tileroam on iPhone: tiles, municipalities, climbs and route planning](docs/screenshots/overview.jpg)
+![Tileroam on iPhone: tiles, municipalities, postcodes and route planning](docs/screenshots/overview.jpg)
 
 ## Features
 
 - **Tiles**: zoom 14 map tiles (~1.5 km, as on VeloViewer, StatsHunters and [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Includes your **max square** and **max cluster**.
-- **Climbs**: every climb on the roads (Cat 4 to HC like Strava, and short steep hills), found from elevation data; which ones you have climbed, on a map tab and in Statistics, and climbs to include when planning a route. See [docs/CLIMBS.md](docs/CLIMBS.md).
-- **Challenges**: besides tiles, turn on the challenges you like with the **+** at the top of the map: municipalities, postcodes, climbs, and **your own challenges**: places to visit (within a radius you choose) or routes to ride, run or walk (covered, or crossed like a ferry), each a GeoJSON file in iCloud Drive › Tileroam › Challenges. The format is in [challenges/README.md](challenges/README.md), with the [Trappist breweries](challenges/trappist-breweries.geojson) as an example. Hidden challenges still count.
-- **The snake**: the longest snake of your tiles, a line from tile to tile that only goes horizontally and vertically and never visits a tile twice, shown arcade style: black screen, dots, a blue maze corridor, Pac-Man at the head and a ghost at the tail. Finding the longest one is a hard problem; Tileroam searches small groups of tiles completely, grows and improves the snake in big ones, and says when it's the longest possible.
-- **Badges**: 18 badges, from *100!*, *Century* and *Everester* to *Festive 500*, *Triathlete* and *Globetrotter* (50 countries, worked out on the device). Earned badges are in colour, with how often; indoor activities count too.
+- **Challenges**: besides tiles, turn on the challenges you like with the **+** at the top of the map: municipalities, postcodes and **your own challenges**: places to visit (within a radius you choose) or routes to ride, run or walk (covered, or crossed like a ferry), each a GeoJSON file in iCloud Drive › Tileroam › Challenges. The format is in [challenges/README.md](challenges/README.md), with the [Trappist breweries](challenges/trappist-breweries.geojson) as an example. Hidden challenges still count.
+- **Badges**: 18 badges, from *100!*, *Century* and *Everester* to *Christmas 500*, *Triathlete* and *Globetrotter* (50 countries, worked out on the device). Earned badges are in colour, with how often; indoor activities count too.
 - **Activities**: a list of all activities, newest first, with duration, distance and average power (with a power meter) or average speed.
 - **Municipalities and postcodes** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria, with visited/total per country.
 - **Route planning** in the Netherlands, Belgium, Luxembourg, Germany, France, Switzerland and Austria: tap unvisited tiles, municipalities or postcodes and Tileroam plans the shortest cycling round trip through all of them, or a route from A to B to an **end point** you choose. It starts from your location, or from a **starting point** you search for or long-press on the map (recent starts are remembered). Routes are calculated **on the device**, so planning also works offline once an area is downloaded. Share the route as **GPX** or save it to your iCloud folder. You can also open an existing GPX to see which new places it would collect.
 - **Strava**: import your full history with GPS. Activities are also saved as standard `.fit` files in a folder of your choice.
 - **Duplicates merged**: the same workout recorded by several devices or apps (watch, Zwift, Strava, HealthFit) counts once.
 - **Widgets**: *Tiles Around You* (a map of the tiles near you) and *Eddington Number*, on the Home Screen and Lock Screen.
-- **Statistics**: countries and municipalities visited, Eddington numbers for cycling, walking and running, climbs, badges, and totals per sport for this year and all time; each category opens with a tap.
+- **Statistics**: countries and municipalities visited, Eddington numbers for cycling, walking and running, badges, and totals per sport for this year and all time; each category opens with a tap.
 - **Indoor and virtual rides** (Zwift, Rouvy, MyWhoosh, trainer rides) count in the statistics but stay off the map, tiles, municipalities and postcodes.
 - **Your own copy, synced with iCloud**: imported `.fit` files and Strava downloads are kept in the app (Files app › On My iPhone › Tileroam › Activities), and with iCloud sync also in iCloud Drive › Tileroam, without duplicates; a further device needs no setup. Imports are one-time copies. Activities can be deleted in the Activities list.
 - **Settings → Storage** shows the downloaded map data and lets you remove it. Map downloads over 25 MB wait for Wi-Fi unless you allow mobile data.
@@ -34,13 +32,13 @@ Tileroam is an iPhone and iPad app that shows everywhere you have been on your r
 |---|---|---|
 | ![Tiles](docs/screenshots/tiles.jpg) | ![Municipalities](docs/screenshots/municipalities.jpg) | ![Postcodes](docs/screenshots/postcodes.jpg) |
 
-| Climbs | Trappist Challenge | Route planning |
+| Trappist Challenge | Route planning | Badges |
 |---|---|---|
-| ![Climbs](docs/screenshots/climbs.jpg) | ![Trappist Challenge](docs/screenshots/trappists.jpg) | ![Route planning](docs/screenshots/planning.jpg) |
+| ![Trappist Challenge](docs/screenshots/trappists.jpg) | ![Route planning](docs/screenshots/planning.jpg) | ![Badges](docs/screenshots/badges.jpg) |
 
-| Badges | Settings | Introduction |
-|---|---|---|
-| ![Badges](docs/screenshots/badges.jpg) | ![Settings](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
+| Settings | Introduction |
+|---|---|
+| ![Settings](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
 
 **iPad**
 

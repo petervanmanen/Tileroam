@@ -13,17 +13,16 @@ The screenshots live in `docs/appstore/screenshots/`. They come from the simulat
 | `iphone-6.5` | scaled from the 6.9″ captures | 1284 × 2778 (the slot the user uploads to) |
 | `ipad-13` | iPad Pro 13-inch (M5) | 2064 × 2752 |
 
-The eight shots are:
+The seven shots are (there is no `04`: the Climbs shot went when the challenge was switched off in 1.15, `FeatureFlags.climbs`):
 - `00-intro`
 - `01-tiles`
 - `02-towns`
 - `03-postcodes`
-- `04-climbs` (South Limburg, around Valkenburg)
 - `05-trappists` (Belgium and the south of the Netherlands)
 - `06-plan`
 - `07-badges` (Statistics with Badges open)
 
-**The Mac** (`mac`, 2880 × 1800, a Mac App Store size): the same shots except the plan (the Mac app has no route planning), plus `06-klompenpaden`. `Tools/capture_screenshots.sh mac` (in `capture_screenshots_mac.sh`) builds a copy of the Debug app under its own bundle ID (`nl.petervanmanen.Tileroam.screenshots`), signed ad hoc with `Tools/screenshots-mac.entitlements`: its own sandbox container with the sample rides and copies of the boundaries and the challenge files, no iCloud, no location, so the real app's data is never touched. It fixes the window at 1440 × 900 points (`-WindowSize`) and captures it with `screencapture -l`, which needs **Screen Recording permission** for the app running the script (Terminal, or Claude): System Settings → Privacy & Security → Screen Recording. Without it the script stops with "allow Screen Recording". The Mac's own light or dark appearance is used: set it to Light first.
+**The Mac** (`mac`, 2880 × 1800, a Mac App Store size): the same shots except the plan (the Mac app has no route planning). (No Klompenpaden shot: their routes aren't licensed for redistribution, issue #69.) `Tools/capture_screenshots.sh mac` (in `capture_screenshots_mac.sh`) builds a copy of the Debug app under its own bundle ID (`nl.petervanmanen.Tileroam.screenshots`), signed ad hoc with `Tools/screenshots-mac.entitlements`: its own sandbox container with the sample rides and copies of the boundaries and the challenge files, no iCloud, no location, so the real app's data is never touched. It fixes the window at 1440 × 900 points (`-WindowSize`) and captures it with `screencapture -l`, which needs **Screen Recording permission** for the app running the script (Terminal, or Claude): System Settings → Privacy & Security → Screen Recording. Without it the script stops with "allow Screen Recording". The Mac's own light or dark appearance is used: set it to Light first.
 
 A `settings` shot is also taken, for the README only. The README images in `docs/screenshots/` (iPhone 644 × 1400, iPad 1050 × 1400, and the `overview.jpg` strip) are made from the same captures.
 
@@ -62,7 +61,7 @@ Run it in the background with a long timeout, then check the images (step 3) and
    - **The right tab is selected** for each shot.
    - **The plan shot** shows the purple route and the "Tileroam route" panel.
    - **The badges shot** shows the Statistics sheet with the badge grid open (colour and grey badges).
-   - **The climbs shot** shows coloured climb lines, **the Trappists shot** the brewery logos (both come from R2: online only).
+   - **The Trappists shot** shows the breweries as 🍺 places (from `challenges/trappist-breweries.geojson`; there are no brewery logos since 1.13).
    - **iPad status bar:** the date is in English ("Thu 1 Oct"), not Dutch.
 4. **Check the sizes** (the script prints them). The JPEGs must have no transparency:
    ```bash
@@ -75,14 +74,14 @@ Run it in the background with a long timeout, then check the images (step 3) and
 | Argument | Effect |
 |---|---|
 | `-RegionsDir <repo>/AssetPacks/Regions` | Reads municipality and postcode boundaries from the repo instead of asset packs. Without it, the Towns and Postcodes tabs are empty in the simulator. |
-| `-mapMode squares\|gemeenten\|postcodes\|climbs\|trappists` | Opens on that tab (a challenge's tab is turned on with it) |
-| `-challenges gemeenten,postcodes,climbs,trappists` | The challenges shown at the top of the map (all off by default) |
-| `-MapCenter "lat,lon,span"` | Opens the map there (span in degrees), for the climbs and Trappists shots |
+| `-mapMode squares\|gemeenten\|postcodes\|custom:<id>` | Opens on that tab (a challenge's tab is turned on with it) |
+| `-challenges gemeenten,postcodes,custom:trappist-breweries` | The challenges shown at the top of the map (all off by default) |
+| `-MapCenter "lat,lon,span"` | Opens the map there (span in degrees), for the Trappists shot |
 | `-StatisticsOpen "badges"` | Opens those Statistics categories (with `-ShowStatistics YES`) |
 | `-FocusZoom 9` | Zooms the map out one step (default 10); the Towns shot uses one less |
 | `-PlanDemo YES` | Selects tiles near Utrecht and plans a route, on the device with Valhalla |
 | `-PlanDemoStart "lat,lon"` | The same demo from another start, for example on a border |
-| `-RoutingTar <repo>/AssetPacks/build/routing/routing-west.tar` | Routing data for the plan shot. Build it first with `Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany france switzerland austria` (see docs/ROUTING.md). |
+| `-RoutingTar <repo>/AssetPacks/build/routing/routing-west.tar` | Routing data for the plan shot (the script passes it only when the file is there; otherwise the plan downloads its tiles from R2). Build it with `Tools/build_routing_tiles.sh west netherlands belgium luxembourg germany france switzerland austria` (see docs/ROUTING.md). |
 | `-ShowStatistics YES` / `-ShowSettings YES` | Opens that screen at launch |
 | `-hasSeenIntro NO` | Shows the introduction |
 

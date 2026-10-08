@@ -4,15 +4,13 @@
 
 Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent geweest tijdens je fietsritten, hardlooprondes en wandelingen: elke kaarttegel, gemeente en elk postcodegebied dat je hebt bezocht. De app leest `.fit`-bestanden uit een of meer iCloud Drive-mappen (bijvoorbeeld exports van HealthFit, Garmin of Wahoo) en kan je geschiedenis uit Strava importeren. Daarnaast plant Tileroam fietsroutes naar plekken waar je nog niet bent geweest.
 
-![Tileroam op iPhone: tegels, gemeenten, klimmen en routeplanning](docs/screenshots/overview.jpg)
+![Tileroam op iPhone: tegels, gemeenten, postcodes en routeplanning](docs/screenshots/overview.jpg)
 
 ## Functies
 
 - **Tegels**: kaarttegels op zoom 14 (~1,5 km, zoals bij VeloViewer, StatsHunters en [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Inclusief je **max. vierkant** en **grootste cluster**.
-- **Klimmen**: elke klim op de wegen (Cat. 4 tot HC zoals op Strava, en korte steile heuvels), gevonden uit hoogtegegevens; welke je hebt beklommen, op een eigen kaarttab en in Statistieken, en klimmen om mee te nemen bij het plannen van een route. Zie [docs/CLIMBS.md](docs/CLIMBS.md).
-- **Uitdagingen**: naast tegels zet je met de **+** boven aan de kaart de uitdagingen aan die je wilt: gemeenten, postcodes, klimmen, en **je eigen uitdagingen**: plekken om te bezoeken (binnen een straal die je kiest) of routes om te fietsen, lopen of wandelen (afgelegd, of overgestoken zoals een pont), elk een GeoJSON-bestand in iCloud Drive › Tileroam › Challenges. Het formaat staat in [challenges/README.md](challenges/README.md) (Engels), met de [trappistenbrouwerijen](challenges/trappist-breweries.geojson) als voorbeeld. Verborgen uitdagingen tellen gewoon mee.
-- **De slang**: de langste slang van je tegels, een lijn van tegel naar tegel die alleen horizontaal en verticaal gaat en geen tegel twee keer bezoekt, in arcadestijl: zwart scherm, bolletjes, een blauwe doolhofgang, Pac-Man voorop en een spookje achteraan. De langste vinden is een lastig probleem; Tileroam doorzoekt kleine groepen tegels helemaal, laat de slang in grote groepen groeien en verbetert hem, en zegt wanneer het de langst mogelijke is.
-- **Badges**: 18 badges, van *100!*, *Century* en *Everester* tot *Festive 500*, *Triatleet* en *Wereldreiziger* (50 landen, op het apparaat bepaald). Verdiende badges staan in kleur, met hoe vaak; indooractiviteiten tellen ook.
+- **Uitdagingen**: naast tegels zet je met de **+** boven aan de kaart de uitdagingen aan die je wilt: gemeenten, postcodes en **je eigen uitdagingen**: plekken om te bezoeken (binnen een straal die je kiest) of routes om te fietsen, lopen of wandelen (afgelegd, of overgestoken zoals een pont), elk een GeoJSON-bestand in iCloud Drive › Tileroam › Challenges. Het formaat staat in [challenges/README.md](challenges/README.md) (Engels), met de [trappistenbrouwerijen](challenges/trappist-breweries.geojson) als voorbeeld. Verborgen uitdagingen tellen gewoon mee.
+- **Badges**: 18 badges, van *100!*, *Century* en *Everester* tot *Kerst 500*, *Triatleet* en *Wereldreiziger* (50 landen, op het apparaat bepaald). Verdiende badges staan in kleur, met hoe vaak; indooractiviteiten tellen ook.
 - **Activiteiten**: een lijst van alle activiteiten, nieuwste eerst, met duur, afstand en gemiddeld vermogen (met een vermogensmeter) of gemiddelde snelheid.
 - **Gemeenten en postcodes** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk, met bezocht/totaal per land.
 - **Routeplanning** in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Oostenrijk: tik op onbezochte tegels, gemeenten of postcodes en Tileroam plant de kortste fietsrondrit langs al die plekken, of een route van A naar B met een **eindpunt** dat je kiest. Hij start vanaf je locatie, of vanaf een **startpunt** dat je zoekt of op de kaart ingedrukt houdt (recente startpunten worden onthouden). Routes worden **op het apparaat** berekend, dus plannen werkt ook offline zodra een gebied is gedownload. Deel de route als **GPX** of bewaar hem in je iCloud-map. Je kunt ook een bestaande GPX openen om te zien welke nieuwe plekken die oplevert.
@@ -34,13 +32,13 @@ Tileroam is een app voor iPhone en iPad die laat zien waar je allemaal bent gewe
 |---|---|---|
 | ![Tegels](docs/screenshots/tiles.jpg) | ![Gemeenten](docs/screenshots/municipalities.jpg) | ![Postcodes](docs/screenshots/postcodes.jpg) |
 
-| Klimmen | Trappistenuitdaging | Routeplanning |
+| Trappistenuitdaging | Routeplanning | Badges |
 |---|---|---|
-| ![Klimmen](docs/screenshots/climbs.jpg) | ![Trappistenuitdaging](docs/screenshots/trappists.jpg) | ![Routeplanning](docs/screenshots/planning.jpg) |
+| ![Trappistenuitdaging](docs/screenshots/trappists.jpg) | ![Routeplanning](docs/screenshots/planning.jpg) | ![Badges](docs/screenshots/badges.jpg) |
 
-| Badges | Instellingen | Introductie |
-|---|---|---|
-| ![Badges](docs/screenshots/badges.jpg) | ![Instellingen](docs/screenshots/settings.jpg) | ![Introductie](docs/screenshots/intro.jpg) |
+| Instellingen | Introductie |
+|---|---|
+| ![Instellingen](docs/screenshots/settings.jpg) | ![Introductie](docs/screenshots/intro.jpg) |
 
 **iPad**
 

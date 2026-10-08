@@ -131,6 +131,8 @@ struct ContentView: View {
             }
             .onAppear {
                 if !hasSeenIntro { showIntro = true }
+                // A built-in tab this build doesn't have (Climbs, switched off): start on Tiles.
+                if mode.challengeID == nil, !MapMode.builtIn.contains(mode) { mode = .squares }
                 // Users who were on a challenge's tab before challenges could be turned off (and
                 // launches with -mapMode gemeenten) keep that challenge.
                 if mode.isChallenge, !Challenges.decode(challenges).contains(mode) {
@@ -264,11 +266,6 @@ struct ContentView: View {
             return String(localized: "\(store.visitedPostcodes.count) / \(areas.all.count) postcodes visited")
         case .climbs:
             return String(localized: "\(store.climbed.count) climbs climbed · \(store.climbs.count) on the map")
-        case .snake:
-            guard let snake = store.snake else { return String(localized: "Looking for the longest snake…") }
-            return snake.isLongestPossible
-                ? String(localized: "Snake: \(snake.tiles.count) tiles, the longest possible")
-                : String(localized: "Snake: \(snake.tiles.count) of at most \(snake.bound) tiles")
         case .custom(let id):
             guard let challenge = store.challenge(id) else { return "" }
             let done = store.challengeProgress(id).done(in: challenge)

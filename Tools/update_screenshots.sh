@@ -13,7 +13,7 @@
 #   Tools/update_screenshots.sh iphone     # only the iPhone captures and the README
 #
 # Needs the routing tile extract for the plan shot (AssetPacks/build/routing/routing-west.tar,
-# see docs/ROUTING.md) and an internet connection (climbs come from R2), and the challenge files in challenges/ (Tools/make_challenges.py).
+# see docs/ROUTING.md) and the challenge files in challenges/ (Tools/make_challenges.py).
 # Check the images afterwards (the skill app-store-screenshots lists what to look for), then
 # commit them.
 set -euo pipefail
@@ -41,16 +41,16 @@ readme() { # raw capture, README name, width, height
 }
 RAW=$ROOT/AssetPacks/build/screenshots
 if [[ -d $RAW/iphone ]]; then
-  for pair in 01-tiles:tiles 02-towns:municipalities 03-postcodes:postcodes 04-climbs:climbs \
+  for pair in 01-tiles:tiles 02-towns:municipalities 03-postcodes:postcodes \
               05-trappists:trappists 06-plan:planning 07-badges:badges 00-intro:intro settings:settings; do
     readme $RAW/iphone/${pair%%:*}.png ${pair##*:} 644 1400
   done
-  swift Tools/compose_images.swift $OUT/overview.jpg 1180 $OUT/tiles.jpg $OUT/municipalities.jpg $OUT/climbs.jpg $OUT/planning.jpg
+  swift Tools/compose_images.swift $OUT/overview.jpg 1180 $OUT/tiles.jpg $OUT/municipalities.jpg $OUT/postcodes.jpg $OUT/planning.jpg
 fi
 if [[ -d $RAW/ipad ]]; then
   readme $RAW/ipad/01-tiles.png ipad-tiles 1050 1400
   readme $RAW/ipad/06-plan.png ipad-planning 1050 1400
 fi
 # Images of views that are gone.
-rm -f $OUT/squadratinhos.jpg $OUT/routes.jpg
+rm -f $OUT/squadratinhos.jpg $OUT/routes.jpg $OUT/climbs.jpg
 echo "Done. Check docs/appstore/screenshots and docs/screenshots, then commit them."

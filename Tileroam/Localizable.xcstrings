@@ -1435,30 +1435,30 @@
         }
       }
     },
-    "18 badges, from 100! and Everester to Festive 500 and Globetrotter": {
+    "18 badges, from 100! and Everester to Christmas 500 and Globetrotter": {
       "localizations": {
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "18 badges, van 100! en Everester tot Festive 500 en Wereldreiziger"
+            "value": "18 badges, van 100! en Everester tot Kerst 500 en Wereldreiziger"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "18 badges, de 100 ! et Everester à Festive 500 et Globe-trotter"
+            "value": "18 badges, de 100 ! et Everester à Noël 500 et Globe-trotter"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "18 insignias, de ¡100! y Everester a Festive 500 y Trotamundos"
+            "value": "18 insignias, de ¡100! y Everester a Navidad 500 y Trotamundos"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "18 Abzeichen, von 100! und Everester bis Festive 500 und Weltenbummler"
+            "value": "18 Abzeichen, von 100! und Everester bis Weihnachts-500 und Weltenbummler"
           }
         }
       }
@@ -2411,6 +2411,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wähle, wo die Route beginnt"
+          }
+        }
+      }
+    },
+    "Christmas 500": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kerst 500"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noël 500"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Navidad 500"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weihnachts-500"
           }
         }
       }
@@ -4647,34 +4675,6 @@
         }
       }
     },
-    "Festive 500": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Festive 500"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Festive 500"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Festive 500"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Festive 500"
-          }
-        }
-      }
-    },
     "Fetching Strava activities…": {
       "localizations": {
         "nl": {
@@ -5539,62 +5539,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Der Standortzugriff ist aus. Erlaube Tileroam in den Einstellungen, deinen Standort zu verwenden, um eine Route ab deinem Standort zu planen."
-          }
-        }
-      }
-    },
-    "Longest snake": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Langste slang"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plus long serpent"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpiente más larga"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Längste Schlange"
-          }
-        }
-      }
-    },
-    "Looking for the longest snake…": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Langste slang zoeken…"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recherche du plus long serpent…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Buscando la serpiente más larga…"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Längste Schlange wird gesucht…"
           }
         }
       }
@@ -8595,90 +8539,6 @@
         }
       }
     },
-    "Snake": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Slang"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpent"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpiente"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schlange"
-          }
-        }
-      }
-    },
-    "Snake: %lld of at most %lld tiles": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Slang: %1$lld van hooguit %2$lld tegels"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpent : %1$lld tuiles sur %2$lld au plus"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpiente: %1$lld de como mucho %2$lld teselas"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schlange: %1$lld von höchstens %2$lld Kacheln"
-          }
-        }
-      }
-    },
-    "Snake: %lld tiles, the longest possible": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Slang: %lld tegels, de langst mogelijke"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpent : %lld tuiles, le plus long possible"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpiente: %lld teselas, la más larga posible"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schlange: %lld Kacheln, die längstmögliche"
-          }
-        }
-      }
-    },
     "Snowboarding": {
       "localizations": {
         "nl": {
@@ -9519,6 +9379,34 @@
         }
       }
     },
+    "Tap the route button, select unvisited tiles, municipalities, postcodes or places of your challenges, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tik op de routeknop, kies onbezochte tegels, gemeenten, postcodes of plekken van je uitdagingen, en Tileroam plant de kortste fietsrondrit vanaf waar je bent. Exporteer hem als GPX voor je fietscomputer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touchez le bouton d’itinéraire, choisissez des tuiles, communes, codes postaux ou lieux de vos défis non visités, et Tileroam planifie la boucle à vélo la plus courte depuis votre position. Exportez-la en GPX pour votre compteur."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca el botón de ruta, elige teselas, municipios, códigos postales o lugares de tus desafíos sin visitar, y Tileroam planifica la ruta circular en bici más corta desde donde estás. Expórtala como GPX para tu ciclocomputador."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippe auf die Routentaste, wähle unbesuchte Kacheln, Gemeinden, Postleitzahlen oder Orte deiner Challenges, und Tileroam plant die kürzeste Radrunde von deinem Standort. Exportiere sie als GPX für deinen Radcomputer."
+          }
+        }
+      }
+    },
     "Tap the route button, select unvisited tiles, municipalities, postcodes, climbs or places of your challenges, and Tileroam plans the shortest cycling round trip from where you are. Export it as GPX for your bike computer.": {
       "localizations": {
         "nl": {
@@ -9907,34 +9795,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Die Daten für die Routenplanung konnten nicht geladen werden: %@"
-          }
-        }
-      }
-    },
-    "The snake: your longest line of tiles, side by side without diagonals, arcade style": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De slang: je langste lijn tegels, naast elkaar zonder diagonalen, in arcadestijl"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le serpent : votre plus longue ligne de tuiles, côte à côte sans diagonales, style arcade"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La serpiente: tu línea de teselas más larga, una junto a otra sin diagonales, estilo arcade"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die Schlange: deine längste Reihe von Kacheln, nebeneinander ohne Diagonalen, im Arcade-Stil"
           }
         }
       }
@@ -11293,6 +11153,34 @@
         }
       }
     },
+    "m climbed": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hoogtemeters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m de dénivelé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m de desnivel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höhenmeter"
+          }
+        }
+      }
+    },
     "max square": {
       "localizations": {
         "nl": {
@@ -11625,41 +11513,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Routen"
-          }
-        }
-      }
-    },
-    "tab.snake": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Snake"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Slang"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpent"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serpiente"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schlange"
           }
         }
       }
