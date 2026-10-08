@@ -8,9 +8,9 @@
 #
 # Build the Debug app for the simulator first (build/Build/Products/Debug-iphonesimulator).
 # Uses the Debug-only launch arguments -RegionsDir, -challenges, -mapMode, -FocusZoom, -MapCenter,
-# -PlanDemo, -ShowStatistics, -StatisticsOpen, -ShowSettings and -hasSeenIntro. Climbs and the
-# The challenges are the files in challenges/ (Tools/make_challenges.py makes them); climbs come
-# from R2 (tiles.petervanmanen.nl), so it needs an internet connection.
+# -PlanDemo, -ShowStatistics, -StatisticsOpen, -ShowSettings and -hasSeenIntro. The challenges are
+# the files in challenges/ (Tools/make_challenges.py makes them). The Climbs challenge is switched
+# off (FeatureFlags.climbs), so it has no shot.
 # The README images are made from these captures by Tools/update_screenshots.sh, which runs it all.
 set -euo pipefail
 export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
@@ -50,8 +50,11 @@ C=$(xcrun simctl get_app_container "$D" $BID data)
 mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
 # All challenges on, so the bar at the top shows every tab.
-COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -ChallengesFolder $ROOT/challenges -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -AppleLanguages "(en)" -AppleLocale en_GB
-        -challenges gemeenten,postcodes,climbs,custom:trappist-breweries,custom:boscafes,custom:ferries,custom:klompenpaden,custom:mtb-routes)
+COMMON=(-RegionsDir $ROOT/AssetPacks/Regions -ChallengesFolder $ROOT/challenges -AppleLanguages "(en)" -AppleLocale en_GB
+        -challenges gemeenten,postcodes,custom:trappist-breweries,custom:boscafes,custom:ferries,custom:mtb-routes)
+# The routing tile extract when it's there (docs/ROUTING.md); otherwise the plan downloads its tiles from R2.
+TAR=$ROOT/AssetPacks/build/routing/routing-west.tar
+[[ -f $TAR ]] && COMMON+=(-RoutingTar $TAR)
 
 # The simulator is slow to launch apps (system libraries load lazily), so the waits are long.
 shot() { # name, wait, args…
@@ -62,15 +65,12 @@ shot() { # name, wait, args…
   xcrun simctl io "$D" screenshot --type=png $RAW/$name.png >/dev/null 2>&1
   echo "$name"
 }
-# Warm-ups: import the rides, then download the climbs around Valkenburg (South Limburg) and the
-# Trappist breweries' logos.
+# Warm-ups: import the rides, then read the challenge files.
 shot warmup       25 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS
-shot warmup2      25 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
-shot warmup3      20 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
+shot warmup2      20 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
 shot 01-tiles     16 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS
 shot 02-towns     16 -hasSeenIntro YES -mapMode gemeenten -FocusZoom $(( FOCUS - 1 ))
 shot 03-postcodes 16 -hasSeenIntro YES -mapMode postcodes -FocusZoom $FOCUS
-shot 04-climbs    18 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
 shot 05-trappists 16 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
 shot 06-plan      35 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -PlanDemo YES
 shot 07-badges    40 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -ShowStatistics YES -StatisticsOpen badges
@@ -79,8 +79,8 @@ shot 00-intro     15 -hasSeenIntro NO
 shot settings     30 -hasSeenIntro YES -mapMode squares -FocusZoom $FOCUS -ShowSettings YES
 xcrun simctl terminate "$D" $BID 2>/dev/null || true
 rm $RAW/warmup*.png
-# Shots of earlier sets that are gone (Routes, removed in 1.5.3).
-old=($SHOTS/*/(04-routes|05-plan|06-statistics).jpg(N))
+# Shots of earlier sets that are gone (Routes, removed in 1.5.3; Climbs, switched off in 1.15).
+old=($SHOTS/*/(04-routes|05-plan|06-statistics|04-climbs).jpg(N))
 (( ${#old} )) && rm -f $old
 
 jpeg() { sips -s format jpeg -s formatOptions 90 $1 --out $2 >/dev/null; }

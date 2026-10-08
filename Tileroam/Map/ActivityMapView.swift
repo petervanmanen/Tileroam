@@ -10,7 +10,7 @@ enum MapMode: Hashable, Identifiable, RawRepresentable, Sendable {
     /// A challenge of the user (`CustomChallenge.id`).
     case custom(String)
 
-    static let builtIn: [MapMode] = [.squares, .gemeenten, .postcodes, .climbs]
+    static let builtIn: [MapMode] = [.squares] + Challenges.builtIn
 
     init?(rawValue: String) {
         switch rawValue {
@@ -92,7 +92,11 @@ enum Challenges {
     static let key = "challenges"
     /// The user's challenges seen before (`turnOnNew`).
     private static let seenKey = "seenChallenges"
-    static let builtIn: [MapMode] = [.gemeenten, .postcodes, .climbs]
+    /// All built-in challenges, in their order; the setting keeps those switched off by a feature
+    /// flag, so they come back as the user left them.
+    private static let allBuiltIn: [MapMode] = [.gemeenten, .postcodes, .climbs]
+    /// The built-in challenges of this build (Climbs only with `FeatureFlags.climbs`).
+    static let builtIn = allBuiltIn.filter { $0 != .climbs || FeatureFlags.climbs }
 
     /// The built-in challenges and the user's.
     @MainActor
@@ -106,7 +110,7 @@ enum Challenges {
 
     /// The built-in challenges first, in their order, then the user's.
     static func encode(_ modes: Set<MapMode>) -> String {
-        (builtIn.filter(modes.contains) + modes.filter { $0.challengeID != nil }.sorted { $0.rawValue < $1.rawValue })
+        (allBuiltIn.filter(modes.contains) + modes.filter { $0.challengeID != nil }.sorted { $0.rawValue < $1.rawValue })
             .map(\.rawValue).joined(separator: ",")
     }
 

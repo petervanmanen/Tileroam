@@ -224,6 +224,41 @@ actor StravaClient {
         return try decoder.decode(EventsResponse.self, from: data).events
     }
 
+    // MARK: Checks of webhook events
+    // Anyone can post an event to the token service (Strava doesn't sign them), so the app asks
+    // Strava itself before deleting anything (issue #68). nil: no answer now (offline, rate
+    // limit); ask again later.
+
+    /// Whether Strava really refuses Tileroam's access: the token (or its refresh) is refused.
+    func isAccessRevoked() async -> Bool? {
+        do {
+            _ = try await get("athlete", [])
+            return false
+        } catch StravaError.unauthorized {
+            return true
+        } catch StravaError.http(let code, _) where code == 400 || code == 401 {
+            return true // the refresh token is refused (invalid_grant)
+        } catch StravaError.http {
+            return false
+        } catch {
+            return nil
+        }
+    }
+
+    /// Whether the activity is really gone from Strava (404).
+    func isDeleted(activityID: Int) async -> Bool? {
+        do {
+            _ = try await get("activities/\(activityID)", [])
+            return false
+        } catch StravaError.http(404, _) {
+            return true
+        } catch StravaError.http, StravaError.unauthorized {
+            return false
+        } catch {
+            return nil
+        }
+    }
+
     // MARK: API
 
     /// One page (max 200) of activities, oldest first when `after` is given.

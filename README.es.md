@@ -4,14 +4,13 @@
 
 Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que has pasado en tus salidas en bici, carreras y paseos: cada tesela del mapa, municipio y código postal que has visitado. Lee archivos `.fit` de una o varias carpetas de iCloud Drive (por ejemplo, exportaciones de HealthFit, Garmin o Wahoo) y puede importar tu historial de Strava. También planifica rutas en bici hacia lugares donde aún no has estado.
 
-![Tileroam en iPhone: teselas, municipios, subidas y planificación de rutas](docs/screenshots/overview.jpg)
+![Tileroam en iPhone: teselas, municipios, códigos postales y planificación de rutas](docs/screenshots/overview.jpg)
 
 ## Funciones
 
 - **Teselas**: teselas de mapa de zoom 14 (~1,5 km, como en VeloViewer, StatsHunters y [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Incluye tu **cuadrado máximo** y tu **mayor clúster**.
-- **Subidas**: todas las subidas de las carreteras (Cat. 4 a HC como en Strava, y repechos cortos), obtenidas de datos de altitud; cuáles has hecho, en una pestaña del mapa y en Estadísticas, y subidas para incluir al planificar una ruta. Ver [docs/CLIMBS.md](docs/CLIMBS.md).
-- **Desafíos**: además de las teselas, activa con el **+** de arriba del mapa los desafíos que quieras: municipios, códigos postales, subidas, y **tus propios desafíos**: lugares que visitar (dentro de un radio que eliges) o rutas que recorrer en bici, corriendo o andando (cubiertas, o cruzadas como un ferri), cada uno un archivo GeoJSON en iCloud Drive › Tileroam › Challenges. El formato está en [challenges/README.md](challenges/README.md) (en inglés), con las [cervecerías trapenses](challenges/trappist-breweries.geojson) como ejemplo. Los desafíos ocultos siguen contando.
-- **Insignias**: 18 insignias, de *¡100!*, *Century* y *Everester* a *Festive 500*, *Triatleta* y *Trotamundos* (50 países, calculados en el dispositivo). Las conseguidas aparecen en color, con cuántas veces; las actividades en interior también cuentan.
+- **Desafíos**: además de las teselas, activa con el **+** de arriba del mapa los desafíos que quieras: municipios, códigos postales y **tus propios desafíos**: lugares que visitar (dentro de un radio que eliges) o rutas que recorrer en bici, corriendo o andando (cubiertas, o cruzadas como un ferri), cada uno un archivo GeoJSON en iCloud Drive › Tileroam › Challenges. El formato está en [challenges/README.md](challenges/README.md) (en inglés), con las [cervecerías trapenses](challenges/trappist-breweries.geojson) como ejemplo. Los desafíos ocultos siguen contando.
+- **Insignias**: 18 insignias, de *¡100!*, *Century* y *Everester* a *Navidad 500*, *Triatleta* y *Trotamundos* (50 países, calculados en el dispositivo). Las conseguidas aparecen en color, con cuántas veces; las actividades en interior también cuentan.
 - **Actividades**: una lista de todas las actividades, de la más reciente a la más antigua, con duración, distancia y potencia media (con medidor de potencia) o velocidad media.
 - **Municipios y códigos postales** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria, con visitados/total por país.
 - **Planificación de rutas** en los Países Bajos, Bélgica, Luxemburgo, Alemania, Francia, Suiza y Austria: toca teselas, municipios o códigos postales sin visitar y Tileroam planifica la ruta circular en bici más corta que pasa por todos, o una ruta de A a B hasta un **punto final** que eliges. Empieza en tu ubicación, o en un **punto de partida** que buscas o eliges manteniendo pulsado el mapa (se recuerdan los puntos recientes). Las rutas se calculan **en el dispositivo**, así que planificar también funciona sin conexión una vez descargada la zona. Comparte la ruta como **GPX** o guárdala en tu carpeta de iCloud. También puedes abrir un GPX existente para ver qué lugares nuevos aportaría.
@@ -33,13 +32,13 @@ Tileroam es una app para iPhone y iPad que muestra todos los lugares por los que
 |---|---|---|
 | ![Teselas](docs/screenshots/tiles.jpg) | ![Municipios](docs/screenshots/municipalities.jpg) | ![Códigos postales](docs/screenshots/postcodes.jpg) |
 
-| Subidas | Desafío trapense | Planificación |
+| Desafío trapense | Planificación | Insignias |
 |---|---|---|
-| ![Subidas](docs/screenshots/climbs.jpg) | ![Desafío trapense](docs/screenshots/trappists.jpg) | ![Planificación](docs/screenshots/planning.jpg) |
+| ![Desafío trapense](docs/screenshots/trappists.jpg) | ![Planificación](docs/screenshots/planning.jpg) | ![Insignias](docs/screenshots/badges.jpg) |
 
-| Insignias | Ajustes | Introducción |
-|---|---|---|
-| ![Insignias](docs/screenshots/badges.jpg) | ![Ajustes](docs/screenshots/settings.jpg) | ![Introducción](docs/screenshots/intro.jpg) |
+| Ajustes | Introducción |
+|---|---|
+| ![Ajustes](docs/screenshots/settings.jpg) | ![Introducción](docs/screenshots/intro.jpg) |
 
 **iPad**
 

@@ -11,7 +11,14 @@ struct ChallengesTests {
     @Test func turnedOnChallengesFollowTiles() {
         let raw = Challenges.encode([.climbs, .gemeenten])
         #expect(raw == "gemeenten,climbs")
-        #expect(Challenges.visibleModes(raw) == [.squares, .gemeenten, .climbs])
+        #expect(Challenges.visibleModes(raw) == [.squares, .gemeenten] + (FeatureFlags.climbs ? [.climbs] : []))
+    }
+
+    @Test func climbsFollowTheFeatureFlag() {
+        #expect(Challenges.builtIn.contains(.climbs) == FeatureFlags.climbs)
+        if !FeatureFlags.climbs { #expect(ClimbData.index == nil) } // nothing downloaded or matched
+        // Kept in the setting while switched off, so it comes back as the user left it.
+        #expect(Challenges.decode(Challenges.encode([.climbs])) == [.climbs])
     }
 
     @Test func ignoresUnknownAndNonChallengeModes() {

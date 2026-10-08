@@ -186,7 +186,11 @@ struct YearInReviewCard: View {
                 }
                 GridRow {
                     number(review.eddington.after, "Eddington", detail: change(review.eddington))
-                    number(review.newClimbs, "climbs first climbed")
+                    if FeatureFlags.climbs {
+                        number(review.newClimbs, "climbs first climbed")
+                    } else {
+                        number(Int(review.ascent.rounded()), "m climbed")
+                    }
                     number(review.newCountries.count, "new countries")
                 }
             }

@@ -29,7 +29,7 @@ enum Badge: String, CaseIterable, Identifiable, Sendable {
         case .halfMarathon: String(localized: "Half Marathon")
         case .silentNight: String(localized: "Silent night")
         case .giantLeap: String(localized: "Giant leap")
-        case .festive500: String(localized: "Festive 500")
+        case .festive500: String(localized: "Christmas 500")
         case .globetrotter: String(localized: "Globetrotter")
         case .taylor: String(localized: "Taylor")
         }
@@ -133,7 +133,7 @@ enum BadgeRules {
         add(.giantLeap, Set(days.filter { calendar.component(.month, from: $0) == 2 && calendar.component(.day, from: $0) == 29 }
             .map { calendar.component(.year, from: $0) }).count)
 
-        // Festive 500: per year, 24–31 December.
+        // Christmas 500 (called Festive 500 until 1.15; the id stays): per year, 24–31 December.
         let festive = Dictionary(grouping: dated.filter {
             calendar.component(.month, from: $0.startDate!) == 12 && calendar.component(.day, from: $0.startDate!) >= 24
         }) { calendar.component(.year, from: $0.startDate!) }

@@ -4,14 +4,13 @@
 
 Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtouren, Läufen und Wanderungen überall warst: jede Kartenkachel, Gemeinde und jedes Postleitzahlgebiet, das du besucht hast. Sie liest `.fit`-Dateien aus einem oder mehreren iCloud Drive-Ordnern (zum Beispiel Exporte aus HealthFit, Garmin oder Wahoo) und kann deinen Verlauf aus Strava importieren. Außerdem plant sie Radrouten zu Orten, an denen du noch nicht warst.
 
-![Tileroam auf dem iPhone: Kacheln, Gemeinden, Anstiege und Routenplanung](docs/screenshots/overview.jpg)
+![Tileroam auf dem iPhone: Kacheln, Gemeinden, Postleitzahlen und Routenplanung](docs/screenshots/overview.jpg)
 
 ## Funktionen
 
 - **Kacheln**: Kartenkacheln auf Zoom 14 (~1,5 km, wie bei VeloViewer, StatsHunters und [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Mit deinem **Max-Quadrat** und deinem **größten Cluster**.
-- **Anstiege**: alle Anstiege auf den Straßen (Kat. 4 bis HC wie bei Strava, dazu kurze steile Hügel), aus Höhendaten ermittelt; welche du gefahren bist, auf einem eigenen Kartentab und in den Statistiken, und Anstiege zum Einplanen in eine Route. Siehe [docs/CLIMBS.md](docs/CLIMBS.md).
-- **Herausforderungen**: neben den Kacheln schaltest du mit dem **+** oben auf der Karte die Herausforderungen ein, die du willst: Gemeinden, Postleitzahlen, Anstiege, und **deine eigenen Challenges**: Orte zum Besuchen (in einem Radius, den du wählst) oder Routen zum Fahren, Laufen oder Wandern (abgedeckt oder überquert wie eine Fähre), jede eine GeoJSON-Datei in iCloud Drive › Tileroam › Challenges. Das Format steht in [challenges/README.md](challenges/README.md) (Englisch), mit den [Trappistenbrauereien](challenges/trappist-breweries.geojson) als Beispiel. Ausgeblendete Herausforderungen zählen trotzdem.
-- **Abzeichen**: 18 Abzeichen, von *100!*, *Century* und *Everester* bis *Festive 500*, *Triathlet* und *Weltenbummler* (50 Länder, auf dem Gerät ermittelt). Verdiente Abzeichen sind farbig, mit Anzahl; Indoor-Aktivitäten zählen auch.
+- **Herausforderungen**: neben den Kacheln schaltest du mit dem **+** oben auf der Karte die Herausforderungen ein, die du willst: Gemeinden, Postleitzahlen und **deine eigenen Challenges**: Orte zum Besuchen (in einem Radius, den du wählst) oder Routen zum Fahren, Laufen oder Wandern (abgedeckt oder überquert wie eine Fähre), jede eine GeoJSON-Datei in iCloud Drive › Tileroam › Challenges. Das Format steht in [challenges/README.md](challenges/README.md) (Englisch), mit den [Trappistenbrauereien](challenges/trappist-breweries.geojson) als Beispiel. Ausgeblendete Herausforderungen zählen trotzdem.
+- **Abzeichen**: 18 Abzeichen, von *100!*, *Century* und *Everester* bis *Weihnachts-500*, *Triathlet* und *Weltenbummler* (50 Länder, auf dem Gerät ermittelt). Verdiente Abzeichen sind farbig, mit Anzahl; Indoor-Aktivitäten zählen auch.
 - **Aktivitäten**: eine Liste aller Aktivitäten, die neuesten zuerst, mit Dauer, Distanz und durchschnittlicher Leistung (mit Powermeter) oder Durchschnittsgeschwindigkeit.
 - **Gemeinden und Postleitzahlen** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich, mit besucht/gesamt pro Land.
 - **Routenplanung** in den Niederlanden, Belgien, Luxemburg, Deutschland, Frankreich, der Schweiz und Österreich: Tippe auf unbesuchte Kacheln, Gemeinden oder Postleitzahlen und Tileroam plant die kürzeste Rad-Rundtour durch alle, oder eine Route von A nach B zu einem **Zielpunkt**, den du wählst. Sie startet an deinem Standort oder an einem **Startpunkt**, den du suchst oder auf der Karte gedrückt hältst (letzte Startpunkte werden gemerkt). Routen werden **auf dem Gerät** berechnet, daher funktioniert die Planung auch offline, sobald ein Gebiet geladen ist. Teile die Route als **GPX** oder speichere sie in deinem iCloud-Ordner. Du kannst auch eine vorhandene GPX öffnen, um zu sehen, welche neuen Orte sie bringen würde.
@@ -33,13 +32,13 @@ Tileroam ist eine App für iPhone und iPad, die zeigt, wo du auf deinen Radtoure
 |---|---|---|
 | ![Kacheln](docs/screenshots/tiles.jpg) | ![Gemeinden](docs/screenshots/municipalities.jpg) | ![Postleitzahlen](docs/screenshots/postcodes.jpg) |
 
-| Anstiege | Trappisten-Challenge | Routenplanung |
+| Trappisten-Challenge | Routenplanung | Abzeichen |
 |---|---|---|
-| ![Anstiege](docs/screenshots/climbs.jpg) | ![Trappisten-Challenge](docs/screenshots/trappists.jpg) | ![Routenplanung](docs/screenshots/planning.jpg) |
+| ![Trappisten-Challenge](docs/screenshots/trappists.jpg) | ![Routenplanung](docs/screenshots/planning.jpg) | ![Abzeichen](docs/screenshots/badges.jpg) |
 
-| Abzeichen | Einstellungen | Einführung |
-|---|---|---|
-| ![Abzeichen](docs/screenshots/badges.jpg) | ![Einstellungen](docs/screenshots/settings.jpg) | ![Einführung](docs/screenshots/intro.jpg) |
+| Einstellungen | Einführung |
+|---|---|
+| ![Einstellungen](docs/screenshots/settings.jpg) | ![Einführung](docs/screenshots/intro.jpg) |
 
 **iPad**
 

@@ -17,6 +17,6 @@
 | 13 | <img src="icons/half-marathon.svg" width="64"> | Half Marathon | Complete a running activity of half-marathon distance |
 | 14 | <img src="icons/silent-night.svg" width="64"> | Silent night | Complete an activity on Christmas Eve |
 | 15 | <img src="icons/giant-leap.svg" width="64"> | Giant leap | Complete an activity on 29 February (in a leap year) |
-| 16 | <img src="icons/festive-500.svg" width="64"> | Festive 500 | Complete 500 km of activities between 24 and 31 December of the same year (indoor counts) |
+| 16 | <img src="icons/festive-500.svg" width="64"> | Christmas 500 | Complete 500 km of activities between 24 and 31 December of the same year (indoor counts) |
 | 17 | <img src="icons/globetrotter.svg" width="64"> | Globetrotter | Complete activities in 50 countries around the world |
 | 18 | <img src="icons/taylor.svg" width="64"> | Taylor | Complete 100 Zwift activities |

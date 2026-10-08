@@ -4,14 +4,13 @@
 
 Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé lors de vos sorties à vélo, courses et marches : chaque tuile de carte, commune et zone de code postal visitée. Elle lit les fichiers `.fit` d’un ou plusieurs dossiers iCloud Drive (par exemple des exports HealthFit, Garmin ou Wahoo) et peut importer votre historique Strava. Elle planifie aussi des parcours à vélo vers des lieux où vous n’êtes pas encore allé.
 
-![Tileroam sur iPhone : tuiles, communes, montées et planification](docs/screenshots/overview.jpg)
+![Tileroam sur iPhone : tuiles, communes, codes postaux et planification](docs/screenshots/overview.jpg)
 
 ## Fonctionnalités
 
 - **Tuiles** : tuiles de carte au zoom 14 (~1,5 km, comme sur VeloViewer, StatsHunters et [rideeverytile.com](https://rideeverytile.com/how-big-is-a-tile)) Avec votre **carré max** et votre **plus grand cluster**.
-- **Montées** : toutes les montées des routes (Cat. 4 à HC comme sur Strava, et courtes côtes raides), trouvées à partir de données d'altitude ; celles que vous avez gravies, sur un onglet de carte et dans les Statistiques, et des montées à inclure en planifiant un parcours. Voir [docs/CLIMBS.md](docs/CLIMBS.md).
-- **Défis** : en plus des tuiles, activez les défis de votre choix avec le **+** en haut de la carte : communes, codes postaux, montées, et **vos propres défis** : des lieux à visiter (dans un rayon que vous choisissez) ou des parcours à faire à vélo, en courant ou à pied (couverts, ou traversés comme un bac), chacun un fichier GeoJSON dans iCloud Drive › Tileroam › Challenges. Le format est décrit dans [challenges/README.md](challenges/README.md) (en anglais), avec les [brasseries trappistes](challenges/trappist-breweries.geojson) en exemple. Les défis masqués comptent quand même.
-- **Badges** : 18 badges, de *100 !*, *Century* et *Everester* à *Festive 500*, *Triathlète* et *Globe-trotter* (50 pays, calculés sur l’appareil). Les badges obtenus sont en couleur, avec leur nombre ; les activités en salle comptent aussi.
+- **Défis** : en plus des tuiles, activez les défis de votre choix avec le **+** en haut de la carte : communes, codes postaux et **vos propres défis** : des lieux à visiter (dans un rayon que vous choisissez) ou des parcours à faire à vélo, en courant ou à pied (couverts, ou traversés comme un bac), chacun un fichier GeoJSON dans iCloud Drive › Tileroam › Challenges. Le format est décrit dans [challenges/README.md](challenges/README.md) (en anglais), avec les [brasseries trappistes](challenges/trappist-breweries.geojson) en exemple. Les défis masqués comptent quand même.
+- **Badges** : 18 badges, de *100 !*, *Century* et *Everester* à *Noël 500*, *Triathlète* et *Globe-trotter* (50 pays, calculés sur l’appareil). Les badges obtenus sont en couleur, avec leur nombre ; les activités en salle comptent aussi.
 - **Activités** : la liste de toutes les activités, des plus récentes aux plus anciennes, avec durée, distance et puissance moyenne (avec un capteur de puissance) ou vitesse moyenne.
 - **Communes et codes postaux** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche, avec visités/total par pays.
 - **Planification d’itinéraire** aux Pays-Bas, en Belgique, au Luxembourg, en Allemagne, en France, en Suisse et en Autriche : touchez des tuiles, communes ou codes postaux non visités et Tileroam planifie la boucle à vélo la plus courte qui les relie tous, ou un trajet de A à B vers un **point d’arrivée** de votre choix. Elle part de votre position, ou d’un **point de départ** que vous recherchez ou choisissez par un appui long sur la carte (les départs récents sont mémorisés). Les itinéraires sont calculés **sur l’appareil**, donc la planification fonctionne aussi hors ligne une fois la zone téléchargée. Partagez l’itinéraire en **GPX** ou enregistrez-le dans votre dossier iCloud. Vous pouvez aussi ouvrir un GPX existant pour voir quels nouveaux lieux il permettrait de collecter.
@@ -33,13 +32,13 @@ Tileroam est une app pour iPhone et iPad qui montre partout où vous êtes allé
 |---|---|---|
 | ![Tuiles](docs/screenshots/tiles.jpg) | ![Communes](docs/screenshots/municipalities.jpg) | ![Codes postaux](docs/screenshots/postcodes.jpg) |
 
-| Montées | Défi trappiste | Planification |
+| Défi trappiste | Planification | Badges |
 |---|---|---|
-| ![Montées](docs/screenshots/climbs.jpg) | ![Défi trappiste](docs/screenshots/trappists.jpg) | ![Planification](docs/screenshots/planning.jpg) |
+| ![Défi trappiste](docs/screenshots/trappists.jpg) | ![Planification](docs/screenshots/planning.jpg) | ![Badges](docs/screenshots/badges.jpg) |
 
-| Badges | Réglages | Introduction |
-|---|---|---|
-| ![Badges](docs/screenshots/badges.jpg) | ![Réglages](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
+| Réglages | Introduction |
+|---|---|
+| ![Réglages](docs/screenshots/settings.jpg) | ![Introduction](docs/screenshots/intro.jpg) |
 
 **iPad**
 

@@ -17,4 +17,9 @@ enum FeatureFlags {
     #else
     static let routePlanning = true
     #endif
+
+    /// The Climbs challenge (tab, Statistics, climbs in planning and the year in review). Off
+    /// for now: no climbs are downloaded or matched (`ClimbData.index` is nil). Set to true to
+    /// bring it back; docs/CLIMBS.md describes how it works.
+    static let climbs = false
 }

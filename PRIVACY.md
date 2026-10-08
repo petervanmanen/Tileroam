@@ -1,6 +1,6 @@
 # Privacy Policy
 
-*Last updated: 7 October 2026*
+*Last updated: 8 October 2026*
 
 Tileroam is an iPhone and iPad app that shows which map tiles, municipalities and postcodes you have visited, based on your own activity files. It is built so that your data stays with you.
 
@@ -29,7 +29,7 @@ You can start a planned route somewhere other than your location:
 
 ### Map data downloads
 - **Municipality and postcode boundaries** are downloaded from Apple's servers (App Store asset packs) when they are first needed. Apple handles these downloads like app downloads.
-- **Route planning map data and climbs** are downloaded from the developer's storage at Cloudflare (Cloudflare R2): map data in small pieces of about 25 × 25 km for the area around a route you plan, and climbs per area of about 70 × 110 km for where you ride, the map you look at and your plans. Like any download, such a request reveals your IP address and which map pieces are fetched, and so roughly the area you plan in. The storage keeps no access logs, and the developer doesn't record or receive these requests. Cloudflare's handling is covered by [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
+- **Route planning map data** is downloaded from the developer's storage at Cloudflare (Cloudflare R2), in small pieces of about 25 × 25 km for the area around a route you plan. Like any download, such a request reveals your IP address and which map pieces are fetched, and so roughly the area you plan in. The storage keeps no access logs, and the developer doesn't record or receive these requests. Cloudflare's handling is covered by [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
 
 You can see and remove the route planning map data in Settings → Storage.
 
@@ -50,7 +50,7 @@ Maps are shown with Apple MapKit. Apple receives the map areas that are displaye
 ### Strava (optional, where available)
 If you connect Strava, Tileroam downloads your activities from Strava to your device and saves them as .fit files in Tileroam's own storage (and iCloud, with sync on).
 - **Login:** a small service of the developer (a Cloudflare Worker) exchanges the login code for access tokens, so the app's Strava secret is not in the app. It doesn't store or log the tokens.
-- **Strava events:** Strava tells that service when you revoke Tileroam's access and when you create or delete an activity. The service keeps these events for at most 30 days: your Strava athlete number, the activity number, the kind of event and its time. Nothing else (no names, routes or other activity data). Tileroam reads them when it opens, to delete its copies of activities you deleted on Strava, or everything it saved from Strava when you revoked access. Only your own app can read your events.
+- **Strava events:** Strava tells that service when you revoke Tileroam's access and when you create or delete an activity. The service keeps these events for at most 30 days: your Strava athlete number, the activity number, the kind of event and its time. Nothing else (no names, routes or other activity data). Tileroam reads them when it opens and, after checking with Strava that an activity is really deleted or its access really revoked, deletes its copies of activities you deleted on Strava, or everything it saved from Strava when you revoked access. Only your own app can read your events.
 - **Tokens:** your Strava tokens are kept in the iOS Keychain on your device.
 - **Disconnecting:** you can disconnect in Settings at any time. Tileroam then removes the connection and its copy of your Strava activities from the device, and offers to delete the .fit files it saved from Strava. When you revoke Tileroam's access on Strava's website, Tileroam removes the connection and deletes the files it saved from Strava the next time it opens.
 

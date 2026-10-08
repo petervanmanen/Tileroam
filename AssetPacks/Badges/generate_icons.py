@@ -265,7 +265,7 @@ badge('giant-leap.svg', ['#da77f2', '#862e9c'], ['#0b0c2a', '#2c2e6e'],
       '<path d="M44 66 a8 8 0 0 1 8 -8 h44 a8 8 0 0 1 8 8 v12 h-60z" fill="#e03131"/>'
       + T(74, 75, 12, 'FEB') + T(74, 110, 28, '29', fill='#212529'))
 
-# 16. Festive 500
+# 16. Christmas 500
 flakes = ''.join(flake(x, y, r) for x, y, r in [(56, 90, 7), (204, 96, 8), (66, 170, 6), (196, 176, 7), (100, 214, 5), (160, 50, 5), (94, 52, 5)])
 badge('festive-500.svg', ['#ff6b6b', '#a61e1e'], ['#2f9e44', '#0b4d1c'],
       flakes +

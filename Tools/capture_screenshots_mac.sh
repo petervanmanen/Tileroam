@@ -7,7 +7,7 @@
 # (nl.petervanmanen.Tileroam.screenshots), signed ad hoc with Tools/screenshots-mac.entitlements:
 # its own sandbox container, no iCloud and no location, so the real app's data is never touched.
 # Boundaries and the challenges (challenges/, see Tools/make_challenges.py) are copied from the
-# repository into its container; climbs come from R2.
+# repository into its container.
 #
 # Needs Screen Recording permission for the app that runs it (Terminal, or Claude): System
 # Settings → Privacy & Security → Screen Recording. The window is captured with screencapture -l.
@@ -22,6 +22,7 @@ SHOTS=$ROOT/docs/appstore/screenshots/mac
 RAW=$ROOT/AssetPacks/build/screenshots/mac
 CONTAINER=$HOME/Library/Containers/$BID
 rm -rf $RAW; mkdir -p $RAW $SHOTS
+rm -f $SHOTS/(04-climbs|06-klompenpaden).jpg(N) # shots of earlier sets
 
 echo "Building the screenshot app…"
 xcodebuild build -project $ROOT/Tileroam.xcodeproj -scheme Tileroam -destination 'platform=macOS,variant=Mac Catalyst' \
@@ -35,7 +36,7 @@ codesign -f -s - --entitlements $ROOT/Tools/screenshots-mac.entitlements $APP
 # app would ask for permission).
 COMMON=(-AppleLanguages "(en)" -AppleLocale en_GB -WindowSize 1440x900
         -RegionsDir $CONTAINER/Data/Regions -ChallengesFolder $CONTAINER/Data/challenges
-        -challenges gemeenten,postcodes,climbs,custom:trappist-breweries,custom:boscafes,custom:ferries,custom:klompenpaden,custom:mtb-routes)
+        -challenges gemeenten,postcodes,custom:trappist-breweries,custom:boscafes,custom:ferries,custom:mtb-routes)
 
 pid=
 quit() { [[ -n $pid ]] && kill $pid 2>/dev/null || true; pid=; sleep 2 }
@@ -73,14 +74,11 @@ cp $ROOT/Tileroam/SampleRides/*.fit "$CONTAINER/Data/Documents/Import/Sample Rid
 cp $ROOT/AssetPacks/Regions/* $CONTAINER/Data/Regions/
 rm -rf $CONTAINER/Data/challenges && cp -R $ROOT/challenges $CONTAINER/Data/challenges
 shot warmup2 30 -hasSeenIntro YES -mapMode squares                                # imports the rides
-shot warmup3 25 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
-shot warmup4 20 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
+shot warmup3 20 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
 shot 01-tiles     16 -hasSeenIntro YES -mapMode squares -FocusZoom 10
 shot 02-towns     16 -hasSeenIntro YES -mapMode gemeenten -FocusZoom 9
 shot 03-postcodes 16 -hasSeenIntro YES -mapMode postcodes -FocusZoom 10
-shot 04-climbs    18 -hasSeenIntro YES -mapMode climbs -MapCenter 50.85,5.84,0.22
 shot 05-trappists 16 -hasSeenIntro YES -mapMode custom:trappist-breweries -MapCenter 50.8,4.2,3.9
-shot 06-klompenpaden 16 -hasSeenIntro YES -mapMode custom:klompenpaden -MapCenter 52.05,5.65,0.7
 shot 07-badges    30 -hasSeenIntro YES -mapMode squares -FocusZoom 10 -ShowStatistics YES -StatisticsOpen badges
 shot 00-intro     15 -hasSeenIntro NO
 quit

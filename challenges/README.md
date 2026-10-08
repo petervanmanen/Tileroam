@@ -91,7 +91,7 @@ Tileroam skips features without an id or a name, with the wrong geometry, or wit
 
 A place is **visited** when one of your activities passes within `radius` metres of it. The distance is measured to the lines between the points of your track, so a track with few points (a Strava summary) counts too. Visited places get a green ring and a check; their card says how often and when you last came by.
 
-In route planning, tap places you haven't visited to plan a route past them, together with tiles, municipalities, postcodes and climbs.
+In route planning, tap places you haven't visited to plan a route past them, together with tiles, municipalities and postcodes.
 
 ### Routes
 

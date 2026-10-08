@@ -131,6 +131,8 @@ struct ContentView: View {
             }
             .onAppear {
                 if !hasSeenIntro { showIntro = true }
+                // A built-in tab this build doesn't have (Climbs, switched off): start on Tiles.
+                if mode.challengeID == nil, !MapMode.builtIn.contains(mode) { mode = .squares }
                 // Users who were on a challenge's tab before challenges could be turned off (and
                 // launches with -mapMode gemeenten) keep that challenge.
                 if mode.isChallenge, !Challenges.decode(challenges).contains(mode) {
