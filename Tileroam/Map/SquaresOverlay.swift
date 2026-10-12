@@ -27,6 +27,13 @@ final class TilesOverlay: NSObject, MKOverlay, @unchecked Sendable {
         self.maxSquare = stats.maxSquare
         self.maxSquareOrigin = stats.maxSquareOrigin
     }
+
+    /// Draws exactly what `other` draws, so the map can keep this one (no redraw).
+    func shows(sameAs other: TilesOverlay) -> Bool {
+        zoom == other.zoom && maxSquare == other.maxSquare && maxSquareOrigin?.x == other.maxSquareOrigin?.x
+            && maxSquareOrigin?.y == other.maxSquareOrigin?.y && visited == other.visited
+            && selected == other.selected && highlight == other.highlight
+    }
 }
 
 final class TilesRenderer: MKOverlayRenderer {

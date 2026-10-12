@@ -48,6 +48,11 @@ final class AreaOverlay: NSObject, MKOverlay, @unchecked Sendable {
         self.selected = selected
         self.highlight = highlight
     }
+
+    /// Draws exactly what `other` draws, so the map can keep this one (no redraw).
+    func shows(sameAs other: AreaOverlay) -> Bool {
+        geometry === other.geometry && visited == other.visited && selected == other.selected && highlight == other.highlight
+    }
 }
 
 final class AreaRenderer: MKOverlayRenderer {
@@ -69,6 +74,7 @@ final class AreaRenderer: MKOverlayRenderer {
         let highlight = CGMutablePath()
         // Zoomed far out over thousands of areas: skip unvisited areas smaller than ~2 points.
         let minSize = 2 / zoomScale
+        let minStep = 1.5 / zoomScale
         for shape in o.geometry.shapes where shape.bounds.intersects(rect) {
             let isUnvisited = !o.visited.contains(shape.code) && !o.selected.contains(shape.code) && !o.highlight.contains(shape.code)
             if isUnvisited, max(shape.bounds.width, shape.bounds.height) < minSize { continue }
@@ -76,8 +82,14 @@ final class AreaRenderer: MKOverlayRenderer {
                 : o.highlight.contains(shape.code) ? highlight
                 : o.visited.contains(shape.code) ? visited : unvisited
             for ring in shape.rings where ring.count > 2 {
-                path.move(to: point(for: ring[0]))
-                for p in ring.dropFirst() { path.addLine(to: point(for: p)) }
+                // Points closer than 1.5 screen points to the last one drawn add nothing visible:
+                // zoomed out over seven countries (5 million points) that's most of them.
+                var last = ring[0]
+                path.move(to: point(for: last))
+                for p in ring.dropFirst() where abs(p.x - last.x) + abs(p.y - last.y) >= minStep {
+                    path.addLine(to: point(for: p))
+                    last = p
+                }
                 path.closeSubpath()
             }
         }
