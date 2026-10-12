@@ -1,7 +1,7 @@
 # Performance plan (branch `perf/map-overlays`)
 
-Status: the code changes below are in this branch and **build**; they are **not yet tested** (the
-full suite, the simulator check and the re-measurement were stopped). Continue with "To do".
+Status: **done** in 1.15.1 (12 Oct 2026): the changes below are tested, measured and checked in
+the simulator; see "Result". Still open: issue #74 (iPhone Duo), at the end.
 
 ## Measured (12 Oct 2026, iPhone 18 Pro Max simulator, `SWIFT_OPTIMIZATION_LEVEL=-O`)
 
@@ -46,25 +46,28 @@ visible changed (zoomed out over the municipalities: roughly a second of drawing
    points (`minStep = 1.5 / zoomScale`) to the last drawn point are skipped. No visible change; at
    city zoom almost every point is kept.
 
-## To do (on the faster computer)
+4. **Badge counts only when something changed** (`ChallengeEngine.badgeCounts`): the counts
+   (29 ms on the main thread) ran after every challenge pass and refresh; now they're kept until
+   the activities (the fields the rules use), the number of countries or the time zone change.
 
-1. `git checkout perf/map-overlays`, run the full suite:
-   `xcodebuild test -project Tileroam.xcodeproj -scheme Tileroam -destination 'platform=iOS Simulator,name=iPhone 18 Pro Max' -derivedDataPath build -parallel-testing-enabled NO -testLanguage en -testRegion US`
-2. Re-measure the drawing (the timing test used above is in this document's history: render one
-   tile with `AreaRenderer(overlay: AreaOverlay(geometry:visited:))` into a 256×256 `CGContext`,
-   `scaleBy(zoomScale)`, `translateBy(-rect.min)`; regions from `AssetPacks/Regions` via
-   `RegionData.load(countries:read:)`). Expect "whole region" well under 84 ms.
-3. Simulator check: launch with
-   `-hasSeenIntro YES -challenges gemeenten,postcodes -mapMode gemeenten -MapCenter "50.5,6.0,9" -RegionsDir <repo>/AssetPacks/Regions`
-   — areas appear shortly after the map (no freeze); outlines look the same zoomed out and in; zoom
-   in to a city and compare. Same for postcodes and tiles. During an iCloud refresh the tiles
-   shouldn't flicker.
-4. Optional further wins:
-   - Badge counts (29 ms) run on the main thread on every count — move into the background pass or
-     only recount when activities changed.
-   - Climbs mode rebuilds all its polylines on every update; same "keep when equal" approach.
-5. Version 1.15.1, PR, self-review, merge, tag (see the merge-after-ci notes: tests run on the PR
-   and again in TestFlight).
+## Result
+
+- Full test suite: passes (`-parallel-testing-enabled NO -testLanguage en -testRegion US`).
+- Drawing one 256-pt map tile, `-O`, seven countries, before → after (this Mac is faster than the
+  one above, so compare the ratio):
+
+  | | Municipalities | Postcodes |
+  |---|---|---|
+  | Whole region | 29 → **4 ms** | 6 → **1 ms** |
+  | Province, city | < 1 ms both | < 1 ms both |
+
+  `AreaGeometry` for the municipalities: 80 ms, now off the main thread.
+- Simulator (iPhone 18 Pro, `-challenges gemeenten,postcodes -RegionsDir …`): the areas appear
+  right after the map without a freeze; zoomed out the visited areas look as before; at city zoom
+  the municipalities are pixel-identical to `main`, and the postcodes differ only in Apple's road
+  shields (placed differently on every launch). Tiles unchanged.
+- Not done: climbs keeping their polylines when equal (Climbs is behind `FeatureFlags.climbs`,
+  off since 1.15; do it if the flag comes back on).
 
 ## Related: issue #74, iPhone Duo
 

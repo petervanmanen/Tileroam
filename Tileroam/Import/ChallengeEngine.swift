@@ -151,6 +151,37 @@ final class ChallengeEngine {
         }.value
     }
 
+    /// The badge counts (`BadgeRules`, about 30 ms for 2,000 activities on the main thread),
+    /// counted again only when the activities or the number of countries changed: this runs after
+    /// every challenge pass and every refresh.
+    @ObservationIgnored private var badgeCache: (fingerprint: Int, counts: [Badge: Int])?
+
+    private func badgeCounts(_ activities: [Activity], countries: Int) -> [Badge: Int] {
+        var hasher = Hasher()
+        hasher.combine(countries)
+        hasher.combine(TimeZone.current.identifier) // the badges count local days
+        for a in activities {
+            hasher.combine(a.id)
+            hasher.combine(a.cacheKey)
+            hasher.combine(a.name)
+            hasher.combine(a.sport)
+            hasher.combine(a.startDate)
+            hasher.combine(a.distance)
+            hasher.combine(a.ascent)
+            hasher.combine(a.descent)
+            hasher.combine(a.elapsedTime)
+            hasher.combine(a.movingTime)
+            hasher.combine(a.isZwift)
+            hasher.combine(a.isVirtual)
+            hasher.combine(a.trackData.count)
+        }
+        let fingerprint = hasher.finalize()
+        if let badgeCache, badgeCache.fingerprint == fingerprint { return badgeCache.counts }
+        let counts = BadgeRules.counts(activities, countries: countries)
+        badgeCache = (fingerprint, counts)
+        return counts
+    }
+
     /// Adds up the stored results of the activities there are (so deleted ones drop out): places
     /// visited, routes crossed or covered, countries, and the badges. Results computed with an
     /// older key don't count until they're checked again. Returns whether anything changed.
@@ -174,7 +205,7 @@ final class ChallengeEngine {
                 ? RouteMatcher.progress(hits: hits[c.id] ?? [], counts: current.prepared[c.id]?.counts ?? [:]) : [:]
             progress[c.id] = ChallengeProgress(visits: (visits[c.id] ?? [:]).mapValues { $0.sorted(by: >) }, coverage: coverage)
         }
-        let counts = BadgeRules.counts(activities, countries: countries.count)
+        let counts = badgeCounts(activities, countries: countries.count)
         guard progress != self.progress || countries != worldCountries || counts != badges else { return false }
         self.progress = progress
         worldCountries = countries
