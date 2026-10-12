@@ -354,6 +354,20 @@ struct ActivityMapView: UIViewRepresentable {
         }
 
         func update(_ map: MKMapView) {
+            let store = parent.store
+            if areaGeometryKey != store.regions?.key {
+                areaGeometry = [:] // countries changed
+                areaGeometryTasks.values.forEach { $0.cancel() }
+                areaGeometryTasks = [:]
+                areaGeometryKey = store.regions?.key
+            }
+            // The area tabs in the bar get their outlines ready in the background, so switching to
+            // one replaces the overlay at once (an empty map in between showed for seconds).
+            let turnedOn = Challenges.decode(UserDefaults.standard.string(forKey: Challenges.key) ?? "")
+            for mode in [MapMode.gemeenten, .postcodes] where mode != parent.mode && turnedOn.contains(mode) && areaGeometry[mode] == nil {
+                if let (areas, _) = mode.areas(in: store) { prepareAreaGeometry(mode, areas: areas.all, key: store.regions?.key, on: map) }
+            }
+
             guard appliedMode != parent.mode || appliedVersion != parent.version || appliedPlanVersion != parent.planVersion
                 || appliedTileZoom != parent.tileZoom || appliedClimb != parent.selectedClimb?.id
                 || appliedItem != parent.selectedItem else { return }
@@ -365,7 +379,6 @@ struct ActivityMapView: UIViewRepresentable {
             appliedVersion = parent.version
             appliedPlanVersion = parent.planVersion
 
-            let store = parent.store
             let plan = parent.plan
             let planning = plan.isPlanning
             let coverage = planning ? plan.route?.coverage : nil
@@ -383,12 +396,6 @@ struct ActivityMapView: UIViewRepresentable {
                                     highlight: coverage?.newTiles(zoom) ?? [])
             case .gemeenten, .postcodes:
                 guard let (areas, visitedCodes) = parent.mode.areas(in: store) else { break }
-                if areaGeometryKey != store.regions?.key {
-                    areaGeometry = [:] // countries changed
-                    areaGeometryTasks.values.forEach { $0.cancel() }
-                    areaGeometryTasks = [:]
-                    areaGeometryKey = store.regions?.key
-                }
                 guard let geometry = areaGeometry[parent.mode] else {
                     prepareAreaGeometry(parent.mode, areas: areas.all, key: store.regions?.key, on: map)
                     break
@@ -423,7 +430,12 @@ struct ActivityMapView: UIViewRepresentable {
                 }
             }
             map.removeOverlays(map.overlays.filter { !keep.contains(ObjectIdentifier($0)) })
-            if kept == nil, let base { map.addOverlay(base, level: .aboveRoads) }
+            if kept == nil, let base {
+                map.addOverlay(base, level: .aboveRoads)
+                // After a while without changes MapKit could leave the old overlay on screen for
+                // seconds (seen on the iPad simulator): ask the new one to draw.
+                DispatchQueue.main.async { [weak map] in map?.renderer(for: base)?.setNeedsDisplay() }
+            }
             map.addOverlays(addLines, level: .aboveRoads)
             var keptPlaces = Set<String>()
             map.removeAnnotations(map.annotations.filter { annotation in
