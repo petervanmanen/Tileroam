@@ -33,3 +33,4 @@ AssetPacks/Klompenpaden/*
 AssetPacks/Klompenpaden/source/*
 !AssetPacks/Klompenpaden/source/fetch_klompenpaden.py
 AssetPacks/MTB/
+build-perf/

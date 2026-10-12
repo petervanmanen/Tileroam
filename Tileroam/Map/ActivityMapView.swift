@@ -272,6 +272,9 @@ struct ActivityMapView: UIViewRepresentable {
 
         private var areaGeometry: [MapMode: AreaGeometry] = [:]
         private var areaGeometryKey: String?
+        /// Area outlines being converted to map points in the background (0.3 s for the
+        /// municipalities of seven countries: on the main thread it froze the first opening).
+        private var areaGeometryTasks: [MapMode: Task<Void, Never>] = [:]
 
         init(parent: ActivityMapView) {
             self.parent = parent
@@ -362,31 +365,52 @@ struct ActivityMapView: UIViewRepresentable {
             appliedVersion = parent.version
             appliedPlanVersion = parent.planVersion
 
-            map.removeOverlays(map.overlays)
-            map.removeAnnotations(map.annotations.filter { !($0 is MKUserLocation) })
             let store = parent.store
             let plan = parent.plan
             let planning = plan.isPlanning
             let coverage = planning ? plan.route?.coverage : nil
 
+            // The tiles or areas: kept when what they show is the same. The store's version
+            // changes often (every count, every challenge pass, every 10 s while iCloud
+            // downloads), and a new overlay redraws every map tile: zoomed out over the
+            // municipalities of seven countries that was about a second of drawing each time.
+            var base: MKOverlay?
             switch parent.mode {
             case .squares:
                 let zoom = parent.tileZoom
-                map.addOverlay(TilesOverlay(zoom: zoom, visited: store.tiles(zoom), stats: store.tileStats(zoom),
-                                            selected: planning ? plan.selectedTiles(zoom) : [],
-                                            highlight: coverage?.newTiles(zoom) ?? []), level: .aboveRoads)
+                base = TilesOverlay(zoom: zoom, visited: store.tiles(zoom), stats: store.tileStats(zoom),
+                                    selected: planning ? plan.selectedTiles(zoom) : [],
+                                    highlight: coverage?.newTiles(zoom) ?? [])
             case .gemeenten, .postcodes:
                 guard let (areas, visitedCodes) = parent.mode.areas(in: store) else { break }
                 if areaGeometryKey != store.regions?.key {
                     areaGeometry = [:] // countries changed
+                    areaGeometryTasks.values.forEach { $0.cancel() }
+                    areaGeometryTasks = [:]
                     areaGeometryKey = store.regions?.key
                 }
-                let geometry = areaGeometry[parent.mode] ?? AreaGeometry(areas.all)
-                areaGeometry[parent.mode] = geometry
+                guard let geometry = areaGeometry[parent.mode] else {
+                    prepareAreaGeometry(parent.mode, areas: areas.all, key: store.regions?.key, on: map)
+                    break
+                }
                 let selected = !planning ? [] : parent.mode == .gemeenten ? plan.selectedMunicipalities : plan.selectedPostcodes
                 let highlight = (parent.mode == .gemeenten ? coverage?.newMunicipalities : coverage?.newPostcodes) ?? []
-                map.addOverlay(AreaOverlay(geometry: geometry, visited: visitedCodes, selected: selected, highlight: highlight),
-                               level: .aboveRoads)
+                base = AreaOverlay(geometry: geometry, visited: visitedCodes, selected: selected, highlight: highlight)
+            default:
+                break
+            }
+            let kept = map.overlays.first { existing in
+                if let a = existing as? TilesOverlay, let b = base as? TilesOverlay { return a.shows(sameAs: b) }
+                if let a = existing as? AreaOverlay, let b = base as? AreaOverlay { return a.shows(sameAs: b) }
+                return false
+            }
+            map.removeOverlays(map.overlays.filter { $0 !== kept })
+            map.removeAnnotations(map.annotations.filter { !($0 is MKUserLocation) })
+            if kept == nil, let base { map.addOverlay(base, level: .aboveRoads) }
+
+            switch parent.mode {
+            case .squares, .gemeenten, .postcodes:
+                break // drawn above
             case .climbs:
                 let selected = planning ? plan.selectedClimbs : Set(parent.selectedClimb.map { [$0.id] } ?? [])
                 let onRoute = coverage?.climbs ?? []
@@ -451,6 +475,21 @@ struct ActivityMapView: UIViewRepresentable {
             }
 
             focusIfNeeded(map)
+        }
+
+        /// Converts a kind of area's outlines to map points in the background, then shows them.
+        private func prepareAreaGeometry(_ mode: MapMode, areas: [Area], key: String?, on map: MKMapView) {
+            guard areaGeometryTasks[mode] == nil else { return }
+            areaGeometryTasks[mode] = Task { [weak self, weak map] in
+                let geometry = await Task.detached(priority: .userInitiated) { AreaGeometry(areas) }.value
+                guard let self, !Task.isCancelled, self.areaGeometryKey == key else { return }
+                self.areaGeometry[mode] = geometry
+                self.areaGeometryTasks[mode] = nil
+                if let map, self.parent.mode == mode {
+                    self.appliedVersion = -1 // draw it now
+                    self.update(map)
+                }
+            }
         }
 
         /// On launch: center on the biggest cluster of what the current view shows, with one
