@@ -33,7 +33,7 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 - **Strava Worker: webhook token.** Deploy the new `backend/strava-auth/worker.js` with the secret
   `WEBHOOK_TOKEN`, register the webhook again at `/webhook/<WEBHOOK_TOKEN>` and set
   `STRAVA_SUBSCRIPTION_ID` to the new subscription's id: see "Adding the webhook token to an
-  existing setup" in backend/strava-auth/README.md. Keep the `workers.dev` address for app
+  existing setup" in backend/strava-auth/README.md (old subscription 375082 deleted 13 Oct 2026). Keep the `workers.dev` address for app
   versions that use it for `/token`.
 - **Strava Client Secret:** rotate it (it used to be in local development builds) and update the
   Worker.
