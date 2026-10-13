@@ -2,7 +2,8 @@
 
 What's still open (13 October 2026; that day the retired challenges' files on R2 and the unused
 asset packs were removed, and the Strava webhook moved to /webhook/<WEBHOOK_TOKEN> with a new
-subscription, its id in the Worker's STRAVA_SUBSCRIPTION_ID). Finished work is in the git history and the pull requests;
+subscription, its id in the Worker's STRAVA_SUBSCRIPTION_ID; and the Strava Client Secret was
+rotated). Finished work is in the git history and the pull requests;
 the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 
 ## App
@@ -29,10 +30,6 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
   see `docs/appstore/app-privacy.md`.
 - **Test routing on a device** via TestFlight: near home, across a border, from a chosen start, and
   offline in an area downloaded before.
-
-## Servers and App Store Connect (you)
-- **Strava Client Secret:** rotate it (it used to be in local development builds) and update the
-  Worker.
 
 ## Check
 - **Strava API terms:** Tileroam keeps activities as .fit files (also in iCloud) and deletes them
