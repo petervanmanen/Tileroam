@@ -11,6 +11,7 @@ The videos live in `docs/appstore/previews/`.
 |---|---|---|---|
 | `iphone-6.5.mov` | 886 × 1920 | iPhone 18 Pro Max | 9 |
 | `ipad-13.mov` | 1200 × 1600 | iPad Pro 13-inch (M5) | 10 |
+| `mac.mov` | 1920 × 1080 | the Mac app (Mac Catalyst) | 10 |
 
 Apple's rules:
 - 15–30 seconds;
@@ -53,6 +54,18 @@ Apple's rules:
    - **The sheet** shows the Tiles, Towns and Postcodes tabs in turn, then the planning panel with selected (orange) items, the purple route with the "Tileroam route" panel, and the Statistics sheet last.
 4. Commit the videos.
 
+## The Mac
+`Tools/record_app_preview_mac.sh` records `mac.mov` from the Mac app itself, with the same app copy as the Mac screenshots (`nl.petervanmanen.Tileroam.screenshots`: its own container, no iCloud or location):
+- **Tour:** the Mac has no route planning, so `runPreviewTour()` shows Tiles, Towns, Postcodes, the boscafés, ferries and MTB routes (when their files are in `challenges/`), then Statistics with the badges open. The Klompenpaden file is left out (issue #69).
+- **Window:** 1600 × 900 Mac points (`-WindowSize 2078x1169`: Mac Catalyst draws at 77% of the iPad size), recorded at 3200 × 1800 with `screencapture -v -V 75 -R…` and scaled to 1920 × 1080.
+- **Needs** Screen Recording permission for the app running it (restart that app after allowing it), and an awake, unlocked screen (the script runs `caffeinate -d`). It moves the pointer to the right edge of the screen before recording; don't touch the Mac while it records.
+- **Light** comes from the build (`INFOPLIST_KEY_UIUserInterfaceStyle=Light`), whatever the Mac's own appearance.
+
+```bash
+Tools/record_app_preview_mac.sh
+swift Tools/check_app_preview.swift docs/appstore/previews/mac.mov /tmp/sheet-mac.png
+```
+
 ## Pitfalls learned
 - **Never pass `-mapMode`** to the tour: launch arguments override `@AppStorage`, and the tab switches silently don't happen. The tour sets `mode = .squares` itself.
 - **Strip carriage returns:** `simctl launch --console-pty` output ends lines with `\r`, which breaks shell arithmetic. The script uses `tr -d '\r'`.
@@ -61,4 +74,6 @@ Apple's rules:
 - **Route behind Statistics:** right after planning ends, the route can stay visible behind the Statistics sheet for a few seconds. That's MapKit redrawing slowly in the simulator, not a bug; it's gone after a few seconds.
 - **Planning is slower on the iPad simulator** (about 8 s against 4 s on the iPhone), so the iPad video is the one closest to 30 s.
 - **Contact sheet times:** make them fit the video's length; asking for a frame past the end crashes AVAssetImageGenerator.
+- **`screencapture -v` ignores signals:** it only stops after its `-V` time; a `kill -INT` left the script waiting forever.
+- **Output to a file is buffered:** the tour flushes after its `PREVIEW_TOUR_START`/`_END` markers, or the Mac script (which reads them from a file, not a pseudo-terminal) never sees them.
 - **Captions** (text over the video) aren't done here; that needs a video editor such as iMovie.

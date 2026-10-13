@@ -119,8 +119,16 @@ enum RetiredChallengeData {
         for folder in ["Trappist", "Boscafes"] {
             try? FileManager.default.removeItem(at: URL.applicationSupportDirectory.appending(path: folder, directoryHint: .isDirectory))
         }
-        for pack in ["ferries", "klompenpaden", "mtbroutes"] {
-            try? await AssetPackManager.shared.remove(assetPackWithID: pack) // throws when it isn't there
+        var usesAssetPacks = true
+        #if DEBUG
+        // Debug builds reading local boundaries (simulator, screenshots, the Mac): no asset packs.
+        // The ad-hoc signed screenshot app has no team ID, and Background Assets stops it then.
+        usesAssetPacks = RegionAssets.localDirectory == nil
+        #endif
+        if usesAssetPacks {
+            for pack in ["ferries", "klompenpaden", "mtbroutes"] {
+                try? await AssetPackManager.shared.remove(assetPackWithID: pack) // throws when it isn't there
+            }
         }
         UserDefaults.standard.set(true, forKey: doneKey)
     }
