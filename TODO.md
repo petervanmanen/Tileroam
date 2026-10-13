@@ -1,7 +1,8 @@
 # To do
 
-What's still open (13 October 2026; the retired challenges' files on R2 and the unused asset
-packs were removed that day). Finished work is in the git history and the pull requests;
+What's still open (13 October 2026; that day the retired challenges' files on R2 and the unused
+asset packs were removed, and the Strava webhook moved to /webhook/<WEBHOOK_TOKEN> with a new
+subscription, its id in the Worker's STRAVA_SUBSCRIPTION_ID). Finished work is in the git history and the pull requests;
 the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 
 ## App
@@ -30,9 +31,6 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
   offline in an area downloaded before.
 
 ## Servers and App Store Connect (you)
-- **Strava Worker:** set `STRAVA_SUBSCRIPTION_ID` = 375082, so it only accepts events of
-  Tileroam's subscription (the app checks events with Strava since 1.15 anyway, #68). Keep the
-  `workers.dev` address: the webhook is registered to it.
 - **Strava Client Secret:** rotate it (it used to be in local development builds) and update the
   Worker.
 
