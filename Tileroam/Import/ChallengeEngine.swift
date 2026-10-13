@@ -49,17 +49,27 @@ final class ChallengeEngine {
         let digest: String
         let challenge: CustomChallenge?
         let problem: Problem?
+        /// The file's date and size when read: unchanged, it isn't read again.
+        var stamp: ChallengeFiles.Stamp?
     }
 
     /// Reads the Challenges folder again. Returns whether the challenges changed.
     func reload() async -> Bool {
         let previous = parsed
         let (list, problems, cache) = await Task.detached(priority: .utility) {
-            let (files, unreadable) = ChallengeFiles.read()
+            let (files, unreadable) = ChallengeFiles.read(known: previous.compactMapValues(\.stamp))
             var cache = [String: Parsed](), list = [CustomChallenge](), problems = [Problem]()
-            for (name, data) in files.sorted(by: { $0.key < $1.key }) {
-                let digest = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
-                let entry = previous[name].flatMap { $0.digest == digest ? $0 : nil } ?? Self.parse(data, name: name, digest: digest)
+            for (name, file) in files.sorted(by: { $0.key < $1.key }) {
+                var entry: Parsed
+                if let data = file.data {
+                    let digest = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+                    entry = previous[name].flatMap { $0.digest == digest ? $0 : nil } ?? Self.parse(data, name: name, digest: digest)
+                } else if let unchanged = previous[name] {
+                    entry = unchanged // same date and size as when it was parsed
+                } else {
+                    continue // can't happen: no data only for a file known before
+                }
+                entry.stamp = file.stamp
                 cache[name] = entry
                 if let p = entry.problem { problems.append(p) }
                 guard let c = entry.challenge else { continue }

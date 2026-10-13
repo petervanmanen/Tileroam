@@ -42,13 +42,41 @@ enum ChallengeFiles {
         extensions.reduce(into: Set<String>()) { $0.formUnion(Library.names(in: folder, ext: $1)) }
     }
 
-    /// The challenge files by name, and the names that couldn't be read at all. Moves files from
-    /// the device's folder into iCloud first. Blocks while iCloud downloads: call it off the main
-    /// thread.
-    static func read() -> (files: [String: Data], unreadable: [String]) {
+    /// What a file looked like when it was read: unchanged date and size mean unchanged contents,
+    /// so it needn't be read (or fingerprinted) again. Nil for a file not on the device, such as an
+    /// iCloud file not downloaded yet.
+    struct Stamp: Equatable, Sendable {
+        let modified: Date
+        let size: Int
+    }
+
+    static func stamp(_ url: URL) -> Stamp? {
+        guard let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .fileSizeKey]),
+              let modified = values.contentModificationDate, let size = values.fileSize else { return nil }
+        return Stamp(modified: modified, size: size)
+    }
+
+    /// One file: its contents, or nil when it's unchanged since `known` (see `read`).
+    struct File: Sendable {
+        let data: Data?
+        let stamp: Stamp?
+    }
+
+    /// The challenge files by name, and the names that couldn't be read at all. A file whose stamp
+    /// is the one in `known` isn't read: its `data` is nil (reading and fingerprinting a 16 MB file
+    /// on every return to the app was noticeable). Moves files from the device's folder into iCloud
+    /// first. Blocks while iCloud downloads: call it off the main thread.
+    static func read(known: [String: Stamp] = [:]) -> (files: [String: File], unreadable: [String]) {
+        func load(_ url: URL, _ name: String, reader: (URL) -> Data?) -> File? {
+            if let stamp = stamp(url), known[name] == stamp { return File(data: nil, stamp: stamp) }
+            guard let data = reader(url) else { return nil }
+            return File(data: data, stamp: stamp(url))
+        }
         #if DEBUG
         if let debugFolder {
-            let files = names(in: debugFolder).reduce(into: [String: Data]()) { $0[$1] = try? Data(contentsOf: debugFolder.appending(path: $1)) }
+            let files = names(in: debugFolder).reduce(into: [String: File]()) { files, name in
+                files[name] = load(debugFolder.appending(path: name), name) { try? Data(contentsOf: $0) }
+            }
             return (files, [])
         }
         #endif
@@ -67,15 +95,16 @@ enum ChallengeFiles {
                 }
             }
         }
-        var files = [String: Data](), unreadable = [String]()
+        var files = [String: File](), unreadable = [String]()
         for name in localNames.union(cloudNames).sorted() {
-            let data = localNames.contains(name) ? try? Data(contentsOf: local.appending(path: name))
-                : cloudFolder.flatMap { Library.readWithin(30, $0.appending(path: name)) }
-            if let data {
-                try? data.write(to: mirror.appending(path: name), options: .atomic)
-                files[name] = data
+            let file = localNames.contains(name)
+                ? load(local.appending(path: name), name) { try? Data(contentsOf: $0) }
+                : cloudFolder.flatMap { load($0.appending(path: name), name) { Library.readWithin(30, $0) } }
+            if let file {
+                if let data = file.data { try? data.write(to: mirror.appending(path: name), options: .atomic) }
+                files[name] = file
             } else if let copy = try? Data(contentsOf: mirror.appending(path: name)) {
-                files[name] = copy // iCloud didn't deliver it in time: the copy from before
+                files[name] = File(data: copy, stamp: nil) // iCloud didn't deliver it in time: the copy from before
             } else {
                 unreadable.append(name)
             }

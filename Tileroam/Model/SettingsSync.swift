@@ -26,12 +26,12 @@ enum SettingsSync {
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: cloud, queue: .main
         ) { note in
             let changed = note.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
-            MainActor.assumeIsolated { pull(changed ?? keys) }
+            _ = MainActor.assumeIsolated { pull(changed ?? keys) }
         })
         observers.append(NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification, object: UserDefaults.standard, queue: .main
         ) { _ in
-            MainActor.assumeIsolated { push() }
+            _ = MainActor.assumeIsolated { push() }
         })
         cloud.synchronize()
         // Settings another device already shared win; the rest is shared from this device.

@@ -275,12 +275,27 @@ struct ActivityMapView: UIViewRepresentable {
         /// Area outlines being converted to map points in the background (0.3 s for the
         /// municipalities of seven countries: on the main thread it froze the first opening).
         private var areaGeometryTasks: [MapMode: Task<Void, Never>] = [:]
+        /// After a memory warning: no outlines prepared ahead for tabs that aren't shown.
+        private var memoryIsLow = false
 
         init(parent: ActivityMapView) {
             self.parent = parent
             self.handledLocateRequest = parent.locateRequest
             super.init()
             locationManager.delegate = self
+            NotificationCenter.default.addObserver(self, selector: #selector(releaseMemory),
+                                                   name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
+        }
+
+        /// iOS is short of memory: drop the outlines of the area tab that isn't shown (tens of MB
+        /// for the municipalities of several countries); they're made again when it opens.
+        @objc private func releaseMemory() {
+            memoryIsLow = true
+            for mode in Array(areaGeometry.keys) where mode != parent.mode { areaGeometry[mode] = nil }
+            for (mode, task) in areaGeometryTasks where mode != parent.mode {
+                task.cancel()
+                areaGeometryTasks[mode] = nil
+            }
         }
 
         // MARK: Current location
@@ -364,7 +379,8 @@ struct ActivityMapView: UIViewRepresentable {
             // The area tabs in the bar get their outlines ready in the background, so switching to
             // one replaces the overlay at once (an empty map in between showed for seconds).
             let turnedOn = Challenges.decode(UserDefaults.standard.string(forKey: Challenges.key) ?? "")
-            for mode in [MapMode.gemeenten, .postcodes] where mode != parent.mode && turnedOn.contains(mode) && areaGeometry[mode] == nil {
+            for mode in [MapMode.gemeenten, .postcodes] where !memoryIsLow && mode != parent.mode && turnedOn.contains(mode)
+                && areaGeometry[mode] == nil {
                 if let (areas, _) = mode.areas(in: store) { prepareAreaGeometry(mode, areas: areas.all, key: store.regions?.key, on: map) }
             }
 
