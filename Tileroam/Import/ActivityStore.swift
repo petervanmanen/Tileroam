@@ -196,7 +196,7 @@ final class ActivityStore {
         let sync = syncSetting && isICloudAvailable
         if sync {
             importPhase = String(localized: "Checking iCloud…")
-            let pull = Task.detached(priority: .userInitiated) {
+            let pull = Task.detached(priority: .userInitiated) { [self] in
                 Library.pull { done, total in Task { @MainActor [weak self] in self?.progress = (done, total) } }
             }
             // A new device can fetch hundreds of activities: show what has arrived every 10
@@ -228,7 +228,7 @@ final class ActivityStore {
         scheduleCacheSave()
         if sync {
             importPhase = String(localized: "Saving to iCloud…")
-            await Task.detached(priority: .utility) { Library.push() }.value
+            _ = await Task.detached(priority: .utility) { Library.push() }.value
         }
         if regions != nil { backfillDerived() }
         // The import is done: the rest (lists from the server or an asset pack, climbs to match,

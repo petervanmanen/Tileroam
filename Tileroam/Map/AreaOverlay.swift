@@ -1,13 +1,24 @@
 import MapKit
 import UIKit
 
-/// Area outlines converted to map points once, shared between overlays.
+/// Area outlines converted to map points once, shared between overlays. Compact: the municipalities
+/// of seven countries are some 5 million points, so each area keeps its points in one Float32
+/// array, relative to its own corner (exact to a fraction of a map point), instead of an array of
+/// MKMapPoints (two Doubles) per ring: half the memory.
 final class AreaGeometry: @unchecked Sendable {
     struct Shape {
         let code: String
         let bounds: MKMapRect
-        /// Rings (outer + holes) per polygon, in map points.
-        let rings: [[MKMapPoint]]
+        /// x and y of every point of every ring (outer + holes, per polygon), in map points from
+        /// `bounds.origin`.
+        let points: [Float]
+        /// Per ring, the index of the point after its last (points counted in pairs).
+        let ringEnds: [Int32]
+
+        /// The point at `index` (counted in pairs) as a map point.
+        @inline(__always) func point(_ index: Int) -> MKMapPoint {
+            MKMapPoint(x: bounds.origin.x + Double(points[2 &* index]), y: bounds.origin.y + Double(points[2 &* index &+ 1]))
+        }
     }
 
     let shapes: [Shape]
@@ -16,16 +27,25 @@ final class AreaGeometry: @unchecked Sendable {
     init(_ areas: [Area]) {
         var all = MKMapRect.null
         shapes = areas.map { area in
-            var rect = MKMapRect.null
             let rings = area.polygons.flatMap(\.rings).map { ring in
-                ring.map { p -> MKMapPoint in
-                    let mp = MKMapPoint(CLLocationCoordinate2D(latitude: p.lat, longitude: p.lon))
-                    rect = rect.union(MKMapRect(origin: mp, size: MKMapSize(width: 0, height: 0)))
-                    return mp
+                ring.map { MKMapPoint(CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon)) }
+            }
+            var minX = Double.infinity, minY = Double.infinity, maxX = -Double.infinity, maxY = -Double.infinity
+            for ring in rings {
+                for p in ring { minX = min(minX, p.x); minY = min(minY, p.y); maxX = max(maxX, p.x); maxY = max(maxY, p.y) }
+            }
+            let rect = minX <= maxX ? MKMapRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY) : .null
+            var points = [Float](), ends = [Int32]()
+            points.reserveCapacity(rings.reduce(0) { $0 + $1.count } * 2)
+            for ring in rings {
+                for p in ring {
+                    points.append(Float(p.x - minX))
+                    points.append(Float(p.y - minY))
                 }
+                ends.append(Int32(points.count / 2))
             }
             all = all.union(rect)
-            return Shape(code: area.code, bounds: rect, rings: rings)
+            return Shape(code: area.code, bounds: rect, points: points, ringEnds: ends)
         }
         bounds = all
     }
@@ -81,12 +101,17 @@ final class AreaRenderer: MKOverlayRenderer {
             let path = o.selected.contains(shape.code) ? selected
                 : o.highlight.contains(shape.code) ? highlight
                 : o.visited.contains(shape.code) ? visited : unvisited
-            for ring in shape.rings where ring.count > 2 {
+            var start = 0
+            for end in shape.ringEnds.lazy.map(Int.init) {
+                defer { start = end }
+                guard end - start > 2 else { continue }
                 // Points closer than 1.5 screen points to the last one drawn add nothing visible:
                 // zoomed out over seven countries (5 million points) that's most of them.
-                var last = ring[0]
+                var last = shape.point(start)
                 path.move(to: point(for: last))
-                for p in ring.dropFirst() where abs(p.x - last.x) + abs(p.y - last.y) >= minStep {
+                for i in (start + 1)..<end {
+                    let p = shape.point(i)
+                    guard abs(p.x - last.x) + abs(p.y - last.y) >= minStep else { continue }
                     path.addLine(to: point(for: p))
                     last = p
                 }
