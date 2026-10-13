@@ -36,8 +36,8 @@ func neededBoundaryPacks() -> Set<String> {
             guard let cc = m.output[1].substring, let id = m.output[2].substring else { return nil }
             return (String(cc), String(id))
         })
-    // (The ferries, Klompenpaden and MTB route packs were the built-in challenges' lists until
-    // 1.12; they count as unused now, see Tools/delete_challenge_resources.sh.)
+    // (The ferries, Klompenpaden and MTB route packs, the built-in challenges' lists until 1.12,
+    // were archived on 13 October 2026.)
     return Set(codes.map { renamed[$0] ?? "regions-\($0)" })
 }
 
