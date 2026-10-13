@@ -1,5 +1,6 @@
 // Trims, scales and crops a simulator recording into an App Store app preview:
-// H.264, 30 fps, no audio, exactly <width>×<height> (scaled to fill, cropped in the middle).
+// H.264 at a constant 30 fps, no audio, exactly <width>×<height> (scaled to fill, cropped in the
+// middle).
 //
 //   swift Tools/make_app_preview.swift <in.mov> <out.mov> <start s> <end s> <width> <height>
 import AVFoundation
@@ -33,8 +34,44 @@ video.renderSize = CGSize(width: width, height: height)
 video.frameDuration = CMTime(value: 1, timescale: 30)
 video.instructions = [instruction]
 
+// Written frame by frame at exactly 30 fps: an export session leaves out the frames where the
+// simulator's recording has gaps, and App Store Connect wants a constant 30 fps. A gap repeats the
+// frame before it.
 try? FileManager.default.removeItem(at: output)
-guard let export = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else { exit(1) }
-export.videoComposition = video
-try await export.export(to: output, as: .mov)
-print("Wrote \(output.path) (\(Int(width))×\(Int(height)), \(String(format: "%.1f", range.duration.seconds)) s)")
+let reader = try AVAssetReader(asset: composition)
+let frames = AVAssetReaderVideoCompositionOutput(videoTracks: [videoTrack],
+                                                 videoSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA])
+frames.videoComposition = video
+reader.add(frames)
+let writer = try AVAssetWriter(outputURL: output, fileType: .mov)
+let writerInput = AVAssetWriterInput(mediaType: .video, outputSettings: [
+    AVVideoCodecKey: AVVideoCodecType.h264,
+    AVVideoWidthKey: Int(width),
+    AVVideoHeightKey: Int(height),
+    AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 10_000_000, AVVideoExpectedSourceFrameRateKey: 30,
+                                      AVVideoMaxKeyFrameIntervalKey: 30, AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel],
+])
+writerInput.expectsMediaDataInRealTime = false
+let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: nil)
+writer.add(writerInput)
+guard reader.startReading(), writer.startWriting() else { print("can't convert: \(String(describing: reader.error ?? writer.error))"); exit(1) }
+writer.startSession(atSourceTime: .zero)
+
+let count = Int((range.duration.seconds * 30).rounded(.down))
+var current: CVPixelBuffer?
+var next = frames.copyNextSampleBuffer()
+for n in 0..<count {
+    let time = CMTime(value: CMTimeValue(n), timescale: 30)
+    // The latest frame shown at or before this moment (half a frame of slack for rounding).
+    while let sample = next, CMSampleBufferGetPresentationTimeStamp(sample).seconds <= time.seconds + 1.0 / 60 {
+        current = CMSampleBufferGetImageBuffer(sample)
+        next = frames.copyNextSampleBuffer()
+    }
+    guard let buffer = current else { continue }
+    while !writerInput.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(2)) }
+    adaptor.append(buffer, withPresentationTime: time)
+}
+writerInput.markAsFinished()
+await writer.finishWriting()
+guard writer.status == .completed else { print("can't write: \(String(describing: writer.error))"); exit(1) }
+print("Wrote \(output.path) (\(Int(width))×\(Int(height)), \(String(format: "%.1f", Double(count) / 30)) s)")

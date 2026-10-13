@@ -27,12 +27,23 @@ xcrun simctl privacy "$D" grant location-always $BID
 C=$(xcrun simctl get_app_container "$D" $BID data)
 mkdir -p "$C/Documents/Import/Sample Rides"
 cp $ROOT/Tileroam/SampleRides/*.fit "$C/Documents/Import/Sample Rides/"
-ARGS=(-RegionsDir $ROOT/AssetPacks/Regions -RoutingTar $ROOT/AssetPacks/build/routing/routing-west.tar -hasSeenIntro YES -AppleLanguages "(en)" -AppleLocale en_GB
+ARGS=(-RegionsDir $ROOT/AssetPacks/Regions -hasSeenIntro YES -AppleLanguages "(en)" -AppleLocale en_GB
       -tileZoom 14 -FocusZoom $FOCUS)
+# The routing tile extract when it's there (docs/ROUTING.md); otherwise the plan downloads its
+# map data from R2 (an internet connection is needed), in the warm-up below.
+TAR=$ROOT/AssetPacks/build/routing/routing-west.tar
+[[ -f $TAR ]] && ARGS+=(-RoutingTar $TAR)
 
-# Warm-up launch: import the rides and fill the caches, so the recorded launch is quick.
-xcrun simctl launch "$D" $BID $ARGS >/dev/null
-sleep 25
+# Warm-up launch: import the rides and fill the caches, so the recorded launch is quick. Without
+# the extract it plays the tour once, so the plan's map data is downloaded before the recording.
+if [[ -f $TAR ]]; then
+  xcrun simctl launch "$D" $BID $ARGS >/dev/null
+  sleep 25
+else
+  xcrun simctl launch --console-pty "$D" $BID $ARGS -PreviewTour YES > $WORK/warmup.log 2>&1 &
+  for i in {1..240}; do grep -q PREVIEW_TOUR_END $WORK/warmup.log && break; sleep 1; done
+  grep -q PREVIEW_TOUR_END $WORK/warmup.log || { echo "warm-up tour didn't finish" >&2; exit 1 }
+fi
 xcrun simctl terminate "$D" $BID
 
 xcrun simctl io "$D" recordVideo --codec=h264 --force $WORK/raw.mov 2>/dev/null &

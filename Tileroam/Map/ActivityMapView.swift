@@ -354,6 +354,20 @@ struct ActivityMapView: UIViewRepresentable {
         }
 
         func update(_ map: MKMapView) {
+            let store = parent.store
+            if areaGeometryKey != store.regions?.key {
+                areaGeometry = [:] // countries changed
+                areaGeometryTasks.values.forEach { $0.cancel() }
+                areaGeometryTasks = [:]
+                areaGeometryKey = store.regions?.key
+            }
+            // The area tabs in the bar get their outlines ready in the background, so switching to
+            // one replaces the overlay at once (an empty map in between showed for seconds).
+            let turnedOn = Challenges.decode(UserDefaults.standard.string(forKey: Challenges.key) ?? "")
+            for mode in [MapMode.gemeenten, .postcodes] where mode != parent.mode && turnedOn.contains(mode) && areaGeometry[mode] == nil {
+                if let (areas, _) = mode.areas(in: store) { prepareAreaGeometry(mode, areas: areas.all, key: store.regions?.key, on: map) }
+            }
+
             guard appliedMode != parent.mode || appliedVersion != parent.version || appliedPlanVersion != parent.planVersion
                 || appliedTileZoom != parent.tileZoom || appliedClimb != parent.selectedClimb?.id
                 || appliedItem != parent.selectedItem else { return }
@@ -365,7 +379,6 @@ struct ActivityMapView: UIViewRepresentable {
             appliedVersion = parent.version
             appliedPlanVersion = parent.planVersion
 
-            let store = parent.store
             let plan = parent.plan
             let planning = plan.isPlanning
             let coverage = planning ? plan.route?.coverage : nil
@@ -383,12 +396,6 @@ struct ActivityMapView: UIViewRepresentable {
                                     highlight: coverage?.newTiles(zoom) ?? [])
             case .gemeenten, .postcodes:
                 guard let (areas, visitedCodes) = parent.mode.areas(in: store) else { break }
-                if areaGeometryKey != store.regions?.key {
-                    areaGeometry = [:] // countries changed
-                    areaGeometryTasks.values.forEach { $0.cancel() }
-                    areaGeometryTasks = [:]
-                    areaGeometryKey = store.regions?.key
-                }
                 guard let geometry = areaGeometry[parent.mode] else {
                     prepareAreaGeometry(parent.mode, areas: areas.all, key: store.regions?.key, on: map)
                     break
@@ -404,12 +411,43 @@ struct ActivityMapView: UIViewRepresentable {
                 if let a = existing as? AreaOverlay, let b = base as? AreaOverlay { return a.shows(sameAs: b) }
                 return false
             }
-            map.removeOverlays(map.overlays.filter { $0 !== kept })
-            map.removeAnnotations(map.annotations.filter { !($0 is MKUserLocation) })
-            if kept == nil, let base { map.addOverlay(base, level: .aboveRoads) }
+            // A challenge of the user: its route lines and place badges, also kept when the same.
+            var keep = Set<ObjectIdentifier>(kept.map { [ObjectIdentifier($0)] } ?? [])
+            var addLines = [ClimbLines](), places = [String: PlaceAnnotation]()
+            if case .custom(let id) = parent.mode, let challenge = store.challenge(id) {
+                let progress = store.challengeProgress(id)
+                if challenge.isCoverRoutes {
+                    let selected = parent.selectedItem?.challenge == id ? parent.selectedItem?.item : nil
+                    addLines = routeLines(challenge, progress: progress, selected: selected, on: map, keep: &keep)
+                } else {
+                    // Places, and crossings at their middle, as badges with the emoji.
+                    let marked = planning ? plan.selectedPlaces(id).union(coverage?.places[id] ?? []) : []
+                    for item in challenge.items {
+                        let place = PlaceAnnotation(challenge: id, item: item, emoji: item.icon ?? challenge.icon,
+                                                    visited: progress.isDone(item.id, in: challenge), marked: marked.contains(item.id))
+                        places[place.key] = place
+                    }
+                }
+            }
+            map.removeOverlays(map.overlays.filter { !keep.contains(ObjectIdentifier($0)) })
+            if kept == nil, let base {
+                map.addOverlay(base, level: .aboveRoads)
+                // After a while without changes MapKit could leave the old overlay on screen for
+                // seconds (seen on the iPad simulator): ask the new one to draw.
+                DispatchQueue.main.async { [weak map] in map?.renderer(for: base)?.setNeedsDisplay() }
+            }
+            map.addOverlays(addLines, level: .aboveRoads)
+            var keptPlaces = Set<String>()
+            map.removeAnnotations(map.annotations.filter { annotation in
+                if annotation is MKUserLocation { return false }
+                guard let place = annotation as? PlaceAnnotation, places[place.key] != nil else { return true }
+                keptPlaces.insert(place.key)
+                return false
+            })
+            map.addAnnotations(places.filter { !keptPlaces.contains($0.key) }.map(\.value))
 
             switch parent.mode {
-            case .squares, .gemeenten, .postcodes:
+            case .squares, .gemeenten, .postcodes, .custom:
                 break // drawn above
             case .climbs:
                 let selected = planning ? plan.selectedClimbs : Set(parent.selectedClimb.map { [$0.id] } ?? [])
@@ -437,22 +475,6 @@ struct ActivityMapView: UIViewRepresentable {
                     multi.color = Self.selectedClimbColor
                     multi.width = 7
                     map.addOverlay(multi, level: .aboveRoads)
-                }
-            case .custom(let id):
-                guard let challenge = store.challenge(id) else { break }
-                let progress = store.challengeProgress(id)
-                if challenge.isCoverRoutes {
-                    // Two colours (issue #41): done green, not (yet) done dark orange. The selected
-                    // route keeps its colour, drawn thicker and on top; its card shows the progress.
-                    let selected = parent.selectedItem?.challenge == id ? parent.selectedItem?.item : nil
-                    addRouteLines(challenge, progress: progress, selected: selected, to: map)
-                } else {
-                    // Places, and crossings at their middle, as badges with the emoji.
-                    let marked = planning ? plan.selectedPlaces(id).union(coverage?.places[id] ?? []) : []
-                    map.addAnnotations(challenge.items.map {
-                        PlaceAnnotation(challenge: id, item: $0, emoji: $0.icon ?? challenge.icon,
-                                        visited: progress.isDone($0.id, in: challenge), marked: marked.contains($0.id))
-                    })
                 }
             }
 
@@ -592,8 +614,22 @@ struct ActivityMapView: UIViewRepresentable {
                 self.marked = marked
             }
 
-            /// The badge, rendered once per place and state.
+            /// Identifies what the badge shows, to keep it on the map when that's the same.
+            var key: String { "\(challenge)\u{1}\(item.id)\u{1}\(emoji)\u{1}\(visited)\u{1}\(marked)" }
+
+            /// Badges look the same for the same emoji and state: rendered once each.
+            @MainActor private static var badges = [String: UIImage]()
+
+            @MainActor
             func badge() -> UIImage {
+                let look = "\(emoji)\u{1}\(visited)\u{1}\(marked)"
+                if let image = Self.badges[look] { return image }
+                let image = renderBadge()
+                Self.badges[look] = image
+                return image
+            }
+
+            private func renderBadge() -> UIImage {
                 let size = CGSize(width: 46, height: 46)
                 return UIGraphicsImageRenderer(size: size).image { _ in
                     let rect = CGRect(origin: .zero, size: size).insetBy(dx: 2, dy: 2)
@@ -661,41 +697,66 @@ struct ActivityMapView: UIViewRepresentable {
             return view
         }
 
+        /// Map lines per route of the challenge shown, made once per file (`CustomChallenge.key`):
+        /// thousands of routes with a million points take a while to convert.
+        private var routePolylines: (key: String, lines: [String: [MKPolyline]])?
+
         /// A route challenge's routes: done (at least the challenge's coverage) green, others dark
-        /// orange; the selected one keeps its colour, thicker and on top.
-        private func addRouteLines(_ challenge: CustomChallenge, progress: ChallengeProgress, selected: String?, to map: MKMapView) {
-            var groups = [UIColor: [MKPolyline]]()
-            var selectedLines = [MKPolyline](), selectedColor = Self.routeOpen
-            for route in challenge.items {
-                let color = progress.isDone(route.id, in: challenge) ? UIColor.systemGreen : Self.routeOpen
-                let lines = route.pieces.map { piece in
-                    let coords = piece.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
-                    return MKPolyline(coordinates: coords, count: coords.count)
+        /// orange; the selected one again on top, thicker. The lines on the map stay when they show
+        /// the same (same file, same routes done); a new selection only replaces the line on top.
+        /// Returns the lines to add; `keep` gets those to keep.
+        private func routeLines(_ challenge: CustomChallenge, progress: ChallengeProgress, selected: String?,
+                                on map: MKMapView, keep: inout Set<ObjectIdentifier>) -> [ClimbLines] {
+            if routePolylines?.key != challenge.key {
+                routePolylines = (challenge.key, Dictionary(challenge.items.map { route in
+                    (route.id, route.pieces.map { piece in
+                        let coords = piece.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }
+                        return MKPolyline(coordinates: coords, count: coords.count)
+                    })
+                }, uniquingKeysWith: { a, _ in a }))
+            }
+            let lines = routePolylines?.lines ?? [:]
+            let done = Set(challenge.items.lazy.filter { progress.isDone($0.id, in: challenge) }.map(\.id))
+            var hasher = Hasher()
+            hasher.combine(challenge.key)
+            for id in done.sorted() { hasher.combine(id) }
+            let all = "routes-\(hasher.finalize())", top = "\(all)-\(selected ?? "")"
+            let existing = map.overlays.compactMap { $0 as? ClimbLines }
+            var add = [ClimbLines]()
+            if existing.contains(where: { $0.signature == all }) {
+                existing.filter { $0.signature == all }.forEach { keep.insert(ObjectIdentifier($0)) }
+            } else {
+                var groups = [UIColor: [MKPolyline]]()
+                for route in challenge.items {
+                    groups[done.contains(route.id) ? .systemGreen : Self.routeOpen, default: []] += lines[route.id] ?? []
                 }
-                if route.id == selected {
-                    selectedLines = lines
-                    selectedColor = color
+                for (color, group) in groups {
+                    let multi = ClimbLines(group)
+                    multi.color = color
+                    multi.signature = all
+                    add.append(multi)
+                }
+            }
+            if let selected, let selectedLines = lines[selected], !selectedLines.isEmpty {
+                if let line = existing.first(where: { $0.signature == top }) {
+                    keep.insert(ObjectIdentifier(line))
                 } else {
-                    groups[color, default: []] += lines
+                    let multi = ClimbLines(selectedLines)
+                    multi.color = done.contains(selected) ? .systemGreen : Self.routeOpen
+                    multi.width = 8
+                    multi.signature = top
+                    add.append(multi) // after the others: on top
                 }
             }
-            for (color, lines) in groups {
-                let multi = ClimbLines(lines)
-                multi.color = color
-                map.addOverlay(multi, level: .aboveRoads)
-            }
-            if !selectedLines.isEmpty {
-                let multi = ClimbLines(selectedLines)
-                multi.color = selectedColor
-                multi.width = 8
-                map.addOverlay(multi, level: .aboveRoads)
-            }
+            return add
         }
 
         /// Climbs (or a route challenge's routes) drawn in one colour.
         final class ClimbLines: MKMultiPolyline {
             var color = UIColor.systemRed
             var width: CGFloat = 4
+            /// What a challenge's lines show (`routeLines`), to keep them when that's the same.
+            var signature: String?
         }
 
         /// A selected climb: no category uses blue.
