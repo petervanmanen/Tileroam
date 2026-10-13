@@ -3,7 +3,8 @@
 What's still open (13 October 2026; that day the retired challenges' files on R2 and the unused
 asset packs were removed, and the Strava webhook moved to /webhook/<WEBHOOK_TOKEN> with a new
 subscription, its id in the Worker's STRAVA_SUBSCRIPTION_ID; and the Strava Client Secret was
-rotated). Finished work is in the git history and the pull requests;
+rotated; and the checks were done: Strava's API terms, the trademark "Tileroam" and the Zwift names
+in the badges). Finished work is in the git history and the pull requests;
 the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 
 ## App
@@ -30,9 +31,3 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
   see `docs/appstore/app-privacy.md`.
 - **Test routing on a device** via TestFlight: near home, across a border, from a chosen start, and
   offline in an area downloaded before.
-
-## Check
-- **Strava API terms:** Tileroam keeps activities as .fit files (also in iCloud) and deletes them
-  through the webhook queue; check that's within the agreement, and the rate limits granted.
-- **Trademark check** for the name "Tileroam".
-- **Third-party names** (issue #69 leftovers): the Pretzel and Taylor badges mention Zwift.
