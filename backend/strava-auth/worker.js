@@ -16,8 +16,11 @@
  *    Worker keeps a short queue of these events (athlete id, activity id, type, time; 30 days)
  *    that the app reads on launch to delete what it must delete.
  *
- *      GET  /webhook  Strava's subscription check (hub.challenge)
- *      POST /webhook  an event from Strava
+ *      GET  /webhook/<WEBHOOK_TOKEN>  Strava's subscription check (hub.challenge)
+ *      POST /webhook/<WEBHOOK_TOKEN>  an event from Strava
+ *    Strava doesn't sign its events, so the secret token in the URL is what keeps others from
+ *    posting fake ones (a fake "access revoked" would make the app look for deletions). Without
+ *    WEBHOOK_TOKEN the path is plain /webhook, as before.
  *      GET  /events?athlete=<id>&key=<events key>&since=<unix time>
  *      POST /events-key  (Authorization: Bearer <Strava access token>) → key, for logins made
  *                        before the events key existed; checks the token with Strava once.
@@ -25,6 +28,8 @@
  * Settings (Settings → Variables and Secrets, or `wrangler secret put`):
  *   STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET  the Strava application
  *   STRAVA_VERIFY_TOKEN                      any random string, also given to Strava when subscribing
+ *   WEBHOOK_TOKEN                            any long random string, the last part of the webhook URL
+ *                                            registered with Strava (subscribe.sh)
  *   EVENTS_SECRET                            any long random string, signs the events keys
  *   STRAVA_SUBSCRIPTION_ID                   (optional) only accept events of this subscription
  * KV namespace binding: EVENTS
@@ -52,6 +57,13 @@ function sameString(a, b) {
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
+}
+
+/** Whether a path is the webhook: /webhook/<WEBHOOK_TOKEN>, or /webhook without a token set. */
+function isWebhook(pathname, env) {
+  if (!env.WEBHOOK_TOKEN) return pathname === "/webhook";
+  const prefix = "/webhook/";
+  return pathname.startsWith(prefix) && sameString(pathname.slice(prefix.length), env.WEBHOOK_TOKEN);
 }
 
 const eventsKey = (env, athlete) => hmac(env.EVENTS_SECRET, `athlete:${athlete}`);
@@ -168,15 +180,20 @@ async function listEvents(url, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === "/webhook" || url.pathname.startsWith("/webhook/")) {
+      // A wrong or missing token looks like any unknown path.
+      if (!isWebhook(url.pathname, env)) return json({ error: "not_found" }, 404);
+      if (request.method === "GET") return verifySubscription(url, env);
+      if (request.method === "POST") return receiveEvent(request, env);
+      return json({ error: "not_found" }, 405);
+    }
     const route = `${request.method} ${url.pathname}`;
     switch (route) {
       case "POST /token": return token(request, env);
-      case "GET /webhook": return verifySubscription(url, env);
-      case "POST /webhook": return receiveEvent(request, env);
       case "GET /events": return listEvents(url, env);
       case "POST /events-key": return issueEventsKey(request, env);
       default:
-        return json({ error: "not_found" }, ["/token", "/webhook", "/events", "/events-key"].includes(url.pathname) ? 405 : 404);
+        return json({ error: "not_found" }, ["/token", "/events", "/events-key"].includes(url.pathname) ? 405 : 404);
     }
   },
 };

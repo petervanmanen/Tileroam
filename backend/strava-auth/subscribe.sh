@@ -1,20 +1,22 @@
 #!/bin/zsh
 # Manages the Strava webhook subscription for the Tileroam Worker (one per Strava application).
 #
-#   STRAVA_CLIENT_ID=… STRAVA_CLIENT_SECRET=… STRAVA_VERIFY_TOKEN=… WORKER_URL=https://….workers.dev \
-#     backend/strava-auth/subscribe.sh create   # register <WORKER_URL>/webhook with Strava
+#   STRAVA_CLIENT_ID=… STRAVA_CLIENT_SECRET=… STRAVA_VERIFY_TOKEN=… WEBHOOK_TOKEN=… WORKER_URL=https://… \
+#     backend/strava-auth/subscribe.sh create   # register <WORKER_URL>/webhook/<WEBHOOK_TOKEN> with Strava
 #   … subscribe.sh view                         # show the current subscription (its id)
 #   … subscribe.sh delete <id>                  # remove it
 #
-# Strava checks the callback right away: deploy the Worker with STRAVA_VERIFY_TOKEN set first.
+# Strava checks the callback right away: deploy the Worker with STRAVA_VERIFY_TOKEN (and
+# WEBHOOK_TOKEN, the same value as here) set first. Strava allows one subscription per application:
+# delete the old one before creating a new one.
 set -euo pipefail
 : ${STRAVA_CLIENT_ID:?} ${STRAVA_CLIENT_SECRET:?}
 API=https://www.strava.com/api/v3/push_subscriptions
 case ${1:-} in
   create)
-    : ${STRAVA_VERIFY_TOKEN:?} ${WORKER_URL:?}
+    : ${STRAVA_VERIFY_TOKEN:?} ${WORKER_URL:?} ${WEBHOOK_TOKEN:?set WEBHOOK_TOKEN, the same secret as in the Worker}
     curl -sS -X POST $API -F client_id=$STRAVA_CLIENT_ID -F client_secret=$STRAVA_CLIENT_SECRET \
-      -F callback_url=${WORKER_URL%/}/webhook -F verify_token=$STRAVA_VERIFY_TOKEN; echo ;;
+      -F callback_url=${WORKER_URL%/}/webhook/$WEBHOOK_TOKEN -F verify_token=$STRAVA_VERIFY_TOKEN; echo ;;
   view)
     curl -sS -G $API -d client_id=$STRAVA_CLIENT_ID -d client_secret=$STRAVA_CLIENT_SECRET; echo ;;
   delete)

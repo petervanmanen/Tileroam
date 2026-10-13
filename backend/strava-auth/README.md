@@ -13,8 +13,8 @@ Endpoints:
 | Endpoint | What it does |
 |---|---|
 | `POST /token` | Exchanges a login code or refresh token; adds `tileroam_events_key` at login |
-| `GET /webhook` | Strava's subscription check |
-| `POST /webhook` | Receives an event from Strava |
+| `GET /webhook/<WEBHOOK_TOKEN>` | Strava's subscription check |
+| `POST /webhook/<WEBHOOK_TOKEN>` | Receives an event from Strava (the secret token in the URL keeps others out: Strava doesn't sign its events) |
 | `GET /events?athlete=…&key=…&since=…` | Returns the athlete's events after `since` |
 | `POST /events-key` | Hands out an events key for logins made before keys existed (the app sends its Strava access token, which is checked with Strava once) |
 
@@ -30,10 +30,11 @@ Endpoints:
    - `STRAVA_CLIENT_SECRET`: your Strava Client Secret (type **Secret**).
    - `STRAVA_VERIFY_TOKEN`: any random string, for example from `openssl rand -hex 16` (type **Secret**).
    - `EVENTS_SECRET`: a long random string, for example from `openssl rand -hex 32` (type **Secret**). Changing it later invalidates the events keys; the app then fetches a new one.
+   - `WEBHOOK_TOKEN`: another long random string, for example from `openssl rand -hex 32` (type **Secret**). It's the last part of the webhook URL (`/webhook/<WEBHOOK_TOKEN>`): Strava doesn't sign its events, so this secret is what keeps others from posting fake ones.
 7. **Give the Worker its own domain:** Workers & Pages → the Worker → Settings → Domains & Routes → Add → Custom domain, for example `tileroam.petervanmanen.nl` (the domain's DNS must be on Cloudflare). Put that URL, without a path, in `Tileroam/Servers.plist` as `StravaServiceURL`; the app adds `/token`, `/events-key` and `/events`. Keep the `workers.dev` address enabled while app versions that use it are around.
 8. **Register the webhook with Strava** (once per Strava application). From the repository folder:
    ```bash
-   STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> STRAVA_VERIFY_TOKEN=<same as step 6> WORKER_URL=https://tileroam-strava-auth.<your-subdomain>.workers.dev backend/strava-auth/subscribe.sh create
+   STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> STRAVA_VERIFY_TOKEN=<same as step 6> WEBHOOK_TOKEN=<same as step 6> WORKER_URL=https://tileroam.petervanmanen.nl backend/strava-auth/subscribe.sh create
    ```
    Strava calls the Worker right away to check the verify token. The answer contains the subscription `id`.
 9. Optional: add `STRAVA_SUBSCRIPTION_ID` (that id) as a variable. The Worker then ignores events that aren't from your subscription.
@@ -59,9 +60,9 @@ Token exchange: Strava answers with an error for an invalid token, which shows t
 curl -s -X POST https://tileroam-strava-auth.<your-subdomain>.workers.dev/token -H 'content-type: application/json' -d '{"grant_type":"refresh_token","refresh_token":"invalid0000"}'
 ```
 
-Subscription check: the Worker should answer `{"hub.challenge":"test"}`:
+Subscription check: the Worker should answer `{"hub.challenge":"test"}` (and 404 without the right webhook token):
 ```bash
-curl -s "https://tileroam-strava-auth.<your-subdomain>.workers.dev/webhook?hub.mode=subscribe&hub.verify_token=<your verify token>&hub.challenge=test"
+curl -s "https://tileroam.petervanmanen.nl/webhook/<webhook token>?hub.mode=subscribe&hub.verify_token=<your verify token>&hub.challenge=test"
 ```
 
 Current subscription:
@@ -72,3 +73,16 @@ STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> backend/strava-auth/subscrib
 ## Strava application settings
 
 On [strava.com/settings/api](https://www.strava.com/settings/api), the *Authorization Callback Domain* must be `localhost`; the app uses `tileroam://localhost` as redirect URI.
+
+## Adding the webhook token to an existing setup
+
+The first webhook was registered as plain `/webhook`. To move it to `/webhook/<WEBHOOK_TOKEN>`:
+
+1. Deploy the new [`worker.js`](worker.js) and add the secret `WEBHOOK_TOKEN` (step 6). From then on the old `/webhook` answers 404, so do the next steps right away; events in between are missed, which the app copes with (it checks deletions with Strava and lists all activities on a full sync).
+2. Delete the old subscription and register the new URL (one subscription per Strava application):
+   ```bash
+   STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> backend/strava-auth/subscribe.sh view
+   STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> backend/strava-auth/subscribe.sh delete <old id>
+   STRAVA_CLIENT_ID=<id> STRAVA_CLIENT_SECRET=<secret> STRAVA_VERIFY_TOKEN=<verify token> WEBHOOK_TOKEN=<webhook token> WORKER_URL=https://tileroam.petervanmanen.nl backend/strava-auth/subscribe.sh create
+   ```
+3. Set `STRAVA_SUBSCRIPTION_ID` to the new subscription's `id` (step 9).

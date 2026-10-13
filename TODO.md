@@ -30,9 +30,11 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
   offline in an area downloaded before.
 
 ## Servers and App Store Connect (you)
-- **Strava Worker:** set `STRAVA_SUBSCRIPTION_ID` = 375082, so it only accepts events of
-  Tileroam's subscription (the app checks events with Strava since 1.15 anyway, #68). Keep the
-  `workers.dev` address: the webhook is registered to it.
+- **Strava Worker: webhook token.** Deploy the new `backend/strava-auth/worker.js` with the secret
+  `WEBHOOK_TOKEN`, register the webhook again at `/webhook/<WEBHOOK_TOKEN>` and set
+  `STRAVA_SUBSCRIPTION_ID` to the new subscription's id: see "Adding the webhook token to an
+  existing setup" in backend/strava-auth/README.md. Keep the `workers.dev` address for app
+  versions that use it for `/token`.
 - **Strava Client Secret:** rotate it (it used to be in local development builds) and update the
   Worker.
 
