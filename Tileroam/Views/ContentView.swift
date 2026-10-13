@@ -139,12 +139,9 @@ struct ContentView: View {
                     challenges = Challenges.encode(Challenges.decode(challenges).union([mode]))
                 }
                 #if DEBUG
-                // Screenshots: -ShowSettings YES opens Settings on launch.
-                if UserDefaults.standard.bool(forKey: "ShowSettings") { showSettings = true }
-                if UserDefaults.standard.bool(forKey: "ShowStatistics") { showStatistics = true }
-                if UserDefaults.standard.bool(forKey: "ShowActivities") { showActivities = true }
                 #if targetEnvironment(macCatalyst)
-                // Mac screenshots: -WindowSize 1440x900 fixes the window's size (points).
+                // Mac screenshots: -WindowSize 1662x1039 fixes the window's size (iPad points; Mac
+                // Catalyst draws them at 77%, so that's 1280 × 800 on the Mac).
                 let size = (UserDefaults.standard.string(forKey: "WindowSize") ?? "").split(separator: "x").compactMap { Double($0) }
                 if size.count == 2 {
                     for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
@@ -153,6 +150,14 @@ struct ContentView: View {
                     }
                 }
                 #endif
+                // Screenshots: -ShowSettings YES opens Settings on launch. A moment later, so the
+                // window has its size first (on the Mac a sheet at launch kept the default size).
+                Task {
+                    try? await Task.sleep(for: .seconds(1))
+                    if UserDefaults.standard.bool(forKey: "ShowSettings") { showSettings = true }
+                    if UserDefaults.standard.bool(forKey: "ShowStatistics") { showStatistics = true }
+                    if UserDefaults.standard.bool(forKey: "ShowActivities") { showActivities = true }
+                }
                 #endif
             }
             .task { await store.refreshAll() }
@@ -456,20 +461,33 @@ extension ContentView {
         try? await Task.sleep(for: .seconds(6)) // map tiles and overlays finish drawing
         challenges = Challenges.encode(Set(Challenges.all(store)))
         print("PREVIEW_TOUR_START \(Date.now.timeIntervalSince1970)")
+        fflush(stdout) // also when the output goes to a file (Tools/record_app_preview_mac.sh)
         try? await Task.sleep(for: .seconds(3))
         mode = .gemeenten
         try? await Task.sleep(for: .seconds(2.5))
         mode = .postcodes
         try? await Task.sleep(for: .seconds(2.5))
-        mode = .squares
-        plan.isPlanning = true
-        try? await Task.sleep(for: .seconds(1))
-        await plan.planDemoRoute(with: store, pace: .milliseconds(400))
-        try? await Task.sleep(for: .seconds(3.5))
-        plan.isPlanning = false
+        if FeatureFlags.routePlanning {
+            mode = .squares
+            plan.isPlanning = true
+            try? await Task.sleep(for: .seconds(1))
+            await plan.planDemoRoute(with: store, pace: .milliseconds(400))
+            try? await Task.sleep(for: .seconds(3.5))
+            plan.isPlanning = false
+        } else {
+            // The Mac app has no route planning (Tools/record_app_preview_mac.sh): the challenges
+            // around Utrecht instead, when their files are there.
+            for id in ["boscafes", "ferries", "mtb-routes"] where store.challenge(id) != nil {
+                mode = .custom(id)
+                try? await Task.sleep(for: .seconds(3))
+            }
+            mode = .squares
+            UserDefaults.standard.set("badges", forKey: "StatisticsOpen")
+        }
         showStatistics = true
         try? await Task.sleep(for: .seconds(4))
         print("PREVIEW_TOUR_END \(Date.now.timeIntervalSince1970)")
+        fflush(stdout) // also when the output goes to a file (Tools/record_app_preview_mac.sh)
     }
 }
 #endif

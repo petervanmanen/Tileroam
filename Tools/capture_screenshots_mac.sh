@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Captures the Mac App Store screenshots of the Mac app (Mac Catalyst) with the bundled sample rides
-# and writes them as JPEG (2880 × 1800) to docs/appstore/screenshots/mac. Called by
+# and writes them as JPEG (2560 × 1600) to docs/appstore/screenshots/mac. Called by
 # Tools/capture_screenshots.sh mac (and Tools/update_screenshots.sh).
 #
 # It builds a separate copy of the Debug app under its own bundle ID
@@ -21,20 +21,24 @@ APP=$DERIVED/Build/Products/Debug-maccatalyst/Tileroam.app
 SHOTS=$ROOT/docs/appstore/screenshots/mac
 RAW=$ROOT/AssetPacks/build/screenshots/mac
 CONTAINER=$HOME/Library/Containers/$BID
+# Keep the display awake while it runs: a sleeping or locked screen can't be captured.
+caffeinate -d -w $$ &
 rm -rf $RAW; mkdir -p $RAW $SHOTS
 rm -f $SHOTS/(04-climbs|06-klompenpaden).jpg(N) # shots of earlier sets
 
 echo "Building the screenshot app…"
 xcodebuild build -project $ROOT/Tileroam.xcodeproj -scheme Tileroam -destination 'platform=macOS,variant=Mac Catalyst' \
-  -derivedDataPath $DERIVED -quiet CODE_SIGNING_ALLOWED=NO PRODUCT_BUNDLE_IDENTIFIER=$BID
+  -derivedDataPath $DERIVED -quiet CODE_SIGNING_ALLOWED=NO PRODUCT_BUNDLE_IDENTIFIER=$BID INFOPLIST_KEY_UIUserInterfaceStyle=Light
 codesign -f -s - --entitlements $ROOT/Tools/screenshots-mac.entitlements $APP/Contents/Extensions/TileroamAssets.appex
 codesign -f -s - --entitlements $ROOT/Tools/screenshots-mac.entitlements $APP
 
-# English, like the iPhone and iPad shots (the Mac's own light or dark appearance is used);
-# 1440 × 900 points (2880 × 1800 on Retina), one of the Mac App Store sizes. Boundaries and the
-# challenges are read from copies in the app's container (reading ~/Documents from a sandboxed
-# app would ask for permission).
-COMMON=(-AppleLanguages "(en)" -AppleLocale en_GB -WindowSize 1440x900
+# English and light (the build sets UIUserInterfaceStyle), like the iPhone and iPad shots. The
+# window: 1280 × 800 Mac points (2560 × 1600 on Retina), a Mac App Store size. Mac Catalyst draws
+# the app at 77% of its iPad size, so -WindowSize (iPad points) is 1662 × 1039; 2880 × 1800 would
+# need a window taller than a 1080-point screen. Boundaries and the challenges are read from
+# copies in the app's container (reading ~/Documents from a sandboxed app would ask for
+# permission).
+COMMON=(-AppleLanguages "(en)" -AppleLocale en_GB -ApplePersistenceIgnoreState YES -WindowSize 1662x1039
         -RegionsDir $CONTAINER/Data/Regions -ChallengesFolder $CONTAINER/Data/challenges
         -challenges gemeenten,postcodes,custom:trappist-breweries,custom:boscafes,custom:ferries,custom:mtb-routes)
 
@@ -56,9 +60,11 @@ EOF
 shot() { # name, wait, args…
   local name=$1 wait=$2; shift 2
   quit
+  rm -rf "$CONTAINER/Data/Library/Saved Application State" # no "reopen windows?" alert after a kill
   $APP/Contents/MacOS/Tileroam $COMMON "$@" >/dev/null 2>&1 &
   pid=$!
-  sleep $wait
+  sleep 3; open -b $BID # to the front: an inactive window has grey controls
+  sleep $(( wait - 3 ))
   local id=$(window_id $pid)
   [[ -n $id ]] || { echo "No window for $name (is Screen Recording allowed?)" >&2; quit; exit 1 }
   screencapture -x -o -l $id $RAW/$name.png || { echo "screencapture failed: allow Screen Recording for this app" >&2; quit; exit 1 }
@@ -84,11 +90,10 @@ shot 00-intro     15 -hasSeenIntro NO
 quit
 rm $RAW/warmup*.png
 
-# Exactly 2880 × 1800 (the capture is the window at Retina scale; the title bar can make it a few
-# points off), as JPEG.
+# Exactly 2560 × 1600 (the capture is the window at Retina scale, give or take a pixel), as JPEG.
 for f in $RAW/*.png; do
   n=${f:t:r}
-  sips -z 1800 2880 $f --out $RAW/$n-sized.png >/dev/null
+  sips -z 1600 2560 $f --out $RAW/$n-sized.png >/dev/null
   sips -s format jpeg -s formatOptions 90 $RAW/$n-sized.png --out $SHOTS/$n.jpg >/dev/null
   rm $RAW/$n-sized.png
 done
