@@ -1,6 +1,7 @@
 # To do
 
-What's still open (12 October 2026). Finished work is in the git history and the pull requests;
+What's still open (13 October 2026; the retired challenges' files on R2 and the unused asset
+packs were removed that day). Finished work is in the git history and the pull requests;
 the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 
 ## App
@@ -29,12 +30,6 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
   offline in an area downloaded before.
 
 ## Servers and App Store Connect (you)
-- **Retired challenges** (built in until 1.12): once no 1.12 or older build is in use,
-  `DELETE=1 Tools/delete_challenge_resources.sh` deletes `Trappist/` and `Boscafes/` from R2 and
-  archives the `ferries`, `klompenpaden` and `mtbroutes` asset packs. Can't be undone.
-- **Unused asset packs** from before R2 routing: `ARCHIVE="routing-" Tools/clean_asset_packs.sh`,
-  and `ARCHIVE="regions-"` for the boundaries of countries no longer offered (the script lists
-  them; it decides "unused" from this checkout).
 - **Strava Worker:** set `STRAVA_SUBSCRIPTION_ID` = 375082, so it only accepts events of
   Tileroam's subscription (the app checks events with Strava since 1.15 anyway, #68). Keep the
   `workers.dev` address: the webhook is registered to it.
