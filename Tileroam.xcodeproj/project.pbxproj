@@ -90,6 +90,15 @@
 			);
 			target = AA0000000000000000000023 /* TileroamAssets */;
 		};
+		AA0000000000000000000047 /* Exceptions for "Tileroam" folder in "TileroamWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Garmin/GarminClient.swift,
+				Garmin/GarminHealth.swift,
+				Strava/Keychain.swift,
+			);
+			target = AA0000000000000000000022 /* TileroamWidget */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -97,6 +106,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				AA0000000000000000000045 /* Exceptions for "Tileroam" folder in "Tileroam" target */,
+				AA0000000000000000000047 /* Exceptions for "Tileroam" folder in "TileroamWidget" target */,
 			);
 			path = Tileroam;
 			sourceTree = "<group>";

@@ -111,5 +111,8 @@ struct TileroamWidgetBundle: WidgetBundle {
     var body: some Widget {
         EddingtonWidget()
         TilesWidget()
+        GarminSleepWidget()
+        GarminStepsWidget()
+        GarminBodyBatteryWidget()
     }
 }

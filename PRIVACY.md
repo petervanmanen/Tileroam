@@ -60,7 +60,8 @@ Strava's handling of your data is covered by [Strava's privacy policy](https://w
 In test builds (TestFlight), you can connect Garmin Connect with a personal API key that you create on Garmin Connect. Tileroam then downloads the original .fit file of each of your Garmin activities straight from Garmin to your device and saves it in Tileroam's own storage (and iCloud, with sync on).
 - **No developer server:** the connection goes directly from your device to Garmin. The developer receives nothing.
 - **Key:** your personal API key is kept in the iOS Keychain on your device. It only gives read access to your own data and expires after the period you chose on Garmin Connect.
-- **Disconnecting:** you can disconnect in Settings at any time. Tileroam then removes the key from the device and offers to delete the .fit files it downloaded from Garmin. You can also delete the key on Garmin Connect.
+- **Widgets:** the Sleep, Steps and Body Battery widgets ask Garmin for last night's sleep (score and duration), today's step count and your current Body Battery, a few times an hour. These numbers are kept only on your device, for the widgets, and are never sent anywhere else.
+- **Disconnecting:** you can disconnect in Settings at any time. Tileroam then removes the key and the widgets' numbers from the device and offers to delete the .fit files it downloaded from Garmin. You can also delete the key on Garmin Connect.
 
 Garmin's handling of your data is covered by [Garmin's privacy policy](https://www.garmin.com/privacy/connect/).
 

@@ -27,7 +27,8 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 - **Garmin Connect** is in Debug and TestFlight builds only (`GarminSync.availability`): Garmin's
   Personal API is "not intended for commercial applications serving multiple end users". Ask
   Garmin (through developer.garmin.com) whether an App Store app may
-  offer it with each user's own key; if yes, set `FeatureFlags.garminInAppStore` and add Garmin to
+  offer it with each user's own key (activities and the Sleep, Steps and Body Battery widgets); if
+  yes, set `FeatureFlags.garminInAppStore` and add Garmin to
   the App Privacy answers and the review notes.
 
 ## Before App Review (you)

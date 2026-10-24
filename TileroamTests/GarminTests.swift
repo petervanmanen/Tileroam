@@ -125,6 +125,7 @@ struct GarminSyncTests {
         environment.loadKey = { saved.key }
         environment.storeKey = { saved.key = $0 }
         environment.defaults = defaults
+        environment.shareAvailability = { _ in }
         return GarminSync(environment: environment)
     }
 
@@ -201,9 +202,68 @@ struct GarminSyncTests {
         #expect(GarminClient.expiry(ofJWT: "not-a-jwt") == nil)
     }
 
+    @Test func fetchesTheThreeNumbers() async throws {
+        let today = GarminHealthStore.day(.now)
+        GarminStub.lock.withLock {
+            GarminStub.requests = []
+            GarminStub.handler = { request in
+                let path = request.url!.path
+                if path.hasSuffix("/personal-api-key/token") { return .init(body: Data(Self.token.utf8)) }
+                if path.hasSuffix("/steps/daily/\(today)/\(today)") {
+                    return .init(body: try! JSONSerialization.data(withJSONObject: [["totalSteps": 1234, "stepGoal": 5000]]))
+                }
+                if path.hasSuffix("/bodyBattery/reports/daily") {
+                    return .init(body: try! JSONSerialization.data(withJSONObject: [["bodyBatteryValuesArray": [[1, 61]]]]))
+                }
+                return .init(status: 404) // no sleep yet
+            }
+        }
+        let health = try await GarminHealthStore.fetchHealth(key: "good-key", now: .now, session: GarminStub.session,
+                                                             base: URL(string: "https://garmin.test")!)
+        #expect(health.steps == .init(date: today, count: 1234, goal: 5000))
+        #expect(health.bodyBattery?.level == 61)
+        #expect(health.sleep == nil)
+    }
+
     @Test func fileNames() {
         #expect(GarminSync.fileName(GarminActivity(activityId: 7, activityName: "Lunch Ride", startTimeLocal: "2026-10-20 12:00:00"))
                 == "2026-10-20 Lunch Ride Garmin 7.fit")
         #expect(GarminSync.fileName(GarminActivity(activityId: 8, activityName: nil, startTimeLocal: nil)) == "Garmin 8.fit")
+    }
+}
+
+struct GarminHealthTests {
+    func json(_ object: Any) -> Data { try! JSONSerialization.data(withJSONObject: object) }
+
+    @Test func steps() {
+        let data = json([["calendarDate": "2026-10-24", "totalSteps": 6240, "stepGoal": 8000, "totalDistance": 4800]])
+        #expect(GarminHealthParser.steps(data)! == (6240, 8000))
+        #expect(GarminHealthParser.steps(json([] as [Any])) == nil)
+    }
+
+    @Test func bodyBatteryWithDescriptors() {
+        let descriptors = [["bodyBatteryValueDescriptorIndex": 0, "bodyBatteryValueDescriptorKey": "timestamp"],
+                           ["bodyBatteryValueDescriptorIndex": 1, "bodyBatteryValueDescriptorKey": "bodyBatteryStatus"],
+                           ["bodyBatteryValueDescriptorIndex": 2, "bodyBatteryValueDescriptorKey": "bodyBatteryLevel"]]
+        let values: [[Any]] = [[1_793_000_000_000, "MEASURED", 80], [1_793_000_180_000, "MEASURED", 72], [1_793_000_360_000, "MEASURED", NSNull()]]
+        let data = json([["date": "2026-10-24", "charged": 40, "drained": 20,
+                          "bodyBatteryValueDescriptorDTOList": descriptors, "bodyBatteryValuesArray": values]])
+        let battery = GarminHealthParser.bodyBattery(data)
+        #expect(battery?.level == 72)
+        #expect(battery?.time == Date(timeIntervalSince1970: 1_793_000_180))
+        // Two columns, no descriptors: timestamp and level.
+        #expect(GarminHealthParser.bodyBattery(json([["bodyBatteryValuesArray": [[1, 55], [2, 54]]]]))?.level == 54)
+        #expect(GarminHealthParser.bodyBattery(json(["bodyBatteryMostRecentValue": 33]))?.level == 33)
+    }
+
+    @Test func sleepInItsShapes() {
+        let nested = json(["dailySleepDTO": ["calendarDate": "2026-10-24", "sleepTimeSeconds": 27_120,
+                                             "sleepScores": ["overall": ["value": 84, "qualifierKey": "GOOD"]]]])
+        #expect(GarminHealthParser.sleep(nested)! == (27_120, 84))
+        #expect(GarminHealthParser.sleep(json(["sleepTimeSeconds": 25_000, "overallSleepScore": 77]))! == (25_000, 77))
+        #expect(GarminHealthParser.sleep(json(["sleepTimeSeconds": 25_000]))! == (25_000, nil))
+        // No sleep recorded: Garmin answers with an empty day.
+        #expect(GarminHealthParser.sleep(json(["dailySleepDTO": ["sleepTimeSeconds": NSNull()]])) == nil)
+        #expect(GarminHealthParser.sleep(json(["sleepTimeSeconds": false])) == nil)
     }
 }

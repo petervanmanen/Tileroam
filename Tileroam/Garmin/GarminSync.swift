@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import StoreKit
+import WidgetKit
 
 /// What `GarminSync` needs from the app's activity store.
 @MainActor
@@ -48,14 +49,33 @@ final class GarminSync {
         /// Saves a .fit file into the library; returns its name there.
         var save: @Sendable (Data, String) throws -> String = { try Library.add($0, originalName: $1) }
         var delete: @Sendable ([String]) -> Void = { Library.delete(names: $0) }
-        var loadKey: () -> String? = { Keychain.load(account: GarminSync.keyAccount).map { String(decoding: $0, as: UTF8.self) } }
+        /// The key is in the Keychain group shared with the widgets (1.16 kept it to the app).
+        var loadKey: () -> String? = {
+            if let key = GarminHealthStore.key { return key }
+            guard let legacy = Keychain.load(account: GarminSync.keyAccount) else { return nil }
+            Keychain.delete(account: GarminSync.keyAccount)
+            Keychain.save(legacy, account: GarminSync.keyAccount, accessGroup: Keychain.sharedGroup)
+            return String(decoding: legacy, as: UTF8.self)
+        }
         var storeKey: (String?) -> Void = { key in
-            if let key { Keychain.save(Data(key.utf8), account: GarminSync.keyAccount) } else { Keychain.delete(account: GarminSync.keyAccount) }
+            GarminHealthStore.clear()
+            if let key {
+                Keychain.save(Data(key.utf8), account: GarminSync.keyAccount, accessGroup: Keychain.sharedGroup)
+            } else {
+                Keychain.delete(account: GarminSync.keyAccount, accessGroup: Keychain.sharedGroup)
+            }
+            GarminHealthStore.widgetKinds.forEach { WidgetCenter.shared.reloadTimelines(ofKind: $0) }
         }
         var defaults: UserDefaults = .standard
+        /// Tells the widgets whether this build offers Garmin.
+        var shareAvailability: (Bool) -> Void = { available in
+            guard GarminHealthStore.isAvailable != available else { return }
+            GarminHealthStore.isAvailable = available
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
-    nonisolated static let keyAccount = "garminPersonalApiKey"
+    nonisolated static let keyAccount = GarminHealthStore.keyAccount
     private static let stateKey = "garminState"
     /// Activities per page of the list.
     static let pageSize = 100
@@ -101,6 +121,7 @@ final class GarminSync {
 
     func checkAvailability() async {
         isAvailable = await Self.availability()
+        environment.shareAvailability(isAvailable)
     }
 
     // MARK: Connecting
