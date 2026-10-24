@@ -24,6 +24,12 @@ the 1.0 plan, done, is in [docs/PLAN-1.0.md](docs/PLAN-1.0.md).
 - **Climbs** are behind `FeatureFlags.climbs` (off since 1.15). If they come back: keep their map
   lines when nothing changed, as the other tabs do since 1.15.1.
 
+- **Garmin Connect** is in Debug and TestFlight builds only (`GarminSync.availability`): Garmin's
+  Personal API is "not intended for commercial applications serving multiple end users". Ask
+  Garmin (through developer.garmin.com) whether an App Store app may
+  offer it with each user's own key; if yes, set `FeatureFlags.garminInAppStore` and add Garmin to
+  the App Privacy answers and the review notes.
+
 ## Before App Review (you)
 - **Strava demo account** for App Review: fill in `docs/appstore/review-notes.md` (still a
   placeholder) and check that the Strava app's athlete capacity has room for it.

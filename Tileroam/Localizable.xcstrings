@@ -2219,6 +2219,34 @@
         }
       }
     },
+    "Checking Garmin Connect…": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect controleren…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérification de Garmin Connect…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprobando Garmin Connect…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect wird geprüft…"
+          }
+        }
+      }
+    },
     "Checking Strava for new activities…": {
       "localizations": {
         "nl": {
@@ -3059,6 +3087,34 @@
         }
       }
     },
+    "Connect": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koppel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinden"
+          }
+        }
+      }
+    },
     "Connect Strava": {
       "localizations": {
         "nl": {
@@ -3419,6 +3475,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "Besuchte Länder"
+          }
+        }
+      }
+    },
+    "Create a Key on Garmin Connect": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maak een sleutel op Garmin Connect"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créer une clé sur Garmin Connect"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear una clave en Garmin Connect"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlüssel auf Garmin Connect erstellen"
+          }
+        }
+      }
+    },
+    "Create a personal API key on Garmin Connect (Settings › Personal API), copy it and paste it here. It stays in this device's Keychain; your activities come straight from Garmin to this device.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maak een persoonlijke API-sleutel op Garmin Connect (Instellingen › Personal API), kopieer hem en plak hem hier. Hij blijft in de sleutelhanger van dit apparaat; je activiteiten komen rechtstreeks van Garmin naar dit apparaat."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créez une clé API personnelle sur Garmin Connect (Paramètres › Personal API), copiez-la et collez-la ici. Elle reste dans le trousseau de cet appareil ; vos activités vont directement de Garmin à cet appareil."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea una clave API personal en Garmin Connect (Configuración › Personal API), cópiala y pégala aquí. Se queda en el llavero de este dispositivo; tus actividades llegan directamente de Garmin a este dispositivo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erstelle auf Garmin Connect einen persönlichen API-Schlüssel (Einstellungen › Personal API), kopiere ihn und füge ihn hier ein. Er bleibt im Schlüsselbund dieses Geräts; deine Aktivitäten kommen direkt von Garmin auf dieses Gerät."
           }
         }
       }
@@ -4003,6 +4115,62 @@
         }
       }
     },
+    "Disconnect Garmin": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ontkoppel Garmin"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déconnecter Garmin"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desconectar Garmin"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin trennen"
+          }
+        }
+      }
+    },
+    "Disconnect Garmin?": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin ontkoppelen?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déconnecter Garmin ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Desconectar Garmin?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin trennen?"
+          }
+        }
+      }
+    },
     "Disconnect Strava": {
       "localizations": {
         "nl": {
@@ -4055,6 +4223,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Strava trennen?"
+          }
+        }
+      }
+    },
+    "Disconnect and Delete Garmin Files": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ontkoppel en verwijder Garmin-bestanden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déconnecter et supprimer les fichiers Garmin"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desconectar y eliminar archivos de Garmin"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trennen und Garmin-Dateien löschen"
           }
         }
       }
@@ -4199,6 +4395,34 @@
         }
       }
     },
+    "Downloaded": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gedownload"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargadas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geladen"
+          }
+        }
+      }
+    },
     "Downloaded for the countries you have activities in. They're small and load again automatically, so they can't be removed here.": {
       "localizations": {
         "nl": {
@@ -4223,6 +4447,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Für die Länder geladen, in denen du Aktivitäten hast. Sie sind klein und werden automatisch neu geladen, daher kann man sie hier nicht entfernen."
+          }
+        }
+      }
+    },
+    "Downloading from Garmin: %lld": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloaden van Garmin: %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargement depuis Garmin : %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargando de Garmin: %lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laden von Garmin: %lld"
           }
         }
       }
@@ -4811,6 +5063,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "Format %lld braucht eine neuere Version von Tileroam."
+          }
+        }
+      }
+    },
+    "Garmin Connect": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin Connect"
+          }
+        }
+      }
+    },
+    "Garmin asks to slow down. Tileroam continues later.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin vraagt om het rustiger aan te doen. Tileroam gaat later verder."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin demande de ralentir. Tileroam continuera plus tard."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin pide ir más despacio. Tileroam continuará más tarde."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin bittet um eine Pause. Tileroam macht später weiter."
+          }
+        }
+      }
+    },
+    "Garmin didn't accept the key. It may have expired: create a new one on Garmin Connect and connect again.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin heeft de sleutel niet geaccepteerd. Misschien is hij verlopen: maak een nieuwe op Garmin Connect en koppel opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin n’a pas accepté la clé. Elle a peut-être expiré : créez-en une nouvelle sur Garmin Connect et reconnectez-vous."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin no ha aceptado la clave. Puede que haya caducado: crea una nueva en Garmin Connect y vuelve a conectar."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin hat den Schlüssel nicht akzeptiert. Vielleicht ist er abgelaufen: Erstelle auf Garmin Connect einen neuen und verbinde dich erneut."
+          }
+        }
+      }
+    },
+    "Garmin error %lld.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin-fout %lld."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erreur Garmin %lld."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error de Garmin %lld."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin-Fehler %lld."
           }
         }
       }
@@ -7051,6 +7415,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Überblick"
+          }
+        }
+      }
+    },
+    "Personal API Key": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Persoonlijke API-sleutel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clé API personnelle"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clave API personal"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Persönlicher API-Schlüssel"
           }
         }
       }
@@ -9659,6 +10051,34 @@
         }
       }
     },
+    "The key is removed from this device. You can also delete the .fit files Tileroam downloaded from Garmin; files from other sources are never touched.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De sleutel wordt van dit apparaat verwijderd. Je kunt ook de .fit-bestanden verwijderen die Tileroam van Garmin heeft gedownload; bestanden uit andere bronnen blijven altijd staan."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La clé est supprimée de cet appareil. Vous pouvez aussi supprimer les fichiers .fit que Tileroam a téléchargés depuis Garmin ; les fichiers d’autres sources ne sont jamais touchés."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La clave se elimina de este dispositivo. También puedes eliminar los archivos .fit que Tileroam descargó de Garmin; los archivos de otras fuentes nunca se tocan."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Schlüssel wird von diesem Gerät entfernt. Du kannst auch die .fit-Dateien löschen, die Tileroam von Garmin geladen hat; Dateien aus anderen Quellen bleiben unberührt."
+          }
+        }
+      }
+    },
     "The largest number E such that you covered at least E km on at least E days. Walking includes hikes.": {
       "localizations": {
         "nl": {
@@ -9767,6 +10187,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Der Kartendaten-Server hatte ein Problem (%lld). Versuche es später erneut; bereits Geladenes bleibt erhalten."
+          }
+        }
+      }
+    },
+    "The original .fit file of each Garmin activity is downloaded once into Tileroam's activities, the whole history first. Keys expire after the period you chose: then create a new one and connect again.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het originele .fit-bestand van elke Garmin-activiteit wordt één keer in de activiteiten van Tileroam gedownload, eerst de hele geschiedenis. Sleutels verlopen na de gekozen periode: maak dan een nieuwe en koppel opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le fichier .fit d’origine de chaque activité Garmin est téléchargé une fois dans les activités de Tileroam, d’abord tout l’historique. Les clés expirent après la durée choisie : créez-en alors une nouvelle et reconnectez-vous."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo .fit original de cada actividad de Garmin se descarga una vez en las actividades de Tileroam, primero todo el historial. Las claves caducan tras el periodo elegido: entonces crea una nueva y vuelve a conectar."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die originale .fit-Datei jeder Garmin-Aktivität wird einmal in die Aktivitäten von Tileroam geladen, zuerst der ganze Verlauf. Schlüssel laufen nach dem gewählten Zeitraum ab: Erstelle dann einen neuen und verbinde dich erneut."
           }
         }
       }

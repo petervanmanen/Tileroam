@@ -22,4 +22,10 @@ enum FeatureFlags {
     /// for now: no climbs are downloaded or matched (`ClimbData.index` is nil). Set to true to
     /// bring it back; docs/CLIMBS.md describes how it works.
     static let climbs = false
+
+    /// The Garmin Connect connection (GarminSync) in App Store builds too. Off: Garmin's Personal
+    /// API is meant for a person's own data, "not for commercial applications serving multiple end
+    /// users", so the connection is only in Debug and TestFlight builds until Garmin agrees (or
+    /// Tileroam moves to their Starter tier). Turn it on to offer it to everyone.
+    static let garminInAppStore = false
 }

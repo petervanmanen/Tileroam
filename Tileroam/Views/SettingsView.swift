@@ -55,6 +55,8 @@ struct SettingsView: View {
                 stravaSection
                 #endif
 
+                if store.isGarminAvailable { GarminSection() }
+
                 Section {
                     ForEach(Challenges.builtIn) { mode in
                         challengeToggle(mode) { Label(mode.title(in: store), systemImage: mode.symbol ?? "flag") }
@@ -301,5 +303,67 @@ private struct SourcesView: View {
             }
         }
         .navigationTitle("Sources & Licenses")
+    }
+}
+
+/// Garmin Connect: the user's personal API key, made on Garmin Connect, pasted here (GarminSync).
+private struct GarminSection: View {
+    @Environment(ActivityStore.self) private var store
+    @State private var key = ""
+    @State private var confirmDisconnect = false
+
+    var body: some View {
+        Section {
+            if store.isGarminConnected {
+                LabeledContent("Downloaded", value: store.garminDownloadedCount.formatted())
+                if let status = store.garminStatus {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text(status).font(.footnote).foregroundStyle(.secondary)
+                    }
+                }
+                Button("Sync Now") { store.syncGarmin() }
+                    .disabled(store.isGarminSyncing)
+                Button("Disconnect Garmin", role: .destructive) { confirmDisconnect = true }
+            } else {
+                Link(destination: GarminClient.keyPage) {
+                    Label("Create a Key on Garmin Connect", systemImage: "key")
+                }
+                SecureField("Personal API Key", text: $key)
+                    .textContentType(.password)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                Button {
+                    Task { if await store.connectGarmin(key: key) { key = "" } }
+                } label: {
+                    HStack {
+                        Text("Connect")
+                        if store.isGarminConnecting { Spacer(); ProgressView() }
+                    }
+                }
+                .disabled(key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || store.isGarminConnecting)
+            }
+            if let error = store.garminError {
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(.footnote)
+                    .symbolRenderingMode(.multicolor)
+            }
+        } header: {
+            Text("Garmin Connect")
+        } footer: {
+            Text(store.isGarminConnected
+                 ? "The original .fit file of each Garmin activity is downloaded once into Tileroam's activities, the whole history first. Keys expire after the period you chose: then create a new one and connect again."
+                 : "Create a personal API key on Garmin Connect (Settings › Personal API), copy it and paste it here. It stays in this device's Keychain; your activities come straight from Garmin to this device.")
+        }
+        .confirmationDialog("Disconnect Garmin?", isPresented: $confirmDisconnect, titleVisibility: .visible) {
+            Button("Disconnect and Delete Garmin Files", role: .destructive) {
+                Task { await store.disconnectGarmin(deleteFiles: true) }
+            }
+            Button("Disconnect, Keep Files") {
+                Task { await store.disconnectGarmin(deleteFiles: false) }
+            }
+        } message: {
+            Text("The key is removed from this device. You can also delete the .fit files Tileroam downloaded from Garmin; files from other sources are never touched.")
+        }
     }
 }
