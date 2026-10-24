@@ -5179,6 +5179,34 @@
         }
       }
     },
+    "Garmin limit reached – continuing at %@": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin-limiet bereikt – verder om %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite Garmin atteinte – reprise à %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Límite de Garmin alcanzado – se reanuda a las %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garmin-Limit erreicht – weiter um %@"
+          }
+        }
+      }
+    },
     "Get Started": {
       "localizations": {
         "nl": {

@@ -67,6 +67,10 @@ final class GarminSync {
             GarminHealthStore.widgetKinds.forEach { WidgetCenter.shared.reloadTimelines(ofKind: $0) }
         }
         var defaults: UserDefaults = .standard
+        /// Between two downloads: Garmin doesn't publish its rate limits, so a long history is
+        /// downloaded at a calm pace (2,000 activities take about 35 minutes).
+        var pause: Duration = .seconds(1)
+        var sleep: @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
         /// Tells the widgets whether this build offers Garmin.
         var shareAvailability: (Bool) -> Void = { available in
             guard GarminHealthStore.isAvailable != available else { return }
@@ -79,6 +83,11 @@ final class GarminSync {
     private static let stateKey = "garminState"
     /// Activities per page of the list.
     static let pageSize = 100
+    /// How long to wait after a 429 without Retry-After, and the longest wait Tileroam accepts.
+    static let defaultWait: TimeInterval = 5 * 60
+    static let longestWait: TimeInterval = 60 * 60
+    /// 429s in a row after which the sync stops until the next one.
+    static let maxWaits = 5
 
     @ObservationIgnored private let environment: Environment
     @ObservationIgnored private var client: GarminClient?
@@ -195,8 +204,10 @@ final class GarminSync {
         var start = 0
         do {
             while !Task.isCancelled {
-                status = String(localized: "Checking Garmin Connect…")
-                let page = try await client.activities(start: start, limit: Self.pageSize)
+                let page = try await patiently {
+                    status = String(localized: "Checking Garmin Connect…")
+                    return try await client.activities(start: start, limit: Self.pageSize)
+                }
                 guard !page.isEmpty else {
                     state.historyComplete = true
                     break
@@ -205,11 +216,14 @@ final class GarminSync {
                 let new = page.filter { known[String($0.activityId)] == nil }
                 for activity in new {
                     guard !Task.isCancelled else { return }
-                    status = String(localized: "Downloading from Garmin: \(downloadedCount + 1)")
-                    let name = try await download(activity, with: client)
+                    let name = try await patiently {
+                        status = String(localized: "Downloading from Garmin: \(downloadedCount + 1)")
+                        return try await download(activity, with: client)
+                    }
                     state.files[String(activity.activityId)] = name ?? ""
                     if name != nil { added += 1 }
                     if added % 10 == 0 { saveState() } else { downloadedCount += name != nil ? 1 : 0 }
+                    try await environment.sleep(environment.pause)
                 }
                 saveState()
                 if page.count < Self.pageSize {
@@ -219,8 +233,27 @@ final class GarminSync {
                 if state.historyComplete && new.count < page.count { break } // reached what it has
                 start += page.count
             }
+        } catch is CancellationError {
+            // Disconnected.
         } catch {
             self.error = (error as? GarminError).map(\.localizedDescription) ?? error.localizedDescription
+        }
+    }
+
+    /// Runs `request`; when Garmin asks to slow down (429), waits as long as it says (five
+    /// minutes when it doesn't say) and tries again, up to `maxWaits` times in a row.
+    private func patiently<T>(_ request: () async throws -> T) async throws -> T {
+        var waits = 0
+        while true {
+            do {
+                return try await request()
+            } catch GarminError.rateLimited(let retryAfter) where waits < Self.maxWaits {
+                waits += 1
+                let delay = min(max(retryAfter ?? Self.defaultWait, 1), Self.longestWait)
+                let until = Date.now.addingTimeInterval(delay)
+                status = String(localized: "Garmin limit reached – continuing at \(until.formatted(date: .omitted, time: .shortened))")
+                try await environment.sleep(.seconds(delay))
+            }
         }
     }
 

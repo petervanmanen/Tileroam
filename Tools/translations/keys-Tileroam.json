@@ -155,6 +155,7 @@
  "Garmin asks to slow down. Tileroam continues later.",
  "Garmin didn't accept the key. It may have expired: create a new one on Garmin Connect and connect again.",
  "Garmin error %lld.",
+ "Garmin limit reached – continuing at %@",
  "Get Started",
  "Giant leap",
  "Globetrotter",

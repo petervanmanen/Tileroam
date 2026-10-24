@@ -151,7 +151,7 @@ When you delete an activity on Strava, or revoke Tileroam's access in Strava's s
 
 *Only in test builds (TestFlight) for now: Garmin's personal API is meant for your own data, and the App Store version will offer it once Garmin agrees.*
 
-On Garmin Connect, go to Settings › Personal API, create a key and copy it. In Tileroam, go to Settings → Garmin Connect, paste the key and tap **Connect**. Tileroam downloads the original .fit file of each Garmin activity once, the whole history first, and later only new activities (on opening the app and with **Sync Now**). Activities you entered by hand or uploaded as GPX or TCX have no .fit file and are skipped.
+On Garmin Connect, go to Settings › Personal API, create a key and copy it. In Tileroam, go to Settings → Garmin Connect, paste the key and tap **Connect**. Tileroam downloads the original .fit file of each Garmin activity once, the whole history first, and later only new activities (on opening the app and with **Sync Now**). Activities you entered by hand or uploaded as GPX or TCX have no .fit file and are skipped. A long history takes a while: Tileroam downloads about one activity per second and, when Garmin asks it to slow down, waits and then continues by itself.
 
 Once connected, the Sleep, Steps and Body Battery widgets show your numbers from Garmin Connect (see Widgets). They show what your watch has synced to Garmin Connect, so they're as current as that sync.
 

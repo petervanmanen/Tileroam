@@ -1,5 +1,6 @@
 import Compression
 import Foundation
+import os
 import Testing
 @testable import Tileroam
 
@@ -69,7 +70,7 @@ struct ZipTests {
 
 /// A fake Garmin server: answers by path, records the requests.
 final class GarminStub: URLProtocol, @unchecked Sendable {
-    struct Reply: Sendable { var status = 200; var body = Data() }
+    struct Reply: Sendable { var status = 200; var body = Data(); var headers: [String: String] = [:] }
     nonisolated(unsafe) static var handler: (@Sendable (URLRequest) -> Reply)?
     nonisolated(unsafe) static var requests: [URLRequest] = []
     static let lock = NSLock()
@@ -81,7 +82,7 @@ final class GarminStub: URLProtocol, @unchecked Sendable {
             Self.requests.append(request)
             return Self.handler?(request) ?? Reply(status: 404)
         }
-        let response = HTTPURLResponse(url: request.url!, statusCode: reply.status, httpVersion: nil, headerFields: nil)!
+        let response = HTTPURLResponse(url: request.url!, statusCode: reply.status, httpVersion: nil, headerFields: reply.headers)!
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: reply.body)
         client?.urlProtocolDidFinishLoading(self)
@@ -108,6 +109,7 @@ struct GarminSyncTests {
     final class Saved: @unchecked Sendable {
         var files: [String: Data] = [:]
         var deleted: [String] = []
+        var waits: [Duration] = []
         var key: String?
         let lock = NSLock()
     }
@@ -126,6 +128,8 @@ struct GarminSyncTests {
         environment.storeKey = { saved.key = $0 }
         environment.defaults = defaults
         environment.shareAvailability = { _ in }
+        environment.pause = .zero
+        environment.sleep = { duration in if duration > .zero { saved.lock.withLock { saved.waits.append(duration) } } }
         return GarminSync(environment: environment)
     }
 
@@ -184,6 +188,37 @@ struct GarminSyncTests {
         await sync.disconnect(deleteFiles: true)
         #expect(!sync.isConnected && saved.key == nil && sync.downloadedCount == 0)
         #expect(saved.deleted.sorted() == ["2026-10-20 Morning Ride Garmin 1.fit", "2026-10-20 Run Garmin 3.fit"])
+    }
+
+    @Test func waitsWhenGarminAsksToSlowDown() async {
+        let saved = Saved()
+        serve([(1, "Morning Ride")])
+        // The first download gets a 429 with Retry-After: 7, the second try works.
+        let handler = GarminStub.lock.withLock { GarminStub.handler! }
+        let limited = OSAllocatedUnfairLock(initialState: false)
+        GarminStub.lock.withLock {
+            GarminStub.handler = { request in
+                if request.url!.path.contains("/download-service/"), !limited.withLock({ let was = $0; $0 = true; return was }) {
+                    return .init(status: 429, headers: ["Retry-After": "7"])
+                }
+                return handler(request)
+            }
+        }
+        let sync = makeSync(saved)
+        #expect(await sync.connect(key: "good-key"))
+        while sync.isSyncing { try? await Task.sleep(for: .milliseconds(20)) }
+        #expect(saved.waits == [.seconds(7)])
+        #expect(sync.error == nil && saved.files.count == 1 && downloads == 2)
+    }
+
+    @Test func retryAfterInSecondsOrAsADate() {
+        func response(_ value: String) -> HTTPURLResponse {
+            HTTPURLResponse(url: URL(string: "https://garmin.test")!, statusCode: 429, httpVersion: nil, headerFields: ["Retry-After": value])!
+        }
+        let now = Date(timeIntervalSince1970: 1_793_000_000) // Mon, 26 Oct 2026 07:33:20 GMT
+        #expect(GarminClient.retryAfter(response("120"), now: now) == 120)
+        #expect(GarminClient.retryAfter(response("Mon, 26 Oct 2026 07:35:20 GMT"), now: now) == 120)
+        #expect(GarminClient.retryAfter(response("soon"), now: now) == nil)
     }
 
     @Test func aWrongKeyIsRefused() async {
