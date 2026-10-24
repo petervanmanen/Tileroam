@@ -195,8 +195,9 @@ struct GarminSyncTests {
     }
 
     @Test func tokenExpiryComesFromTheJWT() {
-        let expiry = GarminClient.expiry(ofJWT: Self.token)
-        #expect(expiry.map { abs($0.timeIntervalSinceNow - 86_400) < 5 } == true)
+        let payload = Data(#"{"exp":1793000000}"#.utf8).base64EncodedString().replacingOccurrences(of: "=", with: "")
+        #expect(GarminClient.expiry(ofJWT: "eyJhbGciOiJub25lIn0.\(payload).sig") == Date(timeIntervalSince1970: 1_793_000_000))
+        #expect(GarminClient.expiry(ofJWT: Self.token).map { $0 > .now } == true)
         #expect(GarminClient.expiry(ofJWT: "not-a-jwt") == nil)
     }
 
