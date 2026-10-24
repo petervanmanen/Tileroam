@@ -111,6 +111,7 @@ Tap the **chart** button for the categories below. Each is one small row with a 
 Add Tileroam widgets to your Home Screen. Touch and hold the Home Screen, tap **Edit → Add Widget** and search for Tileroam.
 - **Eddington Number:** your cycling Eddington number and what you need for the next one.
 - **Tiles Around You:** a map of the tiles around your current location, with visited tiles in green. Comes in small, medium and large sizes. To keep it up to date, allow location access "While Using the App or Widgets".
+- **Sleep, Steps and Body Battery** (with Garmin Connect, see below): last night's sleep score and duration, today's steps against your step goal, and your current Body Battery. For the Home Screen and the Lock Screen. They update a few times an hour, as often as iOS allows.
 
 ## Countries
 
@@ -151,6 +152,8 @@ When you delete an activity on Strava, or revoke Tileroam's access in Strava's s
 *Only in test builds (TestFlight) for now: Garmin's personal API is meant for your own data, and the App Store version will offer it once Garmin agrees.*
 
 On Garmin Connect, go to Settings › Personal API, create a key and copy it. In Tileroam, go to Settings → Garmin Connect, paste the key and tap **Connect**. Tileroam downloads the original .fit file of each Garmin activity once, the whole history first, and later only new activities (on opening the app and with **Sync Now**). Activities you entered by hand or uploaded as GPX or TCX have no .fit file and are skipped.
+
+Once connected, the Sleep, Steps and Body Battery widgets show your numbers from Garmin Connect (see Widgets). They show what your watch has synced to Garmin Connect, so they're as current as that sync.
 
 If the same ride is also on Strava or in your imported files, Tileroam keeps it once. Keys expire after the period you chose; then create a new key and connect again. When you disconnect, you choose whether to also delete the .fit files Tileroam downloaded from Garmin.
 

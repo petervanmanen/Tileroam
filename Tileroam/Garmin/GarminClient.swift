@@ -36,11 +36,17 @@ actor GarminClient {
     private let session: URLSession
     private let base: URL
     private var token: (value: String, expires: Date)?
+    /// Called with each new access token, to keep it for the next client (the widgets run in
+    /// their own process, a few times an hour).
+    private let tokenChanged: @Sendable (String, Date) -> Void
 
-    init(key: String, session: URLSession = .shared, base: URL = GarminClient.baseURL) {
+    init(key: String, session: URLSession = .shared, base: URL = GarminClient.baseURL,
+         token: (value: String, expires: Date)? = nil, tokenChanged: @escaping @Sendable (String, Date) -> Void = { _, _ in }) {
         self.key = key
         self.session = session
         self.base = base
+        self.token = token
+        self.tokenChanged = tokenChanged
     }
 
     /// A valid access token: the cached one until an hour before it expires, else a new one.
@@ -59,6 +65,7 @@ actor GarminClient {
         guard !value.isEmpty else { throw GarminError.invalidKey }
         let expires = Self.expiry(ofJWT: value) ?? now.addingTimeInterval(23 * 3600)
         token = (value, expires)
+        tokenChanged(value, expires)
         return value
     }
 
@@ -86,6 +93,13 @@ actor GarminClient {
     func originalFile(_ id: Int64) async throws -> Data {
         try await get(base.appending(path: "download-service/files/activity/\(id)"),
                       accept: "application/zip, application/x-zip-compressed, application/octet-stream")
+    }
+
+    /// A JSON resource, e.g. "usersummary-service/stats/steps/daily/2026-10-24/2026-10-24".
+    func json(_ path: String, query: [String: String] = [:]) async throws -> Data {
+        var c = URLComponents(url: base.appending(path: path), resolvingAgainstBaseURL: false)!
+        if !query.isEmpty { c.queryItems = query.sorted { $0.key < $1.key }.map { URLQueryItem(name: $0.key, value: $0.value) } }
+        return try await get(c.url!, accept: "application/json")
     }
 
     private func get(_ url: URL, accept: String, retried: Bool = false) async throws -> Data {
