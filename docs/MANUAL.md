@@ -146,6 +146,14 @@ Each activity is saved as a .fit file in Tileroam's activities (and iCloud, with
 
 When you delete an activity on Strava, or revoke Tileroam's access in Strava's settings, Strava tells Tileroam. Tileroam first checks with Strava that the activity is really gone, or that its access is really revoked, and then deletes its copies (after a revoke: all the .fit files it saved from Strava).
 
+## Garmin Connect
+
+*Only in test builds (TestFlight) for now: Garmin's personal API is meant for your own data, and the App Store version will offer it once Garmin agrees.*
+
+On Garmin Connect, go to Settings › Personal API, create a key and copy it. In Tileroam, go to Settings → Garmin Connect, paste the key and tap **Connect**. Tileroam downloads the original .fit file of each Garmin activity once, the whole history first, and later only new activities (on opening the app and with **Sync Now**). Activities you entered by hand or uploaded as GPX or TCX have no .fit file and are skipped.
+
+If the same ride is also on Strava or in your imported files, Tileroam keeps it once. Keys expire after the period you chose; then create a new key and connect again. When you disconnect, you choose whether to also delete the .fit files Tileroam downloaded from Garmin.
+
 ## Privacy
 
 Tileroam has no accounts, no analytics and no advertising. See the [privacy policy](../PRIVACY.md).

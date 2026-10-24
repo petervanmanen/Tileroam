@@ -56,6 +56,14 @@ If you connect Strava, Tileroam downloads your activities from Strava to your de
 
 Strava's handling of your data is covered by [Strava's privacy policy](https://www.strava.com/legal/privacy).
 
+### Garmin Connect (optional, test builds only)
+In test builds (TestFlight), you can connect Garmin Connect with a personal API key that you create on Garmin Connect. Tileroam then downloads the original .fit file of each of your Garmin activities straight from Garmin to your device and saves it in Tileroam's own storage (and iCloud, with sync on).
+- **No developer server:** the connection goes directly from your device to Garmin. The developer receives nothing.
+- **Key:** your personal API key is kept in the iOS Keychain on your device. It only gives read access to your own data and expires after the period you chose on Garmin Connect.
+- **Disconnecting:** you can disconnect in Settings at any time. Tileroam then removes the key from the device and offers to delete the .fit files it downloaded from Garmin. You can also delete the key on Garmin Connect.
+
+Garmin's handling of your data is covered by [Garmin's privacy policy](https://www.garmin.com/privacy/connect/).
+
 ### Files you export
 GPX files you export go only where you send them, for example through the share sheet.
 

@@ -68,6 +68,7 @@ final class ActivityStore {
     let challenges = ChallengeEngine()
     let regionStore = RegionStore()
     let strava = StravaSync()
+    let garmin = GarminSync()
 
     /// The user's challenges, and their progress (see `ChallengeEngine`).
     var customChallenges: [CustomChallenge] { challenges.challenges }
@@ -126,6 +127,17 @@ final class ActivityStore {
     /// Starts (or continues) the Strava sync unless it is already running.
     func syncStrava() { strava.sync() }
 
+    var isGarminAvailable: Bool { garmin.isAvailable }
+    var isGarminConnected: Bool { garmin.isConnected }
+    var isGarminConnecting: Bool { garmin.isConnecting }
+    var isGarminSyncing: Bool { garmin.isSyncing }
+    var garminStatus: String? { garmin.status }
+    var garminError: String? { garmin.error }
+    var garminDownloadedCount: Int { garmin.downloadedCount }
+    func connectGarmin(key: String) async -> Bool { await garmin.connect(key: key) }
+    func disconnectGarmin(deleteFiles: Bool) async { await garmin.disconnect(deleteFiles: deleteFiles) }
+    func syncGarmin() { garmin.sync() }
+
     /// Activities whose file has no GPS positions (indoor, or synced into Apple Health without a route).
     var activitiesWithoutGPS: Int {
         activities.count { $0.trackData.isEmpty }
@@ -149,6 +161,8 @@ final class ActivityStore {
     init() {
         folderActivities = TrackCache.load(folder: Self.folderCacheKey)
         strava.host = self
+        garmin.host = self
+        Task { await garmin.checkAvailability() }
         challenges.onPrepared = { [weak self] in self?.matchChallenges() }
         regionStore.onLoaded = { [weak self] in
             self?.version += 1
@@ -164,6 +178,7 @@ final class ActivityStore {
         if regionsError != nil { regionStore.retry() } // retry downloads
         await updateICloud() // so Strava saves to iCloud from the start
         syncStrava()
+        syncGarmin()
         await refresh()
     }
 
@@ -616,3 +631,6 @@ extension ActivityStore: StravaSyncHost {
         scheduleCacheSave()
     }
 }
+
+/// Garmin downloads land in the library, which `refresh` reads.
+extension ActivityStore: GarminSyncHost {}
