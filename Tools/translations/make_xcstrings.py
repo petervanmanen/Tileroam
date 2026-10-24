@@ -246,6 +246,8 @@ T = {
                                  "Comprobando Garmin Connect…", "Garmin Connect wird geprüft…"),
     "Downloading from Garmin: %lld": ("Downloaden van Garmin: %lld", "Téléchargement depuis Garmin : %lld",
                                       "Descargando de Garmin: %lld", "Laden von Garmin: %lld"),
+    "Garmin limit reached – continuing at %@": ("Garmin-limiet bereikt – verder om %@", "Limite Garmin atteinte – reprise à %@",
+                                                "Límite de Garmin alcanzado – se reanuda a las %@", "Garmin-Limit erreicht – weiter um %@"),
     "Garmin error %lld.": ("Garmin-fout %lld.", "Erreur Garmin %lld.", "Error de Garmin %lld.", "Garmin-Fehler %lld."),
     "Garmin asks to slow down. Tileroam continues later.": (
         "Garmin vraagt om het rustiger aan te doen. Tileroam gaat later verder.",

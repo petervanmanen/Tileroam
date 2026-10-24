@@ -11,7 +11,8 @@ struct GarminActivity: Decodable, Sendable, Equatable {
 enum GarminError: LocalizedError, Equatable {
     /// The token service refused the key: wrong, revoked or expired.
     case invalidKey
-    case rateLimited
+    /// Too many requests (429); `retryAfter` is how long Garmin asks to wait, when it says.
+    case rateLimited(retryAfter: TimeInterval?)
     case http(Int)
 
     var errorDescription: String? {
@@ -59,7 +60,7 @@ actor GarminClient {
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         if status == 401 || status == 403 { throw GarminError.invalidKey }
-        if status == 429 { throw GarminError.rateLimited }
+        if status == 429 { throw GarminError.rateLimited(retryAfter: Self.retryAfter(response)) }
         guard (200..<300).contains(status) else { throw GarminError.http(status) }
         let value = String(decoding: data, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { throw GarminError.invalidKey }
@@ -113,8 +114,20 @@ actor GarminClient {
             return try await get(url, accept: accept, retried: true)
         }
         if status == 401 || status == 403 { throw GarminError.invalidKey }
-        if status == 429 { throw GarminError.rateLimited }
+        if status == 429 { throw GarminError.rateLimited(retryAfter: Self.retryAfter(response)) }
         guard (200..<300).contains(status) else { throw GarminError.http(status) }
         return data
+    }
+
+    /// The Retry-After header of a 429: seconds ("120") or an HTTP date.
+    static func retryAfter(_ response: URLResponse, now: Date = .now) -> TimeInterval? {
+        guard let value = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Retry-After")?
+                .trimmingCharacters(in: .whitespaces) else { return nil }
+        if let seconds = TimeInterval(value) { return max(0, seconds) }
+        let format = DateFormatter()
+        format.locale = Locale(identifier: "en_US_POSIX")
+        format.timeZone = .gmt
+        format.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        return format.date(from: value).map { max(0, $0.timeIntervalSince(now)) }
     }
 }
