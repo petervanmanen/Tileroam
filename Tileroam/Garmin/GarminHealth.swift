@@ -38,15 +38,25 @@ enum GarminHealthStore {
     static let tokenAccount = "garminAccessToken"
     static let widgetKinds = ["GarminSleepWidget", "GarminStepsWidget", "GarminBodyBatteryWidget"]
     private static let cacheKey = "garmin.health"
-    private static let availableKey = "garmin.available"
 
     static var defaults: UserDefaults? { UserDefaults(suiteName: appGroup) }
 
-    /// Whether this build offers Garmin (set by the app, see `GarminSync.availability`): the
-    /// widgets are only in the gallery then.
-    static var isAvailable: Bool {
-        get { defaults?.bool(forKey: availableKey) ?? false }
-        set { defaults?.set(newValue, forKey: availableKey) }
+    /// Whether this build offers Garmin: Debug builds, TestFlight, and every build once
+    /// `FeatureFlags.garminInAppStore` is on (the builds of `GarminSync.availability`). The widgets
+    /// are only in the gallery then. Known here without the app: iOS reads the widgets' sizes
+    /// when the app is installed or updated, often before it's opened, and keeps them.
+    static var isOffered: Bool {
+        #if DEBUG
+        true
+        #else
+        FeatureFlags.garminInAppStore || isTestFlight
+        #endif
+    }
+
+    /// TestFlight installs have a sandbox receipt. AppTransaction says the same, but only
+    /// asynchronously; the deprecated receipt URL is read through key-value coding.
+    private static var isTestFlight: Bool {
+        (Bundle.main.value(forKey: "appStoreReceiptURL") as? URL)?.lastPathComponent == "sandboxReceipt"
     }
 
     static var key: String? {
