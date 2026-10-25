@@ -324,7 +324,7 @@ private struct GarminNoData: View {
 
 /// The sizes of the Garmin widgets: none in builds without Garmin, so they aren't in the gallery.
 private var garminFamilies: [WidgetFamily] {
-    GarminHealthStore.isAvailable ? [.systemSmall, .accessoryCircular, .accessoryRectangular, .accessoryInline] : []
+    GarminHealthStore.isOffered ? [.systemSmall, .accessoryCircular, .accessoryRectangular, .accessoryInline] : []
 }
 
 struct GarminSleepWidget: Widget {

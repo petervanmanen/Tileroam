@@ -71,12 +71,6 @@ final class GarminSync {
         /// downloaded at a calm pace (2,000 activities take about 35 minutes).
         var pause: Duration = .seconds(1)
         var sleep: @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
-        /// Tells the widgets whether this build offers Garmin.
-        var shareAvailability: (Bool) -> Void = { available in
-            guard GarminHealthStore.isAvailable != available else { return }
-            GarminHealthStore.isAvailable = available
-            WidgetCenter.shared.reloadAllTimelines()
-        }
     }
 
     nonisolated static let keyAccount = GarminHealthStore.keyAccount
@@ -130,7 +124,6 @@ final class GarminSync {
 
     func checkAvailability() async {
         isAvailable = await Self.availability()
-        environment.shareAvailability(isAvailable)
     }
 
     // MARK: Connecting

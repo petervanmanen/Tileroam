@@ -127,7 +127,6 @@ struct GarminSyncTests {
         environment.loadKey = { saved.key }
         environment.storeKey = { saved.key = $0 }
         environment.defaults = defaults
-        environment.shareAvailability = { _ in }
         environment.pause = .zero
         environment.sleep = { duration in if duration > .zero { saved.lock.withLock { saved.waits.append(duration) } } }
         return GarminSync(environment: environment)
