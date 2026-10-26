@@ -4311,6 +4311,34 @@
         }
       }
     },
+    "Diving": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duiken"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plongée"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buceo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tauchen"
+          }
+        }
+      }
+    },
     "Done": {
       "localizations": {
         "nl": {
@@ -4419,6 +4447,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geladen"
+          }
+        }
+      }
+    },
+    "Downloaded %lld activities": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld activiteiten gedownload"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld activités téléchargées"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld actividades descargadas"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Aktivitäten heruntergeladen"
           }
         }
       }

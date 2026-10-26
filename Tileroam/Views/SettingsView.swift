@@ -322,7 +322,7 @@ private struct GarminSection: View {
                         Text(status).font(.footnote).foregroundStyle(.secondary)
                     }
                 }
-                Button("Sync Now") { store.syncGarmin() }
+                Button("Sync Now") { store.syncGarmin(userInitiated: true) }
                     .disabled(store.isGarminSyncing)
                 Button("Disconnect Garmin", role: .destructive) { confirmDisconnect = true }
             } else {

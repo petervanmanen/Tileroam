@@ -206,6 +206,8 @@ T = {
     "Connect Strava": ("Koppel Strava", "Connectez Strava", "Conecta Strava", "Strava verbinden"),
     # Garmin Connect (Personal API)
     "Garmin Connect": ("Garmin Connect", "Garmin Connect", "Garmin Connect", "Garmin Connect"),
+    "Downloaded %lld activities": ("%lld activiteiten gedownload", "%lld activités téléchargées", "%lld actividades descargadas", "%lld Aktivitäten heruntergeladen"),
+    "Diving": ("Duiken", "Plongée", "Buceo", "Tauchen"),
     "Connect": ("Koppel", "Connecter", "Conectar", "Verbinden"),
     # Garmin widgets
     "Sleep": ("Slaap", "Sommeil", "Sueño", "Schlaf"),

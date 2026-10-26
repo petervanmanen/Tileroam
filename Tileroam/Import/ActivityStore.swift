@@ -136,7 +136,7 @@ final class ActivityStore {
     var garminDownloadedCount: Int { garmin.downloadedCount }
     func connectGarmin(key: String) async -> Bool { await garmin.connect(key: key) }
     func disconnectGarmin(deleteFiles: Bool) async { await garmin.disconnect(deleteFiles: deleteFiles) }
-    func syncGarmin() { garmin.sync() }
+    func syncGarmin(userInitiated: Bool = false) { garmin.sync(userInitiated: userInitiated) }
 
     /// Activities whose file has no GPS positions (indoor, or synced into Apple Health without a route).
     var activitiesWithoutGPS: Int {

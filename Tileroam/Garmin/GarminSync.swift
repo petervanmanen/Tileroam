@@ -35,6 +35,8 @@ final class GarminSync {
     private(set) var downloadedCount: Int
     private var task: Task<Void, Never>?
     var isSyncing: Bool { task != nil }
+    /// A sync the user started goes on when they leave the app (see `ContinuedWork`).
+    @ObservationIgnored private var continued: ContinuedWork?
 
     /// What was downloaded, kept on the device: per Garmin activity ID the file name in the
     /// library ("" for an activity without a .fit file), and whether the whole history was seen.
@@ -147,7 +149,7 @@ final class GarminSync {
         self.client = client
         isConnected = true
         error = nil
-        sync()
+        sync(userInitiated: true)
         return true
     }
 
@@ -173,13 +175,30 @@ final class GarminSync {
 
     // MARK: Sync
 
-    /// Starts a sync unless one is running.
-    func sync() {
+    /// Starts a sync unless one is running. One the user started (connecting, Sync Now) may go on
+    /// in the background, with its progress in a Live Activity; the automatic one when the app
+    /// opens runs while it's open (iOS only lets work the user asked for go on).
+    func sync(userInitiated: Bool = false) {
         guard task == nil, client != nil else { return }
+        if userInitiated {
+            continued = ContinuedWork.start(title: String(localized: "Garmin Connect"),
+                                            subtitle: String(localized: "Checking Garmin Connect…")) { [weak self] in
+                self?.task?.cancel() // stopped in the Live Activity: what's downloaded is kept
+            }
+        }
         task = Task {
             await run()
             task = nil
+            continued?.finish(success: error == nil)
+            continued = nil
         }
+    }
+
+    /// Progress for the Live Activity: done so far, and an estimate of what's left.
+    private func report(_ added: Int, left: Int) {
+        guard let continued else { return }
+        continued.progress(done: added, total: added + left,
+                           subtitle: String(localized: "Downloaded \(added) activities"))
     }
 
     /// Goes through the activity list, newest first, and downloads the activities it doesn't
@@ -207,7 +226,10 @@ final class GarminSync {
                 }
                 let known = state.files
                 let new = page.filter { known[String($0.activityId)] == nil }
-                for activity in new {
+                // Left: this page's new ones, and a page more while the history isn't complete.
+                let more = state.historyComplete || page.count < Self.pageSize ? 0 : Self.pageSize
+                report(added, left: new.count + more)
+                for (n, activity) in new.enumerated() {
                     guard !Task.isCancelled else { return }
                     let name = try await patiently {
                         status = String(localized: "Downloading from Garmin: \(downloadedCount + 1)")
@@ -215,6 +237,7 @@ final class GarminSync {
                     }
                     state.files[String(activity.activityId)] = name ?? ""
                     if name != nil { added += 1 }
+                    report(added, left: new.count - n - 1 + more)
                     if added % 10 == 0 { saveState() } else { downloadedCount += name != nil ? 1 : 0 }
                     try await environment.sleep(environment.pause)
                 }
