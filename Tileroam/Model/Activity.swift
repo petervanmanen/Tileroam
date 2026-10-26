@@ -49,7 +49,7 @@ struct Activity: Codable, Sendable, Identifiable {
     /// Which details the import read (see `Activity.currentDetails`); older cached activities are
     /// read again to fill in moving time and power.
     var detailsVersion: Int?
-    static let currentDetails = 3
+    static let currentDetails = 4 // 4: dives (sport 53, positions from laps and sessions)
     /// Metres climbed and descended (FIT total_ascent/total_descent, Strava total_elevation_gain;
     /// Strava has no descent). For badges.
     var ascent: Double?

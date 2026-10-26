@@ -102,7 +102,7 @@ Routes are things to ride themselves, so they aren't route planning targets.
 
 ### Sports
 
-The names Tileroam gives activities, for `sports`: `Cycling`, `E-biking`, `Running`, `Walking`, `Hiking`, `Swimming`, `Skiing`, `Snowboarding`, `Cross-country skiing`, `Rowing`, `Inline skating`, `Fitness`. Indoor and virtual activities never count: they have no real track.
+The names Tileroam gives activities, for `sports`: `Cycling`, `E-biking`, `Running`, `Walking`, `Hiking`, `Swimming`, `Skiing`, `Snowboarding`, `Cross-country skiing`, `Rowing`, `Inline skating`, `Fitness`, `Diving` (dives count where you entered and left the water). Indoor and virtual activities never count: they have no real track.
 
 ### Changing a challenge
 

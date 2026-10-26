@@ -3,6 +3,9 @@ import Foundation
 /// The subset of a FIT activity file this app cares about.
 struct FITActivityData: Sendable {
     var points: [GeoPoint] = []
+    /// Where laps and sessions started and ended (start/end_position): the only positions of a
+    /// dive, whose watch has no GPS under water. Used as the track when the records have none.
+    var lapPositions: [GeoPoint] = []
     var sport: UInt8?
     var startTime: Date?
     /// Meters.
@@ -82,6 +85,13 @@ enum FITDecoder {
             decodedAny = true
             fileStart = start + dataSize + 2 // skip file CRC
         }
+        // A dive (or another activity without positions in its records): the entry and exit
+        // points from the laps and the session, so it lands on the map where it happened.
+        if result.points.isEmpty {
+            for p in result.lapPositions where result.points.last.map({ Geo.distance($0, p) > 1 }) ?? true {
+                result.points.append(p)
+            }
+        }
         return result
     }
 
@@ -159,10 +169,23 @@ enum FITDecoder {
             forEachField(def, b, offset) { number, value in
                 if number == 1, value != 0xFF { result.subSport = result.subSport ?? UInt8(truncatingIfNeeded: value) }
             }
+        case 19: // lap: start_position (3, 4) and end_position (5, 6)
+            var position = [UInt8: Int32]()
+            forEachField(def, b, offset) { number, value in
+                if (3...6).contains(number) { position[number] = Int32(truncatingIfNeeded: value) }
+            }
+            for (latField, lonField) in [(UInt8(3), UInt8(4)), (5, 6)] {
+                if let p = point(position[latField], position[lonField]) { result.lapPositions.append(p) }
+            }
         case 18: // session
             var timer: Double?
             var power: Double?
+            var start = [UInt8: Int32]()
+            defer {
+                if result.lapPositions.isEmpty, let p = point(start[3], start[4]) { result.lapPositions.append(p) }
+            }
             forEachField(def, b, offset) { number, value in
+                if number == 3 || number == 4 { start[number] = Int32(truncatingIfNeeded: value) }
                 switch number {
                 case 8 where value != 0xFFFF_FFFF:
                     timer = Double(value) / 1000
@@ -193,6 +216,12 @@ enum FITDecoder {
         default:
             break
         }
+    }
+
+    /// A position from semicircles; nil when invalid or missing.
+    private static func point(_ lat: Int32?, _ lon: Int32?) -> GeoPoint? {
+        guard let lat, let lon, lat != Int32.max, lon != Int32.max, lat != 0 || lon != 0 else { return nil }
+        return GeoPoint(lat: Double(lat) * semicircleToDegrees, lon: Double(lon) * semicircleToDegrees)
     }
 
     /// Calls `body` for each field of up to 8 bytes; larger fields (strings, arrays) are skipped.
@@ -235,6 +264,7 @@ enum FITDecoder {
         case 15: "Rowing"
         case 30: "Inline skating"
         case 21: "E-biking"
+        case 53: "Diving"
         default: "Activity"
         }
     }

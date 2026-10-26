@@ -16,6 +16,7 @@ enum Sport {
         case "Rowing": String(localized: "Rowing")
         case "Inline skating": String(localized: "Inline skating")
         case "Fitness": String(localized: "Fitness")
+        case "Diving": String(localized: "Diving")
         default: String(localized: "Other")
         }
     }
@@ -34,6 +35,7 @@ enum Sport {
         case "Rowing": "figure.rower"
         case "Inline skating": "figure.skating"
         case "Fitness": "dumbbell"
+        case "Diving": "figure.open.water.swim"
         default: "figure.mixed.cardio"
         }
     }
