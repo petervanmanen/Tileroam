@@ -206,6 +206,10 @@ T = {
     "Connect Strava": ("Koppel Strava", "Connectez Strava", "Conecta Strava", "Strava verbinden"),
     # Garmin Connect (Personal API)
     "Garmin Connect": ("Garmin Connect", "Garmin Connect", "Garmin Connect", "Garmin Connect"),
+    "Continue in the Background": ("Ga door op de achtergrond", "Continuer en arrière-plan", "Continuar en segundo plano", "Im Hintergrund fortsetzen"),
+    "Continues when you leave Tileroam: see the Live Activity.": ("Gaat door als je Tileroam verlaat: zie de Live Activity.", "Continue quand vous quittez Tileroam : voir l’activité en direct.", "Continúa cuando sales de Tileroam: mira la Actividad en Vivo.", "Läuft weiter, wenn du Tileroam verlässt: siehe die Live-Aktivität."),
+    "Downloading in the background isn't available on this device.": ("Downloaden op de achtergrond is op dit apparaat niet beschikbaar.", "Le téléchargement en arrière-plan n’est pas disponible sur cet appareil.", "La descarga en segundo plano no está disponible en este dispositivo.", "Herunterladen im Hintergrund ist auf diesem Gerät nicht verfügbar."),
+    "iOS didn't allow downloading in the background just now. Keep Tileroam open, or try again.": ("iOS stond downloaden op de achtergrond nu niet toe. Houd Tileroam open, of probeer het opnieuw.", "iOS n’a pas autorisé le téléchargement en arrière-plan pour l’instant. Gardez Tileroam ouvert ou réessayez.", "iOS no permitió la descarga en segundo plano ahora. Mantén Tileroam abierta o inténtalo de nuevo.", "iOS hat das Herunterladen im Hintergrund gerade nicht erlaubt. Lass Tileroam geöffnet oder versuche es erneut."),
     "Downloaded %lld activities": ("%lld activiteiten gedownload", "%lld activités téléchargées", "%lld actividades descargadas", "%lld Aktivitäten heruntergeladen"),
     "Diving": ("Duiken", "Plongée", "Buceo", "Tauchen"),
     "Connect": ("Koppel", "Connecter", "Conectar", "Verbinden"),

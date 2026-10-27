@@ -322,8 +322,14 @@ private struct GarminSection: View {
                         Text(status).font(.footnote).foregroundStyle(.secondary)
                     }
                 }
-                Button("Sync Now") { store.syncGarmin(userInitiated: true) }
-                    .disabled(store.isGarminSyncing)
+                if store.isGarminSyncing, ContinuedWork.isSupported {
+                    // The sync on opening the app runs while the app is open; this lets it go on.
+                    Button("Continue in the Background") { store.syncGarmin(userInitiated: true) }
+                        .disabled(store.garminContinuesInBackground)
+                } else {
+                    Button("Sync Now") { store.syncGarmin(userInitiated: true) }
+                        .disabled(store.isGarminSyncing)
+                }
                 Button("Disconnect Garmin", role: .destructive) { confirmDisconnect = true }
             } else {
                 Link(destination: GarminClient.keyPage) {
@@ -347,6 +353,15 @@ private struct GarminSection: View {
                 Label(error, systemImage: "exclamationmark.triangle.fill")
                     .font(.footnote)
                     .symbolRenderingMode(.multicolor)
+            }
+            if let note = store.garminBackgroundError {
+                Label(note, systemImage: "moon.zzz")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else if store.garminContinuesInBackground {
+                Label("Continues when you leave Tileroam: see the Live Activity.", systemImage: "arrow.down.circle")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         } header: {
             Text("Garmin Connect")

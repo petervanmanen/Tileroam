@@ -131,6 +131,8 @@ final class ActivityStore {
     var isGarminConnected: Bool { garmin.isConnected }
     var isGarminConnecting: Bool { garmin.isConnecting }
     var isGarminSyncing: Bool { garmin.isSyncing }
+    var garminContinuesInBackground: Bool { garmin.continuesInBackground }
+    var garminBackgroundError: String? { garmin.backgroundError }
     var garminStatus: String? { garmin.status }
     var garminError: String? { garmin.error }
     var garminDownloadedCount: Int { garmin.downloadedCount }

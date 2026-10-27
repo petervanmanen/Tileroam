@@ -23,9 +23,20 @@ final class ContinuedWork {
     private var task: BGContinuedProcessingTask?
     #endif
 
-    /// Starts it, or nil when the system doesn't offer it (the Mac, or the request was refused):
-    /// the work then simply runs while the app is open, as before.
-    static func start(title: String, subtitle: String, onExpire: @escaping () -> Void) -> ContinuedWork? {
+    enum StartError: LocalizedError {
+        case unavailable, notRegistered, refused(String)
+        var errorDescription: String? {
+            switch self {
+            case .unavailable: String(localized: "Downloading in the background isn't available on this device.")
+            case .notRegistered, .refused:
+                String(localized: "iOS didn't allow downloading in the background just now. Keep Tileroam open, or try again.")
+            }
+        }
+    }
+
+    /// Starts it. Fails when the system doesn't offer it (the Mac) or refuses the request: the
+    /// work then simply runs while the app is open.
+    static func start(title: String, subtitle: String, onExpire: @escaping () -> Void) -> Result<ContinuedWork, StartError> {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         let work = ContinuedWork()
         work.onExpire = onExpire
@@ -39,16 +50,25 @@ final class ContinuedWork {
                 work.began(task)
             }
         }
-        guard registered else { return nil }
+        guard registered else { return .failure(.notRegistered) }
         let request = BGContinuedProcessingTaskRequest(identifier: identifier, title: title, subtitle: subtitle)
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            return nil
+            return .failure(.refused(error.localizedDescription))
         }
-        return work
+        return .success(work)
         #else
-        return nil
+        return .failure(.unavailable)
+        #endif
+    }
+
+    /// The device can continue work in the background (iPhone and iPad, not the Mac).
+    nonisolated static var isSupported: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        true
+        #else
+        false
         #endif
     }
 

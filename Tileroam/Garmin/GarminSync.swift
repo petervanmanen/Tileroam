@@ -36,7 +36,15 @@ final class GarminSync {
     private var task: Task<Void, Never>?
     var isSyncing: Bool { task != nil }
     /// A sync the user started goes on when they leave the app (see `ContinuedWork`).
-    @ObservationIgnored private var continued: ContinuedWork?
+    @ObservationIgnored private var continued: ContinuedWork? {
+        didSet { continuesInBackground = continued != nil }
+    }
+    /// The running sync goes on when the user leaves the app (shown in Settings).
+    private(set) var continuesInBackground = false
+    /// Why it couldn't go on in the background, if iOS refused.
+    private(set) var backgroundError: String?
+    /// The last progress, for a background task that's attached to a running sync.
+    @ObservationIgnored private var lastProgress = (added: 0, left: 0)
 
     /// What was downloaded, kept on the device: per Garmin activity ID the file name in the
     /// library ("" for an activity without a .fit file), and whether the whole history was seen.
@@ -179,13 +187,13 @@ final class GarminSync {
     /// in the background, with its progress in a Live Activity; the automatic one when the app
     /// opens runs while it's open (iOS only lets work the user asked for go on).
     func sync(userInitiated: Bool = false) {
-        guard task == nil, client != nil else { return }
-        if userInitiated {
-            continued = ContinuedWork.start(title: String(localized: "Garmin Connect"),
-                                            subtitle: String(localized: "Checking Garmin Connect…")) { [weak self] in
-                self?.task?.cancel() // stopped in the Live Activity: what's downloaded is kept
-            }
+        guard client != nil else { return }
+        guard task == nil else {
+            // Already running (the sync on opening the app): the user asks for it, so it may go on.
+            if userInitiated { continueInBackground() }
+            return
         }
+        if userInitiated { continueInBackground() }
         task = Task {
             await run()
             task = nil
@@ -194,8 +202,27 @@ final class GarminSync {
         }
     }
 
+    /// Lets the sync go on when the user leaves the app (iOS 26 continued processing, with a Live
+    /// Activity); for a sync that's starting or already running. Only on the user's request:
+    /// iOS doesn't allow it for work the user didn't ask for, such as the sync on opening the app.
+    func continueInBackground() {
+        guard continued == nil, ContinuedWork.isSupported else { return }
+        switch ContinuedWork.start(title: String(localized: "Garmin Connect"),
+                                   subtitle: String(localized: "Checking Garmin Connect…"), onExpire: { [weak self] in
+            self?.task?.cancel() // stopped in the Live Activity: what's downloaded is kept
+        }) {
+        case .success(let work):
+            continued = work
+            backgroundError = nil
+            if task != nil { report(lastProgress.added, left: lastProgress.left) }
+        case .failure(let failure):
+            backgroundError = failure.localizedDescription
+        }
+    }
+
     /// Progress for the Live Activity: done so far, and an estimate of what's left.
     private func report(_ added: Int, left: Int) {
+        lastProgress = (added, left)
         guard let continued else { return }
         continued.progress(done: added, total: added + left,
                            subtitle: String(localized: "Downloaded \(added) activities"))

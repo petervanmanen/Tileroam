@@ -3227,6 +3227,62 @@
         }
       }
     },
+    "Continue in the Background": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ga door op de achtergrond"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuer en arrière-plan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar en segundo plano"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Hintergrund fortsetzen"
+          }
+        }
+      }
+    },
+    "Continues when you leave Tileroam: see the Live Activity.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gaat door als je Tileroam verlaat: zie de Live Activity."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue quand vous quittez Tileroam : voir l’activité en direct."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continúa cuando sales de Tileroam: mira la Actividad en Vivo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft weiter, wenn du Tileroam verlässt: siehe die Live-Aktivität."
+          }
+        }
+      }
+    },
     "Could Not Read": {
       "localizations": {
         "nl": {
@@ -4531,6 +4587,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Laden von Garmin: %lld"
+          }
+        }
+      }
+    },
+    "Downloading in the background isn't available on this device.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloaden op de achtergrond is op dit apparaat niet beschikbaar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le téléchargement en arrière-plan n’est pas disponible sur cet appareil."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La descarga en segundo plano no está disponible en este dispositivo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herunterladen im Hintergrund ist auf diesem Gerät nicht verfügbar."
           }
         }
       }
@@ -11653,6 +11737,34 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anstiege zum ersten Mal"
+          }
+        }
+      }
+    },
+    "iOS didn't allow downloading in the background just now. Keep Tileroam open, or try again.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS stond downloaden op de achtergrond nu niet toe. Houd Tileroam open, of probeer het opnieuw."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS n’a pas autorisé le téléchargement en arrière-plan pour l’instant. Gardez Tileroam ouvert ou réessayez."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS no permitió la descarga en segundo plano ahora. Mantén Tileroam abierta o inténtalo de nuevo."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS hat das Herunterladen im Hintergrund gerade nicht erlaubt. Lass Tileroam geöffnet oder versuche es erneut."
           }
         }
       }
