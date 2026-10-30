@@ -8,6 +8,8 @@ import WidgetKit
 protocol GarminSyncHost: AnyObject {
     /// Reads the library again (after files were saved or deleted).
     func refresh() async
+    /// Activity names changed (`ActivityNames`): show them.
+    func activityNamesChanged()
 }
 
 /// The Garmin Connect connection: the user's personal API key (in the Keychain), and the original
@@ -51,6 +53,20 @@ final class GarminSync {
     struct State: Codable, Equatable {
         var files: [String: String] = [:]
         var historyComplete = false
+        /// Per Garmin activity ID the name last seen on Garmin Connect (renames are picked up).
+        var names: [String: String] = [:]
+        /// The whole list was gone through once for names (activities downloaded before 1.18).
+        var namesChecked = false
+
+        init() {}
+
+        init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            files = try c.decodeIfPresent([String: String].self, forKey: .files) ?? [:]
+            historyComplete = try c.decodeIfPresent(Bool.self, forKey: .historyComplete) ?? false
+            names = try c.decodeIfPresent([String: String].self, forKey: .names) ?? [:]
+            namesChecked = try c.decodeIfPresent(Bool.self, forKey: .namesChecked) ?? false
+        }
     }
 
     struct Environment {
@@ -59,6 +75,8 @@ final class GarminSync {
         /// Saves a .fit file into the library; returns its name there.
         var save: @Sendable (Data, String) throws -> String = { try Library.add($0, originalName: $1) }
         var delete: @Sendable ([String]) -> Void = { Library.delete(names: $0) }
+        /// Stores activity names per library file (`ActivityNames`); returns whether any changed.
+        var setNames: ([String: String]) -> Bool = { ActivityNames.set($0) }
         /// The key is in the Keychain group shared with the widgets (1.16 kept it to the app).
         var loadKey: () -> String? = {
             if let key = GarminHealthStore.key { return key }
@@ -249,10 +267,12 @@ final class GarminSync {
                 }
                 guard !page.isEmpty else {
                     state.historyComplete = true
+                    state.namesChecked = true
                     break
                 }
                 let known = state.files
                 let new = page.filter { known[String($0.activityId)] == nil }
+                updateNames(page.filter { known[String($0.activityId)] != nil })
                 // Left: this page's new ones, and a page more while the history isn't complete.
                 let more = state.historyComplete || page.count < Self.pageSize ? 0 : Self.pageSize
                 report(added, left: new.count + more)
@@ -264,6 +284,7 @@ final class GarminSync {
                     }
                     state.files[String(activity.activityId)] = name ?? ""
                     if name != nil { added += 1 }
+                    updateNames([activity])
                     report(added, left: new.count - n - 1 + more)
                     if added % 10 == 0 { saveState() } else { downloadedCount += name != nil ? 1 : 0 }
                     try await environment.sleep(environment.pause)
@@ -271,9 +292,11 @@ final class GarminSync {
                 saveState()
                 if page.count < Self.pageSize {
                     state.historyComplete = true
+                    state.namesChecked = true
                     break
                 }
-                if state.historyComplete && new.count < page.count { break } // reached what it has
+                // Reached what it has; once, the whole list is gone through for renamed activities.
+                if state.historyComplete && state.namesChecked && new.count < page.count { break }
                 start += page.count
             }
         } catch is CancellationError {
@@ -281,6 +304,21 @@ final class GarminSync {
         } catch {
             self.error = (error as? GarminError).map(\.localizedDescription) ?? error.localizedDescription
         }
+    }
+
+    /// Takes the names on Garmin Connect of activities in the library: new ones, and renamed
+    /// ones (`ActivityNames`, shown on all devices).
+    private func updateNames(_ activities: [GarminActivity]) {
+        var changed = [String: String]()
+        for activity in activities {
+            let id = String(activity.activityId)
+            guard let name = activity.activityName?.trimmingCharacters(in: .whitespaces), !name.isEmpty,
+                  let file = state.files[id], !file.isEmpty, state.names[id] != name else { continue }
+            state.names[id] = name
+            changed[file] = name
+        }
+        guard !changed.isEmpty, environment.setNames(changed) else { return }
+        host?.activityNamesChanged()
     }
 
     /// Runs `request`; when Garmin asks to slow down (429), waits as long as it says (five

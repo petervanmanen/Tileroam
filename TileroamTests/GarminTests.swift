@@ -110,6 +110,7 @@ struct GarminSyncTests {
         var files: [String: Data] = [:]
         var deleted: [String] = []
         var waits: [Duration] = []
+        var names: [String: String] = [:]
         var key: String?
         let lock = NSLock()
     }
@@ -124,6 +125,13 @@ struct GarminSyncTests {
         environment.base = URL(string: "https://garmin.test")!
         environment.save = { data, name in saved.lock.withLock { saved.files[name] = data }; return name }
         environment.delete = { names in saved.lock.withLock { saved.deleted += names } }
+        environment.setNames = { names in
+            saved.lock.withLock {
+                let before = saved.names
+                saved.names.merge(names) { _, new in new }
+                return saved.names != before
+            }
+        }
         environment.loadKey = { saved.key }
         environment.storeKey = { saved.key = $0 }
         environment.defaults = defaults
@@ -187,6 +195,36 @@ struct GarminSyncTests {
         await sync.disconnect(deleteFiles: true)
         #expect(!sync.isConnected && saved.key == nil && sync.downloadedCount == 0)
         #expect(saved.deleted.sorted() == ["2026-10-20 Morning Ride Garmin 1.fit", "2026-10-20 Run Garmin 3.fit"])
+    }
+
+    @Test func namesFollowGarminConnect() async {
+        let saved = Saved()
+        serve([(1, "Morning Ride")])
+        let sync = makeSync(saved)
+        #expect(await sync.connect(key: "good-key"))
+        while sync.isSyncing { try? await Task.sleep(for: .milliseconds(20)) }
+        let file = "2026-10-20 Morning Ride Garmin 1.fit"
+        #expect(saved.names == [file: "Morning Ride"])
+
+        // Renamed on Garmin Connect: the new name, no new download.
+        serve([(1, "Utrecht – Amersfoort")])
+        await sync.run()
+        #expect(downloads == 0)
+        #expect(saved.names[file] == "Utrecht – Amersfoort")
+    }
+
+    @Test func stateFromBeforeNamesChecksTheWholeListOnce() throws {
+        let old = Data(#"{"files":{"1":"a.fit"},"historyComplete":true}"#.utf8)
+        let state = try JSONDecoder().decode(GarminSync.State.self, from: old)
+        #expect(state.files == ["1": "a.fit"] && state.historyComplete && !state.namesChecked && state.names.isEmpty)
+    }
+
+    @Test func activityNamesApply() {
+        let a = Importer.makeActivity(points: [GeoPoint(lat: 52, lon: 5), GeoPoint(lat: 52.01, lon: 5)], id: "lib|x-1234.fit",
+                                      cacheKey: "", name: "x-1234", sport: "Cycling", startDate: .now, distance: 1_000)
+        #expect(ActivityNames.apply(["x-1234.fit": "Uber Pretzel"], to: a, prefix: "lib|").name == "Uber Pretzel")
+        #expect(ActivityNames.apply(["x-1234.fit": "Zwift - Watopia"], to: a, prefix: "lib|").isVirtual == true)
+        #expect(ActivityNames.apply(["other.fit": "Other"], to: a, prefix: "lib|").name == "x-1234")
     }
 
     @Test func waitsWhenGarminAsksToSlowDown() async {

@@ -202,6 +202,7 @@ final class ActivityStore {
     /// duplicate files and sends this device's files to iCloud.
     func refresh() async {
         guard !isImporting else { return }
+        activityNames = ActivityNames.all() // renamed on another device
         isImporting = true
         progress = (0, 0)
         importPhase = nil
@@ -581,8 +582,12 @@ final class ActivityStore {
 
     // MARK: Derived data
 
+    /// Names from the activities' sources (Garmin Connect), per library file (see `ActivityNames`).
+    @ObservationIgnored private var activityNames = ActivityNames.all()
+
     private func recompute() {
-        let groups = ActivityMerge.groups(folderActivities + stravaActivities)
+        let named = folderActivities.map { ActivityNames.apply(activityNames, to: $0, prefix: Self.libraryPrefix) }
+        let groups = ActivityMerge.groups(named + stravaActivities)
         activities = groups.map(ActivityMerge.best(of:))
         copies = Dictionary(zip(activities.map(\.id), groups.map { $0.map(\.id) }), uniquingKeysWith: { a, _ in a })
         var tiles14 = Set<Int64>()
@@ -635,4 +640,9 @@ extension ActivityStore: StravaSyncHost {
 }
 
 /// Garmin downloads land in the library, which `refresh` reads.
-extension ActivityStore: GarminSyncHost {}
+extension ActivityStore: GarminSyncHost {
+    func activityNamesChanged() {
+        activityNames = ActivityNames.all()
+        recompute()
+    }
+}
